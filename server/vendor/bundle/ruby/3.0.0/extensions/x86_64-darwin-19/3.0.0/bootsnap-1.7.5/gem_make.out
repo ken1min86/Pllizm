@@ -1,0 +1,15 @@
+current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.7.5/ext/bootsnap
+/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-eoz35b.rb extconf.rb
+creating Makefile
+
+current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.7.5/ext/bootsnap
+make "DESTDIR=" clean
+
+current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.7.5/ext/bootsnap
+make "DESTDIR="
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.bundle
+
+current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/bootsnap-1.7.5/ext/bootsnap
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bootsnap.bundle ./.gem.20210716-97509-8davba/bootsnap
