@@ -1,25 +1,25 @@
 import './index.css';
 
 import App from 'App';
-import { connectRouter } from 'connected-react-router';
+import { ConnectedRouter } from 'connected-react-router';
 import * as History from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 
 import createStore from './reducks/store/store';
 import reportWebVitals from './reportWebVitals';
 
 const history = History.createBrowserHistory();
+// eslint-disable-next-line import/prefer-default-export
 export const store = createStore(history);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <connectRouter history={history}>
+      <ConnectedRouter history={history}>
         <App />
-      </connectRouter>
+      </ConnectedRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
