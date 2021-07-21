@@ -1,13 +1,7 @@
 import './App.css';
 
-import React from 'react';
-
 import Router from './Router';
 
-const App: React.VFC = () => (
-  <main>
-    <Router />
-  </main>
-);
+const App: React.VFC = () => <Router />;
 
 export default App;
