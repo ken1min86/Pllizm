@@ -1,17 +1,11 @@
 import { Route, Switch } from 'react-router';
-// BrowserRouterはstoreのセットアップ後に削除する
-import { BrowserRouter } from 'react-router-dom';
 
-import ReturnableHeaderTable from './components/templates/common/HeaderWithTitleAndArrow';
+import TermsOfUse from './components/templates/common/TermsOfUse';
 
 const Router: React.VFC = () => (
-  <BrowserRouter>
-    <Switch>
-      <Route exact path="/">
-        <ReturnableHeaderTable />
-      </Route>
-    </Switch>
-  </BrowserRouter>
+  <Switch>
+    <Route exact path="/help/terms_of_use" component={TermsOfUse} />
+  </Switch>
 );
 
 export default Router;

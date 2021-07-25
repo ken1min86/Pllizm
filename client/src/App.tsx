@@ -1,7 +1,9 @@
 import './App.css';
 
+import { VFC } from 'react';
+
 import Router from './Router';
 
-const App: React.VFC = () => <Router />;
+const App: VFC = () => <Router />;
 
 export default App;
