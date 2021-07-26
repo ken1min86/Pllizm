@@ -1,7 +1,11 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { History } from 'history';
-import { applyMiddleware, combineReducers, createStore as reduxCreateStore } from 'redux';
+import {
+  applyMiddleware,
+  combineReducers,
+  createStore as reduxCreateStore,
+} from 'redux';
 
 import { UsersReducer } from '../users/reducers'; // reducersのインポート
 
