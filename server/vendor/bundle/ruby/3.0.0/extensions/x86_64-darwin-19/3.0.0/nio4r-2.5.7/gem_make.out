@@ -1,5 +1,5 @@
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/nio4r-2.5.7/ext/nio4r
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-z5gch6.rb extconf.rb
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.2/lib/ruby/site_ruby/3.0.0 -r ./siteconf20210801-48301-6rmkag.rb extconf.rb
 checking for unistd.h... yes
 checking for linux/aio_abi.h... no
 checking for linux/io_uring.h... no
@@ -13,10 +13,10 @@ checking for sys/resource.h... yes
 creating Makefile
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/nio4r-2.5.7/ext/nio4r
-make "DESTDIR=" clean
+make DESTDIR\= clean
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/nio4r-2.5.7/ext/nio4r
-make "DESTDIR="
+make DESTDIR\=
 compiling bytebuffer.c
 bytebuffer.c:308:20: warning: implicit conversion loses integer precision: 'ssize_t' (aka 'long') to 'int' [-Wshorten-64-to-32]
     return INT2NUM(bytes_read);
@@ -99,12 +99,12 @@ compiling selector.c
 selector.c:301:26: warning: incompatible function pointer types passing 'VALUE (*)(VALUE *)' (aka 'unsigned long (*)(unsigned long *)') to parameter of type 'VALUE (*)(VALUE)' (aka 'unsigned long (*)(unsigned long)') [-Wincompatible-function-pointer-types]
         return rb_ensure(func, (VALUE)args, NIO_Selector_unlock, self);
                          ^~~~
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/include/ruby-3.0.0/ruby/internal/iterator.h:53:24: note: passing argument to parameter here
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/include/ruby-3.0.0/ruby/internal/iterator.h:53:24: note: passing argument to parameter here
 VALUE rb_ensure(VALUE(*)(VALUE),VALUE,VALUE(*)(VALUE),VALUE);
                        ^
 1 warning generated.
 linking shared-object nio4r_ext.bundle
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/nio4r-2.5.7/ext/nio4r
-make "DESTDIR=" install
-/usr/bin/install -c -m 0755 nio4r_ext.bundle ./.gem.20210716-97509-94eht6
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 nio4r_ext.bundle ./.gem.20210801-48301-6s8fe7

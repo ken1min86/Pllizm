@@ -1,15 +1,15 @@
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/websocket-driver-0.7.5/ext/websocket-driver
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-flr2y5.rb extconf.rb
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.2/lib/ruby/site_ruby/3.0.0 -r ./siteconf20210801-48301-5bbymt.rb extconf.rb
 creating Makefile
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/websocket-driver-0.7.5/ext/websocket-driver
-make "DESTDIR=" clean
+make DESTDIR\= clean
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/websocket-driver-0.7.5/ext/websocket-driver
-make "DESTDIR="
+make DESTDIR\=
 compiling websocket_mask.c
 linking shared-object websocket_mask.bundle
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/websocket-driver-0.7.5/ext/websocket-driver
-make "DESTDIR=" install
-/usr/bin/install -c -m 0755 websocket_mask.bundle ./.gem.20210716-97509-6lmqwq
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 websocket_mask.bundle ./.gem.20210801-48301-khlhkj

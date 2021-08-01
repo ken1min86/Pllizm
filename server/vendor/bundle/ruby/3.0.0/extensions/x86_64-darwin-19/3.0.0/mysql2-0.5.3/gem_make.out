@@ -1,5 +1,5 @@
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/mysql2-0.5.3/ext/mysql2
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-erbnos.rb extconf.rb --with-ldflags\=-L/usr/local/opt/openssl/lib --with-cppflags\=-I/usr/local/opt/openssl/include
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.2/lib/ruby/site_ruby/3.0.0 -r ./siteconf20210801-48301-3f92lz.rb extconf.rb --with-ldflags\=-L/usr/local/opt/openssl/lib --with-cppflags\=-I/usr/local/opt/openssl/include
 checking for rb_absint_size()... yes
 checking for rb_absint_singlebit_p()... yes
 checking for rb_wait_for_single_fd()... yes
@@ -23,26 +23,26 @@ checking for MYSQL_OPTION_MULTI_STATEMENTS_ON in mysql.h... yes
 checking for MYSQL_OPTION_MULTI_STATEMENTS_OFF in mysql.h... yes
 checking for my_bool in mysql.h... no
 -----
-Setting rpath to /usr/local/Cellar/mysql/8.0.23_1/lib
+Setting rpath to /usr/local/Cellar/mysql/8.0.26/lib
 -----
 creating Makefile
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/mysql2-0.5.3/ext/mysql2
-make "DESTDIR=" clean
+make DESTDIR\= clean
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/mysql2-0.5.3/ext/mysql2
-make "DESTDIR="
+make DESTDIR\=
 compiling client.c
 client.c:787:14: warning: incompatible pointer types passing 'VALUE (void *)' (aka 'unsigned long (void *)') to parameter of type 'VALUE (*)(VALUE)' (aka 'unsigned long (*)(unsigned long)') [-Wincompatible-pointer-types]
   rb_rescue2(do_send_query, (VALUE)&args, disconnect_and_raise, self, rb_eException, (VALUE)0);
              ^~~~~~~~~~~~~
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/include/ruby-3.0.0/ruby/internal/iterator.h:51:25: note: passing argument to parameter here
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/include/ruby-3.0.0/ruby/internal/iterator.h:51:25: note: passing argument to parameter here
 VALUE rb_rescue2(VALUE(*)(VALUE),VALUE,VALUE(*)(VALUE,VALUE),VALUE,...);
                         ^
 client.c:795:16: warning: incompatible pointer types passing 'VALUE (void *)' (aka 'unsigned long (void *)') to parameter of type 'VALUE (*)(VALUE)' (aka 'unsigned long (*)(unsigned long)') [-Wincompatible-pointer-types]
     rb_rescue2(do_query, (VALUE)&async_args, disconnect_and_raise, self, rb_eException, (VALUE)0);
                ^~~~~~~~
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/include/ruby-3.0.0/ruby/internal/iterator.h:51:25: note: passing argument to parameter here
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/include/ruby-3.0.0/ruby/internal/iterator.h:51:25: note: passing argument to parameter here
 VALUE rb_rescue2(VALUE(*)(VALUE),VALUE,VALUE(*)(VALUE,VALUE),VALUE,...);
                         ^
 2 warnings generated.
@@ -53,5 +53,5 @@ compiling statement.c
 linking shared-object mysql2/mysql2.bundle
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/mysql2-0.5.3/ext/mysql2
-make "DESTDIR=" install
-/usr/bin/install -c -m 0755 mysql2.bundle ./.gem.20210716-97509-xfw6sb/mysql2
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 mysql2.bundle ./.gem.20210801-48301-5qojx9/mysql2

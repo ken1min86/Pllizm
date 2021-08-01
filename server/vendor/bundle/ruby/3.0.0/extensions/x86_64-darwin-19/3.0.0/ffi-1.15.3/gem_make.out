@@ -1,5 +1,5 @@
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/ffi-1.15.3/ext/ffi_c
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-ugwe36.rb extconf.rb
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.2/lib/ruby/site_ruby/3.0.0 -r ./siteconf20210801-48301-kquim5.rb extconf.rb
 checking for ffi_prep_closure_loc() in -lffi... yes
 checking for ffi_prep_cif_var()... yes
 checking for ffi_raw_call()... yes
@@ -9,10 +9,10 @@ creating extconf.h
 creating Makefile
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/ffi-1.15.3/ext/ffi_c
-make "DESTDIR=" clean
+make DESTDIR\= clean
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/ffi-1.15.3/ext/ffi_c
-make "DESTDIR="
+make DESTDIR\=
 compiling AbstractMemory.c
 compiling ArrayType.c
 compiling Buffer.c
@@ -39,5 +39,5 @@ compiling ffi.c
 linking shared-object ffi_c.bundle
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/ffi-1.15.3/ext/ffi_c
-make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20210716-97509-mc821x
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20210801-48301-o90vzi

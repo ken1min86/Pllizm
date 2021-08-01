@@ -1,5 +1,5 @@
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/msgpack-1.4.2/ext/msgpack
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.0/lib/ruby/3.0.0 -r ./siteconf20210716-97509-eghz6t.rb extconf.rb
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/3.0.2/lib/ruby/site_ruby/3.0.0 -r ./siteconf20210801-48301-26e38.rb extconf.rb
 checking for ruby/st.h... yes
 checking for st.h... no
 checking for rb_str_replace() in ruby.h... yes
@@ -13,16 +13,16 @@ checking for rb_hash_clear() in ruby.h... yes
 creating Makefile
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/msgpack-1.4.2/ext/msgpack
-make "DESTDIR=" clean
+make DESTDIR\= clean
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/msgpack-1.4.2/ext/msgpack
-make "DESTDIR="
+make DESTDIR\=
 compiling buffer.c
 compiling buffer_class.c
 buffer_class.c:261:17: warning: incompatible pointer types passing 'VALUE (VALUE)' (aka 'unsigned long (unsigned long)') to parameter of type 'VALUE (*)(VALUE, VALUE)' (aka 'unsigned long (*)(unsigned long, unsigned long)') [-Wincompatible-pointer-types]
                 read_until_eof_error, (VALUE)(void*) args,
                 ^~~~~~~~~~~~~~~~~~~~
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/include/ruby-3.0.0/ruby/internal/iterator.h:51:47: note: passing argument to parameter here
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/include/ruby-3.0.0/ruby/internal/iterator.h:51:47: note: passing argument to parameter here
 VALUE rb_rescue2(VALUE(*)(VALUE),VALUE,VALUE(*)(VALUE,VALUE),VALUE,...);
                                               ^
 1 warning generated.
@@ -41,7 +41,7 @@ unpacker_class.c:137:1: warning: function 'raise_unpacker_error' could be declar
 unpacker_class.c:316:17: warning: incompatible pointer types passing 'VALUE (VALUE)' (aka 'unsigned long (unsigned long)') to parameter of type 'VALUE (*)(VALUE, VALUE)' (aka 'unsigned long (*)(unsigned long, unsigned long)') [-Wincompatible-pointer-types]
                 Unpacker_rescue_EOFError, self,
                 ^~~~~~~~~~~~~~~~~~~~~~~~
-/Users/nakamurakenichi/.rbenv/versions/3.0.0/include/ruby-3.0.0/ruby/internal/iterator.h:51:47: note: passing argument to parameter here
+/Users/nakamurakenichi/.rbenv/versions/3.0.2/include/ruby-3.0.0/ruby/internal/iterator.h:51:47: note: passing argument to parameter here
 VALUE rb_rescue2(VALUE(*)(VALUE),VALUE,VALUE(*)(VALUE,VALUE),VALUE,...);
                                               ^
 unpacker_class.c:225:14: warning: unused function 'Unpacker_peek_next_type' [-Wunused-function]
@@ -52,5 +52,5 @@ compiling unpacker_ext_registry.c
 linking shared-object msgpack/msgpack.bundle
 
 current directory: /Users/nakamurakenichi/Desktop/code/plizm/server/vendor/bundle/ruby/3.0.0/gems/msgpack-1.4.2/ext/msgpack
-make "DESTDIR=" install
-/usr/bin/install -c -m 0755 msgpack.bundle ./.gem.20210716-97509-9txlbe/msgpack
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 msgpack.bundle ./.gem.20210801-48301-b51ql2/msgpack
