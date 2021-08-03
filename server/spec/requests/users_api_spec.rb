@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "UsersApi", type: :request do
-  describe "POST v1_user_registration_api" do
+  describe "POST /v1/auth - v1/auth/registrations#create - Signup" do
     it 'returns 200 with password, password_confirmation and valid email and password equals to password_confirmation' do
       expect do
         sign_up
@@ -58,12 +58,12 @@ RSpec.describe "UsersApi", type: :request do
     end
   end
 
-  describe "POST v1_user_session_api" do
+  describe "POST /v1/auth/sign_in - devise_token_auth/sessions#create - Login" do
     before do
       sign_up
     end
 
-    it 'returns 200 with correct email and password' do
+    it 'returns 200 with correct email and password / Login' do
       post v1_user_session_path, params: {
         email:    'test@gmail.com',
         password: 'password123',
@@ -102,8 +102,8 @@ RSpec.describe "UsersApi", type: :request do
     end
   end
 
-  describe "DELETE destroy_v1_user_session" do
-    it 'returns 200 when signout' do
+  describe "DELETE /v1/auth/sign_out - devise_token_auth/sessions#destroy - Logout" do
+    it 'returns 200' do
       sign_up
       login
       delete destroy_v1_user_session_path params: {
@@ -115,8 +115,8 @@ RSpec.describe "UsersApi", type: :request do
     end
   end
 
-  describe "DELETE v1_user_registration" do
-    it 'returns 200 when signout' do
+  describe "DELETE /v1/auth - v1/auth/registrations#destroy - Delete account" do
+    it 'deletes account and returns 200' do
       sign_up
       login
       count = User.all.count
@@ -132,4 +132,26 @@ RSpec.describe "UsersApi", type: :request do
       expect(response).to have_http_status(200)
     end
   end
+
+  # describe "PUT /v1/auth/password - devise_token_auth/passwords#update
+#  - Change passeord" do
+  #   it 'changes password and returns 200 ssssssssssssssssssss' do
+  #     sign_up
+  #     login
+  #     @headers = {
+  #       uid:            response.header['uid'],
+  #       'access-token': response.header['access-token'],
+  #       client:         response.header['client'],
+  #     }
+  #     @params = {
+
+  #     }
+
+  #     put v1_user_password_path params: {
+  #       uid:            response.header['uid'],
+  #       'access-token': response.header['access-token'],
+  #       client:         response.header['client'],
+  #       } ha
+  #     end
+  #   end
 end
