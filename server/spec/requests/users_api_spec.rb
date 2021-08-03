@@ -58,7 +58,7 @@ RSpec.describe "UsersApi", type: :request do
     end
   end
 
-  describe "POST /v1/auth/sign_in_api" do
+  describe "POST v1_user_session_api" do
     before do
       sign_up
     end
@@ -99,6 +99,19 @@ RSpec.describe "UsersApi", type: :request do
         password: 'password456',
       }
       expect(response).to have_http_status(401)
+    end
+  end
+
+  describe "DELETE destroy_v1_user_session" do
+    it 'returns 200 when signout' do
+      sign_up
+      login
+      delete destroy_v1_user_session_path params: {
+        uid:            response.header['uid'],
+        'access-token': response.header['access-token'],
+        client:         response.header['client'],
+      }
+      expect(response).to have_http_status(200)
     end
   end
 end
