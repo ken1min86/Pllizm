@@ -59,6 +59,46 @@ RSpec.describe "UsersApi", type: :request do
   end
 
   describe "POST /v1/auth/sign_in_api" do
+    before do
+      sign_up
+    end
 
+    it 'returns 200 with correct email and password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+        password: 'password123',
+      }
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns 401 witout email' do
+      post v1_user_session_path, params: {
+        password: 'password123',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 witout password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 with incorrect email' do
+      post v1_user_session_path, params: {
+        email: 'notregisteredmail@gmail.com',
+        password: 'password123',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 with correct email and incorrect password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+        password: 'password456',
+      }
+      expect(response).to have_http_status(401)
+    end
   end
 end
