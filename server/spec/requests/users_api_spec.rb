@@ -4,18 +4,14 @@ RSpec.describe "UsersApi", type: :request do
   describe "POST v1_user_registration_api" do
     it 'returns 200 with password, password_confirmation and valid email and password equals to password_confirmation' do
       expect do
-        post v1_user_registration_path, params: {
-          password: 'password123',
-          password_confirmation: 'password123',
-          email: 'tester@gmail.com',
-        }
+        sign_up
       end.to change(User.all, :count).by(1)
 
-      signupped_user = User.find_by(email: 'tester@gmail.com')
+      signupped_user = User.find_by(email: 'test@gmail.com')
 
-      expect(signupped_user.email).to eq 'tester@gmail.com'
-      expect(signupped_user.uid).to   eq 'tester@gmail.com'
-      expect(signupped_user.name).to  eq 'tester'
+      expect(signupped_user.email).to eq 'test@gmail.com'
+      expect(signupped_user.uid).to   eq 'test@gmail.com'
+      expect(signupped_user.name).to  eq 'test'
       expect(response).to have_http_status(200)
     end
 
@@ -59,6 +55,50 @@ RSpec.describe "UsersApi", type: :request do
         email: 'tester.gmail.com',
       }
       expect(response).to have_http_status(422)
+    end
+  end
+
+  describe "POST /v1/auth/sign_in_api" do
+    before do
+      sign_up
+    end
+
+    it 'returns 200 with correct email and password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+        password: 'password123',
+      }
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns 401 witout email' do
+      post v1_user_session_path, params: {
+        password: 'password123',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 witout password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 with incorrect email' do
+      post v1_user_session_path, params: {
+        email: 'notregisteredmail@gmail.com',
+        password: 'password123',
+      }
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns 401 with correct email and incorrect password' do
+      post v1_user_session_path, params: {
+        email: 'test@gmail.com',
+        password: 'password456',
+      }
+      expect(response).to have_http_status(401)
     end
   end
 end
