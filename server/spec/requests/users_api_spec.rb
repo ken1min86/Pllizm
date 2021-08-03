@@ -114,4 +114,22 @@ RSpec.describe "UsersApi", type: :request do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe "DELETE v1_user_registration" do
+    it 'returns 200 when signout' do
+      sign_up
+      login
+      count = User.all.count
+      expect(User.where(email: 'test@gmail.com').count).to eq 1
+
+      delete v1_user_registration_path params: {
+        uid:            response.header['uid'],
+        'access-token': response.header['access-token'],
+        client:         response.header['client'],
+      }
+      expect(User.where(email: 'test@gmail.com').count).to eq 0
+      expect(User.all.count).to eq (count - 1)
+      expect(response).to have_http_status(200)
+    end
+  end
 end
