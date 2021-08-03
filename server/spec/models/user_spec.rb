@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   # 前提：現時点でproviderは未設定で登録する(DBではデフォルトのemailが設定される)ものとする, またdeviseの設定によりuidにはemailの値が設定される
   # 理由：OAuthが未実装であり、現状必ずメアドで登録されるため、providerはemailで固定とする
-  context 'when there are no users before test' do
-    it 'is valid with email, name and password' do
+  context 'when there are no users before test ' do
+    it 'is valid with email, name and password with 8 or more digits and 128 or less digits' do
       user = FactoryBot.create(:user)
       expect(user).to be_valid
     end
@@ -21,6 +21,26 @@ RSpec.describe User, type: :model do
 
     it 'is invalid without password' do
       user = FactoryBot.build(:user, password: nil)
+      expect(user).to be_invalid
+    end
+
+    it 'is invalid when password has 7 digits' do
+      user = FactoryBot.build(:user, password: 'passwor')
+      expect(user).to be_invalid
+    end
+
+    it 'is valid when password has 8 digits' do
+      user = FactoryBot.build(:user, password: 'password')
+      expect(user).to be_valid
+    end
+
+    it 'is valid when password has 128 digits' do
+      user = FactoryBot.build(:user, password: 'passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword')
+      expect(user).to be_valid
+    end
+
+    it 'is invalid when password has 129 digits' do
+      user = FactoryBot.build(:user, password: 'passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordp')
       expect(user).to be_invalid
     end
   end
