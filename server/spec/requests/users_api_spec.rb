@@ -133,25 +133,26 @@ RSpec.describe "UsersApi", type: :request do
     end
   end
 
-  # describe "PUT /v1/auth/password - devise_token_auth/passwords#update
-#  - Change passeord" do
-  #   it 'changes password and returns 200 ssssssssssssssssssss' do
-  #     sign_up
-  #     login
-  #     @headers = {
-  #       uid:            response.header['uid'],
-  #       'access-token': response.header['access-token'],
-  #       client:         response.header['client'],
-  #     }
-  #     @params = {
+  describe "PUT /v1/auth/password - devise_token_auth/passwords#update - Change password" do
+    it 'changes password and returns 200' do
+      sign_up
+      headers = {
+        uid:            response.header['uid'],
+        'access-token': response.header['access-token'],
+        client:         response.header['client'],
+      }
+      params = {
+        password: 'new_password',
+        password_confirmation: 'new_password',
+      }
+      put v1_user_password_path, params: params, headers: headers
+      expect(response).to have_http_status(200)
 
-  #     }
-
-  #     put v1_user_password_path params: {
-  #       uid:            response.header['uid'],
-  #       'access-token': response.header['access-token'],
-  #       client:         response.header['client'],
-  #       } ha
-  #     end
-  #   end
+      post v1_user_session_path, params: {
+        email:    'test@gmail.com',
+        password: 'new_password',
+      }
+      expect(response).to have_http_status(200)
+    end
+  end
 end
