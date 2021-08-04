@@ -18,7 +18,7 @@ RSpec.describe "UsersApi", type: :request do
     it 'returns 422 without password' do
       post v1_user_registration_path, params: {
         password_confirmation: 'password123',
-        email:                 'tester@gmail.com',
+        email: 'tester@gmail.com',
       }
       expect(response).to have_http_status(422)
     end
@@ -26,14 +26,14 @@ RSpec.describe "UsersApi", type: :request do
     it 'returns 404 without password_confirmation' do
       post v1_user_registration_path, params: {
         password: 'password123',
-        email:    'tester@gmail.com',
+        email: 'tester@gmail.com',
       }
       expect(response).to have_http_status(422)
     end
 
     it 'returns 422 without email' do
       post v1_user_registration_path, params: {
-        password:              'password123',
+        password: 'password123',
         password_confirmation: 'password123',
       }
       expect(response).to have_http_status(422)
@@ -41,18 +41,18 @@ RSpec.describe "UsersApi", type: :request do
 
     it "returns 422 when password doesn't equal to password_confirmation" do
       post v1_user_registration_path, params: {
-        password:              'password123',
+        password: 'password123',
         password_confirmation: 'password1234',
-        email:                 'tester@gmail.com',
+        email: 'tester@gmail.com',
       }
       expect(response).to have_http_status(422)
     end
 
     it 'returns 422 when email is invalid' do
       post v1_user_registration_path, params: {
-        password:              'password123',
+        password: 'password123',
         password_confirmation: 'password123',
-        email:                 'tester.gmail.com',
+        email: 'tester.gmail.com',
       }
       expect(response).to have_http_status(422)
     end
@@ -65,7 +65,7 @@ RSpec.describe "UsersApi", type: :request do
 
     it 'returns 200 with correct email and password' do
       post v1_user_session_path, params: {
-        email:    'test@gmail.com',
+        email: 'test@gmail.com',
         password: 'password123',
       }
       expect(response).to have_http_status(200)
@@ -87,7 +87,7 @@ RSpec.describe "UsersApi", type: :request do
 
     it 'returns 401 with incorrect email' do
       post v1_user_session_path, params: {
-        email:    'notregisteredmail@gmail.com',
+        email: 'notregisteredmail@gmail.com',
         password: 'password123',
       }
       expect(response).to have_http_status(401)
@@ -95,7 +95,7 @@ RSpec.describe "UsersApi", type: :request do
 
     it 'returns 401 with correct email and incorrect password' do
       post v1_user_session_path, params: {
-        email:    'test@gmail.com',
+        email: 'test@gmail.com',
         password: 'password456',
       }
       expect(response).to have_http_status(401)
@@ -107,9 +107,9 @@ RSpec.describe "UsersApi", type: :request do
       sign_up
       login
       delete destroy_v1_user_session_path params: {
-        uid:            response.header['uid'],
+        uid: response.header['uid'],
         'access-token': response.header['access-token'],
-        client:         response.header['client'],
+        client: response.header['client'],
       }
       expect(response).to have_http_status(200)
     end
@@ -123,9 +123,9 @@ RSpec.describe "UsersApi", type: :request do
       expect(User.where(email: 'test@gmail.com').count).to eq 1
 
       delete v1_user_registration_path params: {
-        uid:            response.header['uid'],
+        uid: response.header['uid'],
         'access-token': response.header['access-token'],
-        client:         response.header['client'],
+        client: response.header['client'],
       }
       expect(User.where(email: 'test@gmail.com').count).to eq 0
       expect(User.all.count).to eq (count - 1)
