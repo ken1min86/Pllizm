@@ -23,7 +23,7 @@ module V1
       end
 
       def set_userid_and_username
-        random_userid = get_unique_userid()
+        random_userid = get_unique_userid
         username = current_v1_user.email.split("@")[0]
         current_v1_user.update(userid: random_userid, username: username)
       end
@@ -36,10 +36,10 @@ module V1
 
       def get_unique_userid
         random_userid = SecureRandom.alphanumeric(15)
-        while User.find_by(userid: random_userid) do
+        while User.find_by(userid: random_userid)
           random_userid = SecureRandom.alphanumeric(15)
         end
-        return random_userid
+        random_userid
       end
 
       def sign_up_params
