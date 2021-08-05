@@ -7,11 +7,10 @@ RSpec.describe "UsersApi", type: :request do
         sign_up
       end.to change(User.all, :count).by(1)
 
-      signupped_user = User.find_by(email: 'test@gmail.com')
-
-      expect(signupped_user.email).to eq 'test@gmail.com'
-      expect(signupped_user.uid).to   eq 'test@gmail.com'
-      expect(signupped_user.name).to  eq 'test'
+      sign_upped_user = User.find_by(email: 'test@gmail.com')
+      expect(sign_upped_user.email).to    eq 'test@gmail.com'
+      expect(sign_upped_user.uid).to      eq 'test@gmail.com'
+      expect(sign_upped_user.username).to eq 'test'
       expect(response).to have_http_status(200)
     end
 

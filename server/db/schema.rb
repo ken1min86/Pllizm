@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_04_081628) do
+ActiveRecord::Schema.define(version: 2021_08_04_095309) do
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "provider", default: "email", null: false
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2021_08_04_081628) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.string "name", limit: 50, null: false
+    t.string "name", limit: 50
     t.string "image"
     t.string "email", null: false
     t.string "bio", limit: 160
