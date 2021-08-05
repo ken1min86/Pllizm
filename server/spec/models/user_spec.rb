@@ -59,19 +59,39 @@ RSpec.describe User, type: :model do
       user = FactoryBot.build(:user, bio: 'こんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこ')
       expect(user).to be_invalid
     end
+
+    it 'is valid when userid has 15 character' do
+      user = FactoryBot.build(:user, userid: 'testidtestidtes')
+      expect(user).to be_valid
+    end
+
+    it 'is invalid when userid has 16 character' do
+      user = FactoryBot.build(:user, userid: 'testidtestidtest')
+      expect(user).to be_invalid
+    end
   end
 
   # 現状providerはemailのみなので、providerがemailのときのテストだけ実施している
   context 'when there is a user(called USER1) before test' do
     let!(:user1) { FactoryBot.create(:user) }
 
-    it "is valid provider equals to USER1 and email doesn't equal to USER1" do
+    it "is valid when provider equals to USER1 and email doesn't equal to USER1" do
       user2 = FactoryBot.build(:user)
       expect(user2).to be_valid
     end
 
-    it "is invalid provider and email equal to USER1" do
+    it "is invalid when provider and email equal to USER1" do
       user2 = FactoryBot.build(:user, email: user1.email)
+      expect(user2).to be_invalid
+    end
+
+    it "is valid when userid doesn't equal to USER1" do
+      user2 = FactoryBot.build(:user)
+      expect(user2).to be_valid
+    end
+
+    it "is invalid when userid equals to USER1" do
+      user2 = FactoryBot.build(:user, userid: user1.userid)
       expect(user2).to be_invalid
     end
   end
