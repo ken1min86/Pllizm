@@ -29,7 +29,7 @@ module V1
       end
 
       def check_userid_is_at_least_4_digits
-        if params[:userid]&.length < 4
+        if params[:userid]&.length && params[:userid]&.length < 4
           render status: 422, json: { status: 422, message: "Unprocessable Entity" }
         end
       end

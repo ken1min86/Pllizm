@@ -142,17 +142,14 @@ RSpec.describe "UsersApi", type: :request do
   end
 
   describe "PUT /v1/auth/password - devise_token_auth/passwords#update - Change password" do
-    before do
-      sign_up('test')
-      @headers = create_header(response)
-    end
-
     it 'changes password and returns 200' do
+      sign_up('test')
+      headers = create_header_from_response(response)
       params = {
         password: 'new_password',
         password_confirmation: 'new_password',
       }
-      put v1_user_password_path, params: params, headers: @headers
+      put v1_user_password_path, params: params, headers: headers
       expect(response).to have_http_status(200)
 
       post v1_user_session_path, params: {
@@ -161,35 +158,46 @@ RSpec.describe "UsersApi", type: :request do
       }
       expect(response).to have_http_status(200)
     end
+  end
 
-    it "doesn't change userid and returns 422 when userid has 3 characters" do
-      put v1_user_registration_path, params: { userid: 'a' * 3 }, headers: @headers
-      expect(response).to have_http_status(422)
+  describe "PUT /v1/auth - v1/auth/registrations#update - Change users info" do
+    context "when try to change userid" do
+      before do
+        sign_up('test')
+        @headers = create_header_from_response(response)
+      end
+
+      it "doesn't change userid and returns 422 when userid has 3 characters" do
+        put v1_user_registration_path, params: { userid: 'a' * 3 }, headers: @headers
+        expect(response).to have_http_status(422)
+      end
+
+      it 'changes userid and returns 200 when userid has 4 characters' do
+        put v1_user_registration_path, params: { userid: 'a' * 4 }, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 4)
+      end
+
+      it 'changes userid and returns 200 when userid has 15 characters' do
+        put v1_user_registration_path, params: { userid: 'a' * 15 }, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 15)
+      end
+
+      it "doesn't change userid and returns 422 when userid has 16 characters" do
+        put v1_user_registration_path, params: { userid: 'a' * 16 }, headers: @headers
+        expect(response).to have_http_status(422)
+      end
     end
 
-    it 'changes userid and returns 200 when userid has 4 characters' do
-      put v1_user_registration_path, params: { userid: 'a' * 4 }, headers: @headers
-      expect(response).to have_http_status(200)
-      expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 4)
-    end
-
-    it 'changes userid and returns 200 when userid has 15 characters' do
-      put v1_user_registration_path, params: { userid: 'a' * 15 }, headers: @headers
-      expect(response).to have_http_status(200)
-      expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 15)
-    end
-
-    it "doesn't change userid and returns 422 when userid has 16 characters" do
-      put v1_user_registration_path, params: { userid: 'a' * 16 }, headers: @headers
-      expect(response).to have_http_status(422)
-    end
-
-    def create_header(response)
-      {
-        uid: response.header['uid'],
-        'access-token': response.header['access-token'],
-        client: response.header['client'],
-      }
+    context "when try to change email" do
+      it 'changes email and returns 200' do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { email: 'new_email@gmail.com' }, headers: headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'new_email@gmail.com').email).to eq('new_email@gmail.com')
+      end
     end
   end
 end
