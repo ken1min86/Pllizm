@@ -1,15 +1,15 @@
 module RequestSpecHelper
-  def sign_up
+  def sign_up(account)
     post v1_user_registration_path, params: {
       password: 'password123',
       password_confirmation: 'password123',
-      email: 'test@gmail.com',
+      email: "#{account}@gmail.com",
     }
   end
 
-  def login
+  def login(account)
     post v1_user_session_path, params: {
-      email: 'test@gmail.com',
+      email: "#{account}@gmail.com",
       password: 'password123',
     }
   end

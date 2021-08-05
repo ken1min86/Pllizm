@@ -21,42 +21,52 @@ RSpec.describe User, type: :model do
     end
 
     it 'is invalid when password has 7 digits' do
-      user = FactoryBot.build(:user, password: 'passwor')
+      user = FactoryBot.build(:user, password: 'a' * 7)
       expect(user).to be_invalid
     end
 
     it 'is valid when password has 8 digits' do
-      user = FactoryBot.build(:user, password: 'password')
+      user = FactoryBot.build(:user, password: 'a' * 8)
       expect(user).to be_valid
     end
 
     it 'is valid when password has 128 digits' do
-      user = FactoryBot.build(:user, password: 'passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword')
+      user = FactoryBot.build(:user, password: 'a' * 128)
       expect(user).to be_valid
     end
 
     it 'is invalid when password has 129 digits' do
-      user = FactoryBot.build(:user, password: 'passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordp')
+      user = FactoryBot.build(:user, password: 'a' * 129)
       expect(user).to be_invalid
     end
 
     it 'is valid whose username has 50 characters' do
-      user = FactoryBot.build(:user, username: 'NakagawakeNakagawakeNakagawakeNakagawakeNakagawake')
+      user = FactoryBot.build(:user, username: 'a' * 50)
       expect(user).to be_valid
     end
 
     it 'is invalid whose username has 51 characters' do
-      user = FactoryBot.build(:user, username: 'NakagawakeNakagawakeNakagawakeNakagawakeNakagawakeN')
+      user = FactoryBot.build(:user, username: 'a' * 51)
       expect(user).to be_invalid
     end
 
     it 'is invalid whose bio has 160 character' do
-      user = FactoryBot.build(:user, bio: 'こんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんは')
+      user = FactoryBot.build(:user, bio: 'a' * 160)
       expect(user).to be_valid
     end
 
     it 'is valid whose bio has 161 character' do
-      user = FactoryBot.build(:user, bio: 'こんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこんにちはこんばんはこ')
+      user = FactoryBot.build(:user, bio: 'a' * 161)
+      expect(user).to be_invalid
+    end
+
+    it 'is valid when userid has 15 character' do
+      user = FactoryBot.build(:user, userid: 'a' * 15)
+      expect(user).to be_valid
+    end
+
+    it 'is invalid when userid has 16 character' do
+      user = FactoryBot.build(:user, userid: 'a' * 16)
       expect(user).to be_invalid
     end
   end
@@ -65,13 +75,23 @@ RSpec.describe User, type: :model do
   context 'when there is a user(called USER1) before test' do
     let!(:user1) { FactoryBot.create(:user) }
 
-    it "is valid provider equals to USER1 and email doesn't equal to USER1" do
+    it "is valid when provider equals to USER1 and email doesn't equal to USER1" do
       user2 = FactoryBot.build(:user)
       expect(user2).to be_valid
     end
 
-    it "is invalid provider and email equal to USER1" do
+    it "is invalid when provider and email equal to USER1" do
       user2 = FactoryBot.build(:user, email: user1.email)
+      expect(user2).to be_invalid
+    end
+
+    it "is valid when userid doesn't equal to USER1" do
+      user2 = FactoryBot.build(:user)
+      expect(user2).to be_valid
+    end
+
+    it "is invalid when userid equals to USER1" do
+      user2 = FactoryBot.build(:user, userid: user1.userid)
       expect(user2).to be_invalid
     end
   end
