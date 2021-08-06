@@ -5,6 +5,7 @@ module V1
     class RegistrationsController < DeviseTokenAuth::RegistrationsController
       before_action :confirm_password_confirmation_existence, only: :create
       before_action :confirm_email_existence, only: :create
+      before_action :set_username_to_params, only: :create
       after_action  :set_userid_and_username, only: :create
       before_action :check_userid_is_at_least_4_characters, only: :update
 
@@ -19,6 +20,12 @@ module V1
       def confirm_email_existence
         unless params[:email]
           render status: 422, json: { status: 422, message: "Unprocessable Entity" }
+        end
+      end
+
+      def set_username_to_params
+        if params[:email]&.split("@")[0]
+          params[:username] = params[:email].split("@")[0]
         end
       end
 
@@ -43,7 +50,7 @@ module V1
       end
 
       def sign_up_params
-        params.permit(:email, :password, :password_confirmation)
+        params.permit(:email, :password, :password_confirmation, :username)
       end
 
       def account_update_params
