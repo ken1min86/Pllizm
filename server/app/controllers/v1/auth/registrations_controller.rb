@@ -52,7 +52,7 @@ module V1
       end
 
       def account_update_params
-        params.permit(:email, :username, :userid, :bio, :image)
+        params.permit(:email, :userid, :username, :userid, :bio, :image)
       end
     end
   end

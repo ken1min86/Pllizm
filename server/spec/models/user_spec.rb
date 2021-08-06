@@ -10,6 +10,16 @@ RSpec.describe User, type: :model do
       expect(user.provider).to eq 'email'
     end
 
+    it 'is invalid without userid' do
+      user = FactoryBot.build(:user, userid: nil)
+      expect(user).to be_invalid
+    end
+
+    it 'is invalid without username' do
+      user = FactoryBot.build(:user, username: nil)
+      expect(user).to be_invalid
+    end
+
     it 'is invalid without email' do
       user = FactoryBot.build(:user, email: nil)
       expect(user).to be_invalid
