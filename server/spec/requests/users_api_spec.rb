@@ -124,7 +124,7 @@ RSpec.describe "UsersApi", type: :request do
   end
 
   describe "DELETE /v1/auth - v1/auth/registrations#destroy - Delete account" do
-    it 'deletes account and returns 200' do
+    it 'logically deletes account and returns 200' do
       sign_up('test')
       login('test')
       count = User.all.count
@@ -136,6 +136,7 @@ RSpec.describe "UsersApi", type: :request do
         client: response.header['client'],
       }
       expect(User.where(email: 'test@gmail.com').count).to eq 0
+      expect(User.with_deleted.where(email: 'test@gmail.com').count).to eq 1
       expect(User.all.count).to eq (count - 1)
       expect(response).to have_http_status(200)
     end
