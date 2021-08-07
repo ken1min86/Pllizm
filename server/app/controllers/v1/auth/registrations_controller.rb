@@ -8,6 +8,7 @@ module V1
       before_action :add_userid_to_params, only: :create
       before_action :add_username_to_params, only: :create
       before_action :check_userid_is_at_least_4_characters, only: :update
+      before_action :check_image_has_correct_extension, only: :update
 
       private
 
@@ -43,6 +44,13 @@ module V1
 
       def check_userid_is_at_least_4_characters
         if params[:userid]&.length && params[:userid]&.length < 4
+          render status: 422, json: { status: 422, message: "Unprocessable Entity" }
+        end
+      end
+
+      def check_image_has_correct_extension
+        valid_extensions = ['.gif', ".png", ".jpg"]
+        if params[:image]&.length && !valid_extensions.any? { |valid_extension| params[:image].include? valid_extension }
           render status: 422, json: { status: 422, message: "Unprocessable Entity" }
         end
       end

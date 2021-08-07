@@ -219,5 +219,39 @@ RSpec.describe "UsersApi", type: :request do
         expect(User.find_by(email: 'test@gmail.com').username).to eq('田中卓志')
       end
     end
+
+    # 正しい拡張子の場合のみ変更を受け付けるようにしたい
+    context "when try to change image" do
+      it "changes image and returns 200 when image extension is jpg" do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { image: 'cat.jpg' }, headers: headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.jpg')
+      end
+
+      it "changes image and returns 200 when image extension is gif" do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { image: 'cat.gif' }, headers: headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.gif')
+      end
+
+      it "changes image and returns 200 when image extension is png" do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { image: 'cat.png' }, headers: headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.png')
+      end
+
+      it "returns 422 when image extension is invalid" do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { image: 'cat.txt' }, headers: headers
+        expect(response).to have_http_status(422)
+      end
+    end
   end
 end
