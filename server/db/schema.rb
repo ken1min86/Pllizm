@@ -10,12 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_07_050914) do
+ActiveRecord::Schema.define(version: 2021_08_07_061804) do
 
   create_table "icons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "image", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "posts", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "content", limit: 140, null: false
+    t.string "image"
+    t.bigint "icon_id"
+    t.boolean "is_locked", default: false, null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["deleted_at"], name: "index_posts_on_deleted_at"
+    t.index ["icon_id"], name: "index_posts_on_icon_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -48,4 +62,6 @@ ActiveRecord::Schema.define(version: 2021_08_07_050914) do
     t.index ["userid"], name: "index_users_on_userid", unique: true
   end
 
+  add_foreign_key "posts", "icons"
+  add_foreign_key "posts", "users"
 end
