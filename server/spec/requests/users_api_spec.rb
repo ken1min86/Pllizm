@@ -209,5 +209,15 @@ RSpec.describe "UsersApi", type: :request do
         expect(User.find_by(email: 'test@gmail.com').bio).to eq('猫が好きです。')
       end
     end
+
+    context "when try to change username" do
+      it "changes username and returns 200" do
+        sign_up('test')
+        headers = create_header_from_response(response)
+        put v1_user_registration_path, params: { username: '田中卓志' }, headers: headers
+        expect(response).to have_http_status(200)
+        expect(User.find_by(email: 'test@gmail.com').username).to eq('田中卓志')
+      end
+    end
   end
 end

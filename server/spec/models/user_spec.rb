@@ -50,6 +50,11 @@ RSpec.describe User, type: :model do
       expect(user).to be_invalid
     end
 
+    it 'is invalid whose username is blank' do
+      user = FactoryBot.build(:user, username: '')
+      expect(user).to be_invalid
+    end
+
     it 'is valid whose username has 50 characters' do
       user = FactoryBot.build(:user, username: 'a' * 50)
       expect(user).to be_valid
