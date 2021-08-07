@@ -13,4 +13,12 @@ module RequestSpecHelper
       password: 'password123',
     }
   end
+
+  def create_header_from_response(response)
+    {
+      uid: response.header['uid'],
+      'access-token': response.header['access-token'],
+      client: response.header['client'],
+    }
+  end
 end
