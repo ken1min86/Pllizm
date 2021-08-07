@@ -220,7 +220,6 @@ RSpec.describe "UsersApi", type: :request do
       end
     end
 
-    # 正しい拡張子の場合のみ変更を受け付けるようにしたい
     context "when try to change image" do
       it "changes image and returns 200 when image extension is jpg" do
         sign_up('test')
