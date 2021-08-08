@@ -57,3 +57,6 @@ gem 'paranoia'
 
 # Carrierwave for uploading images
 gem 'carrierwave'
+
+# Config to manage constants
+gem 'config'

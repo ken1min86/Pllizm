@@ -49,8 +49,7 @@ module V1
       end
 
       def check_image_has_correct_extension
-        valid_extensions = ['.gif', ".png", ".jpg"]
-        if params[:image]&.length && !valid_extensions.any? { |valid_extension| params[:image].include? valid_extension }
+        if params[:image]&.length && !Settings.constants.valid_extensions.any? { |valid_extension| params[:image].include? valid_extension }
           render status: 422, json: { status: 422, message: "Unprocessable Entity" }
         end
       end
