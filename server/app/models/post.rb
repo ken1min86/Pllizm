@@ -3,11 +3,13 @@ require 'securerandom'
 class Post < ApplicationRecord
   acts_as_paranoid
 
+  mount_uploader :image, ImageUploader
+
   belongs_to :user
   has_one :icon
 
   validates :content, length: { maximum: 140 }
-  validates :image, image_extension: true
+  # validates :image, image_extension: true
   validates :user_id, presence: true
   validates :content, presence: true
 

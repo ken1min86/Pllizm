@@ -23,7 +23,7 @@ RSpec.describe Post, type: :model do
   end
 
   it "is valid when image's extension is png" do
-    post = FactoryBot.build(:post, user_id: user.id, image: 'food.png')
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/test_icons/Account-icon1.png"), "image/png"))
     expect(post).to be_valid
   end
 
@@ -33,7 +33,7 @@ RSpec.describe Post, type: :model do
   end
 
   it "is invalid when image's extension isn't jpg or png or gif" do
-    post = FactoryBot.build(:post, user_id: user.id, image: 'food.svg')
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/test_icons/Account-icon1.svg"), "image/svg"))
     expect(post).to be_invalid
   end
 
