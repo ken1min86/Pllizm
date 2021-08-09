@@ -21,4 +21,8 @@ module RequestSpecHelper
       client: response.header['client'],
     }
   end
+
+  def get_current_user_by_response(response)
+    User.find_by(uid: response.header['uid'])
+  end
 end

@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Post, type: :model do
   before :all do
-    10.times do
-      FactoryBot.create(:icon)
-    end
+    FactoryBot.create_list(:icon, 10)
   end
 
   let!(:user) { FactoryBot.create(:user) }
@@ -14,11 +12,11 @@ RSpec.describe Post, type: :model do
     expect(post).to be_valid
     expect(post.id.length).to eq(20)
     expect(post.is_locked).to eq(false)
-    expect(Icon.all.any?{|icon| post.icon_id == icon.id}).to be_truthy
+    expect(Icon.all.any? { |icon| post.icon_id == icon.id }).to be_truthy
   end
 
   it "is valid when image's extension is jpg" do
-    post = FactoryBot.build(:post, user_id: user.id, image: 'food.jpg')
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpg"), "image/jpg"))
     expect(post).to be_valid
   end
 
@@ -28,12 +26,17 @@ RSpec.describe Post, type: :model do
   end
 
   it "is valid when image's extension is gif" do
-    post = FactoryBot.build(:post, user_id: user.id, image: 'food.gif')
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.gif"), "image/gif"))
     expect(post).to be_valid
   end
 
-  it "is invalid when image's extension isn't jpg or png or gif" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/test_icons/Account-icon1.svg"), "image/svg"))
+  it "is valid when image's extension is jpeg" do
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpeg"), "image/jpeg"))
+    expect(post).to be_valid
+  end
+
+  it "is invalid when image's extension isn't jpg or png or gif or jpeg" do
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.svg"), "image/svg"))
     expect(post).to be_invalid
   end
 
