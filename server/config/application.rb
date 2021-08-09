@@ -53,5 +53,7 @@ module Server
           methods: [:get, :post, :options, :delete, :put]
       end
     end
+
+    config.autoload_paths += Dir["#{config.root}/app/validators"]
   end
 end

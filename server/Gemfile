@@ -54,3 +54,9 @@ gem 'devise_token_auth'
 
 # Paranoia for logical deleting
 gem 'paranoia'
+
+# Carrierwave for uploading images
+gem 'carrierwave'
+
+# Config to manage constants
+gem 'config'
