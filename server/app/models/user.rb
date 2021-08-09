@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
   acts_as_paranoid
+
+  has_many :posts, dependent: :destroy
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   # :confirmable, :omniauthable
