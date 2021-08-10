@@ -21,14 +21,20 @@ module V1
       end
     end
 
+    def change_lock
+      post = Post.find(params[:id])
+      if post&.user_id == current_v1_user.id
+        post.update(is_locked: !post.is_locked)
+        render json: post, status: :ok
+      else
+        render json: post.errors, status: :bad_request
+      end
+    end
+
     private
 
     def post_params_when_create
       params.permit(:content, :image, :is_locked).merge(user_id: current_v1_user.id)
-    end
-
-    def post_params_when_destroy
-      params.permit(:id)
     end
   end
 end

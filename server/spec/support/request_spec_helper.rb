@@ -30,9 +30,9 @@ module RequestSpecHelper
     sign_up(Faker::Name.first_name)
     headers = create_header_from_response(response)
     FactoryBot.create_list(:icon, 5)
-    post v1_posts_path, params: {content: 'Hello!'}, headers: headers
+    post v1_posts_path, params: { content: 'Hello!' }, headers: headers
     request_headers = create_header_from_response(response)
     created_post_id = Post.find_by(user_id: get_current_user_by_response(response).id).id
-    return {post_id: created_post_id, request_headers: request_headers}
+    { post_id: created_post_id, request_headers: request_headers }
   end
 end
