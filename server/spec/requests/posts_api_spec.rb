@@ -122,12 +122,13 @@ RSpec.describe "PostsApi", type: :request do
     end
 
     context "when client has token" do
-      it "returns 200 and deletes post when try to delete login user's post" do
+      it "returns 200 and logically deletes post when try to delete login user's post" do
         expect do
           delete v1_post_path(@post_id), headers: @request_headers
         end.to change(Post.all, :count).by(-1)
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+        expect(Post.with_deleted.where(id: @post_id).count).to eq 1
       end
 
       it "returns 400 and deletes post when try to delete not login user's post" do
