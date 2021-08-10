@@ -8,6 +8,7 @@ RSpec.describe User, type: :model do
       user = FactoryBot.create(:user)
       expect(user).to be_valid
       expect(user.provider).to eq 'email'
+      expect(user.need_description_about_lock).to eq(true)
     end
 
     it 'is invalid without userid' do

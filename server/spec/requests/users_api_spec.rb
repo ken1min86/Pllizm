@@ -11,6 +11,7 @@ RSpec.describe "UsersApi", type: :request do
       expect(sign_upped_user.userid.length).to eq 15
       expect(sign_upped_user.username).to      eq 'test'
       expect(sign_upped_user.email).to         eq 'test@gmail.com'
+      expect(sign_upped_user.need_description_about_lock).to eq true
       expect(response).to have_http_status(200)
     end
 
@@ -251,6 +252,45 @@ RSpec.describe "UsersApi", type: :request do
         headers = create_header_from_response(response)
         put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.svg"), "image/svg") }, headers: headers
         expect(response).to have_http_status(422)
+      end
+    end
+  end
+
+  describe "PUT /v1/user/disable_lock_description - v1/users#disable_lock_description - Disable lock description" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        put v1_user_disableLockDescription_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        sign_up(Faker::Name.first_name)
+        @request_headers = create_header_from_response(response)
+        @current_user = get_current_user_by_response(response)
+      end
+
+      it 'returns 200 and change false when need_description_about_lock is true' do
+        expect(@current_user.need_description_about_lock).to eq(true)
+
+        put v1_user_disableLockDescription_path, headers: @request_headers
+        @current_user.reload
+        expect(@current_user.need_description_about_lock).to eq(false)
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it 'returns 200 and keep false when need_description_about_lock is false' do
+        @current_user.update(need_description_about_lock: false)
+        expect(@current_user.need_description_about_lock).to eq(false)
+
+        put v1_user_disableLockDescription_path, headers: @request_headers
+        @current_user.reload
+        expect(@current_user.need_description_about_lock).to eq(false)
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
       end
     end
   end
