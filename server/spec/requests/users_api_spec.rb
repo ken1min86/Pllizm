@@ -11,6 +11,7 @@ RSpec.describe "UsersApi", type: :request do
       expect(sign_upped_user.userid.length).to eq 15
       expect(sign_upped_user.username).to      eq 'test'
       expect(sign_upped_user.email).to         eq 'test@gmail.com'
+      expect(sign_upped_user.need_description_about_lock).to         eq true
       expect(response).to have_http_status(200)
     end
 
