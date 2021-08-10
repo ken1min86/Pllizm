@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_07_061804) do
+ActiveRecord::Schema.define(version: 2021_08_10_051717) do
 
   create_table "icons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "image", null: false
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2021_08_07_061804) do
     t.string "username", limit: 50, null: false
     t.string "userid", limit: 15, null: false
     t.datetime "deleted_at"
+    t.boolean "need_description_about_lock", default: true, null: false
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
