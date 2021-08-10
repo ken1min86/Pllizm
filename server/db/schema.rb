@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_10_051717) do
+ActiveRecord::Schema.define(version: 2021_08_10_080057) do
+
+  create_table "follow_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "requested_by"
+    t.bigint "request_to"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["request_to"], name: "index_follow_requests_on_request_to"
+    t.index ["requested_by"], name: "index_follow_requests_on_requested_by"
+  end
 
   create_table "icons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "image", null: false
@@ -63,6 +72,8 @@ ActiveRecord::Schema.define(version: 2021_08_10_051717) do
     t.index ["userid"], name: "index_users_on_userid", unique: true
   end
 
+  add_foreign_key "follow_requests", "users", column: "request_to"
+  add_foreign_key "follow_requests", "users", column: "requested_by"
   add_foreign_key "posts", "icons"
   add_foreign_key "posts", "users"
 end

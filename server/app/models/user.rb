@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :posts, dependent: :destroy
+  has_many :follow_requests, dependent: :destroy
 
   validates :userid,   length: { maximum: 15 }, uniqueness: true, presence: true
   validates :username, length: { maximum: 50 }, presence: true
