@@ -225,31 +225,31 @@ RSpec.describe "UsersApi", type: :request do
       it "changes image and returns 200 when image extension is jpg" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: 'cat.jpg' }, headers: headers
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpg"), "image/jpg") }, headers: headers
         expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.jpg')
+        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
 
       it "changes image and returns 200 when image extension is gif" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: 'cat.gif' }, headers: headers
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.gif"), "image/gif") }, headers: headers
         expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.gif')
+        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
 
       it "changes image and returns 200 when image extension is png" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: 'cat.png' }, headers: headers
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png") }, headers: headers
         expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to eq('cat.png')
+        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
 
       it "returns 422 when image extension is invalid" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: 'cat.txt' }, headers: headers
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.svg"), "image/svg") }, headers: headers
         expect(response).to have_http_status(422)
       end
     end
