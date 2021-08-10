@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :posts, dependent: :destroy
-  has_many :follow_requests, dependent: :destroy
+  has_many :requests_to, class_name: 'FollowRequest', :foreign_key => 'request_to'
+  has_many :requests_by, class_name: 'FollowRequest', :foreign_key => 'requested_by'
 
   validates :userid,   length: { maximum: 15 }, uniqueness: true, presence: true
   validates :username, length: { maximum: 50 }, presence: true
