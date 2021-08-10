@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "PostsApi", type: :request do
   describe "POST /v1/posts - v1/posts#create - Create new post" do
-    context "when client hasn't logined" do
+    context "when client doesn't have token" do
       it "returns 401" do
         post v1_posts_path, params: {
           "content": 'Hello!',
@@ -12,7 +12,7 @@ RSpec.describe "PostsApi", type: :request do
       end
     end
 
-    context "when client has logined" do
+    context "when client has token" do
       before do
         FactoryBot.create_list(:icon, 5)
         sign_up('test')
@@ -99,6 +99,49 @@ RSpec.describe "PostsApi", type: :request do
           is_locked: true,
         }
         post v1_posts_path, params: params, headers: @headers
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+      end
+    end
+  end
+
+  describe "DELETE /v1/posts - v1/posts#destroy - Delete login user's post" do
+    before do
+      @post_id, @request_headers = sign_up_and_create_a_new_post.values_at(:post_id, :request_headers)
+    end
+
+    context "when client doesn't have token" do
+      it "returns 401" do
+        delete destroy_v1_user_session_path params: @request_headers
+        expect(response).to have_http_status(200)
+
+        delete v1_post_path(@post_id)
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      it "returns 200 and deletes post when try to delete login user's post" do
+        expect do
+          delete v1_post_path(@post_id), headers: @request_headers
+        end.to change(Post.all, :count).by(-1)
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it "returns 400 and deletes post when try to delete not login user's post" do
+        another_user_post_id, another_user_request_headers = sign_up_and_create_a_new_post.values_at(:post_id, :request_headers)
+        expect(response).to have_http_status(200)
+
+        login_user = User.find_by(uid: @request_headers[:uid])
+        login(login_user.username)
+        expect(response).to have_http_status(200)
+
+        request_headers = create_header_from_response(response)
+        expect do
+          delete v1_post_path(another_user_post_id), headers: request_headers
+        end.to change(Post.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end

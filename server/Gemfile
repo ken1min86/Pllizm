@@ -60,3 +60,6 @@ gem 'carrierwave'
 
 # Config to manage constants
 gem 'config'
+
+# Faker to create dummy data
+gem 'faker'
