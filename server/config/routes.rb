@@ -4,5 +4,6 @@ Rails.application.routes.draw do
       registrations: 'v1/auth/registrations',
     }
     resources :posts, only: [:create, :destroy]
+    put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
   end
 end
