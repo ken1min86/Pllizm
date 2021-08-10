@@ -1,5 +1,10 @@
 module V1
   class PostsController < ApplicationController
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # Postに紐づくuser_idに関して、
+  # ログインユーザ以外のidは絶対に返さないこと。
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+
     before_action :authenticate_v1_user!
 
     def create
