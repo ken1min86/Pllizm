@@ -21,6 +21,12 @@ class User < ActiveRecord::Base
   has_many :reverse_of_follow_requests, class_name: 'FollowRequest', :foreign_key => 'request_to'
   has_many :request_followers, through: :follow_requests, source: :requested_by
 
+  has_many :followers, class_name: 'Follower', :foreign_key => 'followed_by'
+  has_many :followings, through: :followers, source: :follow_to
+
+  has_many :reverse_of_followers, class_name: 'Follower', :foreign_key => 'follow_to'
+  has_many :followers, through: :reverse_of_followers, source: :followed_by
+
   validates :userid,   length: { maximum: 15 }, uniqueness: true, presence: true
   validates :username, length: { maximum: 50 }, presence: true
   validates :bio,      length: { maximum: 160 }
