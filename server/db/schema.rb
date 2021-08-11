@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2021_08_10_080057) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["request_to"], name: "index_follow_requests_on_request_to"
+    t.index ["requested_by", "request_to"], name: "index_follow_requests_on_requested_by_and_request_to", unique: true
     t.index ["requested_by"], name: "index_follow_requests_on_requested_by"
   end
 
