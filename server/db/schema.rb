@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_10_080057) do
+ActiveRecord::Schema.define(version: 2021_08_11_022706) do
 
   create_table "follow_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "requested_by"
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(version: 2021_08_10_080057) do
     t.index ["request_to"], name: "index_follow_requests_on_request_to"
     t.index ["requested_by", "request_to"], name: "index_follow_requests_on_requested_by_and_request_to", unique: true
     t.index ["requested_by"], name: "index_follow_requests_on_requested_by"
+  end
+
+  create_table "followers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "followed_by"
+    t.bigint "follow_to"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["follow_to"], name: "index_followers_on_follow_to"
+    t.index ["followed_by", "follow_to"], name: "index_followers_on_followed_by_and_follow_to", unique: true
+    t.index ["followed_by"], name: "index_followers_on_followed_by"
   end
 
   create_table "icons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -75,6 +85,8 @@ ActiveRecord::Schema.define(version: 2021_08_10_080057) do
 
   add_foreign_key "follow_requests", "users", column: "request_to"
   add_foreign_key "follow_requests", "users", column: "requested_by"
+  add_foreign_key "followers", "users", column: "follow_to"
+  add_foreign_key "followers", "users", column: "followed_by"
   add_foreign_key "posts", "icons"
   add_foreign_key "posts", "users"
 end
