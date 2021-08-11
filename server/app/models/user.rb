@@ -10,6 +10,11 @@ class User < ActiveRecord::Base
 
   has_many :posts, dependent: :destroy
 
+  # ****************************************
+  # [フォロリク関連でエラーが出た特に以下を確認]
+  # has_many :follow_requestsの
+  # 名称をfollow_requests以外に変更しないとエラーが発生する可能性あり
+  # ****************************************
   has_many :follow_requests, class_name: 'FollowRequest', :foreign_key => 'requested_by'
   has_many :request_followings, through: :follow_requests, source: :request_to
 
@@ -21,4 +26,22 @@ class User < ActiveRecord::Base
   validates :bio,      length: { maximum: 160 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.freeze
   validates :email, format: { with: VALID_EMAIL_REGEX }, presence: true
+
+  # def request_follow(other_user)
+  #   if self == other_user
+  #     self.errors.add(:request_to, '自分に対するフォローリクエスト')
+  #   elsif self.follow_requests.find_by(requested_by: other_user.id)
+  #     self.errors.add(:request_to, 'すでにフォローリクエスト済み')
+        # 追加：相互フォロアーに対するフォロリクを防ぐ処理
+  #   end
+
+  #   unless self == other_user
+  #     self.follow_requests.find_or_create_by(request_to: other_user.id)
+  #   end
+  # end
+
+  # def reject_follow_request(other_user)
+  #   relationship = self.relationships.find_by(follow_id: other_user.id)
+  #   relationship.destroy if relationship
+  # end
 end
