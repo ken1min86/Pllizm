@@ -65,6 +65,9 @@ RSpec.configure do |config|
   # Include helper for request spec
   config.include RequestSpecHelper
 
+  # Include helper for model spec
+  config.include ModelSpecHelper
+
   # Delete unneccesary images created in test
   config.after(:all) do
     if Rails.env.test?

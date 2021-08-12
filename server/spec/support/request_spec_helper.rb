@@ -14,6 +14,14 @@ module RequestSpecHelper
     }
   end
 
+  def logout(response)
+    delete destroy_v1_user_session_path params: {
+      uid: response.header['uid'],
+      'access-token': response.header['access-token'],
+      client: response.header['client'],
+    }
+  end
+
   def create_header_from_response(response)
     {
       uid: response.header['uid'],
@@ -34,5 +42,13 @@ module RequestSpecHelper
     request_headers = create_header_from_response(response)
     created_post_id = Post.find_by(user_id: get_current_user_by_response(response).id).id
     { post_id: created_post_id, request_headers: request_headers }
+  end
+
+  def get_non_existemt_user_id
+    non_existemt_userid = SecureRandom.alphanumeric(15)
+    while User.find_by(userid: non_existemt_userid)
+      non_existemt_userid = SecureRandom.alphanumeric(15)
+    end
+    return non_existemt_userid
   end
 end
