@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe FollowRequest, type: :model do
   let(:user1) { FactoryBot.create(:user) }
   let(:user2) { FactoryBot.create(:user) }
-  let(:non_existemt_user_id) { get_non_existemt_user_id() }
+  let(:non_existemt_user_id) { get_non_existemt_user_id }
 
   it 'is valid with requested_by and request_to both of them relate to user' do
     follow_request = FollowRequest.new(requested_by: user1.id, request_to: user2.id)

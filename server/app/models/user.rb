@@ -34,10 +34,18 @@ class User < ActiveRecord::Base
   validates :email, format: { with: VALID_EMAIL_REGEX }, presence: true
 
   def request_following?(other_user)
-    self.follow_requesting_users.include?(other_user)
+    follow_requesting_users.include?(other_user)
   end
 
   def following?(other_user)
-    self.followings.include?(other_user)
+    followings.include?(other_user)
+  end
+
+  def mutual_follow(other_user)
+    unless self == other_user
+      follow_relationship = follow_relationships.create(follow_to: other_user.id)
+      reverse_of_follow_relationship = reverse_of_follow_relationships.create(followed_by: other_user.id)
+      [follow_relationship, reverse_of_follow_relationship]
+    end
   end
 end

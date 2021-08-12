@@ -49,6 +49,6 @@ module RequestSpecHelper
     while User.find_by(userid: non_existemt_userid)
       non_existemt_userid = SecureRandom.alphanumeric(15)
     end
-    return non_existemt_userid
+    non_existemt_userid
   end
 end

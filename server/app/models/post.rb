@@ -3,7 +3,6 @@ require 'securerandom'
 class Post < ApplicationRecord
   acts_as_paranoid
   mount_uploader :image, ImageUploader
-  default_scope -> { order(created_at: :desc) }
 
   belongs_to :user
   has_one :icon
