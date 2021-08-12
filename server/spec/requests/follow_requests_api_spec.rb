@@ -43,7 +43,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
-        expect(JSON.parse(response.body)['errors']['title']).to include('レコードが見つかりません')
+        expect(JSON.parse(response.body)['errors']['title']).to include('リクエスト対象のユーザが見つかりません')
       end
 
       it "returns 400 when request_to doesn't relate to user" do
@@ -54,13 +54,11 @@ RSpec.describe "FollowRequestsApi", type: :request do
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
-        expect(JSON.parse(response.body)['errors']['title']).to include('レコードが見つかりません')
+        expect(JSON.parse(response.body)['errors']['title']).to include('リクエスト対象のユーザが見つかりません')
       end
 
       it "returns 400 when client has already requested followings" do
-        post v1_follow_requests_path, params: {
-          request_to: @request_to.id
-        }, headers: @header
+        @requested_by.follow_requests.create(request_to: @request_to.id)
         expect(FollowRequest.where(requested_by: @requested_by.id, request_to: @request_to.id)).to exist
 
         expect do
@@ -74,11 +72,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
       end
 
       it "returns 400 when client has already been requested followings" do
-        login('toru')
-        headers = create_header_from_response(response)
-        post v1_follow_requests_path, params: {
-          request_to: @requested_by.id
-        }, headers: headers
+        @request_to.follow_requests.create(request_to: @requested_by.id)
         expect(FollowRequest.where(requested_by: @request_to.id, request_to: @requested_by.id)).to exist
 
         expect do
@@ -91,8 +85,30 @@ RSpec.describe "FollowRequestsApi", type: :request do
         expect(JSON.parse(response.body)['errors']['title']).to include('フォローリクエストされています')
       end
 
-      it "returns 400 when client has already followed the user"
-      it "returns 400 when client request following to client"
+      it "returns 400 when client has already followed the user" do
+        @requested_by.follow_relationships.create(follow_to: @request_to.id)
+        expect(Follower.where(followed_by: @requested_by.id, follow_to: @request_to.id)).to exist
+
+        expect do
+          post v1_follow_requests_path, params: {
+            request_to: @request_to.id
+          }, headers: @header
+        end.to change(FollowRequest.all, :count).by(0)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+        expect(JSON.parse(response.body)['errors']['title']).to include('すでにフォロー中です')
+      end
+
+      it "returns 400 when client request following to client" do
+        expect do
+          post v1_follow_requests_path, params: {
+            request_to: @requested_by.id
+          }, headers: @header
+        end.to change(FollowRequest.all, :count).by(0)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+        expect(JSON.parse(response.body)['errors']['title']).to include('自身に対するフォローリクエストです')
+      end
     end
   end
 end
