@@ -132,7 +132,7 @@ RSpec.describe "PostsApi", type: :request do
       end
 
       it "returns 400 when try to delete not login user's post" do
-        another_user_post_id, another_user_request_headers = sign_up_and_create_a_new_post.values_at(:post_id, :request_headers)
+        another_user_post_id = sign_up_and_create_a_new_post[:post_id]
         expect(response).to have_http_status(200)
 
         login_user = User.find_by(uid: @request_headers[:uid])
@@ -186,7 +186,7 @@ RSpec.describe "PostsApi", type: :request do
       end
 
       it "returns 400 when try to lock not login user's unlocked post" do
-        another_user_post_id, another_user_request_headers = sign_up_and_create_a_new_post.values_at(:post_id, :request_headers)
+        another_user_post_id = sign_up_and_create_a_new_post[:post_id]
         expect(response).to have_http_status(200)
         expect(Post.find(another_user_post_id).is_locked).to eq(false)
 
@@ -197,7 +197,7 @@ RSpec.describe "PostsApi", type: :request do
       end
 
       it "returns 400 when try to unlock not login user's locked post" do
-        another_user_post_id, another_user_request_headers = sign_up_and_create_a_new_post.values_at(:post_id, :request_headers)
+        another_user_post_id = sign_up_and_create_a_new_post[:post_id]
         expect(response).to have_http_status(200)
 
         Post.find(another_user_post_id).update(is_locked: true)

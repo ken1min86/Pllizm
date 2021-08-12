@@ -8,7 +8,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
         request_to = get_current_user_by_response(response)
         expect do
           post v1_follow_requests_path, params: {
-            request_to: request_to.id
+            request_to: request_to.id,
           }
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(401)
@@ -29,7 +29,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
         expect(FollowRequest.where(requested_by: @requested_by.id, request_to: @request_to.id)).not_to exist
 
         post v1_follow_requests_path, params: {
-          request_to: @request_to.id
+          request_to: @request_to.id,
         }, headers: @header
 
         expect(FollowRequest.where(requested_by: @requested_by.id, request_to: @request_to.id)).to exist
@@ -49,8 +49,8 @@ RSpec.describe "FollowRequestsApi", type: :request do
       it "returns 400 when request_to doesn't relate to user" do
         expect do
           post v1_follow_requests_path, params: {
-            request_to: get_non_existemt_user_id
-          },headers: @header
+            request_to: get_non_existemt_user_id,
+          }, headers: @header
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
@@ -63,8 +63,8 @@ RSpec.describe "FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: @request_to.id
-          },headers: @header
+            request_to: @request_to.id,
+          }, headers: @header
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
@@ -77,8 +77,8 @@ RSpec.describe "FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: @request_to.id
-          },headers: @header
+            request_to: @request_to.id,
+          }, headers: @header
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
@@ -91,7 +91,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: @request_to.id
+            request_to: @request_to.id,
           }, headers: @header
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
@@ -102,7 +102,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
       it "returns 400 when client request following to client" do
         expect do
           post v1_follow_requests_path, params: {
-            request_to: @requested_by.id
+            request_to: @requested_by.id,
           }, headers: @header
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)

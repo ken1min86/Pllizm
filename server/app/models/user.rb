@@ -34,10 +34,10 @@ class User < ActiveRecord::Base
   validates :email, format: { with: VALID_EMAIL_REGEX }, presence: true
 
   def request_following?(other_user)
-    self.follow_requesting_users.include?(other_user)
+    follow_requesting_users.include?(other_user)
   end
 
   def following?(other_user)
-    self.followings.include?(other_user)
+    followings.include?(other_user)
   end
 end

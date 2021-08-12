@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "UsersApi", type: :request do
   describe "POST /v1/auth - v1/auth/registrations#create - Signup" do
-    it 'returns 200 with password, password_confirmation and valid email and password equals to password_confirmation' do
+    it 'returns 200 with password, password_confirmation and email and password equals to password_confirmation' do
       expect do
         sign_up('test')
       end.to change(User.all, :count).by(1)
@@ -138,7 +138,7 @@ RSpec.describe "UsersApi", type: :request do
       }
       expect(User.where(email: 'test@gmail.com').count).to eq 0
       expect(User.with_deleted.where(email: 'test@gmail.com').count).to eq 1
-      expect(User.all.count).to eq (count - 1)
+      expect(User.all.count).to eq(count - 1)
       expect(response).to have_http_status(200)
     end
   end
@@ -226,7 +226,8 @@ RSpec.describe "UsersApi", type: :request do
       it "changes image and returns 200 when image extension is jpg" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpg"), "image/jpg") }, headers: headers
+        image_path = Rails.root.join("db/icons/Account-icon1.jpg")
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/jpg") }, headers: headers
         expect(response).to have_http_status(200)
         expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
@@ -234,7 +235,8 @@ RSpec.describe "UsersApi", type: :request do
       it "changes image and returns 200 when image extension is gif" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.gif"), "image/gif") }, headers: headers
+        image_path = Rails.root.join("db/icons/Account-icon1.gif")
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/gif") }, headers: headers
         expect(response).to have_http_status(200)
         expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
@@ -242,7 +244,8 @@ RSpec.describe "UsersApi", type: :request do
       it "changes image and returns 200 when image extension is png" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png") }, headers: headers
+        image_path = Rails.root.join("db/icons/Account-icon1.png")
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/png") }, headers: headers
         expect(response).to have_http_status(200)
         expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
       end
@@ -250,7 +253,8 @@ RSpec.describe "UsersApi", type: :request do
       it "returns 422 when image extension is invalid" do
         sign_up('test')
         headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.svg"), "image/svg") }, headers: headers
+        image_path = Rails.root.join("db/icons/Account-icon1.svg")
+        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/svg") }, headers: headers
         expect(response).to have_http_status(422)
       end
     end
