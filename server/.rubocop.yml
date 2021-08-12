@@ -15,3 +15,6 @@ AllCops:
 
 Rails:
   Enabled: true
+
+LineLength:
+  Max: 130

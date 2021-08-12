@@ -8,7 +8,7 @@ module V1
     before_action :authenticate_v1_user!
 
     def create
-      post = Post.new(post_params_when_create)
+      post = Post.new(post_params)
       if post.save
         render json: post, status: :ok
       else
@@ -38,7 +38,7 @@ module V1
 
     private
 
-    def post_params_when_create
+    def post_params
       params.permit(:content, :image, :is_locked).merge(user_id: current_v1_user.id)
     end
   end

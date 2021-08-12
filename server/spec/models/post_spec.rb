@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  before :all do
+  before do
     FactoryBot.create_list(:icon, 10)
   end
 
@@ -16,27 +16,32 @@ RSpec.describe Post, type: :model do
   end
 
   it "is valid when image's extension is jpg" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpg"), "image/jpg"))
+    image_path = Rails.root.join("db/icons/Account-icon1.jpg")
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(image_path, "image/jpg"))
     expect(post).to be_valid
   end
 
   it "is valid when image's extension is png" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/test_icons/Account-icon1.png"), "image/png"))
+    image_path = Rails.root.join("spec/factories/test_icons/Account-icon1.png")
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(image_path, "image/png"))
     expect(post).to be_valid
   end
 
   it "is valid when image's extension is gif" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.gif"), "image/gif"))
+    image_path = Rails.root.join("db/icons/Account-icon1.gif")
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(image_path, "image/gif"))
     expect(post).to be_valid
   end
 
   it "is valid when image's extension is jpeg" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.jpeg"), "image/jpeg"))
+    image_path = Rails.root.join("db/icons/Account-icon1.jpeg")
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(image_path, "image/jpeg"))
     expect(post).to be_valid
   end
 
   it "is invalid when image's extension isn't jpg or png or gif or jpeg" do
-    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.svg"), "image/svg"))
+    image_path = Rails.root.join("db/icons/Account-icon1.svg")
+    post = FactoryBot.build(:post, user_id: user.id, image: Rack::Test::UploadedFile.new(image_path, "image/svg"))
     expect(post).to be_invalid
   end
 
