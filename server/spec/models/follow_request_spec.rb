@@ -32,7 +32,7 @@ RSpec.describe FollowRequest, type: :model do
     expect(follow_request).to be_invalid
   end
 
-  it 'returns 200 and deletes follow request when user relates to request_by is deleted' do
+  it 'returns 200 and deletes follow request when user relates to requested_by is deleted' do
     user1.follow_requests.create(request_to: user2.id)
     expect(FollowRequest.where(requested_by: user1.id, request_to: user2.id)).to exist
 
@@ -41,10 +41,10 @@ RSpec.describe FollowRequest, type: :model do
   end
 
   it 'returns 200 and deletes follow request when user relates to request_to is deleted' do
-      user1.follow_requests.create(request_to: user2.id)
-      expect(FollowRequest.where(requested_by: user1.id, request_to: user2.id)).to exist
+    user2.follow_requests.create(request_to: user1.id)
+    expect(FollowRequest.where(requested_by: user2.id, request_to: user1.id)).to exist
 
-      user2.destroy
-      expect(FollowRequest.where(requested_by: user1.id, request_to: user2.id)).not_to exist
+    user2.destroy
+    expect(FollowRequest.where(requested_by: user2.id, request_to: user1.id)).not_to exist
   end
 end
