@@ -35,12 +35,4 @@ RSpec.describe Follower, type: :model do
     follower = Follower.new(followed_by: user.id, follow_to: non_existemt_user_id)
     expect(follower).to be_invalid
   end
-
-  def get_non_existemt_user_id
-    non_existemt_userid = SecureRandom.alphanumeric(15)
-    while User.find_by(userid: non_existemt_userid)
-      non_existemt_userid = SecureRandom.alphanumeric(15)
-    end
-    non_existemt_userid
-  end
 end
