@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :posts, only: [:create, :destroy]
     put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
     post '/follow_requests', to: 'follow_requests#create', as: :follow_requests
+    delete '/follow_requests', to: 'follow_requests#destroy', as: :follow_request
     resources :followers, only: [:create]
   end
 end
