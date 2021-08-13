@@ -22,13 +22,23 @@ module V1
       end
     end
 
-    def destroy
+    def destroy_follow_requests_to_me
       follow_request = FollowRequest.find_by(requested_by: params[:requested_by], request_to: current_v1_user.id)
       if follow_request
         follow_request.destroy
         render json: follow_request, status: :ok
       else
         render_json_bad_request_with_custom_errors('フォローリクエストされていません', 'フォローリクエストされていないユーザに対してフォロー拒否できません')
+      end
+    end
+
+    def destroy_follow_requests_by_me
+      follow_request = FollowRequest.find_by(requested_by: current_v1_user.id, request_to: params[:request_to] )
+      if follow_request
+        follow_request.destroy
+        render json: follow_request, status: :ok
+      else
+        render_json_bad_request_with_custom_errors('フォローリクエストしていません', 'フォローリクエストしていないユーザに対してフォローリクエスト取り下げはできません')
       end
     end
 
