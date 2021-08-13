@@ -13,8 +13,8 @@ AllCops:
     - 'vendor/**/*'
     - 'path/ruby'
 
+Metrics/LineLength:
+  Max: 130
+
 Rails:
   Enabled: true
-
-LineLength:
-  Max: 130
