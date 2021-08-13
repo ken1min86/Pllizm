@@ -111,4 +111,52 @@ RSpec.describe "FollowRequestsApi", type: :request do
       end
     end
   end
+
+  describe "DELETE /v1/follow_requests - v1/follow_requests#destroy - Deny follow request" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        user = FactoryBot.create(:user)
+        expect do
+          delete v1_follow_request_path, params: {
+            requested_by: user.id,
+          }
+        end.to change(FollowRequest.all, :count).by(0)
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      let(:request_follow_user) { FactoryBot.create(:user) }
+
+      before do
+        sign_up(Faker::Name.first_name)
+        @client_user = get_current_user_by_response(response)
+        @headers = create_header_from_response(response)
+      end
+
+      it 'returns 200 and delete follow request' do
+        request_follow_user.follow_requests.create(request_to: @client_user.id)
+        expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).to exist
+
+        delete v1_follow_request_path, params: {
+          requested_by: request_follow_user.id,
+        }, headers: @headers
+        expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).not_to exist
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it "returns 400 when client hasn't been requested follow" do
+        expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).not_to exist
+
+        delete v1_follow_request_path, params: {
+          requested_by: request_follow_user.id,
+        }, headers: @headers
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+        expect(JSON.parse(response.body)['errors']['title']).to include('フォローリクエストされていません')
+      end
+    end
+  end
 end
