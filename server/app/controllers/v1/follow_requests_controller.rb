@@ -22,6 +22,16 @@ module V1
       end
     end
 
+    def destroy
+      follow_request = FollowRequest.find_by(requested_by: params[:requested_by], request_to: current_v1_user.id)
+      if follow_request
+        follow_request.destroy
+        render json: follow_request, status: :ok
+      else
+        render_json_bad_request_with_custom_errors('フォローリクエストされていません', 'フォローリクエストされていないユーザに対してフォロー拒否できません')
+      end
+    end
+
     private
 
     def render_json_bad_request_with_custom_errors(title, detail)
