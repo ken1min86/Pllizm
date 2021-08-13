@@ -112,12 +112,12 @@ RSpec.describe "FollowRequestsApi", type: :request do
     end
   end
 
-  describe "DELETE /v1/follow_requests - v1/follow_requests#destroy - Deny follow request" do
+  describe "DELETE /v1/follow_requests_to_me - v1/follow_requests#destroy_follow_request_to_me - Deny follow request" do
     context "when client doesn't have token" do
       it "returns 401" do
         user = FactoryBot.create(:user)
         expect do
-          delete v1_follow_request_path, params: {
+          delete v1_follow_request_to_me_path, params: {
             requested_by: user.id,
           }
         end.to change(FollowRequest.all, :count).by(0)
@@ -139,7 +139,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
         request_follow_user.follow_requests.create(request_to: @client_user.id)
         expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).to exist
 
-        delete v1_follow_request_path, params: {
+        delete v1_follow_request_to_me_path, params: {
           requested_by: request_follow_user.id,
         }, headers: @headers
         expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).not_to exist
@@ -150,7 +150,7 @@ RSpec.describe "FollowRequestsApi", type: :request do
       it "returns 400 when client hasn't been requested follow" do
         expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: @client_user.id)).not_to exist
 
-        delete v1_follow_request_path, params: {
+        delete v1_follow_request_to_me_path, params: {
           requested_by: request_follow_user.id,
         }, headers: @headers
         expect(response).to have_http_status(400)

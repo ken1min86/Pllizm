@@ -22,7 +22,7 @@ module V1
       end
     end
 
-    def destroy
+    def destroy_follow_request_to_me
       follow_request = FollowRequest.find_by(requested_by: params[:requested_by], request_to: current_v1_user.id)
       if follow_request
         follow_request.destroy
