@@ -33,7 +33,7 @@ module V1
     end
 
     def destroy_follow_requests_by_me
-      follow_request = FollowRequest.find_by(requested_by: current_v1_user.id, request_to: params[:request_to] )
+      follow_request = FollowRequest.find_by(requested_by: current_v1_user.id, request_to: params[:request_to])
       if follow_request
         follow_request.destroy
         render json: follow_request, status: :ok
