@@ -1,269 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "UsersApi", type: :request do
-  describe "POST /v1/auth - v1/auth/registrations#create - Signup" do
-    it 'returns 200 with password, password_confirmation and email and password equals to password_confirmation' do
-      expect do
-        sign_up('test')
-      end.to change(User.all, :count).by(1)
-
-      sign_upped_user = User.find_by(email: 'test@gmail.com')
-      expect(sign_upped_user.userid.length).to eq 15
-      expect(sign_upped_user.username).to      eq 'test'
-      expect(sign_upped_user.email).to         eq 'test@gmail.com'
-      expect(sign_upped_user.need_description_about_lock).to eq true
-      expect(response).to have_http_status(200)
-    end
-
-    it 'returns 422 without password' do
-      post v1_user_registration_path, params: {
-        password_confirmation: 'password123',
-        email: 'tester@gmail.com',
-      }
-      expect(response).to have_http_status(422)
-    end
-
-    it 'returns 404 without password_confirmation' do
-      post v1_user_registration_path, params: {
-        password: 'password123',
-        email: 'tester@gmail.com',
-      }
-      expect(response).to have_http_status(422)
-    end
-
-    it 'returns 422 without email' do
-      post v1_user_registration_path, params: {
-        password: 'password123',
-        password_confirmation: 'password123',
-      }
-      expect(response).to have_http_status(422)
-    end
-
-    it "returns 422 when password doesn't equal to password_confirmation" do
-      post v1_user_registration_path, params: {
-        password: 'password123',
-        password_confirmation: 'password1234',
-        email: 'tester@gmail.com',
-      }
-      expect(response).to have_http_status(422)
-    end
-
-    it 'returns 422 when email is invalid' do
-      post v1_user_registration_path, params: {
-        password: 'password123',
-        password_confirmation: 'password123',
-        email: 'tester.gmail.com',
-      }
-      expect(response).to have_http_status(422)
-    end
-
-    it 'returns 200 and is set different userid from another user' do
-      sign_up('test1')
-      sign_up('test2')
-      test1_userid = User.find_by(email: 'test1@gmail.com')
-      test2_userid = User.find_by(email: 'test2@gmail.com')
-      expect(response).to have_http_status(200)
-      expect(test1_userid).not_to eq(test2_userid)
-    end
-  end
-
-  describe "POST /v1/auth/sign_in - devise_token_auth/sessions#create - Login" do
-    before do
-      sign_up('test')
-    end
-
-    it 'returns 200 with correct email and password / Login' do
-      post v1_user_session_path, params: {
-        email: 'test@gmail.com',
-        password: 'password123',
-      }
-      expect(response).to have_http_status(200)
-    end
-
-    it 'returns 401 witout email' do
-      post v1_user_session_path, params: {
-        password: 'password123',
-      }
-      expect(response).to have_http_status(401)
-    end
-
-    it 'returns 401 witout password' do
-      post v1_user_session_path, params: {
-        email: 'test@gmail.com',
-      }
-      expect(response).to have_http_status(401)
-    end
-
-    it 'returns 401 with incorrect email' do
-      post v1_user_session_path, params: {
-        email: 'notregisteredmail@gmail.com',
-        password: 'password123',
-      }
-      expect(response).to have_http_status(401)
-    end
-
-    it 'returns 401 with correct email and incorrect password' do
-      post v1_user_session_path, params: {
-        email: 'test@gmail.com',
-        password: 'password456',
-      }
-      expect(response).to have_http_status(401)
-    end
-  end
-
-  describe "DELETE /v1/auth/sign_out - devise_token_auth/sessions#destroy - Logout" do
-    it 'returns 200' do
-      sign_up('test')
-      login('test')
-      delete destroy_v1_user_session_path params: {
-        uid: response.header['uid'],
-        'access-token': response.header['access-token'],
-        client: response.header['client'],
-      }
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  describe "DELETE /v1/auth - v1/auth/registrations#destroy - Delete account" do
-    it 'logically deletes account and returns 200' do
-      sign_up('test')
-      login('test')
-      count = User.all.count
-      expect(User.where(email: 'test@gmail.com').count).to eq 1
-
-      delete v1_user_registration_path params: {
-        uid: response.header['uid'],
-        'access-token': response.header['access-token'],
-        client: response.header['client'],
-      }
-      expect(User.where(email: 'test@gmail.com').count).to eq 0
-      expect(User.with_deleted.where(email: 'test@gmail.com').count).to eq 1
-      expect(User.all.count).to eq(count - 1)
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  describe "PUT /v1/auth/password - devise_token_auth/passwords#update - Change password" do
-    it 'changes password and returns 200' do
-      sign_up('test')
-      headers = create_header_from_response(response)
-      params = {
-        password: 'new_password',
-        password_confirmation: 'new_password',
-      }
-      put v1_user_password_path, params: params, headers: headers
-      expect(response).to have_http_status(200)
-
-      post v1_user_session_path, params: {
-        email: 'test@gmail.com',
-        password: 'new_password',
-      }
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  describe "PUT /v1/auth - v1/auth/registrations#update - Change users info" do
-    context "when try to change userid" do
-      before do
-        sign_up('test')
-        @headers = create_header_from_response(response)
-      end
-
-      it "doesn't change userid and returns 422 when userid has 3 characters" do
-        put v1_user_registration_path, params: { userid: 'a' * 3 }, headers: @headers
-        expect(response).to have_http_status(422)
-      end
-
-      it 'changes userid and returns 200 when userid has 4 characters' do
-        put v1_user_registration_path, params: { userid: 'a' * 4 }, headers: @headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 4)
-      end
-
-      it 'changes userid and returns 200 when userid has 15 characters' do
-        put v1_user_registration_path, params: { userid: 'a' * 15 }, headers: @headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').userid).to eq('a' * 15)
-      end
-
-      it "doesn't change userid and returns 422 when userid has 16 characters" do
-        put v1_user_registration_path, params: { userid: 'a' * 16 }, headers: @headers
-        expect(response).to have_http_status(422)
-      end
-    end
-
-    context "when try to change email" do
-      it 'changes email and returns 200' do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { email: 'new_email@gmail.com' }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'new_email@gmail.com').email).to eq('new_email@gmail.com')
-      end
-    end
-
-    context "when try to change bio" do
-      it 'changes bio and returns 200' do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { bio: '猫が好きです。' }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').bio).to eq('猫が好きです。')
-      end
-    end
-
-    context "when try to change username" do
-      it "changes username and returns 200" do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        put v1_user_registration_path, params: { username: '田中卓志' }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').username).to eq('田中卓志')
-      end
-    end
-
-    context "when try to change image" do
-      it "changes image and returns 200 when image extension is jpg" do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        image_path = Rails.root.join("db/icons/Account-icon1.jpg")
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/jpg") }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
-      end
-
-      it "changes image and returns 200 when image extension is gif" do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        image_path = Rails.root.join("db/icons/Account-icon1.gif")
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/gif") }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
-      end
-
-      it "changes image and returns 200 when image extension is png" do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        image_path = Rails.root.join("db/icons/Account-icon1.png")
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/png") }, headers: headers
-        expect(response).to have_http_status(200)
-        expect(User.find_by(email: 'test@gmail.com').image).to be_truthy
-      end
-
-      it "returns 422 when image extension is invalid" do
-        sign_up('test')
-        headers = create_header_from_response(response)
-        image_path = Rails.root.join("db/icons/Account-icon1.svg")
-        put v1_user_registration_path, params: { image: Rack::Test::UploadedFile.new(image_path, "image/svg") }, headers: headers
-        expect(response).to have_http_status(422)
-      end
-    end
-  end
-
-  describe "PUT /v1/user/disable_lock_description - v1/users#disable_lock_description - Disable lock description" do
+  describe "GET /v1/mutual_follow_users - v1/mutual_follow_users#index - Get mutual follow users" do
     context "when client doesn't have token" do
       it "returns 401" do
-        put v1_user_disableLockDescription_path
+        get v1_mutual_follow_users_path
         expect(response).to have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
@@ -272,29 +13,170 @@ RSpec.describe "UsersApi", type: :request do
     context "when client has token" do
       before do
         sign_up(Faker::Name.first_name)
-        @request_headers = create_header_from_response(response)
-        @current_user = get_current_user_by_response(response)
+        @client_user = get_current_user_by_response(response)
+        @headers = create_header_from_response(response)
       end
 
-      it 'returns 200 and change false when need_description_about_lock is true' do
-        expect(@current_user.need_description_about_lock).to eq(true)
+      let(:mutual_follow_user1) { create_mutual_follow_user(@client_user) }
+      let(:mutual_follow_user2) { create_mutual_follow_user(@client_user) }
 
-        put v1_user_disableLockDescription_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
+      it 'returns 200 and mutual follow users when client has some mutual follow users' do
+        # current_userのフォロアーが2人いることを確認
+        expect(Follower.where(followed_by: @client_user.id, follow_to: mutual_follow_user1.id)).to exist
+        expect(Follower.where(followed_by: @client_user.id, follow_to: mutual_follow_user2.id)).to exist
+        expect(Follower.where(followed_by: @client_user.id).length).to eq(2)
+
+        # API
+        get v1_mutual_follow_users_path, headers: @headers
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+
+        # レスポンスボディのデータがフォロアー2人分で、仕様書通りのカラムのみ返していることを確認
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(2)
+        expect(response_body[0].length).to eq(6)
+        expect(response_body[1].length).to eq(6)
+        expect(response_body[0]).to include(
+          id: mutual_follow_user1.id,
+          userid: mutual_follow_user1.userid,
+          username: mutual_follow_user1.username,
+          image: mutual_follow_user1.image.url,
+          bio: mutual_follow_user1.bio,
+          need_description_about_lock: mutual_follow_user1.need_description_about_lock
+        )
+        expect(response_body[1]).to include(
+          id: mutual_follow_user2.id,
+          userid: mutual_follow_user2.userid,
+          username: mutual_follow_user2.username,
+          image: mutual_follow_user2.image.url,
+          bio: mutual_follow_user2.bio,
+          need_description_about_lock: mutual_follow_user2.need_description_about_lock
+        )
       end
 
-      it 'returns 200 and keep false when need_description_about_lock is false' do
-        @current_user.update(need_description_about_lock: false)
-        expect(@current_user.need_description_about_lock).to eq(false)
+      it 'returns 200 and mutual follow user when client has a mutual follow user' do
+        # current_userのフォロアーが1人いることを確認
+        expect(Follower.where(followed_by: @client_user.id, follow_to: mutual_follow_user1.id)).to exist
+        expect(Follower.where(followed_by: @client_user.id).length).to eq(1)
 
-        put v1_user_disableLockDescription_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
+        # API
+        get v1_mutual_follow_users_path, headers: @headers
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+
+        # レスポンスボディのデータがフォロアー1人分で、仕様書通りのカラムのみ返していることを確認
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(1)
+        expect(response_body[0].length).to eq(6)
+        expect(response_body[0]).to include(
+          id: mutual_follow_user1.id,
+          userid: mutual_follow_user1.userid,
+          username: mutual_follow_user1.username,
+          image: mutual_follow_user1.image.url,
+          bio: mutual_follow_user1.bio,
+          need_description_about_lock: mutual_follow_user1.need_description_about_lock
+        )
+      end
+
+      it "returns 200 and no users when client has no mutual follow users" do
+        expect(Follower.where(followed_by: @client_user.id)).not_to exist
+
+        get v1_mutual_follow_users_path, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(0)
+      end
+    end
+  end
+
+  describe "GET /v1/follow_requested_by_me_users - v1/users#index_of_users_follow_requested_by_me - Get users requested by me" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_follow_requested_by_me_users_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        sign_up(Faker::Name.first_name)
+        @client_user = get_current_user_by_response(response)
+        @headers = create_header_from_response(response)
+      end
+
+      let(:follow_requested_user1) { create_follow_requested_user_by_argument_user(@client_user) }
+      let(:follow_requested_user2) { create_follow_requested_user_by_argument_user(@client_user) }
+
+      it 'returns 200 and follow requested users when client has some follow requested users' do
+        # current_userがフォローリクエストしているユーザが2人いることを確認
+        expect(FollowRequest.where(requested_by: @client_user.id, request_to: follow_requested_user1.id)).to exist
+        expect(FollowRequest.where(requested_by: @client_user.id, request_to: follow_requested_user2.id)).to exist
+        expect(FollowRequest.where(requested_by: @client_user.id).length).to eq(2)
+
+        # API
+        get v1_follow_requested_by_me_users_path, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+
+        # レスポンスボディのデータがフォローリクエストしているユーザ2人分で、仕様書通りのカラムのみ返していることを確認
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(2)
+        expect(response_body[0].length).to eq(6)
+        expect(response_body[1].length).to eq(6)
+        expect(response_body[0]).to include(
+          id: follow_requested_user1.id,
+          userid: follow_requested_user1.userid,
+          username: follow_requested_user1.username,
+          image: follow_requested_user1.image.url,
+          bio: follow_requested_user1.bio,
+          need_description_about_lock: follow_requested_user1.need_description_about_lock
+        )
+        expect(response_body[1]).to include(
+          id: follow_requested_user2.id,
+          userid: follow_requested_user2.userid,
+          username: follow_requested_user2.username,
+          image: follow_requested_user2.image.url,
+          bio: follow_requested_user2.bio,
+          need_description_about_lock: follow_requested_user2.need_description_about_lock
+        )
+      end
+
+      it 'returns 200 and follow requested user when client has a follow requested user' do
+        # current_userがフォローリクエストしているユーザが1人いることを確認
+        expect(FollowRequest.where(requested_by: @client_user.id, request_to: follow_requested_user1.id)).to exist
+        expect(FollowRequest.where(requested_by: @client_user.id).length).to eq(1)
+
+        # API
+        get v1_follow_requested_by_me_users_path, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+
+        # レスポンスボディのデータがフォローリクエストしているユーザ1人分で、仕様書通りのカラムのみ返していることを確認
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(1)
+        expect(response_body[0].length).to eq(6)
+        expect(response_body[0]).to include(
+          id: follow_requested_user1.id,
+          userid: follow_requested_user1.userid,
+          username: follow_requested_user1.username,
+          image: follow_requested_user1.image.url,
+          bio: follow_requested_user1.bio,
+          need_description_about_lock: follow_requested_user1.need_description_about_lock
+        )
+      end
+
+      it "returns 200 and no users when client has no follow requested users" do
+        expect(FollowRequest.where(requested_by: @client_user.id)).not_to exist
+
+        get v1_follow_requested_by_me_users_path, headers: @headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+
+        response_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response_body.length).to eq(0)
       end
     end
   end
