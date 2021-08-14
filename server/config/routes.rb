@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     }
     put '/user/disable_lock_description', to: 'users#disable_lock_description', as: :user_disableLockDescription
     get '/follow_requested_by_me_users', to: 'users#index_of_users_follow_requested_by_me', as: :follow_requested_by_me_users
+    get '/mutual_follow_users', to: 'users#index_of_mutual_follow_users', as: :mutual_follow_users
     resources :posts, only: [:create, :destroy]
     put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
     post '/follow_requests', to: 'follow_requests#create', as: :follow_requests
@@ -12,6 +13,5 @@ Rails.application.routes.draw do
     delete '/follow_requests_by_me', to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
     resources :followers, only: [:create]
     delete '/followers', to: 'followers#destroy', as: :follower
-    resources :mutual_follow_users, only: [:index]
   end
 end

@@ -7,14 +7,28 @@ module V1
       render json: current_v1_user, status: :ok
     end
 
+    def index_of_mutual_follow_users
+      mutual_follow_users = current_v1_user.followings
+      # mutual_follow_usersのうち、特定のカラムだけを抽出して配列に代入する
+      extracted_mutual_follow_users = extract_disclosureable_culumns_from_users_array(mutual_follow_users)
+      render json: extracted_mutual_follow_users, status: :ok
+    end
+
     def index_of_users_follow_requested_by_me
       follow_requested_users = current_v1_user.follow_requesting_users
       # follow_requested_usersのうち、特定のカラムだけを抽出して配列に代入する
-      extracted_follow_requested_users = []
-      follow_requested_users.each do |follow_requested_user|
-        hashed_follow_requested_user = follow_requested_user.attributes
-        hashed_follow_requested_user['image'] = follow_requested_user.image.url
-        extracted_follow_requested_user = hashed_follow_requested_user.slice(
+      extracted_follow_requested_users = extract_disclosureable_culumns_from_users_array(follow_requested_users)
+      render json: extracted_follow_requested_users, status: :ok
+    end
+
+    private
+
+    def extract_disclosureable_culumns_from_users_array(users_array)
+      extracted_users = []
+      users_array.each do |user|
+        hashed_user = user.attributes
+        hashed_user['image'] = user.image.url
+        extracted_user = hashed_user.slice(
           'id',
           'userid',
           'username',
@@ -22,9 +36,9 @@ module V1
           'bio',
           'need_description_about_lock'
         )
-        extracted_follow_requested_users.push(extracted_follow_requested_user)
+        extracted_users.push(extracted_user)
       end
-      render json: extracted_follow_requested_users, status: :ok
+      extracted_users
     end
   end
 end
