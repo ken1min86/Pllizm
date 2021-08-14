@@ -5,7 +5,7 @@ module V1
     def create
       be_requested_to_follow_user = User.find_by(id: params[:request_to])
       follow_request = FollowRequest.new(requested_by: current_v1_user.id, request_to: params[:request_to])
-      if be_requested_to_follow_user.nil?
+      if be_requested_to_follow_user.blank?
         render_json_bad_request_with_custom_errors('リクエスト対象のユーザが見つかりません', 'request_toのIDと一致するユーザが見つかりません')
       elsif current_v1_user.request_following?(be_requested_to_follow_user)
         render json: { errors: { title: 'すでにフォローリクエスト済みです', detail: 'すでにフォローリクエストをしています' } }, status: :bad_request
@@ -40,12 +40,6 @@ module V1
       else
         render_json_bad_request_with_custom_errors('フォローリクエストしていません', 'フォローリクエストしていないユーザに対してフォローリクエスト取り下げはできません')
       end
-    end
-
-    private
-
-    def render_json_bad_request_with_custom_errors(title, detail)
-      render json: { errors: { title: title, detail: detail } }, status: :bad_request
     end
   end
 end
