@@ -64,4 +64,10 @@ module RequestSpecHelper
     user.follow_requests.create(request_to: follow_requested_user.id)
     follow_requested_user
   end
+
+  def create_user_to_request_follow_to_argument_user(user)
+    follow_request_user = FactoryBot.create(:user)
+    follow_request_user.follow_requests.create(request_to: user.id)
+    follow_request_user
+  end
 end
