@@ -5,7 +5,7 @@ module V1
     def create
       follow_request = FollowRequest.find_by(requested_by: params[:follow_to], request_to: current_v1_user.id)
       follow_user = User.find(params[:follow_to])
-      if follow_request
+      unless follow_request.blank?
         follow_request.destroy
         followers = current_v1_user.mutual_follow(follow_user)
         render json: followers, status: :ok
