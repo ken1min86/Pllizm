@@ -136,6 +136,9 @@ GEM
     faker (2.18.0)
       i18n (>= 1.6, < 2)
     ffi (1.15.3)
+    fuubar (2.5.1)
+      rspec-core (~> 3.0)
+      ruby-progressbar (~> 1.4)
     globalid (0.5.1)
       activesupport (>= 5.0)
     i18n (1.8.10)
@@ -291,6 +294,7 @@ DEPENDENCIES
   devise_token_auth
   factory_bot_rails (~> 4.10.0)
   faker
+  fuubar
   jsonapi-rspec
   listen (~> 3.3)
   mysql2 (~> 0.5)
