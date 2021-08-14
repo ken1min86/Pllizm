@@ -25,11 +25,5 @@ module V1
         render json: [follow_relationship, reverse_of_follow_relationship], status: :ok
       end
     end
-
-    private
-
-    def render_json_bad_request_with_custom_errors(title, detail)
-      render json: { errors: { title: title, detail: detail } }, status: :bad_request
-    end
   end
 end

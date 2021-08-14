@@ -41,11 +41,5 @@ module V1
         render_json_bad_request_with_custom_errors('フォローリクエストしていません', 'フォローリクエストしていないユーザに対してフォローリクエスト取り下げはできません')
       end
     end
-
-    private
-
-    def render_json_bad_request_with_custom_errors(title, detail)
-      render json: { errors: { title: title, detail: detail } }, status: :bad_request
-    end
   end
 end
