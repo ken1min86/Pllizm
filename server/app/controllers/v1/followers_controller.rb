@@ -5,12 +5,12 @@ module V1
     def create
       follow_request = FollowRequest.find_by(requested_by: params[:follow_to], request_to: current_v1_user.id)
       follow_user = User.find(params[:follow_to])
-      unless follow_request.blank?
+      if follow_request.blank?
+        render_json_bad_request_with_custom_errors('フォローリクエストされていません', 'フォローリクエストされていないユーザに対してフォロー承認できません')
+      else
         follow_request.destroy
         followers = current_v1_user.mutual_follow(follow_user)
         render json: followers, status: :ok
-      else
-        render_json_bad_request_with_custom_errors('フォローリクエストされていません', 'フォローリクエストされていないユーザに対してフォロー承認できません')
       end
     end
 
