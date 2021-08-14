@@ -11,5 +11,6 @@ Rails.application.routes.draw do
     delete '/follow_requests_by_me', to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
     resources :followers, only: [:create]
     delete '/followers', to: 'followers#destroy', as: :follower
+    resources :mutual_follow_users, only: [:index]
   end
 end

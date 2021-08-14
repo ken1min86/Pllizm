@@ -63,3 +63,6 @@ gem 'config'
 
 # Faker to create dummy data
 gem 'faker'
+
+# jsonapi-rspec to use matcher for api test
+gem 'jsonapi-rspec'
