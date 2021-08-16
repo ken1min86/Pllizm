@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_11_022706) do
+ActiveRecord::Schema.define(version: 2021_08_16_021059) do
 
   create_table "follow_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "requested_by"
@@ -52,6 +52,17 @@ ActiveRecord::Schema.define(version: 2021_08_11_022706) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
+  create_table "tree_paths", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "ancestor", null: false
+    t.string "descendant", null: false
+    t.integer "depth", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ancestor", "descendant"], name: "index_tree_paths_on_ancestor_and_descendant", unique: true
+    t.index ["ancestor"], name: "index_tree_paths_on_ancestor"
+    t.index ["descendant"], name: "index_tree_paths_on_descendant"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", null: false
@@ -89,4 +100,6 @@ ActiveRecord::Schema.define(version: 2021_08_11_022706) do
   add_foreign_key "followers", "users", column: "followed_by"
   add_foreign_key "posts", "icons"
   add_foreign_key "posts", "users"
+  add_foreign_key "tree_paths", "posts", column: "ancestor"
+  add_foreign_key "tree_paths", "posts", column: "descendant"
 end

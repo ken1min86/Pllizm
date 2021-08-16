@@ -14,6 +14,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'jsonapi/rspec'
+require 'simplecov'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -97,4 +98,13 @@ RSpec.configure do |config|
   # Setting to use jsonapi-rspec
   config.include JSONAPI::RSpec
   config.jsonapi_indifferent_hash = true
+
+  ENV['RAILS_ENV'] = 'test'
+
+  if ENV['CIRCLE_ARTIFACTS']
+    dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
+    SimpleCov.coverage_dir(dir)
+  end
+
+  SimpleCov.start
 end
