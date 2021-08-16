@@ -66,3 +66,9 @@ gem 'faker'
 
 # jsonapi-rspec to use matcher for api test
 gem 'jsonapi-rspec'
+
+# fuubar for formatting RSpec progress bar
+gem 'fuubar'
+
+# Simplecov to calculate test coverage
+gem 'simplecov', require: false, group: :test
