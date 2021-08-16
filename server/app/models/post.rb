@@ -7,6 +7,12 @@ class Post < ApplicationRecord
   belongs_to :user
   has_one :icon
 
+  has_many :tree_paths, class_name: 'TreePath', foreign_key: 'ancestor'
+  has_many :descendant_posts, through: :tree_paths, source: 'descendant_post'
+
+  has_many :reverse_of_tree_paths, class_name: 'TreePath', foreign_key: 'descendant'
+  has_many :ancestor_posts, through: :reverse_of_tree_paths, source: 'ancestor_post'
+
   validates :content, length: { maximum: 140 }, presence: true
   validates :user_id, presence: true
 
