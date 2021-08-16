@@ -14,7 +14,6 @@ RSpec.describe Post, type: :model do
     expect(post.id.length).to eq(20)
     expect(post.is_locked).to eq(false)
     expect(Icon.all.any? { |icon| post.icon_id == icon.id }).to be_truthy
-
   end
 
   it "is valid when image's extension is jpg" do

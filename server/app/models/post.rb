@@ -32,6 +32,6 @@ class Post < ApplicationRecord
   end
 
   def create_self_referential_tree_paths
-    TreePath.create(ancestor: self.id, descendant: self.id, depth: 0)
+    TreePath.create(ancestor: id, descendant: id, depth: 0)
   end
 end

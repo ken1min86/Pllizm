@@ -4,5 +4,5 @@ class TreePath < ApplicationRecord
 
   validates :ancestor,   presence: true
   validates :descendant, presence: true, uniqueness: { scope: :ancestor }
-  validates :depth,      presence: true, length: { minimum: 0 }
+  validates :depth, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 end
