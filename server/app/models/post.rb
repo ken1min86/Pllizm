@@ -19,6 +19,22 @@ class Post < ApplicationRecord
   before_create :set_id, :set_icon_id
   after_create :create_self_referential_tree_paths
 
+  def your_post?(current_user)
+    user_id == current_user.id
+  end
+
+  def mutual_followers_post?(current_user)
+    mutual_followers = current_user.followings
+    is_mutual_followers_post = false
+    mutual_followers.each do |mutual_follower|
+      if user_id == mutual_follower.id
+        is_mutual_followers_post = true
+        break
+      end
+    end
+    is_mutual_followers_post
+  end
+
   private
 
   def set_id

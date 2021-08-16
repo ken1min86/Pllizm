@@ -6,4 +6,12 @@ module ModelSpecHelper
     end
     non_existemt_userid
   end
+
+  def get_non_existent_post_id
+    non_existent_post_id = SecureRandom.alphanumeric(20)
+    while Post.find_by(id: non_existent_post_id)
+      non_existent_post_id = SecureRandom.alphanumeric(20)
+    end
+    non_existent_post_id
+  end
 end

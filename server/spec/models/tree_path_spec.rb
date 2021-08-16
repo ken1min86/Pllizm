@@ -89,12 +89,4 @@ RSpec.describe TreePath, type: :model do
     tree_path.valid?
     expect(tree_path.errors[:depth]).to include("can't be blank")
   end
-
-  def get_non_existent_post_id
-    non_existent_post_id = SecureRandom.alphanumeric(20)
-    while Post.find_by(id: non_existent_post_id)
-      non_existent_post_id = SecureRandom.alphanumeric(20)
-    end
-    non_existent_post_id
-  end
 end
