@@ -9,10 +9,12 @@ RSpec.describe Post, type: :model do
 
   it "is valid when user_id relates to user.id and icon_id relates to icon.id" do
     post = FactoryBot.create(:post, user_id: user.id)
+    expect(TreePath.where(ancestor: post.id, descendant: post.id, depth: 0)).to exist
     expect(post).to be_valid
     expect(post.id.length).to eq(20)
     expect(post.is_locked).to eq(false)
     expect(Icon.all.any? { |icon| post.icon_id == icon.id }).to be_truthy
+
   end
 
   it "is valid when image's extension is jpg" do

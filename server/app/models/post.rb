@@ -17,6 +17,7 @@ class Post < ApplicationRecord
   validates :user_id, presence: true
 
   before_create :set_id, :set_icon_id
+  after_create :create_self_referential_tree_paths
 
   private
 
@@ -28,5 +29,9 @@ class Post < ApplicationRecord
 
   def set_icon_id
     self.icon_id = Icon.all.sample.id
+  end
+
+  def create_self_referential_tree_paths
+    TreePath.create(ancestor: self.id, descendant: self.id, depth: 0)
   end
 end
