@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "FollowersApi", type: :request do
+RSpec.describe "V1::FollowersApi", type: :request do
   describe "POST /v1/followers - v1/followers#create - Approve follow request" do
     context "when client doesn't have token" do
       it "returns 401" do

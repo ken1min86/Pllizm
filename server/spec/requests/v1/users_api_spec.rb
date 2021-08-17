@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "UsersApi", type: :request do
+RSpec.describe "V1::UsersApi", type: :request do
   describe "GET /v1/mutual_follow_users - v1/mutual_follow_users#index - Get mutual follow users" do
     context "when client doesn't have token" do
       it "returns 401" do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "PostsApi", type: :request do
+RSpec.describe "V1::PostsApi", type: :request do
   describe "POST /v1/posts - v1/posts#create - Create new post" do
     context "when client doesn't have token" do
       it "returns 401" do
