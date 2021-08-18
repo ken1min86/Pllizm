@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get '/follow_requested_by_me_users', to: 'users#index_of_users_follow_requested_by_me', as: :follow_requested_by_me_users
     get '/follow_request_to_me_users', to: 'users#index_of_users_follow_request_to_me', as: :follow_request_to_me_users
     resources :posts, only: [:create, :destroy]
+    get '/posts/liked', to: 'likes#index_liked_posts', as: :liked_posts
     resources :posts do
       resources :likes, only: [:create]
     end
