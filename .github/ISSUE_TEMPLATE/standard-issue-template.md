@@ -23,6 +23,8 @@ Issueの対応方法について、
 仕様書
 -
 Issueに関連する仕様を定義した資料のリンクを記入。
+Entities: https://www.notion.so/d5f149299b754566a8e74d004ed8a342?v=819f6cb073b24530b4b2d0bbc5139b42
+API: https://www.notion.so/API-91d6991b3939434ebbc7a6b947bc60ab
 
 開始時期
 -
