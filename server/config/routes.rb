@@ -8,6 +8,9 @@ Rails.application.routes.draw do
     get '/follow_requested_by_me_users', to: 'users#index_of_users_follow_requested_by_me', as: :follow_requested_by_me_users
     get '/follow_request_to_me_users', to: 'users#index_of_users_follow_request_to_me', as: :follow_request_to_me_users
     resources :posts, only: [:create, :destroy]
+    resources :posts do
+      resources :likes, only: [:create]
+    end
     post '/posts/:id/reply', to: 'posts#create_reply', as: :post_reply
     put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
     post '/follow_requests', to: 'follow_requests#create', as: :follow_requests

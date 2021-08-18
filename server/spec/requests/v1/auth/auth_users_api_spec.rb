@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "AuthUsersApi", type: :request do
+RSpec.describe "V1::Auth::AuthUsersApi", type: :request do
   describe "POST /v1/auth - v1/auth/registrations#create - Signup" do
     it 'returns 200 with password, password_confirmation and email and password equals to password_confirmation' do
       expect do
@@ -127,7 +127,6 @@ RSpec.describe "AuthUsersApi", type: :request do
   describe "DELETE /v1/auth - v1/auth/registrations#destroy - Delete account" do
     it 'logically deletes account and returns 200' do
       sign_up('test')
-      login('test')
       count = User.all.count
       expect(User.where(email: 'test@gmail.com').count).to eq 1
 

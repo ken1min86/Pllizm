@@ -27,6 +27,9 @@ class User < ActiveRecord::Base
   has_many :reverse_of_follow_relationships, class_name: 'Follower', :foreign_key => 'follow_to', dependent: :destroy
   has_many :followers, through: :reverse_of_follow_relationships, source: 'relate_to_followed_by_user'
 
+  has_many :likes, dependent: :destroy
+  has_many :liked_posts, through: :likes, source: 'post_id'
+
   validates :userid,   length: { maximum: 15 }, uniqueness: true, presence: true
   validates :username, length: { maximum: 50 }, presence: true
   validates :bio,      length: { maximum: 160 }

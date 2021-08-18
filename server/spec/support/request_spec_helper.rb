@@ -14,14 +14,6 @@ module RequestSpecHelper
     }
   end
 
-  def logout(response)
-    delete destroy_v1_user_session_path params: {
-      uid: response.header['uid'],
-      'access-token': response.header['access-token'],
-      client: response.header['client'],
-    }
-  end
-
   def create_header_from_response(response)
     {
       uid: response.header['uid'],
@@ -34,26 +26,16 @@ module RequestSpecHelper
     User.find_by(uid: response.header['uid'])
   end
 
-  def sign_up_and_create_a_new_post
-    sign_up(Faker::Name.first_name)
-    headers = create_header_from_response(response)
-    FactoryBot.create_list(:icon, 5)
-    post v1_posts_path, params: { content: 'Hello!' }, headers: headers
-    request_headers = create_header_from_response(response)
-    created_post_id = Post.find_by(user_id: get_current_user_by_response(response).id).id
-    { post_id: created_post_id, request_headers: request_headers }
-  end
-
-  def get_non_existemt_user_id
-    non_existemt_userid = SecureRandom.alphanumeric(15)
-    while User.find_by(userid: non_existemt_userid)
-      non_existemt_userid = SecureRandom.alphanumeric(15)
+  def get_non_existent_user_id
+    non_existent_userid = SecureRandom.alphanumeric(15)
+    while User.find_by(userid: non_existent_userid)
+      non_existent_userid = SecureRandom.alphanumeric(15)
     end
-    non_existemt_userid
+    non_existent_userid
   end
 
   def create_mutual_follow_user(user)
-    mutual_follow_user = FactoryBot.create(:user, userid: get_non_existemt_user_id)
+    mutual_follow_user = FactoryBot.create(:user, userid: get_non_existent_user_id)
     Follower.create(followed_by: user.id, follow_to: mutual_follow_user.id)
     Follower.create(followed_by: mutual_follow_user.id, follow_to: user.id)
     mutual_follow_user
