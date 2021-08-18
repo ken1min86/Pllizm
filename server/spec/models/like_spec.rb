@@ -7,7 +7,7 @@ RSpec.describe Like, type: :model do
 
   let(:user) { FactoryBot.create(:user) }
   let(:post) { user.posts.create(content: 'おはよう') }
-  let(:non_existemt_userid) { get_non_existemt_user_id }
+  let(:non_existent_userid) { get_non_existent_user_id }
   let(:non_existent_post_id) { get_non_existent_post_id }
 
   it 'is valid with related user_id and post_id' do
@@ -16,7 +16,7 @@ RSpec.describe Like, type: :model do
   end
 
   it 'is invalid with not related user_id' do
-    like = Like.new(user_id: non_existemt_userid, post_id: post.id)
+    like = Like.new(user_id: non_existent_userid, post_id: post.id)
     expect(like).to be_invalid
   end
 
