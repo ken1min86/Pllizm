@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_16_021059) do
+ActiveRecord::Schema.define(version: 2021_08_17_060926) do
 
   create_table "follow_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "requested_by"
@@ -36,6 +36,16 @@ ActiveRecord::Schema.define(version: 2021_08_16_021059) do
     t.string "image", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "likes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "post_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["post_id"], name: "index_likes_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_likes_on_user_id_and_post_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "posts", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -98,6 +108,8 @@ ActiveRecord::Schema.define(version: 2021_08_16_021059) do
   add_foreign_key "follow_requests", "users", column: "requested_by"
   add_foreign_key "followers", "users", column: "follow_to"
   add_foreign_key "followers", "users", column: "followed_by"
+  add_foreign_key "likes", "posts"
+  add_foreign_key "likes", "users"
   add_foreign_key "posts", "icons"
   add_foreign_key "posts", "users"
   add_foreign_key "tree_paths", "posts", column: "ancestor"
