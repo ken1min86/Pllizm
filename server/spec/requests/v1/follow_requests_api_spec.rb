@@ -17,9 +17,9 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
     end
 
     context "when client has token" do
-      let(:request_to) { FactoryBot.create(:user) }
+      let(:request_to)   { FactoryBot.create(:user) }
       let(:requested_by) { FactoryBot.create(:user) }
-      let(:headers) { requested_by.create_new_auth_token }
+      let(:headers)      { requested_by.create_new_auth_token }
 
       it 'returns 200' do
         expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).not_to exist
@@ -125,8 +125,8 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
     context "when client has token" do
       let(:request_follow_user) { FactoryBot.create(:user) }
-      let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
+      let(:client_user)         { FactoryBot.create(:user) }
+      let(:headers)             { client_user.create_new_auth_token }
 
       it 'returns 200 and delete follow request' do
         request_follow_user.follow_requests.create(request_to: client_user.id)
@@ -170,8 +170,8 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
     context "when client has token" do
       let(:request_to_user) { FactoryBot.create(:user) }
-      let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
+      let(:client_user)     { FactoryBot.create(:user) }
+      let(:headers)         { client_user.create_new_auth_token }
 
       it 'returns 200 and delete follow request' do
         client_user.follow_requests.create(request_to: request_to_user.id)

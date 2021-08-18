@@ -18,7 +18,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
+      let(:headers)     { client_user.create_new_auth_token }
 
       it 'returns 200 and sets is_locked true when is_locked is true' do
         params = {
@@ -107,7 +107,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "DELETE /v1/posts - v1/posts#destroy - Delete login user's post" do
     context "when client doesn't have token" do
-      let(:client_user) { FactoryBot.create(:user) }
+      let(:client_user)       { FactoryBot.create(:user) }
       let!(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
 
       it "returns 401" do
@@ -118,10 +118,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
-      let!(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
-      let(:not_client_user) { FactoryBot.create(:user) }
+      let(:client_user)           { FactoryBot.create(:user) }
+      let(:headers)               { client_user.create_new_auth_token }
+      let!(:client_user_post)     { FactoryBot.create(:post, user_id: client_user.id) }
+      let(:not_client_user)       { FactoryBot.create(:user) }
       let!(:not_client_user_post) { FactoryBot.create(:post, user_id: not_client_user.id) }
 
       it "returns 200 and logically deletes post when try to delete login user's post" do
@@ -156,10 +156,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
-      let(:user) { FactoryBot.create(:user) }
-      let(:post) { FactoryBot.create(:post, user_id: user.id) }
-      let(:headers) { user.create_new_auth_token }
-      let(:another_user) { FactoryBot.create(:user) }
+      let(:user)              { FactoryBot.create(:user) }
+      let(:post)              { FactoryBot.create(:post, user_id: user.id) }
+      let(:headers)           { user.create_new_auth_token }
+      let(:another_user)      { FactoryBot.create(:user) }
       let(:another_user_post) { FactoryBot.create(:post, user_id: another_user.id) }
 
       it "returns 200 and locks post when try to lock login user's unlocked post" do
@@ -204,7 +204,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "POST /v1/posts/:id/reply - v1/posts#create_reply - Create reply" do
     context "when client doesn't have token" do
-      let(:user) { FactoryBot.create(:user) }
+      let(:user)      { FactoryBot.create(:user) }
       let(:user_post) { FactoryBot.create(:post, user_id: user.id) }
 
       it "returns 401" do
@@ -219,8 +219,8 @@ RSpec.describe "V1::PostsApi", type: :request do
         FactoryBot.create(:icon)
       end
 
-      let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
+      let(:client_user)   { FactoryBot.create(:user) }
+      let(:headers)       { client_user.create_new_auth_token }
       let!(:replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
       let(:params) do
         {
@@ -314,7 +314,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to mutual follower's post" do
-        let(:mutual_follow_user) { create_mutual_follow_user(client_user) }
+        let(:mutual_follow_user)       { create_mutual_follow_user(client_user) }
         let!(:mutual_follow_user_post) { FactoryBot.create(:post, user_id: mutual_follow_user.id) }
 
         it 'returns 200 and create post and tree_path' do
@@ -333,7 +333,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to not mutual follower's post" do
-        let(:non_following_user) { FactoryBot.create(:user) }
+        let(:non_following_user)       { FactoryBot.create(:user) }
         let!(:non_following_user_post) { FactoryBot.create(:post, user_id: non_following_user.id) }
 
         it "returns 400 and doesn't create post and tree_path" do

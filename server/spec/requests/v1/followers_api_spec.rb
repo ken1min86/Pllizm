@@ -16,7 +16,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
 
     context "when client has token" do
       let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
+      let(:headers)     { client_user.create_new_auth_token }
       let(:follow_user) { FactoryBot.create(:user) }
 
       it 'returns 200 and deletes follow_request and create followers' do
@@ -68,8 +68,8 @@ RSpec.describe "V1::FollowersApi", type: :request do
 
     context "when client has token" do
       let(:client_user) { FactoryBot.create(:user) }
-      let(:headers) { client_user.create_new_auth_token }
-      let(:follower) { FactoryBot.create(:user) }
+      let(:headers)     { client_user.create_new_auth_token }
+      let(:follower)    { FactoryBot.create(:user) }
 
       it 'returns 200 and deletes followers' do
         client_user.follow_relationships.create(follow_to: follower.id)
