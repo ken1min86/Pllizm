@@ -79,16 +79,12 @@ module V1
         followers_posts.push(follower_posts)
       end
       current_user_and_followers_posts = followers_posts.push(current_user_posts)
-
       # 配列の平坦化
       current_user_and_followers_posts.flatten!
-
       # 取得したすべての投稿のうち、ルートのみを抽出(=リプライの除去)
       current_user_and_followers_root_posts = Post.extract_root_posts(current_user_and_followers_posts)
-
       # 作成日の降順でソート
       current_user_and_followers_root_posts.sort_by! { |post| post["created_at"] }.reverse!
-
       # カレントユーザの投稿と、フォロワーの投稿それぞれに対して、仕様書通りにフォーマット
       return_posts = []
       current_user_and_followers_root_posts.each do |current_user_and_followers_root_post|
