@@ -39,15 +39,15 @@ class User < ActiveRecord::Base
   def self.extract_disclosable_culumns_from_users_array(users_array)
     extracted_users = []
     users_array.each do |user|
-      hashed_user = user.attributes
-      hashed_user['image'] = user.image.url
+      hashed_user = user.attributes.symbolize_keys
+      hashed_user[:image] = user.image.url
       extracted_user = hashed_user.slice(
-        'id',
-        'userid',
-        'username',
-        'image',
-        'bio',
-        'need_description_about_lock'
+        :id,
+        :userid,
+        :username,
+        :image,
+        :bio,
+        :need_description_about_lock
       )
       extracted_users.push(extracted_user)
     end
