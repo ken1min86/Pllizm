@@ -20,8 +20,8 @@ class Post < ApplicationRecord
   validates :user_id, presence: true
 
   before_validation :set_icon_id, on: :create
-  before_create :set_id
-  after_create :create_self_referential_tree_paths
+  before_create     :set_id
+  after_create      :create_self_referential_tree_paths
 
   def self.extract_disclosable_culumns_from_posts_array(posts_array)
     extracted_posts = []

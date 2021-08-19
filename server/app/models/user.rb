@@ -10,11 +10,11 @@ class User < ActiveRecord::Base
 
   has_many :posts, dependent: :destroy
 
-  # ****************************************
+  # *********************************************************
   # [フォロリク関連でエラーが出た特に以下を確認]
   # has_many :follow_requestsの
   # 名称をfollow_requests以外に変更しないとエラーが発生する可能性あり
-  # ****************************************
+  # *********************************************************
   has_many :follow_requests, class_name: 'FollowRequest', foreign_key: 'requested_by', dependent: :destroy
   has_many :follow_requesting_users, through: :follow_requests, source: 'relate_to_request_to_user'
 
