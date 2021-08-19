@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     delete '/followers', to: 'followers#destroy', as: :follower
 
     resources :posts, only: [:create, :destroy]
-    get '/posts/liked', to: 'likes#index_liked_posts', as: :liked_posts
+    get '/posts/liked', to: 'posts#index_liked_posts', as: :liked_posts
     get '/posts/current_user_and_mutual_follower',
         to: 'posts#index_current_user_and_mutual_follower_posts',
         as: :current_user_and_mutual_follower_posts

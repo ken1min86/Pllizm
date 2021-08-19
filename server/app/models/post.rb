@@ -23,6 +23,17 @@ class Post < ApplicationRecord
   before_create :set_id
   after_create :create_self_referential_tree_paths
 
+  def self.extract_disclosable_culumns_from_posts_array(posts_array)
+    extracted_posts = []
+    posts_array.each do |post|
+      hashed_post = post.attributes.symbolize_keys
+      hashed_post[:image] = post.image.url
+      hashed_post.delete(:user_id)
+      extracted_posts.push(hashed_post)
+    end
+    extracted_posts
+  end
+
   def self.extract_root_posts(posts_array)
     root_posts_array = []
     posts_array.each do |post|

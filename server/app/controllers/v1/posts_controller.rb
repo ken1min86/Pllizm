@@ -62,6 +62,12 @@ module V1
       end
     end
 
+    def index_liked_posts
+      liked_posts = current_v1_user.liked_posts.order(created_at: 'DESC')
+      extracted_liked_posts = Post.extract_disclosable_culumns_from_posts_array(liked_posts)
+      render json: extracted_liked_posts, status: :ok
+    end
+
     def index_current_user_and_mutual_follower_posts
       followers = current_v1_user.followings
 
