@@ -6,8 +6,8 @@ RSpec.describe Like, type: :model do
   end
 
   let(:user) { FactoryBot.create(:user) }
-  let(:post) { user.posts.create(content: 'おはよう') }
-  let(:non_existent_userid) { get_non_existent_user_id }
+  let(:post) { FactoryBot.create(:post, user_id: user.id) }
+  let(:non_existent_userid)  { get_non_existent_user_id }
   let(:non_existent_post_id) { get_non_existent_post_id }
 
   it 'is valid with related user_id and post_id' do
