@@ -5,8 +5,8 @@ RSpec.describe TreePath, type: :model do
     FactoryBot.create(:icon)
   end
 
-  let(:user) { FactoryBot.create(:user) }
-  let(:ancestor_post) { FactoryBot.create(:post, user_id: user.id) }
+  let(:user)            { FactoryBot.create(:user) }
+  let(:ancestor_post)   { FactoryBot.create(:post, user_id: user.id) }
   let(:descendant_post) { FactoryBot.create(:post, user_id: user.id) }
 
   it 'is valid when ancestor and descendant are related to post and depth in over 0' do

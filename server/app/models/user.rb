@@ -10,11 +10,11 @@ class User < ActiveRecord::Base
 
   has_many :posts, dependent: :destroy
 
-  # ****************************************
+  # *********************************************************
   # [フォロリク関連でエラーが出た特に以下を確認]
   # has_many :follow_requestsの
   # 名称をfollow_requests以外に変更しないとエラーが発生する可能性あり
-  # ****************************************
+  # *********************************************************
   has_many :follow_requests, class_name: 'FollowRequest', foreign_key: 'requested_by', dependent: :destroy
   has_many :follow_requesting_users, through: :follow_requests, source: 'relate_to_request_to_user'
 
@@ -35,6 +35,24 @@ class User < ActiveRecord::Base
   validates :bio,      length: { maximum: 160 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.freeze
   validates :email, format: { with: VALID_EMAIL_REGEX }, presence: true
+
+  def self.extract_disclosable_culumns_from_users_array(users_array)
+    extracted_users = []
+    users_array.each do |user|
+      hashed_user = user.attributes.symbolize_keys
+      hashed_user[:image] = user.image.url
+      extracted_user = hashed_user.slice(
+        :id,
+        :userid,
+        :username,
+        :image,
+        :bio,
+        :need_description_about_lock
+      )
+      extracted_users.push(extracted_user)
+    end
+    extracted_users
+  end
 
   def request_following?(other_user)
     follow_requesting_users.include?(other_user)
