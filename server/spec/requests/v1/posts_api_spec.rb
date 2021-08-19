@@ -362,4 +362,220 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/posts/current_user_and_mutual_follower
+  - v1/likes#index_current_user_and_mutual_follower_posts
+  - Get current user and mutual follower posts", :focus do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_current_user_and_mutual_follower_posts_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
+      let(:client_user)          { FactoryBot.create(:user) }
+      let(:client_user_headers)  { client_user.create_new_auth_token }
+      let(:follower1)            { create_mutual_follow_user(client_user) }
+      let(:follower1_headers)    { follower1.create_new_auth_token }
+      let(:follower2)            { create_mutual_follow_user(client_user) }
+      let(:non_follower)         { FactoryBot.create(:user) }
+      let(:non_follower_headers) { non_follower.create_new_auth_token }
+
+      context "when client's, followers's and non-followers's posts are exist" do
+        # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+        # 各々のユーザの投稿について、リプライを持つものと持たないものを作成すること
+        # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+        let!(:client_post_without_reply)       { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_with_reply)          { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:follower1_post_without_reply)    { FactoryBot.create(:post, user_id: follower1.id) }
+        let!(:follower2_post_with_reply)       { FactoryBot.create(:post, user_id: follower2.id) }
+        let!(:non_follower_post_without_reply) { FactoryBot.create(:post, user_id: non_follower.id) }
+        let!(:non_follower_post_with_reply)    { FactoryBot.create(:post, user_id: non_follower.id) }
+
+        let(:params) do
+          {
+            content: 'Hello!',
+            image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+            is_locked: true,
+          }
+        end
+
+        before do
+          post v1_post_reply_path(follower2_post_with_reply.id),    params: params, headers: client_user_headers
+          post v1_post_reply_path(client_post_with_reply.id),       params: params, headers: client_user_headers
+          post v1_post_reply_path(non_follower_post_with_reply.id), params: params, headers: non_follower_headers
+
+          post v1_post_likes_path(client_post_with_reply.id), headers: client_user_headers
+          post v1_post_likes_path(client_post_with_reply.id), headers: follower1_headers
+        end
+
+        it "return 200 and client's and followers's sorted posts" do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(4)
+
+          # ソートが正しく実装されているかテスト
+          expect(response_body[0][:mutual_follower_post]).to have_id(follower2_post_with_reply.id)
+          expect(response_body[1][:mutual_follower_post]).to have_id(follower1_post_without_reply.id)
+          expect(response_body[2][:current_user_post]).to have_id(client_post_with_reply.id)
+          expect(response_body[3][:current_user_post]).to have_id(client_post_without_reply.id)
+
+          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[1][:mutual_follower_post].length).to eq(10)
+          expect(response_body[2][:current_user_post].length).to eq(13)
+          expect(response_body[3][:current_user_post].length).to eq(13)
+
+          expect(response_body[2][:current_user_post]).to include(
+            id: client_post_with_reply.id,
+            content: client_post_with_reply.content,
+            image: client_post_with_reply.image.url,
+            is_locked: client_post_with_reply.is_locked,
+            icon_url: client_user.image.url,
+            likes: 2,
+            replies: 1,
+            is_liked_by_current_user: true,
+            username: client_user.username,
+            userid: client_user.userid,
+          )
+          expect(response_body[2][:current_user_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+          expect(response_body[1][:mutual_follower_post]).to include(
+            id: follower1_post_without_reply.id,
+            content: follower1_post_without_reply.content,
+            image: follower1_post_without_reply.image.url,
+            is_locked: follower1_post_without_reply.is_locked,
+            icon_url: follower1_post_without_reply.icon.image.url,
+            replies: 0,
+            is_liked_by_current_user: false,
+          )
+          expect(response_body[1][:mutual_follower_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+        end
+      end
+
+      context "when client's post is exist" do
+        let!(:client_post_without_reply) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        it "returns 200 and client's post" do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:current_user_post].length).to eq(13)
+          expect(response_body[0][:current_user_post]).to include(
+            id: client_post_without_reply.id,
+            content: client_post_without_reply.content,
+            image: client_post_without_reply.image.url,
+            is_locked: client_post_without_reply.is_locked,
+            icon_url: client_user.image.url,
+            likes: 0,
+            replies: 0,
+            is_liked_by_current_user: false,
+            username: client_user.username,
+            userid: client_user.userid,
+          )
+          expect(response_body[0][:current_user_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+        end
+      end
+
+      context "when follower's post is exist" do
+        let!(:follower1_post_without_reply) { FactoryBot.create(:post, user_id: follower1.id) }
+
+        it "returns 200 and follower's post" do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[0][:mutual_follower_post]).to include(
+            id: follower1_post_without_reply.id,
+            content: follower1_post_without_reply.content,
+            image: follower1_post_without_reply.image.url,
+            is_locked: follower1_post_without_reply.is_locked,
+            icon_url: follower1_post_without_reply.icon.image.url,
+            replies: 0,
+            is_liked_by_current_user: false,
+          )
+          expect(response_body[0][:mutual_follower_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+        end
+      end
+
+      context "when non-follower's post is exist" do
+        let!(:non_follower_post_without_reply) { FactoryBot.create(:post, user_id: non_follower.id) }
+
+        it 'returns 200 and no posts' do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(0)
+        end
+      end
+
+      context "when logically deleted client's post is exist" do
+        let!(:client_post_without_reply) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        before do
+          delete v1_post_path(client_post_without_reply.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and no posts' do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(0)
+        end
+      end
+
+      context "when posts aren't exist" do
+        it 'retruns 200 and no posts' do
+          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(0)
+        end
+      end
+    end
+  end
 end

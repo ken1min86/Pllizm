@@ -4,20 +4,26 @@ Rails.application.routes.draw do
       registrations: 'v1/auth/registrations',
     }
     put '/user/disable_lock_description', to: 'users#disable_lock_description', as: :user_disableLockDescription
-    get '/mutual_follow_users', to: 'users#index_of_mutual_follow_users', as: :mutual_follow_users
+
     get '/follow_requested_by_me_users', to: 'users#index_of_users_follow_requested_by_me', as: :follow_requested_by_me_users
     get '/follow_request_to_me_users', to: 'users#index_of_users_follow_request_to_me', as: :follow_request_to_me_users
+    post '/follow_requests', to: 'follow_requests#create', as: :follow_requests
+    delete '/follow_requests_to_me', to: 'follow_requests#destroy_follow_requests_to_me', as: :follow_requests_to_me
+    delete '/follow_requests_by_me', to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
+
+    resources :followers, only: [:create]
+    get '/mutual_follow_users', to: 'users#index_of_mutual_follow_users', as: :mutual_follow_users
+    delete '/followers', to: 'followers#destroy', as: :follower
+
     resources :posts, only: [:create, :destroy]
     get '/posts/liked', to: 'likes#index_liked_posts', as: :liked_posts
+    get '/posts/current_user_and_mutual_follower',
+        to: 'posts#index_current_user_and_mutual_follower_posts',
+        as: :current_user_and_mutual_follower_posts
     resources :posts do
       resources :likes, only: [:create]
     end
     post '/posts/:id/reply', to: 'posts#create_reply', as: :post_reply
     put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
-    post '/follow_requests', to: 'follow_requests#create', as: :follow_requests
-    delete '/follow_requests_to_me', to: 'follow_requests#destroy_follow_requests_to_me', as: :follow_requests_to_me
-    delete '/follow_requests_by_me', to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
-    resources :followers, only: [:create]
-    delete '/followers', to: 'followers#destroy', as: :follower
   end
 end
