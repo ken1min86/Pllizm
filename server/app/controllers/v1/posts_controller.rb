@@ -63,9 +63,23 @@ module V1
     end
 
     def index_liked_posts
-      liked_posts = current_v1_user.liked_posts.order(created_at: 'DESC')
-      extracted_liked_posts = Post.extract_disclosable_culumns_from_posts_array(liked_posts)
-      render json: extracted_liked_posts, status: :ok
+      likes = current_v1_user.likes.order(created_at: 'DESC')
+      liked_posts = []
+      likes.each do |like|
+        liked_posts.push(like.liked_post)
+      end
+      # カレントユーザの投稿と、フォロワーの投稿それぞれに対して、仕様書通りにフォーマット
+      return_posts = []
+      liked_posts.each do |liked_post|
+        if liked_post.user.id == current_v1_user.id
+          formatted_current_user_post = liked_post.format_current_user_post(current_v1_user)
+          return_posts.push(formatted_current_user_post)
+        else
+          formatted_follower_post = liked_post.format_follower_post(current_v1_user)
+          return_posts.push(formatted_follower_post)
+        end
+      end
+      render json: return_posts, status: :ok
     end
 
     def index_current_user_and_mutual_follower_posts
@@ -79,7 +93,6 @@ module V1
         followers_posts.push(follower_posts)
       end
       current_user_and_followers_posts = followers_posts.push(current_user_posts)
-      # 配列の平坦化
       current_user_and_followers_posts.flatten!
       # 取得したすべての投稿のうち、ルートのみを抽出(=リプライの除去)
       current_user_and_followers_root_posts = Post.extract_root_posts(current_user_and_followers_posts)
