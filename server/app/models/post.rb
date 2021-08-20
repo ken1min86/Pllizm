@@ -55,6 +55,7 @@ class Post < ApplicationRecord
     hashed_current_user_post[:likes]    = likes.length
     hashed_current_user_post[:replies]  = TreePath.where(ancestor: id, depth: 1).length
     hashed_current_user_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
+    hashed_current_user_post[:is_reply] = is_reply?
     formatted_current_user_post = { current_user_post: hashed_current_user_post }
     formatted_current_user_post
   end
@@ -67,6 +68,7 @@ class Post < ApplicationRecord
     hashed_follower_post[:icon_url] = icon.image.url
     hashed_follower_post[:replies]  = count_replies_by_current_user_or_followers(current_user)
     hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
+    hashed_follower_post[:is_reply] = is_reply?
     formatted_follower_post = { mutual_follower_post: hashed_follower_post }
     formatted_follower_post
   end
@@ -80,6 +82,10 @@ class Post < ApplicationRecord
       end
     end
     is_liked_by_current_user
+  end
+
+  def is_reply?
+    TreePath.where(descendant: id).length > 1
   end
 
   def count_replies_by_current_user_or_followers(current_user)
