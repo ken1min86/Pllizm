@@ -112,6 +112,16 @@ module V1
       render json: return_posts, status: :ok
     end
 
+    def index_current_user_posts
+      current_user_posts = current_v1_user.posts.order(created_at: :desc)
+      return_posts = []
+      current_user_posts.each do |current_user_post|
+        formatted_current_user_post = current_user_post.format_current_user_post(current_v1_user)
+        return_posts.push(formatted_current_user_post)
+      end
+      render json: return_posts, status: :ok
+    end
+
     private
 
     def post_params
