@@ -433,13 +433,13 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(7)
 
-          expect(response_body[0][:mutual_follower_post].length).to eq(10)
-          expect(response_body[1][:current_user_post].length).to eq(13)
-          expect(response_body[2][:mutual_follower_post].length).to eq(10)
-          expect(response_body[3][:current_user_post].length).to eq(13)
-          expect(response_body[4][:mutual_follower_post].length).to eq(10)
-          expect(response_body[5][:mutual_follower_post].length).to eq(10)
-          expect(response_body[6][:current_user_post].length).to eq(13)
+          expect(response_body[0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[1][:current_user_post].length).to eq(14)
+          expect(response_body[2][:mutual_follower_post].length).to eq(11)
+          expect(response_body[3][:current_user_post].length).to eq(14)
+          expect(response_body[4][:mutual_follower_post].length).to eq(11)
+          expect(response_body[5][:mutual_follower_post].length).to eq(11)
+          expect(response_body[6][:current_user_post].length).to eq(14)
 
           expect(response_body[0][:mutual_follower_post]).to include(
             id: follower2_post_1reply_by_non_follower.id,
@@ -448,6 +448,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_locked: follower2_post_1reply_by_non_follower.is_locked,
             icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
             replies: 0,
+            is_reply: false,
             is_liked_by_current_user: true,
           )
           expect(response_body[0][:mutual_follower_post]).to include(
@@ -463,6 +464,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             icon_url: client_user.image.url,
             likes: 2,
             replies: 1,
+            is_reply: false,
             username: client_user.username,
             userid: client_user.userid,
             is_liked_by_current_user: true,
@@ -520,14 +522,16 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[0][:mutual_follower_post].length).to eq(11)
           expect(response_body[0][:mutual_follower_post]).to include(
             id: follower2_post_1reply_by_non_follower.id,
             content: follower2_post_1reply_by_non_follower.content,
             image: follower2_post_1reply_by_non_follower.image.url,
             is_locked: follower2_post_1reply_by_non_follower.is_locked,
             icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
-            replies: 0, is_liked_by_current_user: true,
+            replies: 0,
+            is_reply: false,
+            is_liked_by_current_user: true,
           )
           expect(response_body[0][:mutual_follower_post]).to include(
             :deleted_at,
@@ -537,7 +541,50 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context "when client hasn't liked post" do
+      context 'when client has liked a post which is a reply of follower' do
+        let!(:client_replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let(:params) do
+          {
+            content: 'Hello!',
+            image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+            is_locked: true,
+          }
+        end
+
+        before do
+          post v1_post_reply_path(client_replied_post.id), params: params, headers: follower1_headers
+          follower1_reply = Post.order(created_at: :desc).limit(1)[0]
+          post v1_post_likes_path(follower1_reply.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and return a post' do
+          get v1_liked_posts_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          follower1_reply = Post.order(created_at: :desc).limit(1)[0]
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[0][:mutual_follower_post]).to include(
+            id: follower1_reply.id,
+            content: follower1_reply.content,
+            image: follower1_reply.image.url,
+            is_locked: follower1_reply.is_locked,
+            icon_url: follower1_reply.icon.image.url,
+            replies: 0,
+            is_reply: true,
+            is_liked_by_current_user: true,
+          )
+          expect(response_body[0][:mutual_follower_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+        end
+      end
+
+      context "when client hasn't liked posts" do
         it 'returns 200 and no posts' do
           get v1_liked_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
@@ -617,10 +664,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body[2][:current_user_post]).to have_id(client_post_with_reply.id)
           expect(response_body[3][:current_user_post]).to have_id(client_post_without_reply.id)
 
-          expect(response_body[0][:mutual_follower_post].length).to eq(10)
-          expect(response_body[1][:mutual_follower_post].length).to eq(10)
-          expect(response_body[2][:current_user_post].length).to eq(13)
-          expect(response_body[3][:current_user_post].length).to eq(13)
+          expect(response_body[0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[1][:mutual_follower_post].length).to eq(11)
+          expect(response_body[2][:current_user_post].length).to eq(14)
+          expect(response_body[3][:current_user_post].length).to eq(14)
 
           expect(response_body[2][:current_user_post]).to include(
             id: client_post_with_reply.id,
@@ -633,6 +680,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_liked_by_current_user: true,
             username: client_user.username,
             userid: client_user.userid,
+            is_reply: false,
           )
           expect(response_body[2][:current_user_post]).to include(
             :deleted_at,
@@ -647,6 +695,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             icon_url: follower1_post_without_reply.icon.image.url,
             replies: 0,
             is_liked_by_current_user: false,
+            is_reply: false,
           )
           expect(response_body[1][:mutual_follower_post]).to include(
             :deleted_at,
@@ -668,7 +717,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
 
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:current_user_post].length).to eq(13)
+          expect(response_body[0][:current_user_post].length).to eq(14)
           expect(response_body[0][:current_user_post]).to include(
             id: client_post_without_reply.id,
             content: client_post_without_reply.content,
@@ -680,6 +729,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_liked_by_current_user: false,
             username: client_user.username,
             userid: client_user.userid,
+            is_reply: false,
           )
           expect(response_body[0][:current_user_post]).to include(
             :deleted_at,
@@ -701,7 +751,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
 
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[0][:mutual_follower_post].length).to eq(11)
           expect(response_body[0][:mutual_follower_post]).to include(
             id: follower1_post_without_reply.id,
             content: follower1_post_without_reply.content,
@@ -710,6 +760,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             icon_url: follower1_post_without_reply.icon.image.url,
             replies: 0,
             is_liked_by_current_user: false,
+            is_reply: false,
           )
           expect(response_body[0][:mutual_follower_post]).to include(
             :deleted_at,
