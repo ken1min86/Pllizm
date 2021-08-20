@@ -377,92 +377,173 @@ RSpec.describe "V1::PostsApi", type: :request do
         FactoryBot.create(:icon)
       end
 
-      let(:client_user)      { FactoryBot.create(:user) }
-      let(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
-      let(:headers)          { client_user.create_new_auth_token }
-      let(:follower)         { create_mutual_follow_user(client_user) }
-      let(:follower_post1)   { FactoryBot.create(:post, user_id: follower.id) }
-      let(:follower_post2)   { FactoryBot.create(:post, user_id: follower.id) }
+      let(:client_user)          { FactoryBot.create(:user) }
+      let(:client_user_headers)  { client_user.create_new_auth_token }
+      let(:follower1)            { create_mutual_follow_user(client_user) }
+      let(:follower1_headers)    { follower1.create_new_auth_token }
+      let(:follower2)            { create_mutual_follow_user(client_user) }
+      let(:follower2_headers)    { follower2.create_new_auth_token }
+      let(:non_follower)         { create_mutual_follow_user(follower2) }
+      let(:non_follower_headers) { non_follower.create_new_auth_token }
 
-      context "when client has three posts" do
-        it 'returns 200 and liked posts in descending order for time client liked' do
-          post v1_post_likes_path(client_user_post.id), headers: headers
-          post v1_post_likes_path(follower_post1.id), headers: headers
-          post v1_post_likes_path(follower_post2.id), headers: headers
+      context "when client has liked 3 client posts whose num of likes are 1 or 2 and num of replies are 0 or 1 or 2 and
+       liked 4 followers's post whose num of replies are 0 or 1 or 2" do
+        let!(:client_post_1liked_0reply)             { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_2liked_1reply)             { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_1liked_2reply)             { FactoryBot.create(:post, user_id: client_user.id) }
 
-          get v1_liked_posts_path, headers: headers
+        let!(:follower1_post_0reply)                 { FactoryBot.create(:post, user_id: follower1.id) }
+        let!(:follower1_post_1reply)                 { FactoryBot.create(:post, user_id: follower1.id) }
+        let!(:follower2_post_2reply)                 { FactoryBot.create(:post, user_id: follower2.id) }
+        let!(:follower2_post_1reply_by_non_follower) { FactoryBot.create(:post, user_id: follower2.id) }
 
+        let(:params) do
+          {
+            content: 'Hello!',
+            image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+            is_locked: true,
+          }
+        end
+
+        before do
+          post v1_post_likes_path(client_post_1liked_2reply.id),             headers: client_user_headers
+          post v1_post_likes_path(follower2_post_2reply.id),                 headers: client_user_headers
+          post v1_post_likes_path(follower1_post_0reply.id),                 headers: client_user_headers
+          post v1_post_likes_path(client_post_1liked_0reply.id),             headers: client_user_headers
+          post v1_post_likes_path(client_post_2liked_1reply.id),             headers: follower1_headers
+          post v1_post_likes_path(follower1_post_1reply.id),                 headers: client_user_headers
+          post v1_post_likes_path(client_post_2liked_1reply.id),             headers: client_user_headers
+          post v1_post_likes_path(follower2_post_1reply_by_non_follower.id), headers: client_user_headers
+
+          post v1_post_reply_path(client_post_2liked_1reply.id),             params: params, headers: client_user_headers
+          post v1_post_reply_path(client_post_1liked_2reply.id),             params: params, headers: follower1_headers
+          post v1_post_reply_path(client_post_1liked_2reply.id),             params: params, headers: follower2_headers
+          post v1_post_reply_path(follower1_post_1reply.id),                 params: params, headers: client_user_headers
+          post v1_post_reply_path(follower2_post_2reply.id),                 params: params, headers: client_user_headers
+          post v1_post_reply_path(follower2_post_2reply.id),                 params: params, headers: follower2_headers
+          post v1_post_reply_path(follower2_post_1reply_by_non_follower.id), params: params, headers: non_follower_headers
+        end
+
+        it "returns 200 and 7 formatted liked posts in descending order for time client liked" do
+          get v1_liked_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          response_body = JSON.parse(response.body)
-          expect(response_body.length).to eq(3)
-          expect(response_body[0].keys).to eq [
-            "id",
-            "content",
-            "image",
-            "icon_id",
-            "is_locked",
-            "deleted_at",
-            "created_at",
-            "updated_at",
-          ]
-          expect(response_body[1].keys).to eq [
-            "id",
-            "content",
-            "image",
-            "icon_id",
-            "is_locked",
-            "deleted_at",
-            "created_at",
-            "updated_at",
-          ]
-          expect(response_body[2].keys).to eq [
-            "id",
-            "content",
-            "image",
-            "icon_id",
-            "is_locked",
-            "deleted_at",
-            "created_at",
-            "updated_at",
-          ]
-          expect(response_body[0]).to have_id(follower_post2.id)
-          expect(response_body[1]).to have_id(follower_post1.id)
-          expect(response_body[2]).to have_id(client_user_post.id)
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(7)
+
+          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[1][:current_user_post].length).to eq(13)
+          expect(response_body[2][:mutual_follower_post].length).to eq(10)
+          expect(response_body[3][:current_user_post].length).to eq(13)
+          expect(response_body[4][:mutual_follower_post].length).to eq(10)
+          expect(response_body[5][:mutual_follower_post].length).to eq(10)
+          expect(response_body[6][:current_user_post].length).to eq(13)
+
+          expect(response_body[0][:mutual_follower_post]).to include(
+            id: follower2_post_1reply_by_non_follower.id,
+            content: follower2_post_1reply_by_non_follower.content,
+            image: follower2_post_1reply_by_non_follower.image.url,
+            is_locked: follower2_post_1reply_by_non_follower.is_locked,
+            icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
+            replies: 0,
+            is_liked_by_current_user: true,
+          )
+          expect(response_body[0][:mutual_follower_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+          expect(response_body[1][:current_user_post]).to include(
+            id: client_post_2liked_1reply.id,
+            content: client_post_2liked_1reply.content,
+            image: client_post_2liked_1reply.image.url,
+            is_locked: client_post_2liked_1reply.is_locked,
+            icon_url: client_user.image.url,
+            likes: 2,
+            replies: 1,
+            username: client_user.username,
+            userid: client_user.userid,
+            is_liked_by_current_user: true,
+          )
+          expect(response_body[1][:current_user_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
+
+          expect(response_body[2][:mutual_follower_post]).to include(
+            id: follower1_post_1reply.id,
+            replies: 1,
+          )
+          expect(response_body[3][:current_user_post]).to include(
+            id: client_post_1liked_0reply.id,
+            likes: 1,
+            replies: 0,
+          )
+          expect(response_body[4][:mutual_follower_post]).to include(
+            id: follower1_post_0reply.id,
+            replies: 0,
+          )
+          expect(response_body[5][:mutual_follower_post]).to include(
+            id: follower2_post_2reply.id,
+            replies: 2,
+          )
+          expect(response_body[6][:current_user_post]).to include(
+            id: client_post_1liked_2reply.id,
+            likes: 1,
+            replies: 2,
+          )
         end
       end
 
-      context "when client has one posts" do
-        it "returns 200 and liked post" do
-          post v1_post_likes_path(client_user_post.id), headers: headers
+      context "when client has liked 1 follower's post that replied by non-follower of client" do
+        let!(:follower2_post_1reply_by_non_follower) { FactoryBot.create(:post, user_id: follower2.id) }
+        let(:params) do
+          {
+            content: 'Hello!',
+            image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+            is_locked: true,
+          }
+        end
 
-          get v1_liked_posts_path, headers: headers
+        before do
+          post v1_post_likes_path(follower2_post_1reply_by_non_follower.id), headers: client_user_headers
+          post v1_post_reply_path(follower2_post_1reply_by_non_follower.id), params: params, headers: non_follower_headers
+        end
 
+        it "returns 200 and formatted liked posts" do
+          get v1_liked_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          response_body = JSON.parse(response.body)
-          expect(response_body[0].keys).to eq [
-            "id",
-            "content",
-            "image",
-            "icon_id",
-            "is_locked",
-            "deleted_at",
-            "created_at",
-            "updated_at",
-          ]
-          expect(response_body[0]).to have_id(client_user_post.id)
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:mutual_follower_post].length).to eq(10)
+          expect(response_body[0][:mutual_follower_post]).to include(
+            id: follower2_post_1reply_by_non_follower.id,
+            content: follower2_post_1reply_by_non_follower.content,
+            image: follower2_post_1reply_by_non_follower.image.url,
+            is_locked: follower2_post_1reply_by_non_follower.is_locked,
+            icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
+            replies: 0, is_liked_by_current_user: true,
+          )
+          expect(response_body[0][:mutual_follower_post]).to include(
+            :deleted_at,
+            :created_at,
+            :updated_at,
+          )
         end
       end
 
-      context "when client doesn't have any posts" do
-        it "returns 200 and no posts" do
-          get v1_liked_posts_path, headers: headers
-
+      context "when client hasn't liked post" do
+        it 'returns 200 and no posts' do
+          get v1_liked_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          response_body = JSON.parse(response.body)
-          expect(response_body[0]).to eq(nil)
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(0)
         end
       end
     end
