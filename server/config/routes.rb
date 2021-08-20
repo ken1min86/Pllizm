@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
     resources :posts, only: [:create, :destroy]
     get '/posts/liked', to: 'posts#index_liked_posts', as: :liked_posts
+    get '/posts/current_user', to: 'posts#index_current_user_posts', as: :current_user_posts
     get '/posts/current_user_and_mutual_follower',
         to: 'posts#index_current_user_and_mutual_follower_posts',
         as: :current_user_and_mutual_follower_posts

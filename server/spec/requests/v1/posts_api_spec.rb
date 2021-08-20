@@ -815,4 +815,72 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/posts/current_user - v1/posts#index_current_user_posts - Get current user's posts" do
+    # ***********************************************************
+    # 【注意点】
+    # データのフォーマットに以下の2メソッドを使用する前提でテストをしている。
+    # -format_current_user_post(current_user)
+    # -format_follower_post(current_user)
+    #
+    # これら以外のメソッドを使用するように変更する場合は、
+    # 実施するテストを1から考え直すこと。
+    # ***********************************************************
+
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_current_user_posts_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
+      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+
+      context "when client has own posts(not replies) and reply" do
+        let!(:client_post1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_reply) { create_reply_to_prams_post(client_user, client_post1) }
+        let!(:client_post2) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        it "returns 200 and 3 formatted posts" do
+          get v1_current_user_posts_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(3)
+          expect(response_body[0][:current_user_post]).to have_id(client_post2.id)
+          expect(response_body[1][:current_user_post]).to have_id(client_reply.id)
+          expect(response_body[2][:current_user_post]).to have_id(client_post1.id)
+        end
+      end
+
+      context "when client has a post" do
+        let!(:client_post) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        it "returns 200 and a formatted post" do
+          get v1_current_user_posts_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body)
+          expect(response_body.length).to eq(1)
+        end
+      end
+
+      context "when client has no posts" do
+        it "returns 200 and no posts" do
+          get v1_current_user_posts_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body)
+          expect(response_body.length).to eq(0)
+        end
+      end
+    end
+  end
 end

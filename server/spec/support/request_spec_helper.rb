@@ -52,4 +52,16 @@ module RequestSpecHelper
     follow_request_user.follow_requests.create(request_to: user.id)
     follow_request_user
   end
+
+  def create_reply_to_prams_post(reply_user, replied_post)
+    headers = reply_user.create_new_auth_token
+    params = {
+      content: 'Hello!',
+      image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+      is_locked: true,
+    }
+    post v1_post_reply_path(replied_post.id), params: params, headers: headers
+    reply = Post.order(created_at: :desc).limit(1)[0]
+    reply
+  end
 end
