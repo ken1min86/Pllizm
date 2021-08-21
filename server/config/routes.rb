@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     resources :posts do
       resources :likes, only: [:create]
     end
+    get '/posts/:post_id/threads', to: 'posts#index_threads', as: :post_threads
     post '/posts/:id/reply', to: 'posts#create_reply', as: :post_reply
     put '/posts/:id/change_lock', to: 'posts#change_lock', as: :post_changeLock
   end

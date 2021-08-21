@@ -53,7 +53,7 @@ class Post < ApplicationRecord
     hashed_current_user_post[:userid]   = current_user.userid
     hashed_current_user_post[:username] = current_user.username
     hashed_current_user_post[:likes]    = likes.length
-    hashed_current_user_post[:replies]  = TreePath.where(ancestor: id, depth: 1).length
+    hashed_current_user_post[:replies]  = count_replies_of_current_user_post(current_user)
     hashed_current_user_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
     hashed_current_user_post[:is_reply] = is_reply?
     formatted_current_user_post = { current_user_post: hashed_current_user_post }
@@ -66,7 +66,7 @@ class Post < ApplicationRecord
     hashed_follower_post.delete(:icon_id)
     hashed_follower_post[:image]    = image.url
     hashed_follower_post[:icon_url] = icon.image.url
-    hashed_follower_post[:replies]  = count_replies_by_current_user_or_followers(current_user)
+    hashed_follower_post[:replies]  = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
     hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
     hashed_follower_post[:is_reply] = is_reply?
     formatted_follower_post = { mutual_follower_post: hashed_follower_post }
@@ -88,22 +88,32 @@ class Post < ApplicationRecord
     TreePath.where(descendant: id).length > 1
   end
 
-  def count_replies_by_current_user_or_followers(current_user)
-    num_of_replies_by_current_user_or_followers = 0
+  def count_replies_of_current_user_post(current_user)
+    num_of_replies_exclude_logically_deleted_posts = 0
+    tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
+    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
+      unless tree_path_of_reply_include_logically_deleted_post.descendant_post.nil?
+        num_of_replies_exclude_logically_deleted_posts += 1
+      end
+    end
+    num_of_replies_exclude_logically_deleted_posts
+  end
+
+  def count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
+    num_of_replies_exclude_logically_deleted_posts = 0
     followers = current_user.followings
-    tree_paths_of_reply = TreePath.where(ancestor: id, depth: 1)
-    tree_paths_of_reply.each do |tree_path_of_reply|
-      if tree_path_of_reply.descendant_post.user_id == current_user.id
-        num_of_replies_by_current_user_or_followers += 1
-      else
-        followers.each do |follower|
-          if tree_path_of_reply.descendant_post.user_id == follower.id
-            num_of_replies_by_current_user_or_followers += 1
-          end
+    tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
+    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
+      unless tree_path_of_reply_include_logically_deleted_post.descendant_post.nil?
+        tree_path_of_reply_exclude_logically_deleted_post = tree_path_of_reply_include_logically_deleted_post
+        if tree_path_of_reply_exclude_logically_deleted_post.descendant_post.user_id == current_user.id
+          num_of_replies_exclude_logically_deleted_posts += 1
+        elsif followers.index(tree_path_of_reply_exclude_logically_deleted_post.descendant_post.user)
+          num_of_replies_exclude_logically_deleted_posts += 1
         end
       end
     end
-    num_of_replies_by_current_user_or_followers
+    num_of_replies_exclude_logically_deleted_posts
   end
 
   def your_post?(current_user)

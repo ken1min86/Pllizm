@@ -883,4 +883,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
   end
+
+  # describe "GET /v1/posts/current_user - v1/posts#index_current_user_posts - Get current user's posts" do
+
+  # end
 end
