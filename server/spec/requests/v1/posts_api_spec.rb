@@ -884,7 +884,340 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
   end
 
-  # describe "GET /v1/posts/current_user - v1/posts#index_current_user_posts - Get current user's posts" do
+  describe "GET /v1/posts/:post_id/threads - v1/posts#index_threads - Get thread of post of current user or followers" do
+    # ***********************************************************
+    # 【注意点】
+    # ◆その1
+    # データのフォーマットに以下のモデルメソッド2つを使用する前提でテストをしている。
+    # -format_current_user_post(current_user)
+    # -format_follower_post(current_user)
+    #
+    # これら以外のメソッドを使用するように変更する場合は、
+    # 実施するテストを1から考え直すこと。
 
-  # end
+    # ◆その2
+    # 投稿のスレッドを取得する際に使用するメソッドとして、
+    # 以下4つのクラスメソッドを利用している。
+    # -check_status_of_current_post
+    # -get_current_according_to_status_of_current_post
+    # -get_parent_of_current_post
+    # -get_children_of_current_post
+    # これらのメソッドに関しては、このスペックのみでテストをする。
+    # 他のAPIでもここでテストをしたメソッドを使い回すことがあるため、
+    # その際にメソッドが編集された際にはこちらのテストを修正すること。
+    # ***********************************************************
+
+    # *******************************************************************************
+    # 【仕様について補足】
+    # params[:post_id]に紐づく投稿が、非相互フォロワーのものであった場合、
+    # 親や子の投稿の情報は返さない。
+    #
+    # params[:post_id]に紐づく投稿が、カレントユーザまたは相互フォロワーのものであった場合でかつ、
+    # 親の投稿が非相互フォロワーのものであった場合は、parent: not_mutual_follower_postを返し、
+    # 子の投稿が複数でかつ非相互フォロワーのものを含む場合は、非相互フォロワーに関連する情報を返さず、
+    # 子の投稿が単数でかつ非相互フォロワーのものである場合は、children: not_existを返し、
+    # 子の投稿が削除済でかつ非相互フォロワーのものである場合は、children: not_existを返す。
+    # *******************************************************************************
+
+    context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
+      let(:client_user)      { FactoryBot.create(:user) }
+      let(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
+
+      it "returns 401" do
+        get v1_post_threads_path(client_user_post.id)
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
+      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+      let(:mutual_follower)     { create_mutual_follow_user(client_user) }
+      let(:not_mutual_follower) { create_mutual_follow_user(mutual_follower) }
+
+      context "when no posts related to params[:post_id]" do
+        let(:non_existent_post_id) { get_non_existent_post_id }
+
+        it 'retuns 200 and current: not_exist' do
+          get v1_post_threads_path(non_existent_post_id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[:current]).to eq(not_exist: nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is deleted" do
+        let!(:deleted_post) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        before do
+          delete v1_post_path(deleted_post.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and current: deleted' do
+          get v1_post_threads_path(deleted_post.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[:current]).to eq(deleted: nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by not mutual follower" do
+        let!(:current_post_of_not_mutual_follower) { FactoryBot.create(:post, user_id: not_mutual_follower.id) }
+
+        it 'returns 200 and current: not_mutual_follower_post' do
+          get v1_post_threads_path(current_post_of_not_mutual_follower.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[:current]).to eq(not_mutual_follower_post: nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by current user
+      and the post has 1 parent post of current user
+      and the post has 2 child posts of current user and mutual follower" do
+        let!(:parent_post_of_client_user)    { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:current_post_of_client_user)   { create_reply_to_prams_post(client_user, parent_post_of_client_user) }
+        let!(:child_post_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
+        let!(:child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:current_user_post]).to have_id(parent_post_of_client_user.id)
+          expect(response_body[:parent][:current_user_post].length).to eq(14)
+
+          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
+          expect(response_body[:current][:current_user_post].length).to eq(14)
+
+          expect(response_body[:children].length).to eq(2)
+          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:children][1][:current_user_post].length).to eq(14)
+          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post_of_mutual_follower.id)
+          expect(response_body[:children][1][:current_user_post]).to have_id(child_post_of_client_user.id)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by current user
+      and the post has 1 parent post of mutual follower
+      and the post has 2 child posts of current user" do
+        let!(:parent_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:current_post_of_client_user)    { create_reply_to_prams_post(client_user, parent_post_of_mutual_follower) }
+        let!(:child_post1_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
+        let!(:child_post2_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+          expect(response_body[:parent][:mutual_follower_post]).to have_id(parent_post_of_mutual_follower.id)
+          expect(response_body[:parent][:mutual_follower_post].length).to eq(11)
+
+          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
+          expect(response_body[:current][:current_user_post].length).to eq(14)
+
+          expect(response_body[:children].length).to eq(2)
+          expect(response_body[:children][0][:current_user_post].length).to eq(14)
+          expect(response_body[:children][1][:current_user_post].length).to eq(14)
+          expect(response_body[:children][0][:current_user_post]).to have_id(child_post2_of_client_user.id)
+          expect(response_body[:children][1][:current_user_post]).to have_id(child_post1_of_client_user.id)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by current user
+      and the post doesn't have parent post
+      and the post has 2 child posts of mutual follower" do
+        let!(:current_post_of_client_user)    { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:child_post1_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+        let!(:child_post2_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:not_exist]).to eq(nil)
+
+          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
+          expect(response_body[:current][:current_user_post].length).to eq(14)
+
+          expect(response_body[:children].length).to eq(2)
+          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:children][1][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post2_of_mutual_follower.id)
+          expect(response_body[:children][1][:mutual_follower_post]).to have_id(child_post1_of_mutual_follower.id)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by current user
+      and the post has 1 deleted parent post of current user
+      and the post doesn't have child post" do
+        let!(:deleted_parent_post_of_client_user) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:current_post_of_client_user)        { create_reply_to_prams_post(client_user, deleted_parent_post_of_client_user) }
+
+        before do
+          delete v1_post_path(deleted_parent_post_of_client_user.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:deleted]).to eq(nil)
+
+          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
+          expect(response_body[:current][:current_user_post].length).to eq(14)
+
+          expect(response_body[:children].length).to eq(1)
+          expect(response_body[:children][0][:not_exist]).to eq(nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by current user
+      and the post doesn't have parent post
+      and the post has 1 deleted child post of client user or mutual follower" do
+        let!(:current_post_of_client_user)           { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:deleted_child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:not_exist]).to eq(nil)
+
+          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
+          expect(response_body[:current][:current_user_post].length).to eq(14)
+
+          expect(response_body[:children].length).to eq(1)
+          expect(response_body[:children][0][:deleted]).to eq(nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by mutual follower
+      and the post has 1 parent post of not mutual follower of current user
+      and the post has 2 child posts of not mutual follower of current user" do
+        let!(:parent_post_of_not_mutual_follower) { FactoryBot.create(:post, user_id: not_mutual_follower.id) }
+        let!(:current_post_of_mutual_follower) do
+          create_reply_to_prams_post(mutual_follower, parent_post_of_not_mutual_follower)
+        end
+        let!(:child_post1_of_not_mutual_follower) do
+          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+        end
+        let!(:child_post2_of_not_mutual_follower) do
+          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+        end
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+
+          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
+          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+
+          expect(response_body[:children].length).to eq(1)
+          expect(response_body[:children][0][:not_exist]).to eq(nil)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by mutual follower
+      and the post doesn't have parent post
+      and the post has 2 child post of current user and not mutual follower of current user" do
+        let!(:current_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:child_post_of_not_mutual_follower) do
+          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+        end
+        let!(:child_post_of_current_user) { create_reply_to_prams_post(client_user, current_post_of_mutual_follower) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+
+          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
+          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+
+          expect(response_body[:children].length).to eq(1)
+          expect(response_body[:children][0][:current_user_post]).to have_id(child_post_of_current_user.id)
+          expect(response_body[:children][0][:current_user_post].length).to eq(14)
+        end
+      end
+
+      context "when post related to params[:post_id] is exist and posted by mutual follower
+      and the post doesn't have parent post
+      and the post has 1 child post of mutual follower" do
+        let!(:current_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:child_post_of_mutual_follower)   { create_reply_to_prams_post(mutual_follower, current_post_of_mutual_follower) }
+
+        it 'returns 200 and thread' do
+          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+
+          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+
+          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
+          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+
+          expect(response_body[:children].length).to eq(1)
+          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post_of_mutual_follower.id)
+          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
+        end
+      end
+    end
+  end
 end
