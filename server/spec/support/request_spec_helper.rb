@@ -34,6 +34,14 @@ module RequestSpecHelper
     non_existent_userid
   end
 
+  def get_non_existent_post_id
+    non_existent_post_id = SecureRandom.alphanumeric(20)
+    while Post.find_by(id: non_existent_post_id)
+      non_existent_post_id = SecureRandom.alphanumeric(20)
+    end
+    non_existent_post_id
+  end
+
   def create_mutual_follow_user(user)
     mutual_follow_user = FactoryBot.create(:user, userid: get_non_existent_user_id)
     Follower.create(followed_by: user.id, follow_to: mutual_follow_user.id)
@@ -61,6 +69,7 @@ module RequestSpecHelper
       is_locked: true,
     }
     post v1_post_reply_path(replied_post.id), params: params, headers: headers
+    expect(response).to have_http_status(200)
     reply = Post.order(created_at: :desc).limit(1)[0]
     reply
   end

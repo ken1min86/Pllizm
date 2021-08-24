@@ -13,6 +13,9 @@ AllCops:
     - 'vendor/**/*'
     - 'path/ruby'
 
+ContinuationSlash:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 130
 
