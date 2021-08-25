@@ -13,10 +13,11 @@ Rails.application.routes.draw do
 
     resources :followers, only: [:create]
     get '/mutual_follow_users', to: 'users#index_of_mutual_follow_users', as: :mutual_follow_users
-    delete '/followers', to: 'followers#destroy', as: :follower
+    delete '/followers/:follower_id', to: 'followers#destroy', as: :follower
 
     resources :posts, only: [:create, :destroy]
     get '/posts/liked', to: 'posts#index_liked_posts', as: :liked_posts
+    get '/posts/replies', to: 'posts#index_replies', as: :post_replies
     get '/posts/current_user', to: 'posts#index_current_user_posts', as: :current_user_posts
     get '/posts/current_user_and_mutual_follower',
         to: 'posts#index_current_user_and_mutual_follower_posts',
