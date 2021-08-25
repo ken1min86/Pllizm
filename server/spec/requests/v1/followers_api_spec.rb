@@ -58,9 +58,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
       let(:follower) { FactoryBot.create(:user) }
 
       it "returns 401" do
-        delete v1_follower_path, params: {
-          follower_id: follower.id,
-        }
+        delete v1_follower_path(follower_id: follower.id)
         expect(response).to have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
@@ -77,9 +75,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
         expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).to exist
         expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).to exist
 
-        delete v1_follower_path, params: {
-          follower_id: follower.id,
-        }, headers: headers
+        delete v1_follower_path(follower_id: follower.id), headers: headers
         expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).not_to exist
         expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).not_to exist
         expect(response).to have_http_status(200)
@@ -90,9 +86,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
         expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).not_to exist
         expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).not_to exist
 
-        delete v1_follower_path, params: {
-          follower_id: follower.id,
-        }, headers: headers
+        delete v1_follower_path(follower_id: follower.id), headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
         expect(JSON.parse(response.body)['errors']['title']).to include('フォローしていません')

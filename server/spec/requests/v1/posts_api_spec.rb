@@ -1220,4 +1220,185 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/posts/replies - v1/posts#index_replies - Get replies" do
+    # *******************************************************************
+    # 【注意点】
+    # データのフォーマットに以下のモデルメソッド2つを使用する前提でテストをしている。
+    # -format_current_user_post(current_user)
+    # -format_follower_post(current_user)
+    #
+    # これら以外のメソッドを使用するように変更する場合は、
+    # 実施するテストを1から考え直すこと。
+    # *******************************************************************
+
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_post_replies_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
+      let(:client_user)                 { FactoryBot.create(:user) }
+      let(:client_user_headers)         { client_user.create_new_auth_token }
+      let(:mutual_follower)             { create_mutual_follow_user(client_user) }
+      let(:mutual_follower_headers)     { mutual_follower.create_new_auth_token }
+      # not_mutual_follower: 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
+      let(:not_mutual_follower)         { create_mutual_follow_user(client_user) }
+      let(:not_mutual_follower_headers) { not_mutual_follower.create_new_auth_token }
+
+      context "case1, 2, 4, 6, 8" do
+        let!(:case1_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case1_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case1_current_user_post_1) }
+
+        let!(:case2_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case2_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
+        let!(:case2_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
+
+        let!(:case4_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case4_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case4_current_user_post_1) }
+
+        let!(:case6_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case6_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case6_current_user_post_1) }
+
+        let!(:case8_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case8_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case8_current_user_post_1) }
+        let!(:case8_current_user_post_2) { create_reply_to_prams_post(client_user, case8_follower_post_1) }
+
+        before do
+          delete v1_post_path(case4_follower_post_1.id), headers: mutual_follower_headers
+          delete v1_follower_path(client_user.id),       headers: not_mutual_follower_headers
+        end
+
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(3)
+          expect(response_body[0][:current_user_post].length).to eq(14)
+          expect(response_body[0][:current_user_post]).to have_id(case8_current_user_post_2.id)
+          expect(response_body[1][:current_user_post].length).to eq(14)
+          expect(response_body[1][:current_user_post]).to have_id(case2_current_user_post_1.id)
+          expect(response_body[2][:current_user_post].length).to eq(14)
+          expect(response_body[2][:current_user_post]).to have_id(case1_current_user_post_1.id)
+        end
+      end
+
+      context "case3, 5, 7, 9" do
+        let!(:case3_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+
+        let!(:case5_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case5_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
+        let!(:case5_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
+
+        let!(:case7_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case7_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
+        let!(:case7_not_follower_post_2) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
+
+        let!(:case9_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case9_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_1) }
+        let!(:case9_current_user_post_2) { create_reply_to_prams_post(client_user, case9_follower_post_1) }
+        let!(:case9_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_2) }
+        let!(:case9_current_user_post_3) { create_reply_to_prams_post(client_user, case9_follower_post_2) }
+
+        before do
+          delete v1_post_path(case5_follower_post_1.id),     headers: mutual_follower_headers
+          delete v1_post_path(case5_follower_post_2.id),     headers: mutual_follower_headers
+          delete v1_post_path(case9_current_user_post_3.id), headers: client_user_headers
+          delete v1_follower_path(client_user.id),           headers: not_mutual_follower_headers
+        end
+
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:current_user_post].length).to eq(14)
+          expect(response_body[0][:current_user_post]).to have_id(case9_current_user_post_2.id)
+        end
+      end
+
+      context "case10, 11, 12" do
+        let!(:case10_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case10_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case10_current_user_post_1) }
+        let!(:case10_current_user_post_2) { create_reply_to_prams_post(client_user, case10_follower_post_1) }
+        let!(:case10_current_user_post_3) { create_reply_to_prams_post(mutual_follower, case10_current_user_post_2) }
+
+        let!(:case11_follower_post_1)     { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:case11_current_user_post_1) { create_reply_to_prams_post(client_user, case11_follower_post_1) }
+        let!(:case11_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_1) }
+        let!(:case11_current_user_post_2) { create_reply_to_prams_post(client_user, case11_follower_post_2) }
+        let!(:case11_follower_post_3)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_2) }
+
+        let!(:case12_follower_post_1)     { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:case12_current_user_post_1) { create_reply_to_prams_post(client_user, case12_follower_post_1) }
+        let!(:case12_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case12_current_user_post_1) }
+        let!(:case12_current_user_post_2) { create_reply_to_prams_post(client_user, case12_follower_post_2) }
+        let!(:case12_follower_post_3)     { create_reply_to_prams_post(mutual_follower, case12_current_user_post_2) }
+        let!(:case12_current_user_post_3) { create_reply_to_prams_post(client_user, case12_follower_post_3) }
+
+        before do
+          delete v1_post_path(case10_current_user_post_3.id), headers: client_user_headers
+          delete v1_post_path(case11_current_user_post_1.id), headers: client_user_headers
+          delete v1_post_path(case11_follower_post_2.id), headers: mutual_follower_headers
+          delete v1_post_path(case11_current_user_post_2.id), headers: client_user_headers
+          delete v1_post_path(case12_current_user_post_2.id), headers: client_user_headers
+          delete v1_post_path(case12_current_user_post_3.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(2)
+          expect(response_body[0][:current_user_post].length).to eq(14)
+          expect(response_body[0][:current_user_post]).to have_id(case12_current_user_post_1.id)
+          expect(response_body[1][:current_user_post].length).to eq(14)
+          expect(response_body[1][:current_user_post]).to have_id(case10_current_user_post_2.id)
+        end
+      end
+
+      context "when number of current user's posts is 1" do
+        let!(:current_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:follower_reply)    { create_reply_to_prams_post(mutual_follower, current_user_post) }
+
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:current_user_post].length).to eq(14)
+          expect(response_body[0][:current_user_post]).to have_id(current_user_post.id)
+        end
+      end
+
+      context "when number of current user's posts is 0" do
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(0)
+        end
+      end
+    end
+  end
 end
