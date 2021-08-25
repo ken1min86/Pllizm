@@ -145,6 +145,15 @@ module V1
       render json: thread, status: :ok
     end
 
+    def index_replies
+      replies = []
+      current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_v1_user.id).order(created_at: "DESC")
+      current_user_posts_with_deleted.each do |current_user_post_with_deleted|
+        replies.concat(Post.get_reply(current_v1_user, current_user_post_with_deleted))
+      end
+      render json: replies, status: :ok
+    end
+
     private
 
     def post_params

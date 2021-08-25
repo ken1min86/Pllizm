@@ -150,6 +150,98 @@ class Post < ApplicationRecord
     children
   end
 
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # パターンA: ルートがカレントユーザの投稿であり、
+  #           子以下がカレントユーザ以外の投稿である場合
+  # パターンB: ルートへのリプライにカレントユーザの投稿を含み、
+  #           リーフがカレントユーザの投稿の場合
+  # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
+  #           リーフがカレントユーザの投稿以外の場合
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  def self.get_reply(current_user, current_user_post_with_deleted)
+    reply = []
+    tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
+                                                                descendant: current_user_post_with_deleted.id, depth: 0)
+    tree_paths_below_child_post = tree_paths_except_current_post_depth_0.where(ancestor: current_user_post_with_deleted.id)
+    tree_paths_above_parent_post = tree_paths_except_current_post_depth_0.where(descendant: current_user_post_with_deleted.id)
+    # *********************************************
+    # パターンA
+    if tree_paths_below_child_post.length > 0 && tree_paths_above_parent_post.length == 0
+      has_current_post_below_child = false
+      unless current_user_post_with_deleted.is_deleted?
+        tree_paths_below_child_post.each do |tree_path_below_current_post|
+          posts_below_current_post = Post.with_deleted.find(tree_path_below_current_post.descendant)
+          if posts_below_current_post.your_post?(current_user)
+            has_current_post_below_child = true
+            break
+          end
+        end
+        if has_current_post_below_child == false
+          tree_paths_of_children = TreePath.where(ancestor: current_user_post_with_deleted.id, depth: 1)
+          tree_paths_of_children.each do |tree_path_of_child|
+            child_post = Post.with_deleted.find(tree_path_of_child.descendant)
+            unless child_post.is_deleted?
+              if child_post.mutual_followers_post?(current_user)
+                reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
+                break
+              end
+            end
+          end
+        end
+      end
+    # *********************************************
+    # パターンB and C
+    elsif tree_paths_above_parent_post.length > 0
+      has_curret_post_below_child = false
+      tree_paths_below_child_post.each do |tree_path_below_child_post|
+        post_below_child = Post.with_deleted.find(tree_path_below_child_post.descendant)
+        if post_below_child.your_post?(current_user)
+          has_curret_post_below_child = true
+          break
+        end
+      end
+      unless has_curret_post_below_child
+        if current_user_post_with_deleted.is_deleted?
+          has_parent = true
+          while has_parent
+            tree_path_of_parent = TreePath.find_by(descendant: current_user_post_with_deleted.id, depth: 1)
+            if tree_path_of_parent.blank?
+              has_parent = false
+            else
+              parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
+              if !parent_post.is_deleted? && parent_post.your_post?(current_user)
+                if TreePath.where(descendant: parent_post).length > 1
+                  reply.push(parent_post.format_current_user_post(current_user))
+                  has_parent = false
+                else
+                  tree_paths_of_children = TreePath.where(ancestor: parent_post)
+                  tree_paths_of_children.each do |tree_path_of_child|
+                    child_post = Post.with_deleted.find(tree_path_of_child.descendant)
+                    unless child_post.is_deleted?
+                      if child_post.mutual_followers_post?(current_user)
+                        reply.push(parent_post.format_current_user_post(current_user))
+                        has_parent = false
+                        break
+                      end
+                    end
+                  end
+                  if has_parent
+                    current_user_post_with_deleted = parent_post
+                  end
+                end
+              else
+                current_user_post_with_deleted = parent_post
+              end
+            end
+          end
+        else
+          reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
+        end
+      end
+    end
+    reply
+  end
+
   def format_current_user_post(current_user)
     hashed_current_user_post = attributes.symbolize_keys
     hashed_current_user_post.delete(:user_id)
@@ -179,21 +271,6 @@ class Post < ApplicationRecord
     formatted_follower_post
   end
 
-  def is_liked_by_current_user?(current_user)
-    is_liked_by_current_user = false
-    liked_users.each do |liked_user|
-      if liked_user.id == current_user.id
-        is_liked_by_current_user = true
-        break
-      end
-    end
-    is_liked_by_current_user
-  end
-
-  def is_reply?
-    TreePath.where(descendant: id).length > 1
-  end
-
   def count_replies_of_current_user_post(current_user)
     num_of_replies_exclude_logically_deleted_posts = 0
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
@@ -220,6 +297,29 @@ class Post < ApplicationRecord
       end
     end
     num_of_replies_exclude_logically_deleted_posts
+  end
+
+  def is_liked_by_current_user?(current_user)
+    is_liked_by_current_user = false
+    liked_users.each do |liked_user|
+      if liked_user.id == current_user.id
+        is_liked_by_current_user = true
+        break
+      end
+    end
+    is_liked_by_current_user
+  end
+
+  def is_reply?
+    TreePath.where(descendant: id).length > 1
+  end
+
+  def is_deleted?
+    if deleted_at.nil?
+      false
+    else
+      true
+    end
   end
 
   def your_post?(current_user)
