@@ -150,14 +150,14 @@ class Post < ApplicationRecord
     children
   end
 
-    # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
-    # パターンA: ルートがカレントユーザの投稿であり、
-    #           子以下がカレントユーザ以外の投稿である場合
-    # パターンB: ルートへのリプライにカレントユーザの投稿を含み、
-    #           リーフがカレントユーザの投稿の場合
-    # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
-    #           リーフがカレントユーザの投稿以外の場合
-    # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # パターンA: ルートがカレントユーザの投稿であり、
+  #           子以下がカレントユーザ以外の投稿である場合
+  # パターンB: ルートへのリプライにカレントユーザの投稿を含み、
+  #           リーフがカレントユーザの投稿の場合
+  # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
+  #           リーフがカレントユーザの投稿以外の場合
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = []
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
@@ -178,22 +178,14 @@ class Post < ApplicationRecord
         end
         if has_current_post_below_child == false
           tree_paths_of_children = TreePath.where(ancestor: current_user_post_with_deleted.id, depth: 1)
-          num_of_child_post = tree_paths_of_children.length
-          num_of_deleted_post = 0
-          num_of_not_mutual_follower_post = 0
           tree_paths_of_children.each do |tree_path_of_child|
-            child_post = Post.find_by(id: tree_path_of_child.descendant)
-            if child_post.blank?
-              num_of_deleted_post += 1
-            else
-              if !child_post.your_post?(current_user) \
-                && !child_post.mutual_followers_post?(current_user)
-                num_of_not_mutual_follower_post += 1
+            child_post = Post.with_deleted.find(tree_path_of_child.descendant)
+            unless child_post.is_deleted?
+              if child_post.mutual_followers_post?(current_user)
+                reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
+                break
               end
             end
-          end
-          if num_of_deleted_post < num_of_child_post && num_of_not_mutual_follower_post < num_of_child_post
-            reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
           end
         end
       end
@@ -217,11 +209,26 @@ class Post < ApplicationRecord
               has_parent = false
             else
               parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
-              if !parent_post.is_deleted? \
-                && parent_post.your_post?(current_user) \
-                && TreePath.where(descendant: parent_post).length > 1
-                reply.push(parent_post.format_current_user_post(current_user))
-                has_parent = false
+              if !parent_post.is_deleted? && parent_post.your_post?(current_user)
+                if TreePath.where(descendant: parent_post).length > 1
+                  reply.push(parent_post.format_current_user_post(current_user))
+                  has_parent = false
+                else
+                  tree_paths_of_children = TreePath.where(ancestor: parent_post)
+                  tree_paths_of_children.each do |tree_path_of_child|
+                    child_post = Post.with_deleted.find(tree_path_of_child.descendant)
+                    unless child_post.is_deleted?
+                      if child_post.mutual_followers_post?(current_user)
+                        reply.push(parent_post.format_current_user_post(current_user))
+                        has_parent = false
+                        break
+                      end
+                    end
+                  end
+                  if has_parent
+                    current_user_post_with_deleted = parent_post
+                  end
+                end
               else
                 current_user_post_with_deleted = parent_post
               end
@@ -232,7 +239,7 @@ class Post < ApplicationRecord
         end
       end
     end
-    return reply
+    reply
   end
 
   def format_current_user_post(current_user)
@@ -292,28 +299,28 @@ class Post < ApplicationRecord
     num_of_replies_exclude_logically_deleted_posts
   end
 
-    def is_liked_by_current_user?(current_user)
-      is_liked_by_current_user = false
-      liked_users.each do |liked_user|
-        if liked_user.id == current_user.id
-          is_liked_by_current_user = true
-          break
-        end
-      end
-      is_liked_by_current_user
-    end
-
-    def is_reply?
-      TreePath.where(descendant: id).length > 1
-    end
-
-    def is_deleted?
-      if deleted_at.nil?
-        false
-      else
-        true
+  def is_liked_by_current_user?(current_user)
+    is_liked_by_current_user = false
+    liked_users.each do |liked_user|
+      if liked_user.id == current_user.id
+        is_liked_by_current_user = true
+        break
       end
     end
+    is_liked_by_current_user
+  end
+
+  def is_reply?
+    TreePath.where(descendant: id).length > 1
+  end
+
+  def is_deleted?
+    if deleted_at.nil?
+      false
+    else
+      true
+    end
+  end
 
   def your_post?(current_user)
     user_id == current_user.id

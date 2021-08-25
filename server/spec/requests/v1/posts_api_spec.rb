@@ -1373,6 +1373,34 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
+      context "13, 14" do
+        let!(:case13_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case13_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case13_current_user_post_1) }
+        let!(:case13_current_user_post_2) { create_reply_to_prams_post(client_user, case13_follower_post_1) }
+
+        let!(:case14_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case14_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case14_current_user_post_1) }
+        let!(:case14_current_user_post_2) { create_reply_to_prams_post(client_user, case14_follower_post_1) }
+
+        before do
+          delete v1_post_path(case13_current_user_post_2.id), headers: client_user_headers
+          delete v1_post_path(case14_follower_post_1.id),     headers: mutual_follower_headers
+          delete v1_post_path(case14_current_user_post_2.id), headers: client_user_headers
+        end
+
+        it 'returns 200 and replies' do
+          get v1_post_replies_path, headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:current_user_post].length).to eq(14)
+          expect(response_body[0][:current_user_post]).to have_id(case13_current_user_post_1.id)
+        end
+      end
+
       context "when number of current user's posts is 1" do
         let!(:current_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
         let!(:follower_reply)    { create_reply_to_prams_post(mutual_follower, current_user_post) }
