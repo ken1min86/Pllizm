@@ -154,6 +154,9 @@ module V1
       render json: replies, status: :ok
     end
 
+    def index_refract_candidates
+    end
+
     private
 
     def post_params

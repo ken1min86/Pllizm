@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_17_060926) do
+ActiveRecord::Schema.define(version: 2021_08_26_090143) do
+
+  create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "performed_refract", null: false
+    t.string "post_id"
+    t.string "category"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["post_id"], name: "index_current_user_refracts_on_post_id"
+    t.index ["user_id"], name: "index_current_user_refracts_on_user_id"
+  end
 
   create_table "follow_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "requested_by"
@@ -104,6 +115,8 @@ ActiveRecord::Schema.define(version: 2021_08_17_060926) do
     t.index ["userid"], name: "index_users_on_userid", unique: true
   end
 
+  add_foreign_key "current_user_refracts", "posts"
+  add_foreign_key "current_user_refracts", "users"
   add_foreign_key "follow_requests", "users", column: "request_to"
   add_foreign_key "follow_requests", "users", column: "requested_by"
   add_foreign_key "followers", "users", column: "follow_to"

@@ -107,6 +107,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "DELETE /v1/posts - v1/posts#destroy - Delete login user's post" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:client_user)       { FactoryBot.create(:user) }
       let!(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
 
@@ -118,6 +122,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:client_user)           { FactoryBot.create(:user) }
       let(:headers)               { client_user.create_new_auth_token }
       let!(:client_user_post)     { FactoryBot.create(:post, user_id: client_user.id) }
@@ -145,6 +153,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "PUT /v1/posts/:id/change_lock - v1/posts#change_lock - Change is_locked of login user's post" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user) { FactoryBot.create(:user) }
       let(:post) { FactoryBot.create(:post, user_id: user.id) }
 
@@ -156,6 +168,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user)              { FactoryBot.create(:user) }
       let(:post)              { FactoryBot.create(:post, user_id: user.id) }
       let(:headers)           { user.create_new_auth_token }
@@ -204,6 +220,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "POST /v1/posts/:id/reply - v1/posts#create_reply - Create reply" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user)      { FactoryBot.create(:user) }
       let(:user_post) { FactoryBot.create(:post, user_id: user.id) }
 
