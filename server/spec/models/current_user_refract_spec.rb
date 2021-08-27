@@ -11,8 +11,7 @@ RSpec.describe CurrentUserRefract, type: :model do
   let(:non_existent_post_id) { get_non_existent_post_id }
 
   it 'is valid when nomal system and category is like' do
-    current_user_refract = CurrentUserRefract.create(
-      user_id: user.id,
+    current_user_refract = user.current_user_refracts.new(
       performed_refract: false,
       post_id: user_post.id,
       category: 'like'
@@ -21,10 +20,9 @@ RSpec.describe CurrentUserRefract, type: :model do
   end
 
   it 'is valid when nomal system and category is reply' do
-    current_user_refract = CurrentUserRefract.new(
+    current_user_refract = user_post.current_user_refracts.new(
       user_id: user.id,
       performed_refract: true,
-      post_id: user_post.id,
       category: 'reply'
     )
     expect(current_user_refract).to be_valid
@@ -40,7 +38,17 @@ RSpec.describe CurrentUserRefract, type: :model do
     expect(current_user_refract.errors[:user_id]).to include("can't be blank")
   end
 
-  it "is invalid whe user_id doesn't relate to user" do
+  it "is invalid without performed_refract" do
+    current_user_refract = CurrentUserRefract.new(
+      user_id: user.id,
+      post_id: user_post.id,
+      category: 'reply'
+    )
+    expect(current_user_refract).to be_invalid
+    expect(current_user_refract.errors[:performed_refract]).to include("is not included in the list")
+  end
+
+  it "is invalid when user_id doesn't relate to user" do
     current_user_refract = CurrentUserRefract.new(
       user_id: non_existent_user_id,
       performed_refract: true,
@@ -50,7 +58,7 @@ RSpec.describe CurrentUserRefract, type: :model do
     expect(current_user_refract).to be_invalid
   end
 
-  it "is invalid whe post_id doesn't relate to post" do
+  it "is invalid when post_id doesn't relate to post" do
     current_user_refract = CurrentUserRefract.new(
       user_id: user.id,
       performed_refract: true,
@@ -60,7 +68,7 @@ RSpec.describe CurrentUserRefract, type: :model do
     expect(current_user_refract).to be_invalid
   end
 
-  it "is invalid whe performed_refract isn't reply or like" do
+  it "is invalid when category isn't reply or like" do
     current_user_refract = CurrentUserRefract.new(
       user_id: user.id,
       performed_refract: 1,
@@ -68,5 +76,6 @@ RSpec.describe CurrentUserRefract, type: :model do
       category: 'good'
     )
     expect(current_user_refract).to be_invalid
+    expect(current_user_refract.errors[:category]).to include("is not included in the list")
   end
 end
