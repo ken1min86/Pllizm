@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_26_090143) do
+ActiveRecord::Schema.define(version: 2021_08_27_005709) do
 
   create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 2021_08_26_090143) do
     t.string "category"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_current_user_refracts_on_deleted_at"
     t.index ["post_id"], name: "index_current_user_refracts_on_post_id"
     t.index ["user_id"], name: "index_current_user_refracts_on_user_id"
   end

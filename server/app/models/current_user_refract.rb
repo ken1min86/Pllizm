@@ -1,4 +1,6 @@
 class CurrentUserRefract < ApplicationRecord
+  acts_as_paranoid
+
   belongs_to :user
   belongs_to :refracted_post, class_name: 'Post', foreign_key: 'post_id'
 
