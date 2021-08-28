@@ -5,7 +5,9 @@ module V1
     # ログインユーザ以外のidは絶対に返さないこと。
     # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
 
+    # ※順番を入れ替えないこと(authenticate→verify_refractable)
     before_action :authenticate_v1_user!
+    before_action :verify_refractable_after_authenticate, only: [:index_refract_candidates]
 
     def create
       post = Post.new(post_params)
@@ -43,7 +45,7 @@ module V1
             )
             depth += 1
           end
-          render json: {}, status: :ok
+          render json: reply_post, status: :ok
         else
           render json: reply_post.errors, status: :bad_request
         end
@@ -149,9 +151,66 @@ module V1
       replies = []
       current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_v1_user.id).order(created_at: "DESC")
       current_user_posts_with_deleted.each do |current_user_post_with_deleted|
-        replies.concat(Post.get_reply(current_v1_user, current_user_post_with_deleted))
+        reply = Post.get_reply(current_v1_user, current_user_post_with_deleted)
+        if reply.present?
+          formatted_reply = reply.format_current_user_post(current_v1_user)
+          replies.push(formatted_reply)
+        end
       end
       render json: replies, status: :ok
+    end
+
+    def index_refract_candidates
+      # リフラクト候補取得の対象期間の取得
+      target_time_from = nil
+      target_time_to = nil
+      if CurrentUserRefract.with_deleted.where(user_id: current_v1_user.id).length >= 2
+        new_refract, old_refract = CurrentUserRefract.get_latest_two_refracts(current_v1_user)
+        target_time_from = old_refract.created_at
+        target_time_to = new_refract.created_at
+      else
+        new_refract = CurrentUserRefract.find_by(user_id: current_v1_user.id)
+        target_time_from = current_v1_user.created_at
+        target_time_to = new_refract.created_at
+      end
+
+      # いいねした投稿の中からリフラクト候補を取得
+      hashed_refract_candidates_of_like = Post.get_hashed_refract_candidates_of_like(
+        current_v1_user,
+        target_time_from,
+        target_time_to
+      )
+
+      # リプライの中からリフラクト候補を取得
+      replies = []
+      current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_v1_user.id)
+      current_user_posts_with_deleted.each do |current_user_post_with_deleted|
+        reply = Post.get_reply(current_v1_user, current_user_post_with_deleted)
+        if reply.present?
+          replies.push(reply)
+        end
+      end
+      hashed_refract_candidates_of_reply = Post.get_hashed_refract_candidates_of_reply(
+        current_v1_user,
+        target_time_from,
+        target_time_to,
+        replies
+      )
+
+      # マージしてソートしフォーマット
+      hashed_refract_candidates = hashed_refract_candidates_of_like.concat(hashed_refract_candidates_of_reply)
+      hashed_refract_candidates.sort_by! { |post| post[:datetime_for_sort] }.reverse!
+      formatted_refract_candidates = []
+      hashed_refract_candidates.each do |hashed_refract_candidate|
+        refract_candidate = Post.find(hashed_refract_candidate[:id])
+        if hashed_refract_candidate[:created_at] == hashed_refract_candidate[:datetime_for_sort]
+          formatted_refract_candidates.push({ reply: refract_candidate.format_post(current_v1_user) })
+        else
+          formatted_refract_candidates.push({ like: refract_candidate.format_post(current_v1_user) })
+        end
+      end
+
+      render json: formatted_refract_candidates, status: :ok
     end
 
     private

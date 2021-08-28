@@ -107,6 +107,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "DELETE /v1/posts - v1/posts#destroy - Delete login user's post" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:client_user)       { FactoryBot.create(:user) }
       let!(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
 
@@ -118,6 +122,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:client_user)           { FactoryBot.create(:user) }
       let(:headers)               { client_user.create_new_auth_token }
       let!(:client_user_post)     { FactoryBot.create(:post, user_id: client_user.id) }
@@ -145,6 +153,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "PUT /v1/posts/:id/change_lock - v1/posts#change_lock - Change is_locked of login user's post" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user) { FactoryBot.create(:user) }
       let(:post) { FactoryBot.create(:post, user_id: user.id) }
 
@@ -156,6 +168,10 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
 
     context "when client has token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user)              { FactoryBot.create(:user) }
       let(:post)              { FactoryBot.create(:post, user_id: user.id) }
       let(:headers)           { user.create_new_auth_token }
@@ -204,6 +220,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
   describe "POST /v1/posts/:id/reply - v1/posts#create_reply - Create reply" do
     context "when client doesn't have token" do
+      before do
+        FactoryBot.create(:icon)
+      end
+
       let(:user)      { FactoryBot.create(:user) }
       let(:user_post) { FactoryBot.create(:post, user_id: user.id) }
 
@@ -1425,6 +1445,254 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(0)
+        end
+      end
+    end
+  end
+
+  describe "GET /v1/posts/refract_candidate - v1/posts#index_refract_candidates - Get refract candidates" do
+    # ************************************************************************
+    # 【注意点】
+    # データのフォーマットに以下のクラスメソッド2つを使用する前提でテストをしている。
+    # -format_current_user_post(current_user)
+    # -format_follower_post(current_user)
+    #
+    # これら以外のメソッドを使用するように変更する場合は、
+    # 実施するテストを1から考え直すこと。
+    # ************************************************************************
+
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_post_refract_candidates_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token and has performed CurrentUserRefract record" do
+      before do
+        CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
+      end
+
+      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+
+      it 'returns 400' do
+        expect(client_user.current_user_refracts.where(performed_refract: true).length).to eq 1
+        expect(client_user.current_user_refracts.where(performed_refract: false).length).to eq 0
+        get v1_post_refract_candidates_path, headers: client_user_headers
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+        expect(JSON.parse(response.body)['errors']['title']).to include('リフラクト機能を使用できません')
+      end
+    end
+
+    context "when client has token and has not performed CurrentUserRefract record" do
+      context 'case 1, 3, 11, 24, 25, 26, 27' do
+        before do
+          travel_to Time.zone.local(2021, 8, 15) do
+            FactoryBot.create(:icon)
+            @client_user = FactoryBot.create(:user)
+            @mutual_follower = create_mutual_follow_user(@client_user)
+            @not_mutual_follower = create_mutual_follow_user(@client_user)
+            @client_user_headers = @client_user.create_new_auth_token
+            @mutual_follower_headers = @mutual_follower.create_new_auth_token
+            @not_mutual_follower_headers = @not_mutual_follower.create_new_auth_token
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 4, 30, 0o0) do
+            @case3_11_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+
+            @case24_not_follower_post1 = FactoryBot.create(:post, user_id: @not_mutual_follower.id)
+            @case24_current_user_post = create_reply_to_prams_post(@client_user, @case24_not_follower_post1)
+            create_reply_to_prams_post(@not_mutual_follower, @case24_current_user_post) # case24_not_follower_post2
+
+            @case25_current_user_post1 = FactoryBot.create(:post, user_id: @client_user.id)
+            @case25_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post1)
+            @case25_current_user_post2 = create_reply_to_prams_post(@client_user, @case25_follower_post1)
+            @case25_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post2)
+
+            @case26_27_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case26_27_current_user_post1 = create_reply_to_prams_post(@client_user, @case26_27_follower_post1)
+            @case26_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
+            @case27_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
+            post v1_post_likes_path(@case3_11_follower_post.id), headers: @client_user_headers
+            delete v1_post_path(@case25_follower_post1.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case25_follower_post2.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case26_follower_post2.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case27_follower_post2.id), headers: @mutual_follower_headers
+          end
+        end
+
+        it 'return 200 and refract candidates' do
+          travel_to Time.zone.local(2021, 8, 22, 2, 0o0, 0o0) do
+            delete v1_follower_path(@client_user.id), headers: @not_mutual_follower_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 22, 3, 0o0, 0o0) do
+            get v1_post_refract_candidates_path, headers: @client_user_headers
+            expect(response).to have_http_status(200)
+            expect(response.message).to include('OK')
+            response_body = JSON.parse(response.body, symbolize_names: true)
+            expect(response_body.length).to eq(1)
+            expect(response_body[0][:reply][:current_user_post]).to have_id(@case26_27_current_user_post1.id)
+            expect(response_body[0][:reply][:current_user_post].length).to eq(14)
+          end
+        end
+      end
+
+      context 'case 2, 4, 9, 10, 14, 15, 16, 17' do
+        before do
+          travel_to Time.zone.local(2021, 8, 14) do
+            FactoryBot.create(:icon)
+            @client_user = FactoryBot.create(:user)
+            @mutual_follower = create_mutual_follow_user(@client_user)
+            @client_user_headers = @client_user.create_new_auth_token
+          end
+
+          travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
+            @case4_9_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case4_10_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 5, 29, 59) do
+            post v1_post_likes_path(@case4_10_follower_post.id), headers: @client_user_headers
+            @case14_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case14_follower_post = create_reply_to_prams_post(@mutual_follower, @case14_current_user_post)
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
+            post v1_post_likes_path(@case4_9_follower_post.id), headers: @client_user_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 25) do
+            @case17_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case17_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case17_current_user_post)
+            @case17_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case17_follower_post1)
+            @case17_follower_post1.update(is_locked: true)
+          end
+
+          travel_to Time.zone.local(2021, 8, 28, 5, 29, 59) do
+            @case16_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case16_follower_post = create_reply_to_prams_post(@mutual_follower, @case16_current_user_post)
+          end
+
+          travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
+            @case15_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case15_follower_post = create_reply_to_prams_post(@mutual_follower, @case15_current_user_post)
+          end
+        end
+
+        it 'return 200 and sorted refract candidates' do
+          travel_to Time.zone.local(2021, 8, 29) do
+            client_user_headers = @client_user.create_new_auth_token
+            get v1_post_refract_candidates_path, headers: client_user_headers
+            expect(response).to have_http_status(200)
+            expect(response.message).to include('OK')
+            response_body = JSON.parse(response.body, symbolize_names: true)
+            expect(response_body.length).to eq(2)
+            expect(response_body[0][:reply][:mutual_follower_post]).to have_id(@case16_follower_post.id)
+            expect(response_body[0][:reply][:mutual_follower_post].length).to eq(11)
+            expect(response_body[1][:like][:mutual_follower_post]).to have_id(@case4_9_follower_post.id)
+            expect(response_body[1][:like][:mutual_follower_post].length).to eq(11)
+          end
+        end
+      end
+
+      context 'case 2, 5, 6, 7, 8, 12, 13, 18, 19, 20, 21, 22, 23' do
+        before do
+          travel_to Time.zone.local(2021, 8, 14) do
+            FactoryBot.create(:icon)
+            @client_user = FactoryBot.create(:user)
+            @mutual_follower = create_mutual_follow_user(@client_user)
+            @client_user_headers = @client_user.create_new_auth_token
+            @mutual_follower_headers = @mutual_follower.create_new_auth_token
+          end
+
+          travel_to Time.zone.local(2021, 8, 14, 3, 30, 0o0) do
+            @case_20_21_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case_20_21_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post1)
+            @case21_follower_post = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post2)
+          end
+
+          travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
+            @case13_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case13_follower_post = create_reply_to_prams_post(@mutual_follower, @case13_current_user_post)
+          end
+
+          travel_to Time.zone.local(2021, 8, 15) do
+            @case18_19_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case18_19_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post1)
+            @case18_follower_post = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post2)
+            @case18_current_user_post = create_reply_to_prams_post(@client_user, @case18_follower_post)
+            @case19_current_user_post = create_reply_to_prams_post(@client_user, @case18_19_follower_post2)
+            delete v1_post_path(@case18_follower_post.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case18_current_user_post.id), headers: @client_user_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 16) do
+            @case20_current_user_post = create_reply_to_prams_post(@client_user, @case_20_21_follower_post2)
+            @case21_current_user_post = create_reply_to_prams_post(@client_user, @case21_follower_post)
+            delete v1_post_path(@case21_current_user_post.id), headers: @client_user_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 17) do
+            @case22_23_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case22_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
+            @case22_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case22_current_user_post)
+            @case22_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case22_follower_post1)
+            @case23_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
+            delete v1_post_path(@case23_current_user_post.id), headers: @client_user_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 20) do
+            @case5_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case6_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case7_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case8_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case5_current_user_post.update(is_locked: true)
+            @case6_follower_post.update(is_locked: true)
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 5, 29, 59) do
+            post v1_post_likes_path(@case5_current_user_post.id), headers: @client_user_headers
+            post v1_post_likes_path(@case6_follower_post.id), headers: @client_user_headers
+            post v1_post_likes_path(@case7_current_user_post.id), headers: @client_user_headers
+            post v1_post_likes_path(@case8_follower_post.id), headers: @client_user_headers
+          end
+
+          travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
+            CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
+          end
+        end
+
+        it 'return 200 and sorted refract candidates' do
+          travel_to Time.zone.local(2021, 8, 29) do
+            client_user_headers = @client_user.create_new_auth_token
+            get v1_post_refract_candidates_path, headers: client_user_headers
+            expect(response).to have_http_status(200)
+            expect(response.message).to include('OK')
+            response_body = JSON.parse(response.body, symbolize_names: true)
+            expect(response_body.length).to eq(5)
+            expect(response_body[0][:like][:mutual_follower_post]).to have_id(@case8_follower_post.id)
+            expect(response_body[0][:like][:mutual_follower_post].length).to eq(11)
+            expect(response_body[1][:reply][:mutual_follower_post]).to have_id(@case22_follower_post2.id)
+            expect(response_body[1][:reply][:mutual_follower_post].length).to eq(11)
+            expect(response_body[2][:reply][:current_user_post]).to have_id(@case20_current_user_post.id)
+            expect(response_body[2][:reply][:current_user_post].length).to eq(14)
+            expect(response_body[3][:reply][:current_user_post]).to have_id(@case19_current_user_post.id)
+            expect(response_body[3][:reply][:current_user_post].length).to eq(14)
+            expect(response_body[4][:reply][:mutual_follower_post]).to have_id(@case13_follower_post.id)
+            expect(response_body[4][:reply][:mutual_follower_post].length).to eq(11)
+          end
         end
       end
     end
