@@ -10,6 +10,9 @@ class Post < ApplicationRecord
   has_many :likes, class_name: 'Like', foreign_key: 'post_id', dependent: :destroy
   has_many :liked_users, through: :likes, source: 'user'
 
+  has_many :current_user_refracts, class_name: 'CurrentUserRefract', foreign_key: 'post_id'
+  has_many :refracted_users, through: :current_user_refracts, source: 'user'
+
   has_many :tree_paths, class_name: 'TreePath', foreign_key: 'ancestor'
   has_many :descendant_posts, through: :tree_paths, source: 'descendant_post'
 
@@ -159,13 +162,13 @@ class Post < ApplicationRecord
   #           リーフがカレントユーザの投稿以外の場合
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
-    reply = []
+    reply = nil
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
                                                                 descendant: current_user_post_with_deleted.id, depth: 0)
     tree_paths_below_child_post = tree_paths_except_current_post_depth_0.where(ancestor: current_user_post_with_deleted.id)
     tree_paths_above_parent_post = tree_paths_except_current_post_depth_0.where(descendant: current_user_post_with_deleted.id)
     # *********************************************
-    # パターンA
+    # パターンAのルートを取得
     if tree_paths_below_child_post.length > 0 && tree_paths_above_parent_post.length == 0
       has_current_post_below_child = false
       unless current_user_post_with_deleted.is_deleted?
@@ -182,15 +185,15 @@ class Post < ApplicationRecord
             child_post = Post.with_deleted.find(tree_path_of_child.descendant)
             unless child_post.is_deleted?
               if child_post.mutual_followers_post?(current_user)
-                reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
+                reply = current_user_post_with_deleted
                 break
               end
             end
           end
         end
       end
-    # *********************************************
-    # パターンB and C
+    # **************************************************************
+    # パターンBのリーフの取得 and Cのリーフに一番近いカレントユーザの投稿の取得
     elsif tree_paths_above_parent_post.length > 0
       has_curret_post_below_child = false
       tree_paths_below_child_post.each do |tree_path_below_child_post|
@@ -211,7 +214,7 @@ class Post < ApplicationRecord
               parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
               if !parent_post.is_deleted? && parent_post.your_post?(current_user)
                 if TreePath.where(descendant: parent_post).length > 1
-                  reply.push(parent_post.format_current_user_post(current_user))
+                  reply = parent_post
                   has_parent = false
                 else
                   tree_paths_of_children = TreePath.where(ancestor: parent_post)
@@ -219,7 +222,7 @@ class Post < ApplicationRecord
                     child_post = Post.with_deleted.find(tree_path_of_child.descendant)
                     unless child_post.is_deleted?
                       if child_post.mutual_followers_post?(current_user)
-                        reply.push(parent_post.format_current_user_post(current_user))
+                        reply = parent_post
                         has_parent = false
                         break
                       end
@@ -235,11 +238,103 @@ class Post < ApplicationRecord
             end
           end
         else
-          reply.push(current_user_post_with_deleted.format_current_user_post(current_user))
+          reply = current_user_post_with_deleted
         end
       end
     end
     reply
+  end
+
+  # 返り値は、Postレコードがハッシュ化されているだけでなく、ソート用の'datetime_for_sort'カラムが追加されている点に注意
+  def self.get_hashed_refract_candidates_of_like(current_user, target_datetime_from, target_datetime_to)
+    refract_candidates_of_like = []
+    likes = Like.where(user_id: current_user.id, created_at: target_datetime_from...target_datetime_to)
+    likes.each do |like|
+      liked_post = like.liked_post
+      if !liked_post.is_locked && liked_post.mutual_followers_post?(current_user)
+        hased_liked_post = liked_post.attributes.symbolize_keys
+        hased_liked_post[:datetime_for_sort] = like.created_at
+        refract_candidates_of_like.push(hased_liked_post)
+      end
+    end
+    refract_candidates_of_like
+  end
+
+  # 返り値は、Postレコードがハッシュ化されているだけでなく、ソート用の'datetime_for_sort'カラムが追加されている点に注意
+  def self.get_hashed_refract_candidates_of_reply(current_user, target_time_from, target_time_to, replies)
+    # リプライに紐づくリーフの投稿を取得
+    leaves = []
+    refract_candidates_of_reply = []
+    replies.each do |reply|
+      leaves.concat(reply.get_leaves)
+    end
+
+    # 以下の条件を満たす、リーフに一番近い投稿を取得
+    #  -作成日が対象期間内
+    #  -その投稿とその投稿の親以上の(削除されていない)投稿が1つもロックされていない
+    #  -削除されていない
+    #  -フォロワーの投稿
+    #  -カレントユーザの投稿だった場合、親以上に削除されていないフォロワーの投稿を持つ
+    #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
+    leaves.each do |leaf|
+      checked_lock = false
+      has_locked_post = false
+      while true
+        # 作成日が対象期間内かチェック
+        if !(target_time_from <= leaf.created_at) || !(leaf.created_at < target_time_to)
+          break
+        end
+
+        # カレント以上の投稿に、ロックされた投稿が存在するか否かチェック。実行は各leafで1回のみで良い。
+        if checked_lock == false
+          above_current_posts = leaf.ancestor_posts
+          above_current_posts.each do |above_current_post|
+            if above_current_post.is_locked == true
+              has_locked_post = true
+              break
+            end
+          end
+          checked_lock = true
+        end
+        if has_locked_post == true
+          break
+        end
+
+        # leafが以下の条件を満たすかチェック
+        #  -削除されていない
+        #  -フォロワーの投稿
+        #  -カレントユーザの投稿だった場合、親以上に削除されていないフォロワーの投稿を持つ
+        #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
+        if !leaf.deleted? && !leaf.not_mutual_follower_post?(current_user) && leaf.is_reply?
+          if leaf.your_post?(current_user) && leaf.has_not_deleted_post_of_mutual_follower_above_parent?(current_user)
+            hashed_leaf = leaf.attributes.symbolize_keys
+            hashed_leaf[:datetime_for_sort] = leaf.created_at
+            refract_candidates_of_reply.push(hashed_leaf)
+          elsif leaf.mutual_followers_post?(current_user) && leaf.has_not_deleted_post_of_current_user_above_parent?(current_user)
+            hashed_leaf = leaf.attributes.symbolize_keys
+            hashed_leaf[:datetime_for_sort] = leaf.created_at
+            refract_candidates_of_reply.push(hashed_leaf)
+          end
+          break
+        else
+          unless leaf.is_reply?
+            break
+          end
+          leaf = leaf.get_parent_post_with_deleted
+        end
+      end
+    end
+    refract_candidates_of_reply.uniq!
+    refract_candidates_of_reply
+  end
+
+  def format_post(current_user)
+    if your_post?(current_user)
+      formated_post = format_current_user_post(current_user)
+    elsif mutual_followers_post?(current_user)
+      formated_post = format_follower_post(current_user)
+    end
+    formated_post
   end
 
   def format_current_user_post(current_user)
@@ -299,6 +394,55 @@ class Post < ApplicationRecord
     num_of_replies_exclude_logically_deleted_posts
   end
 
+  def get_parent_post_with_deleted
+    if is_reply?
+      tree_path_of_parent = TreePath.find_by(descendant: id, depth: 1)
+      parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
+      parent_post
+    else
+      nil
+    end
+  end
+
+  def has_not_deleted_post_of_current_user_above_parent?(current_user)
+    has_not_deleted_post_of_current_user_above_parent = false
+    posts_above_parent = ancestor_posts.where.not(id: id)
+    posts_above_parent.each do |post_above_parent|
+      if post_above_parent.your_post?(current_user)
+        has_not_deleted_post_of_current_user_above_parent = true
+        break
+      end
+    end
+    has_not_deleted_post_of_current_user_above_parent
+  end
+
+  def has_not_deleted_post_of_mutual_follower_above_parent?(current_user)
+    has_not_deleted_post_of_mutual_follower_above_parent = false
+    posts_above_parent = ancestor_posts.where.not(id: id)
+    posts_above_parent.each do |post_above_parent|
+      if post_above_parent.mutual_followers_post?(current_user)
+        has_not_deleted_post_of_mutual_follower_above_parent = true
+        break
+      end
+    end
+    has_not_deleted_post_of_mutual_follower_above_parent
+  end
+
+  def get_leaves
+    leaves = []
+    tree_paths_below_current = TreePath.where(ancestor: id)
+    below_current_posts = []
+    tree_paths_below_current.each do |tree_path_below_current|
+      below_current_posts.push(Post.with_deleted.find(tree_path_below_current.descendant))
+    end
+    below_current_posts.each do |below_current_post|
+      if TreePath.where(ancestor: below_current_post.id, depth: 1).length == 0
+        leaves.push(below_current_post)
+      end
+    end
+    leaves
+  end
+
   def is_liked_by_current_user?(current_user)
     is_liked_by_current_user = false
     liked_users.each do |liked_user|
@@ -336,6 +480,14 @@ class Post < ApplicationRecord
       end
     end
     is_mutual_followers_post
+  end
+
+  def not_mutual_follower_post?(current_user)
+    if your_post?(current_user) || mutual_followers_post?(current_user)
+      false
+    else
+      true
+    end
   end
 
   private
