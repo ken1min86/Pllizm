@@ -71,7 +71,7 @@ RSpec.describe CurrentUserRefract, type: :model do
   it "is invalid when category isn't reply or like" do
     current_user_refract = CurrentUserRefract.new(
       user_id: user.id,
-      performed_refract: 1,
+      performed_refract: false,
       post_id: user_post.id,
       category: 'good'
     )

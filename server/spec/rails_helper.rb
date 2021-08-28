@@ -68,6 +68,9 @@ RSpec.configure do |config|
   # Include helper for model spec
   config.include ModelSpecHelper
 
+  # Include helper to change current datetime
+  config.include ActiveSupport::Testing::TimeHelpers
+
   # Delete unneccesary images created in test
   config.after(:all) do
     if Rails.env.test?
