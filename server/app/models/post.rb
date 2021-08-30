@@ -175,7 +175,7 @@ class Post < ApplicationRecord
     # パターンAのルートを取得
     if tree_paths_below_child_post.length > 0 && tree_paths_above_parent_post.length == 0
       has_current_post_below_child = false
-      unless current_user_post_with_deleted.is_deleted?
+      unless current_user_post_with_deleted.deleted?
         tree_paths_below_child_post.each do |tree_path_below_current_post|
           posts_below_current_post = Post.with_deleted.find(tree_path_below_current_post.descendant)
           if posts_below_current_post.your_post?(current_user)
@@ -187,7 +187,7 @@ class Post < ApplicationRecord
           tree_paths_of_children = TreePath.where(ancestor: current_user_post_with_deleted.id, depth: 1)
           tree_paths_of_children.each do |tree_path_of_child|
             child_post = Post.with_deleted.find(tree_path_of_child.descendant)
-            unless child_post.is_deleted?
+            unless child_post.deleted?
               if child_post.mutual_followers_post?(current_user)
                 reply = current_user_post_with_deleted
                 break
@@ -208,7 +208,7 @@ class Post < ApplicationRecord
         end
       end
       unless has_curret_post_below_child
-        if current_user_post_with_deleted.is_deleted?
+        if current_user_post_with_deleted.deleted?
           has_parent = true
           while has_parent
             tree_path_of_parent = TreePath.find_by(descendant: current_user_post_with_deleted.id, depth: 1)
@@ -216,7 +216,7 @@ class Post < ApplicationRecord
               has_parent = false
             else
               parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
-              if !parent_post.is_deleted? && parent_post.your_post?(current_user)
+              if !parent_post.deleted? && parent_post.your_post?(current_user)
                 if TreePath.where(descendant: parent_post).length > 1
                   reply = parent_post
                   has_parent = false
@@ -224,7 +224,7 @@ class Post < ApplicationRecord
                   tree_paths_of_children = TreePath.where(ancestor: parent_post)
                   tree_paths_of_children.each do |tree_path_of_child|
                     child_post = Post.with_deleted.find(tree_path_of_child.descendant)
-                    unless child_post.is_deleted?
+                    unless child_post.deleted?
                       if child_post.mutual_followers_post?(current_user)
                         reply = parent_post
                         has_parent = false
@@ -460,14 +460,6 @@ class Post < ApplicationRecord
 
   def is_reply?
     TreePath.where(descendant: id).length > 1
-  end
-
-  def is_deleted?
-    if deleted_at.nil?
-      false
-    else
-      true
-    end
   end
 
   def your_post?(current_user)
