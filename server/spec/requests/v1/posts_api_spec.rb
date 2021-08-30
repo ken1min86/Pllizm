@@ -1481,8 +1481,8 @@ RSpec.describe "V1::PostsApi", type: :request do
         expect(client_user.current_user_refracts.where(performed_refract: true).length).to eq 1
         expect(client_user.current_user_refracts.where(performed_refract: false).length).to eq 0
         get v1_post_refract_candidates_path, headers: client_user_headers
-        expect(response).to have_http_status(400)
-        expect(response.message).to include('Bad Request')
+        expect(response).to have_http_status(403)
+        expect(response.message).to include('Forbidden')
         expect(JSON.parse(response.body)['errors']['title']).to include('リフラクト機能を使用できません')
       end
     end
