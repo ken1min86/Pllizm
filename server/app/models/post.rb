@@ -161,6 +161,10 @@ class Post < ApplicationRecord
   # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
   #           リーフがカレントユーザの投稿以外の場合
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # ToDo:
+  # ネストが深く処理が理解しづらいため、浅くなるようにリファクタリングする。
+  # また、適宜コメントを追加するなどして、理解がしやすいような工夫をする。
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
