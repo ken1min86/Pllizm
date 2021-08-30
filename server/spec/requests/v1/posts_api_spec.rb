@@ -14,10 +14,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create_list(:icon, 5)
+        create_list(:icon, 5)
       end
 
-      let(:client_user) { FactoryBot.create(:user) }
+      let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
 
       it 'returns 200 and sets is_locked true when is_locked is true' do
@@ -108,11 +108,11 @@ RSpec.describe "V1::PostsApi", type: :request do
   describe "DELETE /v1/posts - v1/posts#destroy - Delete login user's post" do
     context "when client doesn't have token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)       { FactoryBot.create(:user) }
-      let!(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
+      let(:client_user)       { create(:user) }
+      let!(:client_user_post) { create(:post, user_id: client_user.id) }
 
       it "returns 401" do
         delete v1_post_path(client_user_post.id)
@@ -123,14 +123,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)           { FactoryBot.create(:user) }
+      let(:client_user)           { create(:user) }
       let(:headers)               { client_user.create_new_auth_token }
-      let!(:client_user_post)     { FactoryBot.create(:post, user_id: client_user.id) }
-      let(:not_client_user)       { FactoryBot.create(:user) }
-      let!(:not_client_user_post) { FactoryBot.create(:post, user_id: not_client_user.id) }
+      let!(:client_user_post)     { create(:post, user_id: client_user.id) }
+      let(:not_client_user)       { create(:user) }
+      let!(:not_client_user_post) { create(:post, user_id: not_client_user.id) }
 
       it "returns 200 and logically deletes post when try to delete login user's post" do
         expect do
@@ -154,11 +154,11 @@ RSpec.describe "V1::PostsApi", type: :request do
   describe "PUT /v1/posts/:id/change_lock - v1/posts#change_lock - Change is_locked of login user's post" do
     context "when client doesn't have token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:user) { FactoryBot.create(:user) }
-      let(:post) { FactoryBot.create(:post, user_id: user.id) }
+      let(:user) { create(:user) }
+      let(:post) { create(:post, user_id: user.id) }
 
       it "returns 401" do
         put v1_post_changeLock_path(post.id)
@@ -169,14 +169,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:user)              { FactoryBot.create(:user) }
-      let(:post)              { FactoryBot.create(:post, user_id: user.id) }
+      let(:user)              { create(:user) }
+      let(:post)              { create(:post, user_id: user.id) }
       let(:headers)           { user.create_new_auth_token }
-      let(:another_user)      { FactoryBot.create(:user) }
-      let(:another_user_post) { FactoryBot.create(:post, user_id: another_user.id) }
+      let(:another_user)      { create(:user) }
+      let(:another_user_post) { create(:post, user_id: another_user.id) }
 
       it "returns 200 and locks post when try to lock login user's unlocked post" do
         expect(Post.find(post.id).is_locked).to eq(false)
@@ -221,11 +221,11 @@ RSpec.describe "V1::PostsApi", type: :request do
   describe "POST /v1/posts/:id/reply - v1/posts#create_reply - Create reply" do
     context "when client doesn't have token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:user)      { FactoryBot.create(:user) }
-      let(:user_post) { FactoryBot.create(:post, user_id: user.id) }
+      let(:user)      { create(:user) }
+      let(:user_post) { create(:post, user_id: user.id) }
 
       it "returns 401" do
         post v1_post_reply_path(user_post.id)
@@ -236,12 +236,12 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)   { FactoryBot.create(:user) }
+      let(:client_user)   { create(:user) }
       let(:headers)       { client_user.create_new_auth_token }
-      let!(:replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
+      let!(:replied_post) { create(:post, user_id: client_user.id) }
       let(:params) do
         {
           content: 'Hello!',
@@ -277,7 +277,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
             is_locked: true,
           }
-          replied_post = FactoryBot.create(:post, user_id: client_user.id)
+          replied_post = create(:post, user_id: client_user.id)
           expect do
             post v1_post_reply_path(replied_post.id), params: params, headers: headers
           end.to change(Post, :count).by(0).and change(TreePath, :count).by(0)
@@ -287,7 +287,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to current_user's post that it replied once before" do
-        let(:replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let(:replied_post) { create(:post, user_id: client_user.id) }
 
         it 'returns 200 and create post and tree_path' do
           post v1_post_reply_path(replied_post.id), params: params, headers: headers
@@ -309,7 +309,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to current_user's post that it has two series of replies" do
-        let(:replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let(:replied_post) { create(:post, user_id: client_user.id) }
 
         it 'returns 200 and create post and tree_path' do
           post v1_post_reply_path(replied_post.id), params: params, headers: headers
@@ -335,7 +335,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when try to reply to mutual follower's post" do
         let(:mutual_follow_user)       { create_mutual_follow_user(client_user) }
-        let!(:mutual_follow_user_post) { FactoryBot.create(:post, user_id: mutual_follow_user.id) }
+        let!(:mutual_follow_user_post) { create(:post, user_id: mutual_follow_user.id) }
 
         it 'returns 200 and create post and tree_path' do
           expect do
@@ -353,8 +353,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to not mutual follower's post" do
-        let(:non_following_user)       { FactoryBot.create(:user) }
-        let!(:non_following_user_post) { FactoryBot.create(:post, user_id: non_following_user.id) }
+        let(:non_following_user)       { create(:user) }
+        let!(:non_following_user_post) { create(:post, user_id: non_following_user.id) }
 
         it "returns 400 and doesn't create post and tree_path" do
           expect do
@@ -394,10 +394,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)          { FactoryBot.create(:user) }
+      let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
       let(:follower1)            { create_mutual_follow_user(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
@@ -408,14 +408,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when client has liked 3 client posts whose num of likes are 1 or 2 and num of replies are 0 or 1 or 2 and
        liked 4 followers's post whose num of replies are 0 or 1 or 2" do
-        let!(:client_post_1liked_0reply)             { FactoryBot.create(:post, user_id: client_user.id) }
-        let!(:client_post_2liked_1reply)             { FactoryBot.create(:post, user_id: client_user.id) }
-        let!(:client_post_1liked_2reply)             { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_1liked_0reply)             { create(:post, user_id: client_user.id) }
+        let!(:client_post_2liked_1reply)             { create(:post, user_id: client_user.id) }
+        let!(:client_post_1liked_2reply)             { create(:post, user_id: client_user.id) }
 
-        let!(:follower1_post_0reply)                 { FactoryBot.create(:post, user_id: follower1.id) }
-        let!(:follower1_post_1reply)                 { FactoryBot.create(:post, user_id: follower1.id) }
-        let!(:follower2_post_2reply)                 { FactoryBot.create(:post, user_id: follower2.id) }
-        let!(:follower2_post_1reply_by_non_follower) { FactoryBot.create(:post, user_id: follower2.id) }
+        let!(:follower1_post_0reply)                 { create(:post, user_id: follower1.id) }
+        let!(:follower1_post_1reply)                 { create(:post, user_id: follower1.id) }
+        let!(:follower2_post_2reply)                 { create(:post, user_id: follower2.id) }
+        let!(:follower2_post_1reply_by_non_follower) { create(:post, user_id: follower2.id) }
 
         let(:params) do
           {
@@ -521,7 +521,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when client has liked 1 follower's post that replied by non-follower of client" do
-        let!(:follower2_post_1reply_by_non_follower) { FactoryBot.create(:post, user_id: follower2.id) }
+        let!(:follower2_post_1reply_by_non_follower) { create(:post, user_id: follower2.id) }
         let(:params) do
           {
             content: 'Hello!',
@@ -562,7 +562,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context 'when client has liked a post which is a reply of follower' do
-        let!(:client_replied_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_replied_post) { create(:post, user_id: client_user.id) }
         let(:params) do
           {
             content: 'Hello!',
@@ -629,27 +629,27 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)          { FactoryBot.create(:user) }
+      let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
       let(:follower1)            { create_mutual_follow_user(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
       let(:follower2)            { create_mutual_follow_user(client_user) }
-      let(:non_follower)         { FactoryBot.create(:user) }
+      let(:non_follower)         { create(:user) }
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
       context "when client's, followers's and non-followers's posts are exist" do
         # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
         # 各々のユーザの投稿について、リプライを持つものと持たないものを作成すること
         # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
-        let!(:client_post_without_reply)       { FactoryBot.create(:post, user_id: client_user.id) }
-        let!(:client_post_with_reply)          { FactoryBot.create(:post, user_id: client_user.id) }
-        let!(:follower1_post_without_reply)    { FactoryBot.create(:post, user_id: follower1.id) }
-        let!(:follower2_post_with_reply)       { FactoryBot.create(:post, user_id: follower2.id) }
-        let!(:non_follower_post_without_reply) { FactoryBot.create(:post, user_id: non_follower.id) }
-        let!(:non_follower_post_with_reply)    { FactoryBot.create(:post, user_id: non_follower.id) }
+        let!(:client_post_without_reply)       { create(:post, user_id: client_user.id) }
+        let!(:client_post_with_reply)          { create(:post, user_id: client_user.id) }
+        let!(:follower1_post_without_reply)    { create(:post, user_id: follower1.id) }
+        let!(:follower2_post_with_reply)       { create(:post, user_id: follower2.id) }
+        let!(:non_follower_post_without_reply) { create(:post, user_id: non_follower.id) }
+        let!(:non_follower_post_with_reply)    { create(:post, user_id: non_follower.id) }
 
         let(:params) do
           {
@@ -726,7 +726,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when client's post is exist" do
-        let!(:client_post_without_reply) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_without_reply) { create(:post, user_id: client_user.id) }
 
         it "returns 200 and client's post" do
           get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
@@ -760,7 +760,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when follower's post is exist" do
-        let!(:follower1_post_without_reply) { FactoryBot.create(:post, user_id: follower1.id) }
+        let!(:follower1_post_without_reply) { create(:post, user_id: follower1.id) }
 
         it "returns 200 and follower's post" do
           get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
@@ -791,7 +791,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when non-follower's post is exist" do
-        let!(:non_follower_post_without_reply) { FactoryBot.create(:post, user_id: non_follower.id) }
+        let!(:non_follower_post_without_reply) { create(:post, user_id: non_follower.id) }
 
         it 'returns 200 and no posts' do
           get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
@@ -805,7 +805,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when logically deleted client's post is exist" do
-        let!(:client_post_without_reply) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post_without_reply) { create(:post, user_id: client_user.id) }
 
         before do
           delete v1_post_path(client_post_without_reply.id), headers: client_user_headers
@@ -857,16 +857,16 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
       context "when client has own posts(not replies) and reply" do
-        let!(:client_post1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post1) { create(:post, user_id: client_user.id) }
         let!(:client_reply) { create_reply_to_prams_post(client_user, client_post1) }
-        let!(:client_post2) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post2) { create(:post, user_id: client_user.id) }
 
         it "returns 200 and 3 formatted posts" do
           get v1_current_user_posts_path, headers: client_user_headers
@@ -881,7 +881,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when client has a post" do
-        let!(:client_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:client_post) { create(:post, user_id: client_user.id) }
 
         it "returns 200 and a formatted post" do
           get v1_current_user_posts_path, headers: client_user_headers
@@ -941,11 +941,11 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client doesn't have token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)      { FactoryBot.create(:user) }
-      let(:client_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
+      let(:client_user)      { create(:user) }
+      let(:client_user_post) { create(:post, user_id: client_user.id) }
 
       it "returns 401" do
         get v1_post_threads_path(client_user_post.id)
@@ -956,10 +956,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
       let(:mutual_follower)     { create_mutual_follow_user(client_user) }
       let(:not_mutual_follower) { create_mutual_follow_user(mutual_follower) }
@@ -978,7 +978,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when post related to params[:post_id] is deleted" do
-        let!(:deleted_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:deleted_post) { create(:post, user_id: client_user.id) }
 
         before do
           delete v1_post_path(deleted_post.id), headers: client_user_headers
@@ -995,7 +995,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when post related to params[:post_id] is exist and posted by not mutual follower" do
-        let!(:current_post_of_not_mutual_follower) { FactoryBot.create(:post, user_id: not_mutual_follower.id) }
+        let!(:current_post_of_not_mutual_follower) { create(:post, user_id: not_mutual_follower.id) }
 
         it 'returns 200 and current: not_mutual_follower_post' do
           get v1_post_threads_path(current_post_of_not_mutual_follower.id), headers: client_user_headers
@@ -1010,7 +1010,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by current user
       and the post has 1 parent post of current user
       and the post has 2 child posts of current user and mutual follower" do
-        let!(:parent_post_of_client_user)    { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:parent_post_of_client_user)    { create(:post, user_id: client_user.id) }
         let!(:current_post_of_client_user)   { create_reply_to_prams_post(client_user, parent_post_of_client_user) }
         let!(:child_post_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
         let!(:child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
@@ -1041,7 +1041,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by current user
       and the post has 1 parent post of mutual follower
       and the post has 2 child posts of current user" do
-        let!(:parent_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:parent_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
         let!(:current_post_of_client_user)    { create_reply_to_prams_post(client_user, parent_post_of_mutual_follower) }
         let!(:child_post1_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
         let!(:child_post2_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
@@ -1071,7 +1071,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by current user
       and the post doesn't have parent post
       and the post has 2 child posts of mutual follower" do
-        let!(:current_post_of_client_user)    { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:current_post_of_client_user)    { create(:post, user_id: client_user.id) }
         let!(:child_post1_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
         let!(:child_post2_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
 
@@ -1100,7 +1100,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by current user
       and the post has 1 deleted parent post of current user
       and the post doesn't have child post" do
-        let!(:deleted_parent_post_of_client_user) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:deleted_parent_post_of_client_user) { create(:post, user_id: client_user.id) }
         let!(:current_post_of_client_user)        { create_reply_to_prams_post(client_user, deleted_parent_post_of_client_user) }
 
         before do
@@ -1129,7 +1129,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by current user
       and the post doesn't have parent post
       and the post has 1 deleted child post of client user or mutual follower" do
-        let!(:current_post_of_client_user)           { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:current_post_of_client_user)           { create(:post, user_id: client_user.id) }
         let!(:deleted_child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
 
         it 'returns 200 and thread' do
@@ -1154,7 +1154,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by mutual follower
       and the post has 1 parent post of not mutual follower of current user
       and the post has 2 child posts of not mutual follower of current user" do
-        let!(:parent_post_of_not_mutual_follower) { FactoryBot.create(:post, user_id: not_mutual_follower.id) }
+        let!(:parent_post_of_not_mutual_follower) { create(:post, user_id: not_mutual_follower.id) }
         let!(:current_post_of_mutual_follower) do
           create_reply_to_prams_post(mutual_follower, parent_post_of_not_mutual_follower)
         end
@@ -1187,7 +1187,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by mutual follower
       and the post doesn't have parent post
       and the post has 2 child post of current user and not mutual follower of current user" do
-        let!(:current_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:current_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
         let!(:child_post_of_not_mutual_follower) do
           create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
         end
@@ -1216,7 +1216,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       context "when post related to params[:post_id] is exist and posted by mutual follower
       and the post doesn't have parent post
       and the post has 1 child post of mutual follower" do
-        let!(:current_post_of_mutual_follower) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:current_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
         let!(:child_post_of_mutual_follower)   { create_reply_to_prams_post(mutual_follower, current_post_of_mutual_follower) }
 
         it 'returns 200 and thread' do
@@ -1262,10 +1262,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user)                 { FactoryBot.create(:user) }
+      let(:client_user)                 { create(:user) }
       let(:client_user_headers)         { client_user.create_new_auth_token }
       let(:mutual_follower)             { create_mutual_follow_user(client_user) }
       let(:mutual_follower_headers)     { mutual_follower.create_new_auth_token }
@@ -1274,20 +1274,20 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:not_mutual_follower_headers) { not_mutual_follower.create_new_auth_token }
 
       context "case1, 2, 4, 6, 8" do
-        let!(:case1_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case1_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case1_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case1_current_user_post_1) }
 
-        let!(:case2_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case2_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case2_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
         let!(:case2_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
 
-        let!(:case4_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case4_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case4_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case4_current_user_post_1) }
 
-        let!(:case6_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case6_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case6_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case6_current_user_post_1) }
 
-        let!(:case8_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case8_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case8_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case8_current_user_post_1) }
         let!(:case8_current_user_post_2) { create_reply_to_prams_post(client_user, case8_follower_post_1) }
 
@@ -1314,17 +1314,17 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "case3, 5, 7, 9" do
-        let!(:case3_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case3_current_user_post_1) { create(:post, user_id: client_user.id) }
 
-        let!(:case5_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case5_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case5_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
         let!(:case5_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
 
-        let!(:case7_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case7_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case7_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
         let!(:case7_not_follower_post_2) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
 
-        let!(:case9_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case9_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case9_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_1) }
         let!(:case9_current_user_post_2) { create_reply_to_prams_post(client_user, case9_follower_post_1) }
         let!(:case9_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_2) }
@@ -1351,18 +1351,18 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "case10, 11, 12" do
-        let!(:case10_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case10_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case10_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case10_current_user_post_1) }
         let!(:case10_current_user_post_2) { create_reply_to_prams_post(client_user, case10_follower_post_1) }
         let!(:case10_current_user_post_3) { create_reply_to_prams_post(mutual_follower, case10_current_user_post_2) }
 
-        let!(:case11_follower_post_1)     { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:case11_follower_post_1)     { create(:post, user_id: mutual_follower.id) }
         let!(:case11_current_user_post_1) { create_reply_to_prams_post(client_user, case11_follower_post_1) }
         let!(:case11_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_1) }
         let!(:case11_current_user_post_2) { create_reply_to_prams_post(client_user, case11_follower_post_2) }
         let!(:case11_follower_post_3)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_2) }
 
-        let!(:case12_follower_post_1)     { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let!(:case12_follower_post_1)     { create(:post, user_id: mutual_follower.id) }
         let!(:case12_current_user_post_1) { create_reply_to_prams_post(client_user, case12_follower_post_1) }
         let!(:case12_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case12_current_user_post_1) }
         let!(:case12_current_user_post_2) { create_reply_to_prams_post(client_user, case12_follower_post_2) }
@@ -1394,11 +1394,11 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "13, 14" do
-        let!(:case13_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case13_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case13_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case13_current_user_post_1) }
         let!(:case13_current_user_post_2) { create_reply_to_prams_post(client_user, case13_follower_post_1) }
 
-        let!(:case14_current_user_post_1) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:case14_current_user_post_1) { create(:post, user_id: client_user.id) }
         let!(:case14_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case14_current_user_post_1) }
         let!(:case14_current_user_post_2) { create_reply_to_prams_post(client_user, case14_follower_post_1) }
 
@@ -1422,7 +1422,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when number of current user's posts is 1" do
-        let!(:current_user_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let!(:current_user_post) { create(:post, user_id: client_user.id) }
         let!(:follower_reply)    { create_reply_to_prams_post(mutual_follower, current_user_post) }
 
         it 'returns 200 and replies' do
@@ -1474,7 +1474,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
       end
 
-      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
       it 'returns 400' do
@@ -1491,8 +1491,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       context 'case 1, 3, 11, 24, 25, 26, 27' do
         before do
           travel_to Time.zone.local(2021, 8, 15) do
-            FactoryBot.create(:icon)
-            @client_user = FactoryBot.create(:user)
+            create(:icon)
+            @client_user = create(:user)
             @mutual_follower = create_mutual_follow_user(@client_user)
             @not_mutual_follower = create_mutual_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
@@ -1501,18 +1501,18 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 21, 4, 30, 0o0) do
-            @case3_11_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case3_11_follower_post = create(:post, user_id: @mutual_follower.id)
 
-            @case24_not_follower_post1 = FactoryBot.create(:post, user_id: @not_mutual_follower.id)
+            @case24_not_follower_post1 = create(:post, user_id: @not_mutual_follower.id)
             @case24_current_user_post = create_reply_to_prams_post(@client_user, @case24_not_follower_post1)
             create_reply_to_prams_post(@not_mutual_follower, @case24_current_user_post) # case24_not_follower_post2
 
-            @case25_current_user_post1 = FactoryBot.create(:post, user_id: @client_user.id)
+            @case25_current_user_post1 = create(:post, user_id: @client_user.id)
             @case25_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post1)
             @case25_current_user_post2 = create_reply_to_prams_post(@client_user, @case25_follower_post1)
             @case25_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post2)
 
-            @case26_27_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case26_27_follower_post1 = create(:post, user_id: @mutual_follower.id)
             @case26_27_current_user_post1 = create_reply_to_prams_post(@client_user, @case26_27_follower_post1)
             @case26_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
             @case27_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
@@ -1548,21 +1548,21 @@ RSpec.describe "V1::PostsApi", type: :request do
       context 'case 2, 4, 9, 10, 14, 15, 16, 17' do
         before do
           travel_to Time.zone.local(2021, 8, 14) do
-            FactoryBot.create(:icon)
-            @client_user = FactoryBot.create(:user)
+            create(:icon)
+            @client_user = create(:user)
             @mutual_follower = create_mutual_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
-            @case4_9_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
-            @case4_10_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case4_9_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case4_10_follower_post = create(:post, user_id: @mutual_follower.id)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 29, 59) do
             post v1_post_likes_path(@case4_10_follower_post.id), headers: @client_user_headers
-            @case14_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case14_current_user_post = create(:post, user_id: @client_user.id)
             @case14_follower_post = create_reply_to_prams_post(@mutual_follower, @case14_current_user_post)
           end
 
@@ -1572,20 +1572,20 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 25) do
-            @case17_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case17_current_user_post = create(:post, user_id: @client_user.id)
             @case17_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case17_current_user_post)
             @case17_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case17_follower_post1)
             @case17_follower_post1.update(is_locked: true)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 29, 59) do
-            @case16_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case16_current_user_post = create(:post, user_id: @client_user.id)
             @case16_follower_post = create_reply_to_prams_post(@mutual_follower, @case16_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
-            @case15_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case15_current_user_post = create(:post, user_id: @client_user.id)
             @case15_follower_post = create_reply_to_prams_post(@mutual_follower, @case15_current_user_post)
           end
         end
@@ -1609,27 +1609,27 @@ RSpec.describe "V1::PostsApi", type: :request do
       context 'case 2, 5, 6, 7, 8, 12, 13, 18, 19, 20, 21, 22, 23' do
         before do
           travel_to Time.zone.local(2021, 8, 14) do
-            FactoryBot.create(:icon)
-            @client_user = FactoryBot.create(:user)
+            create(:icon)
+            @client_user = create(:user)
             @mutual_follower = create_mutual_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
             @mutual_follower_headers = @mutual_follower.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 14, 3, 30, 0o0) do
-            @case_20_21_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case_20_21_follower_post1 = create(:post, user_id: @mutual_follower.id)
             @case_20_21_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post1)
             @case21_follower_post = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post2)
           end
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
-            @case13_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
+            @case13_current_user_post = create(:post, user_id: @client_user.id)
             @case13_follower_post = create_reply_to_prams_post(@mutual_follower, @case13_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 15) do
-            @case18_19_follower_post1 = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case18_19_follower_post1 = create(:post, user_id: @mutual_follower.id)
             @case18_19_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post1)
             @case18_follower_post = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post2)
             @case18_current_user_post = create_reply_to_prams_post(@client_user, @case18_follower_post)
@@ -1645,7 +1645,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 17) do
-            @case22_23_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case22_23_follower_post = create(:post, user_id: @mutual_follower.id)
             @case22_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
             @case22_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case22_current_user_post)
             @case22_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case22_follower_post1)
@@ -1654,10 +1654,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 20) do
-            @case5_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
-            @case6_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
-            @case7_current_user_post = FactoryBot.create(:post, user_id: @client_user.id)
-            @case8_follower_post = FactoryBot.create(:post, user_id: @mutual_follower.id)
+            @case5_current_user_post = create(:post, user_id: @client_user.id)
+            @case6_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case7_current_user_post = create(:post, user_id: @client_user.id)
+            @case8_follower_post = create(:post, user_id: @mutual_follower.id)
             @case5_current_user_post.update(is_locked: true)
             @case6_follower_post.update(is_locked: true)
           end

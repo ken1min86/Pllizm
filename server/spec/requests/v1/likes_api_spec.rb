@@ -4,11 +4,11 @@ RSpec.describe "V1::LikesApi", type: :request do
   describe "POST /v1/posts/:post_id/likes - v1/likes#create - Create likes" do
     context "when client doesn't have token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:user)       { FactoryBot.create(:user) }
-      let(:liked_post) { FactoryBot.create(:post, user_id: user.id) }
+      let(:user)       { create(:user) }
+      let(:liked_post) { create(:post, user_id: user.id) }
 
       it "returns 401" do
         expect { post v1_post_likes_path(liked_post.id) }.to change(Like.all, :count).by(0)
@@ -19,14 +19,14 @@ RSpec.describe "V1::LikesApi", type: :request do
 
     context "when client has token" do
       before do
-        FactoryBot.create(:icon)
+        create(:icon)
       end
 
-      let(:client_user) { FactoryBot.create(:user) }
+      let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
 
       context "when try to like client's post" do
-        let(:client_post) { FactoryBot.create(:post, user_id: client_user.id) }
+        let(:client_post) { create(:post, user_id: client_user.id) }
 
         it 'returns 200 and creates like record' do
           expect do
@@ -39,7 +39,7 @@ RSpec.describe "V1::LikesApi", type: :request do
 
       context "when try to like mutual follower's post" do
         let(:mutual_follower)      { create_mutual_follow_user(client_user) }
-        let(:mutual_follower_post) { FactoryBot.create(:post, user_id: mutual_follower.id) }
+        let(:mutual_follower_post) { create(:post, user_id: mutual_follower.id) }
 
         it 'returns 200 and creates like record' do
           expect do
@@ -51,8 +51,8 @@ RSpec.describe "V1::LikesApi", type: :request do
       end
 
       context "when try to like not client's post and mutual follower's post" do
-        let(:not_follower)      { FactoryBot.create(:user) }
-        let(:not_follower_post) { FactoryBot.create(:post, user_id: not_follower.id) }
+        let(:not_follower)      { create(:user) }
+        let(:not_follower_post) { create(:post, user_id: not_follower.id) }
 
         it 'returns 400' do
           expect do

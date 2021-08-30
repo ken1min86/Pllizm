@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "V1::FollowersApi", type: :request do
   describe "POST /v1/followers - v1/followers#create - Approve follow request" do
     context "when client doesn't have token" do
-      let(:user) { FactoryBot.create(:user) }
+      let(:user) { create(:user) }
 
       it "returns 401" do
         post v1_followers_path, params: {
@@ -15,9 +15,9 @@ RSpec.describe "V1::FollowersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user) { FactoryBot.create(:user) }
+      let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
-      let(:follow_user) { FactoryBot.create(:user) }
+      let(:follow_user) { create(:user) }
 
       it 'returns 200 and deletes follow_request and create followers' do
         follow_user.follow_requests.create(request_to: client_user.id)
@@ -55,7 +55,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
 
   describe "DELETE /v1/follower - v1/followers#destroy - Cancel mutual follow" do
     context "when client doesn't have token" do
-      let(:follower) { FactoryBot.create(:user) }
+      let(:follower) { create(:user) }
 
       it "returns 401" do
         delete v1_follower_path(follower_id: follower.id)
@@ -65,9 +65,9 @@ RSpec.describe "V1::FollowersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user) { FactoryBot.create(:user) }
+      let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
-      let(:follower)    { FactoryBot.create(:user) }
+      let(:follower)    { create(:user) }
 
       it 'returns 200 and deletes followers' do
         client_user.follow_relationships.create(follow_to: follower.id)
