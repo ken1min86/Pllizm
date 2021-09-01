@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Like, type: :model do
   before do
-    FactoryBot.create(:icon)
+    create(:icon)
   end
 
-  let(:user) { FactoryBot.create(:user) }
-  let(:post) { FactoryBot.create(:post, user_id: user.id) }
+  let(:user) { create(:user) }
+  let(:post) { create(:post, user_id: user.id) }
   let(:non_existent_userid)  { get_non_existent_user_id }
   let(:non_existent_post_id) { get_non_existent_post_id }
 

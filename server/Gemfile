@@ -72,3 +72,12 @@ gem 'fuubar'
 
 # Simplecov to calculate test coverage
 gem 'simplecov', require: false, group: :test
+
+# Slack notifier to notify to slack
+gem 'slack-notifier'
+
+# Dotenv to manage environment variables
+gem 'dotenv-rails'
+
+# Whenever to implement regular batch processing
+gem 'whenever', require: false

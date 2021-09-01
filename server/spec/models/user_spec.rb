@@ -5,104 +5,104 @@ RSpec.describe User, type: :model do
   # 理由：OAuthが未実装であり、現状必ずメアドで登録されるため、providerはemailで固定とする
   context 'when there are no users before test' do
     it 'is valid with email and password with 8 or more digits and 128 or less digits' do
-      user = FactoryBot.create(:user)
+      user = create(:user)
       expect(user).to be_valid
       expect(user.provider).to eq 'email'
       expect(user.need_description_about_lock).to eq(true)
     end
 
     it 'is invalid without userid' do
-      user = FactoryBot.build(:user, userid: nil)
+      user = build(:user, userid: nil)
       expect(user).to be_invalid
     end
 
     it 'is invalid without username' do
-      user = FactoryBot.build(:user, username: nil)
+      user = build(:user, username: nil)
       expect(user).to be_invalid
     end
 
     it 'is invalid without email' do
-      user = FactoryBot.build(:user, email: nil)
+      user = build(:user, email: nil)
       expect(user).to be_invalid
     end
 
     it 'is invalid without password' do
-      user = FactoryBot.build(:user, password: nil)
+      user = build(:user, password: nil)
       expect(user).to be_invalid
     end
 
     it 'is invalid when password has 7 digits' do
-      user = FactoryBot.build(:user, password: 'a' * 7)
+      user = build(:user, password: 'a' * 7)
       expect(user).to be_invalid
     end
 
     it 'is valid when password has 8 digits' do
-      user = FactoryBot.build(:user, password: 'a' * 8)
+      user = build(:user, password: 'a' * 8)
       expect(user).to be_valid
     end
 
     it 'is valid when password has 128 digits' do
-      user = FactoryBot.build(:user, password: 'a' * 128)
+      user = build(:user, password: 'a' * 128)
       expect(user).to be_valid
     end
 
     it 'is invalid when password has 129 digits' do
-      user = FactoryBot.build(:user, password: 'a' * 129)
+      user = build(:user, password: 'a' * 129)
       expect(user).to be_invalid
     end
 
     it 'is invalid whose username is blank' do
-      user = FactoryBot.build(:user, username: '')
+      user = build(:user, username: '')
       expect(user).to be_invalid
     end
 
     it 'is valid whose username has 50 characters' do
-      user = FactoryBot.build(:user, username: 'a' * 50)
+      user = build(:user, username: 'a' * 50)
       expect(user).to be_valid
     end
 
     it 'is invalid whose username has 51 characters' do
-      user = FactoryBot.build(:user, username: 'a' * 51)
+      user = build(:user, username: 'a' * 51)
       expect(user).to be_invalid
     end
 
     it 'is invalid whose bio has 160 character' do
-      user = FactoryBot.build(:user, bio: 'a' * 160)
+      user = build(:user, bio: 'a' * 160)
       expect(user).to be_valid
     end
 
     it 'is valid whose bio has 161 character' do
-      user = FactoryBot.build(:user, bio: 'a' * 161)
+      user = build(:user, bio: 'a' * 161)
       expect(user).to be_invalid
     end
 
     it 'is valid when userid has 15 character' do
-      user = FactoryBot.build(:user, userid: 'a' * 15)
+      user = build(:user, userid: 'a' * 15)
       expect(user).to be_valid
     end
 
     it 'is invalid when userid has 16 character' do
-      user = FactoryBot.build(:user, userid: 'a' * 16)
+      user = build(:user, userid: 'a' * 16)
       expect(user).to be_invalid
     end
   end
 
   # 現状providerはemailのみなので、providerがemailのときのテストだけ実施している
   context 'when there is a user(called USER1) before test' do
-    let!(:user1) { FactoryBot.create(:user) }
+    let!(:user1) { create(:user) }
 
     it "is valid when provider equals to USER1 and email and userid doesn't equal to USER1" do
-      user2 = FactoryBot.build(:user)
+      user2 = build(:user)
       expect(user2).to be_valid
     end
 
     it "is invalid when provider and email equal to USER1" do
-      user2 = FactoryBot.build(:user, email: user1.email)
+      user2 = build(:user, email: user1.email)
       expect(user2).to be_invalid
     end
 
     it "is invalid when userid equals to USER1" do
-      user2 = FactoryBot.build(:user, userid: user1.userid)
+      user2 = build(:user, userid: user1.userid)
       expect(user2).to be_invalid
     end
   end

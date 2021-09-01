@@ -13,7 +13,7 @@ AllCops:
     - 'vendor/**/*'
     - 'path/ruby'
 
-ContinuationSlash:
+Airbnb/ContinuationSlash:
   Enabled: false
 
 Metrics/LineLength:
