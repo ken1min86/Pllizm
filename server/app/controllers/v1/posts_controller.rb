@@ -161,44 +161,10 @@ module V1
     end
 
     def index_refract_candidates
-      # リフラクト候補取得の対象期間の取得
-      target_time_from = nil
-      target_time_to = nil
-      if CurrentUserRefract.with_deleted.where(user_id: current_v1_user.id).length >= 2
-        new_refract, old_refract = CurrentUserRefract.get_latest_two_refracts(current_v1_user)
-        target_time_from = old_refract.created_at
-        target_time_to = new_refract.created_at
-      else
-        new_refract = CurrentUserRefract.find_by(user_id: current_v1_user.id)
-        target_time_from = current_v1_user.created_at
-        target_time_to = new_refract.created_at
-      end
-
-      # いいねした投稿の中からリフラクト候補を取得
-      hashed_refract_candidates_of_like = Post.get_hashed_refract_candidates_of_like(
-        current_v1_user,
-        target_time_from,
-        target_time_to
-      )
-
-      # リプライの中からリフラクト候補を取得
-      replies = []
-      current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_v1_user.id)
-      current_user_posts_with_deleted.each do |current_user_post_with_deleted|
-        reply = Post.get_reply(current_v1_user, current_user_post_with_deleted)
-        if reply.present?
-          replies.push(reply)
-        end
-      end
-      hashed_refract_candidates_of_reply = Post.get_hashed_refract_candidates_of_reply(
-        current_v1_user,
-        target_time_from,
-        target_time_to,
-        replies
-      )
-
-      # マージしてソートしフォーマット
-      hashed_refract_candidates = hashed_refract_candidates_of_like.concat(hashed_refract_candidates_of_reply)
+      # いいねした投稿とリプライから、リフラクトの候補を取得
+      refract_candidates_of_like, refract_candidates_of_reply = Post.get_unformatted_refract_candidates(current_v1_user)
+      # マージ・ソートして、いいねの投稿とリプライの投稿をそれぞれ仕様書通りにフォーマット
+      hashed_refract_candidates = refract_candidates_of_like.concat(refract_candidates_of_reply)
       hashed_refract_candidates.sort_by! { |post| post[:datetime_for_sort] }.reverse!
       formatted_refract_candidates = []
       hashed_refract_candidates.each do |hashed_refract_candidate|

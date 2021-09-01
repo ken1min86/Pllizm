@@ -332,6 +332,36 @@ class Post < ApplicationRecord
     refract_candidates_of_reply
   end
 
+  # 返り値はハッシュ化したPostレコードでかつ、ソート用のdatetime_for_sortカラムが追加されている点に注意
+  def self.get_unformatted_refract_candidates(current_user)
+    # リフラクト候補取得の対象期間の取得
+    target_time_from, target_time_to = CurrentUserRefract.get_target_times_of_refract(current_user)
+
+    # いいねした投稿の中からリフラクト候補を取得
+    hashed_refract_candidates_of_like = Post.get_hashed_refract_candidates_of_like(
+      current_user,
+      target_time_from,
+      target_time_to
+    )
+
+    # リプライの中からリフラクト候補を取得
+    replies = []
+    current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_user.id)
+    current_user_posts_with_deleted.each do |current_user_post_with_deleted|
+      reply = Post.get_reply(current_user, current_user_post_with_deleted)
+      if reply.present?
+        replies.push(reply)
+      end
+    end
+    hashed_refract_candidates_of_reply = Post.get_hashed_refract_candidates_of_reply(
+      current_user,
+      target_time_from,
+      target_time_to,
+      replies
+    )
+    [hashed_refract_candidates_of_like, hashed_refract_candidates_of_reply]
+  end
+
   def format_post(current_user)
     if your_post?(current_user)
       formated_post = format_current_user_post(current_user)

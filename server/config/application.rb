@@ -56,5 +56,7 @@ module Server
     end
 
     config.autoload_paths += Dir["#{config.root}/app/validators"]
+    config.autoload_paths += Dir["#{config.root}/lib/"]
+    config.eager_load_paths += Dir["#{config.root}/lib/"]
   end
 end
