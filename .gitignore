@@ -27,7 +27,7 @@
 /server/config/master.key
 
 # Ignore uploaded files and cache.
-/server/public/uploads/*
+/server/public/uploads/
 
 # Ignore test coverage files
 /server/coverage

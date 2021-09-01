@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe TreePath, type: :model do
   before do
-    FactoryBot.create(:icon)
+    create(:icon)
   end
 
-  let(:user)            { FactoryBot.create(:user) }
-  let(:ancestor_post)   { FactoryBot.create(:post, user_id: user.id) }
-  let(:descendant_post) { FactoryBot.create(:post, user_id: user.id) }
+  let(:user)            { create(:user) }
+  let(:ancestor_post)   { create(:post, user_id: user.id) }
+  let(:descendant_post) { create(:post, user_id: user.id) }
 
   it 'is valid when ancestor and descendant are related to post and depth in over 0' do
     tree_path = TreePath.new(

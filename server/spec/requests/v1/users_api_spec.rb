@@ -11,7 +11,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user)         { FactoryBot.create(:user) }
+      let(:client_user)         { create(:user) }
       let(:headers)             { client_user.create_new_auth_token }
       let(:mutual_follow_user1) { create_mutual_follow_user(client_user) }
       let(:mutual_follow_user2) { create_mutual_follow_user(client_user) }
@@ -97,7 +97,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user)            { FactoryBot.create(:user) }
+      let(:client_user)            { create(:user) }
       let(:headers)                { client_user.create_new_auth_token }
       let(:follow_requested_user1) { create_follow_requested_user_by_argument_user(client_user) }
       let(:follow_requested_user2) { create_follow_requested_user_by_argument_user(client_user) }
@@ -183,7 +183,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user)                { FactoryBot.create(:user) }
+      let(:client_user)                { create(:user) }
       let(:headers)                    { client_user.create_new_auth_token }
       let(:follow_request_to_me_user1) { create_user_to_request_follow_to_argument_user(client_user) }
       let(:follow_request_to_me_user2) { create_user_to_request_follow_to_argument_user(client_user) }

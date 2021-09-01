@@ -161,6 +161,10 @@ class Post < ApplicationRecord
   # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
   #           リーフがカレントユーザの投稿以外の場合
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # ToDo:
+  # ネストが深く処理が理解しづらいため、浅くなるようにリファクタリングする。
+  # また、適宜コメントを追加するなどして、理解がしやすいような工夫をする。
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
@@ -171,7 +175,7 @@ class Post < ApplicationRecord
     # パターンAのルートを取得
     if tree_paths_below_child_post.length > 0 && tree_paths_above_parent_post.length == 0
       has_current_post_below_child = false
-      unless current_user_post_with_deleted.is_deleted?
+      unless current_user_post_with_deleted.deleted?
         tree_paths_below_child_post.each do |tree_path_below_current_post|
           posts_below_current_post = Post.with_deleted.find(tree_path_below_current_post.descendant)
           if posts_below_current_post.your_post?(current_user)
@@ -183,7 +187,7 @@ class Post < ApplicationRecord
           tree_paths_of_children = TreePath.where(ancestor: current_user_post_with_deleted.id, depth: 1)
           tree_paths_of_children.each do |tree_path_of_child|
             child_post = Post.with_deleted.find(tree_path_of_child.descendant)
-            unless child_post.is_deleted?
+            unless child_post.deleted?
               if child_post.mutual_followers_post?(current_user)
                 reply = current_user_post_with_deleted
                 break
@@ -204,7 +208,7 @@ class Post < ApplicationRecord
         end
       end
       unless has_curret_post_below_child
-        if current_user_post_with_deleted.is_deleted?
+        if current_user_post_with_deleted.deleted?
           has_parent = true
           while has_parent
             tree_path_of_parent = TreePath.find_by(descendant: current_user_post_with_deleted.id, depth: 1)
@@ -212,7 +216,7 @@ class Post < ApplicationRecord
               has_parent = false
             else
               parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
-              if !parent_post.is_deleted? && parent_post.your_post?(current_user)
+              if !parent_post.deleted? && parent_post.your_post?(current_user)
                 if TreePath.where(descendant: parent_post).length > 1
                   reply = parent_post
                   has_parent = false
@@ -220,7 +224,7 @@ class Post < ApplicationRecord
                   tree_paths_of_children = TreePath.where(ancestor: parent_post)
                   tree_paths_of_children.each do |tree_path_of_child|
                     child_post = Post.with_deleted.find(tree_path_of_child.descendant)
-                    unless child_post.is_deleted?
+                    unless child_post.deleted?
                       if child_post.mutual_followers_post?(current_user)
                         reply = parent_post
                         has_parent = false
@@ -326,6 +330,36 @@ class Post < ApplicationRecord
     end
     refract_candidates_of_reply.uniq!
     refract_candidates_of_reply
+  end
+
+  # 返り値はハッシュ化したPostレコードでかつ、ソート用のdatetime_for_sortカラムが追加されている点に注意
+  def self.get_unformatted_refract_candidates(current_user)
+    # リフラクト候補取得の対象期間の取得
+    target_time_from, target_time_to = CurrentUserRefract.get_target_times_of_refract(current_user)
+
+    # いいねした投稿の中からリフラクト候補を取得
+    hashed_refract_candidates_of_like = Post.get_hashed_refract_candidates_of_like(
+      current_user,
+      target_time_from,
+      target_time_to
+    )
+
+    # リプライの中からリフラクト候補を取得
+    replies = []
+    current_user_posts_with_deleted = Post.with_deleted.where(user_id: current_user.id)
+    current_user_posts_with_deleted.each do |current_user_post_with_deleted|
+      reply = Post.get_reply(current_user, current_user_post_with_deleted)
+      if reply.present?
+        replies.push(reply)
+      end
+    end
+    hashed_refract_candidates_of_reply = Post.get_hashed_refract_candidates_of_reply(
+      current_user,
+      target_time_from,
+      target_time_to,
+      replies
+    )
+    [hashed_refract_candidates_of_like, hashed_refract_candidates_of_reply]
   end
 
   def format_post(current_user)
@@ -456,14 +490,6 @@ class Post < ApplicationRecord
 
   def is_reply?
     TreePath.where(descendant: id).length > 1
-  end
-
-  def is_deleted?
-    if deleted_at.nil?
-      false
-    else
-      true
-    end
   end
 
   def your_post?(current_user)
