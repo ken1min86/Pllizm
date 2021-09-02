@@ -11,7 +11,8 @@ class Post < ApplicationRecord
   has_many :liked_users, through: :likes, source: 'user'
 
   has_many :current_user_refracts, class_name: 'CurrentUserRefract', foreign_key: 'post_id'
-  has_many :refracted_users, through: :current_user_refracts, source: 'user'
+
+  has_many :follower_refracts, class_name: 'FollowerRefract', foreign_key: 'post_id'
 
   has_many :tree_paths, class_name: 'TreePath', foreign_key: 'ancestor'
   has_many :descendant_posts, through: :tree_paths, source: 'descendant_post'

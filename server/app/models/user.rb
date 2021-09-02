@@ -31,7 +31,8 @@ class User < ActiveRecord::Base
   has_many :liked_posts, through: :likes, source: 'liked_post'
 
   has_many :current_user_refracts
-  has_many :refracted_posts, through: :current_user_refracts, source: 'refracted_post'
+
+  has_many :follower_refracts
 
   validates :userid,   length: { maximum: 15 }, uniqueness: true, presence: true
   validates :username, length: { maximum: 50 }, presence: true
