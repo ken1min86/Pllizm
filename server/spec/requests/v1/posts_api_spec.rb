@@ -1697,4 +1697,115 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/posts/:refract_candidate_id/thread_above_candidate
+  - posts#thread_above_candidate - Get thread above candidate" do
+    context "when client doesn't have token" do
+      before do
+        create(:icon)
+      end
+
+      let(:client_user)      { create(:user) }
+      let(:client_user_post) { create(:post, user_id: client_user.id) }
+
+      it "returns 401" do
+        get v1_thread_above_candidate_path(client_user_post.id)
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token and has performed CurrentUserRefract record" do
+      before do
+        create(:icon)
+        CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
+      end
+
+      let(:client_user)         { create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+      let(:client_user_post)    { create(:post, user_id: client_user.id) }
+
+      it 'returns 403' do
+        expect(client_user.current_user_refracts.where(performed_refract: true).length).to eq 1
+        expect(client_user.current_user_refracts.where(performed_refract: false).length).to eq 0
+
+        get v1_thread_above_candidate_path(client_user_post.id), headers: client_user_headers
+        expect(response).to have_http_status(403)
+        expect(response.message).to include('Forbidden')
+        expect(JSON.parse(response.body)['errors']['title']).to include('リフラクト機能を使用できません')
+      end
+    end
+
+    context "when client has token and has not performed CurrentUserRefract record" do
+      before do
+        create(:icon)
+        CurrentUserRefract.create(user_id: client_user.id, performed_refract: false)
+      end
+
+      let(:client_user)         { create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+
+      context "params post doesn't exist" do
+        let(:non_existent_post_id) { get_non_existent_post_id }
+
+        it 'returns 400' do
+          get v1_thread_above_candidate_path(non_existent_post_id), headers: client_user_headers
+          expect(response).to have_http_status(400)
+          expect(response.message).to include('Bad Request')
+          expect(JSON.parse(response.body)['errors']['title']).to include('パラメータのidが不正です')
+        end
+      end
+
+      context "params post is deleted" do
+        let(:deleted_post) { create(:post, user_id: client_user.id) }
+
+        before do
+          deleted_post.destroy
+        end
+
+        it 'returns 400' do
+          get v1_thread_above_candidate_path(deleted_post.id), headers: client_user_headers
+          expect(response).to have_http_status(400)
+          expect(response.message).to include('Bad Request')
+          expect(JSON.parse(response.body)['errors']['title']).to include('パラメータのidが不正です')
+        end
+      end
+
+      context "params post replies to 5 posts
+      3/5 posted by current user and 1 of them is deleted
+      and 1/5 posted by follower
+      and 1/5 posted by not follower" do
+        let(:follower)                  { create_mutual_follow_user(client_user) }
+        let(:not_follower)              { create_mutual_follow_user(follower) }
+
+        let!(:deleted_client_user_post) { create(:post, user_id: client_user.id) }
+        let!(:follower_post1)           { create_reply_to_prams_post(follower, deleted_client_user_post) }
+        let!(:not_follower_post)        { create_reply_to_prams_post(not_follower, follower_post1) }
+        let!(:follower_post2)           { create_reply_to_prams_post(follower, not_follower_post) }
+        let!(:client_user_post)         { create_reply_to_prams_post(client_user, follower_post2) }
+
+        # deleted_client_user_postに対するリプライを作成した後に投稿を削除すること。
+        before do
+          deleted_client_user_post.destroy
+        end
+
+        it 'returns 200 and thread sorted in asc order of created_at' do
+          get v1_thread_above_candidate_path(client_user_post.id), headers: client_user_headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(5)
+          expect(response_body[0][:deleted]).to eq(nil)
+          expect(response_body[1][:mutual_follower_post].length).to eq(11)
+          expect(response_body[1][:mutual_follower_post]).to have_id(follower_post1.id)
+          expect(response_body[2][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[3][:mutual_follower_post].length).to eq(11)
+          expect(response_body[3][:mutual_follower_post]).to have_id(follower_post2.id)
+          expect(response_body[4][:current_user_post].length).to eq(14)
+          expect(response_body[4][:current_user_post]).to have_id(client_user_post.id)
+        end
+      end
+    end
+  end
 end

@@ -7,7 +7,7 @@ module V1
 
     # ※順番を入れ替えないこと(authenticate→verify_refractable)
     before_action :authenticate_v1_user!
-    before_action :verify_refractable_after_authenticate, only: [:index_refract_candidates]
+    before_action :verify_refractable_after_authenticate, only: [:index_refract_candidates, :thread_above_candidate]
 
     def create
       post = Post.new(post_params)
@@ -177,6 +177,22 @@ module V1
       end
 
       render json: formatted_refract_candidates, status: :ok
+    end
+
+    def thread_above_candidate
+      candidate_post = Post.find_by(id: params[:refract_candidate_id])
+      if candidate_post.blank?
+        render_json_bad_request_with_custom_errors('パラメータのidが不正です', '削除済みでない存在する投稿のidを設定してください。')
+      else
+        posts_above_candidate_post = candidate_post.ancestor_posts.with_deleted.order(created_at: :asc)
+        thread_above_candidate = []
+        posts_above_candidate_post.each do |post_above_candidate|
+          status = Post.check_status_of_current_post(current_v1_user, post_above_candidate.id)
+          formatted_post = Post.get_current_according_to_status_of_current_post(current_v1_user, post_above_candidate.id, status)
+          thread_above_candidate.push(formatted_post)
+        end
+        render json: thread_above_candidate, status: :ok
+      end
     end
 
     private
