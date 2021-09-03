@@ -269,4 +269,55 @@ RSpec.describe "V1::RefractsApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/refracts/skip - v1/refracts#skip - Skip refract" do
+    context "when client doesn't have token" do
+      before do
+        create(:icon)
+      end
+
+      it "returns 401" do
+        post v1_skip_path
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token and has performed CurrentUserRefract record" do
+      before do
+        create(:icon)
+        CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
+      end
+
+      let(:client_user)         { create(:user) }
+      let(:client_user_headers) { client_user.create_new_auth_token }
+
+      it 'returns 403' do
+        expect(client_user.current_user_refracts.where(performed_refract: true).length).to eq 1
+        expect(client_user.current_user_refracts.where(performed_refract: false).length).to eq 0
+
+        post v1_skip_path, headers: client_user_headers
+        expect(response).to         have_http_status(403)
+        expect(response.message).to include('Forbidden')
+        expect(JSON.parse(response.body)['errors']['title']).to include('リフラクト機能を使用できません')
+      end
+    end
+
+    context "when client has token and has not performed CurrentUserRefract record" do
+      before do
+        create(:icon)
+      end
+
+      let(:client_user)          { create(:user) }
+      let(:client_user_headers)  { client_user.create_new_auth_token }
+      let!(:client_user_refract) { CurrentUserRefract.create(user_id: client_user.id, performed_refract: false) }
+
+      it 'returns 200 and update CurrentUserRefract to performed' do
+        post v1_skip_path, headers: client_user_headers
+        expect(response).to         have_http_status(200)
+        expect(response.message).to include('OK')
+        expect(client_user_refract.reload.performed_refract).to eq(true)
+      end
+    end
+  end
 end
