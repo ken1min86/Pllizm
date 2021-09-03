@@ -162,9 +162,9 @@ class Post < ApplicationRecord
   # パターンC: ルートへのリプライにカレントユーザの投稿を含み、
   #           リーフがカレントユーザの投稿以外の場合
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
-  # ToDo:
+  # Issue #100
   # ネストが深く処理が理解しづらいため、浅くなるようにリファクタリングする。
-  # また、適宜コメントを追加するなどして、理解がしやすいような工夫をする。
+  # また、適宜コメントを追加するなどして、理解がしやすくなるように工夫をする。
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
@@ -360,6 +360,7 @@ class Post < ApplicationRecord
       target_time_to,
       replies
     )
+    # Issue #110 いいねした投稿とリプライの投稿が重複した場合は、リプライの投稿のみ返すよう修正する。
     [hashed_refract_candidates_of_like, hashed_refract_candidates_of_reply]
   end
 
@@ -520,7 +521,7 @@ class Post < ApplicationRecord
   private
 
   def set_id
-    while id.blank? || User.find_by(id: id).present?
+    while id.blank? || Post.find_by(id: id).present?
       self.id = SecureRandom.alphanumeric(20)
     end
   end
