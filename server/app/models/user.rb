@@ -43,9 +43,9 @@ class User < ActiveRecord::Base
   def self.extract_disclosable_culumns_from_users_array(users_array)
     extracted_users = []
     users_array.each do |user|
-      hashed_user = user.attributes.symbolize_keys
+      hashed_user         = user.attributes.symbolize_keys
       hashed_user[:image] = user.image.url
-      extracted_user = hashed_user.slice(
+      extracted_user      = hashed_user.slice(
         :id,
         :userid,
         :username,
@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
 
   def mutual_follow(other_user)
     unless self == other_user
-      follow_relationship = follow_relationships.create(follow_to: other_user.id)
+      follow_relationship            = follow_relationships.create(follow_to: other_user.id)
       reverse_of_follow_relationship = reverse_of_follow_relationships.create(followed_by: other_user.id)
       [follow_relationship, reverse_of_follow_relationship]
     end

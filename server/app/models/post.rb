@@ -7,18 +7,18 @@ class Post < ApplicationRecord
   belongs_to :user
   belongs_to :icon
 
-  has_many :likes, class_name: 'Like', foreign_key: 'post_id', dependent: :destroy
-  has_many :liked_users, through: :likes, source: 'user'
+  has_many :likes,       class_name: 'Like', foreign_key: 'post_id', dependent: :destroy
+  has_many :liked_users, through:    :likes, source: 'user'
 
   has_many :current_user_refracts, class_name: 'CurrentUserRefract', foreign_key: 'post_id'
 
   has_many :follower_refracts, class_name: 'FollowerRefract', foreign_key: 'post_id'
 
-  has_many :tree_paths, class_name: 'TreePath', foreign_key: 'ancestor'
-  has_many :descendant_posts, through: :tree_paths, source: 'descendant_post'
+  has_many :tree_paths,       class_name: 'TreePath',  foreign_key: 'ancestor'
+  has_many :descendant_posts, through:    :tree_paths, source:      'descendant_post'
 
-  has_many :reverse_of_tree_paths, class_name: 'TreePath', foreign_key: 'descendant'
-  has_many :ancestor_posts, through: :reverse_of_tree_paths, source: 'ancestor_post'
+  has_many :reverse_of_tree_paths, class_name: 'TreePath',             foreign_key: 'descendant'
+  has_many :ancestor_posts,        through:    :reverse_of_tree_paths, source:      'ancestor_post'
 
   validates :content, length: { maximum: 140 }, presence: true
   validates :user_id, presence: true
@@ -106,11 +106,11 @@ class Post < ApplicationRecord
       if parent_post.nil?
         parent[:deleted] = nil
       elsif parent_post.user == current_user
-        parent_post_of_current_user = tree_path_of_parent_post.ancestor_post
+        parent_post_of_current_user           = tree_path_of_parent_post.ancestor_post
         formatted_parent_post_of_current_user = parent_post_of_current_user.format_current_user_post(current_user)
         parent.merge!(formatted_parent_post_of_current_user)
       elsif followers.index(parent_post.user)
-        parent_post_of_follower = tree_path_of_parent_post.ancestor_post
+        parent_post_of_follower           = tree_path_of_parent_post.ancestor_post
         formatted_parent_post_of_follower = parent_post_of_follower.format_follower_post(current_user)
         parent.merge!(formatted_parent_post_of_follower)
       else
@@ -257,7 +257,7 @@ class Post < ApplicationRecord
     likes.each do |like|
       liked_post = like.liked_post
       if !liked_post.is_locked && liked_post.mutual_followers_post?(current_user)
-        hased_liked_post = liked_post.attributes.symbolize_keys
+        hased_liked_post                     = liked_post.attributes.symbolize_keys
         hased_liked_post[:datetime_for_sort] = like.created_at
         refract_candidates_of_like.push(hased_liked_post)
       end
@@ -312,11 +312,11 @@ class Post < ApplicationRecord
         #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
         if !leaf.deleted? && !leaf.not_mutual_follower_post?(current_user) && leaf.is_reply?
           if leaf.your_post?(current_user) && leaf.has_not_deleted_post_of_mutual_follower_above_parent?(current_user)
-            hashed_leaf = leaf.attributes.symbolize_keys
+            hashed_leaf                     = leaf.attributes.symbolize_keys
             hashed_leaf[:datetime_for_sort] = leaf.created_at
             refract_candidates_of_reply.push(hashed_leaf)
           elsif leaf.mutual_followers_post?(current_user) && leaf.has_not_deleted_post_of_current_user_above_parent?(current_user)
-            hashed_leaf = leaf.attributes.symbolize_keys
+            hashed_leaf                     = leaf.attributes.symbolize_keys
             hashed_leaf[:datetime_for_sort] = leaf.created_at
             refract_candidates_of_reply.push(hashed_leaf)
           end
@@ -403,7 +403,7 @@ class Post < ApplicationRecord
   end
 
   def count_replies_of_current_user_post(current_user)
-    num_of_replies_exclude_logically_deleted_posts = 0
+    num_of_replies_exclude_logically_deleted_posts        = 0
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
     tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
       unless tree_path_of_reply_include_logically_deleted_post.descendant_post.nil?

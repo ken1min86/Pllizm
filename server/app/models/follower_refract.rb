@@ -7,4 +7,22 @@ class FollowerRefract < ApplicationRecord
   validates :follower_id, presence: true
   validates :post_id,     presence: true
   validates :category,    inclusion: { in: ['like', 'reply'] }
+
+  def self.create_follower_refract_when_refarced_liked_post(current_user, refracted_follower, post)
+    FollowerRefract.create(
+      user_id: refracted_follower.id,
+      follower_id: current_user.id,
+      post_id: post.id,
+      category: 'like',
+    )
+  end
+
+  def self.create_follower_refract_when_refarced_replied_post(current_user, refracted_follower, post)
+    FollowerRefract.create(
+      user_id: refracted_follower.id,
+      follower_id: current_user.id,
+      post_id: post.id,
+      category: 'reply',
+    )
+  end
 end

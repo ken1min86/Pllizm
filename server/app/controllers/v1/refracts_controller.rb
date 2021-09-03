@@ -12,33 +12,23 @@ module V1
       refract_candidates_of_like, refract_candidates_of_reply = Post.get_unformatted_refract_candidates(current_v1_user)
 
       if params_post.blank?
-        render_json_forbitten_with_custom_errors('リフラクト対象外の投稿です', 'リフラクト候補の投稿を設定してください。')
+        render_json_forbitten_with_custom_errors(
+          'リフラクト対象外の投稿です',
+          'リフラクト候補の投稿を設定してください。'
+        )
 
       elsif refract_candidates_of_like.select { |c| c[:id] == params_post.id }.present?
         current_user_refract = current_v1_user.current_user_refracts.find_by(performed_refract: false)
-        current_user_refract.update(
-          performed_refract: true,
-          post_id: params_post.id,
-          category: 'like',
-        )
+        current_user_refract.update_current_user_refract_when_refarced_liked_post(params_post)
 
-        follower = params_post.user
-        FollowerRefract.create(
-          user_id: follower.id,
-          follower_id: current_v1_user.id,
-          post_id: params_post.id,
-          category: 'like',
-        )
+        liked_follower = params_post.user
+        FollowerRefract.create_follower_refract_when_refarced_liked_post(current_v1_user, liked_follower, params_post)
 
         render json: {}, status: :ok
 
       elsif refract_candidates_of_reply.select { |c| c[:id] == params_post.id }.present?
         current_user_refract = current_v1_user.current_user_refracts.find_by(performed_refract: false)
-        current_user_refract.update(
-          performed_refract: true,
-          post_id: params_post.id,
-          category: 'reply',
-        )
+        current_user_refract.update_current_user_refract_when_refarced_replied_post(params_post)
 
         # params postに紐づくスレッドの投稿主のうち、フォロワーのみを抽出
         posts_of_thread = params_post.ancestor_posts
@@ -51,13 +41,8 @@ module V1
         end
         followers.uniq!
 
-        followers.each do |follower1|
-          FollowerRefract.create(
-            user_id: follower1.id,
-            follower_id: current_v1_user.id,
-            post_id: params_post.id,
-            category: 'reply',
-          )
+        followers.each do |follower|
+          FollowerRefract.create_follower_refract_when_refarced_replied_post(current_v1_user, follower, params_post)
         end
 
         render json: {}, status: :ok

@@ -32,7 +32,10 @@ module V1
       replied_post = Post.find_by(id: params[:post_id])
       reply_post = Post.new(post_params)
       if replied_post.blank?
-        render_json_bad_request_with_custom_errors('投稿が存在しません', '存在しない投稿に対してリプライはできません')
+        render_json_bad_request_with_custom_errors(
+          '投稿が存在しません',
+          '存在しない投稿に対してリプライはできません'
+        )
       elsif replied_post.your_post?(current_v1_user) || replied_post.mutual_followers_post?(current_v1_user)
         if reply_post.save
           descendant_is_prams_id_tree_paths = TreePath.where(descendant: params[:post_id]).order(created_at: :asc)
@@ -50,7 +53,10 @@ module V1
           render json: reply_post.errors, status: :bad_request
         end
       else
-        render_json_bad_request_with_custom_errors('リプライ対象外の投稿です', '自分または相互フォロワー以外の投稿にはリプライできません')
+        render_json_bad_request_with_custom_errors(
+          'リプライ対象外の投稿です',
+          '自分または相互フォロワー以外の投稿にはリプライできません'
+        )
       end
     end
 
@@ -182,7 +188,10 @@ module V1
     def thread_above_candidate
       candidate_post = Post.find_by(id: params[:refract_candidate_id])
       if candidate_post.blank?
-        render_json_bad_request_with_custom_errors('パラメータのidが不正です', '削除済みでない存在する投稿のidを設定してください。')
+        render_json_bad_request_with_custom_errors(
+          'パラメータのidが不正です',
+          '削除済みでない存在する投稿のidを設定してください。'
+        )
       else
         posts_above_candidate_post = candidate_post.ancestor_posts.with_deleted.order(created_at: :asc)
         thread_above_candidate = []
