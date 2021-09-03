@@ -37,7 +37,7 @@
 /server/config/settings/*.local.yml
 /server/config/environments/*.local.yml
 
-server/.env
+/server/.env
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
