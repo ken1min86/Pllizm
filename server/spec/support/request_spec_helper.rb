@@ -71,7 +71,7 @@ module RequestSpecHelper
     post v1_post_reply_path(replied_post.id), params: params, headers: headers
     expect(response).to have_http_status(200)
     response_body = JSON.parse(response.body, symbolize_names: true)
-    reply = Post.find(response_body[:id])
+    reply         = Post.find(response_body[:id])
     reply
   end
 end

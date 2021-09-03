@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_27_005709) do
+ActiveRecord::Schema.define(version: 2021_09_02_065344) do
 
   create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -33,6 +33,18 @@ ActiveRecord::Schema.define(version: 2021_08_27_005709) do
     t.index ["request_to"], name: "index_follow_requests_on_request_to"
     t.index ["requested_by", "request_to"], name: "index_follow_requests_on_requested_by_and_request_to", unique: true
     t.index ["requested_by"], name: "index_follow_requests_on_requested_by"
+  end
+
+  create_table "follower_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "follower_id", null: false
+    t.string "post_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["follower_id"], name: "index_follower_refracts_on_follower_id"
+    t.index ["post_id"], name: "index_follower_refracts_on_post_id"
+    t.index ["user_id"], name: "index_follower_refracts_on_user_id"
   end
 
   create_table "followers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -121,6 +133,9 @@ ActiveRecord::Schema.define(version: 2021_08_27_005709) do
   add_foreign_key "current_user_refracts", "users"
   add_foreign_key "follow_requests", "users", column: "request_to"
   add_foreign_key "follow_requests", "users", column: "requested_by"
+  add_foreign_key "follower_refracts", "posts"
+  add_foreign_key "follower_refracts", "users"
+  add_foreign_key "follower_refracts", "users", column: "follower_id"
   add_foreign_key "followers", "users", column: "follow_to"
   add_foreign_key "followers", "users", column: "followed_by"
   add_foreign_key "likes", "posts"
