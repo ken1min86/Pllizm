@@ -31,5 +31,7 @@ Rails.application.routes.draw do
     put  '/posts/:post_id/change_lock', to: 'posts#change_lock',   as: :post_changeLock
 
     post '/posts/:refract_candidate_id/refracts', to: 'refracts#perform_refract', as: :refract_performed
+
+    post '/refracts/skip', to: 'refracts#skip', as: :skip
   end
 end

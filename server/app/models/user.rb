@@ -73,4 +73,8 @@ class User < ActiveRecord::Base
       [follow_relationship, reverse_of_follow_relationship]
     end
   end
+
+  def get_current_user_refract
+    current_user_refracts.find_by(performed_refract: false)
+  end
 end

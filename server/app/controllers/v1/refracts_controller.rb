@@ -2,7 +2,7 @@ module V1
   class RefractsController < ApplicationController
     # 順番を入れ替えないこと(authenticate→verify_refractable)
     before_action :authenticate_v1_user!
-    before_action :verify_refractable_after_authenticate, only: [:perform_refract]
+    before_action :verify_refractable_after_authenticate, only: [:perform_refract, :skip]
 
     # リフラクト候補取得メソッド(Post.get_unformatted_refract_candidates)では、
     # いいねした投稿とリプライの投稿が重複した場合はリプライの投稿のみが返されるため、
@@ -18,7 +18,7 @@ module V1
         )
 
       elsif refract_candidates_of_like.select { |c| c[:id] == params_post.id }.present?
-        current_user_refract = current_v1_user.current_user_refracts.find_by(performed_refract: false)
+        current_user_refract = current_v1_user.get_current_user_refract
         current_user_refract.update_current_user_refract_when_refarced_liked_post(params_post)
 
         liked_follower = params_post.user
@@ -27,7 +27,7 @@ module V1
         render json: {}, status: :ok
 
       elsif refract_candidates_of_reply.select { |c| c[:id] == params_post.id }.present?
-        current_user_refract = current_v1_user.current_user_refracts.find_by(performed_refract: false)
+        current_user_refract = current_v1_user.get_current_user_refract
         current_user_refract.update_current_user_refract_when_refarced_replied_post(params_post)
 
         # params postに紐づくスレッドの投稿主のうち、フォロワーのみを抽出
@@ -47,6 +47,12 @@ module V1
 
         render json: {}, status: :ok
       end
+    end
+
+    def skip
+      current_user_refract = current_v1_user.get_current_user_refract
+      current_user_refract.update(performed_refract: true)
+      render json: {}, status: :ok
     end
   end
 end
