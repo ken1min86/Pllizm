@@ -204,6 +204,32 @@ module V1
       end
     end
 
+    def index_posts_refracted_by_current_user
+      performed_current_user_refracts = current_v1_user.get_performed_current_user_refracts
+      formatted_refracted_posts = []
+      performed_current_user_refracts.each do |performed_current_user_refract|
+        case performed_current_user_refract.category
+        when 'like'
+          liked_post           = Post.with_deleted.find(performed_current_user_refract.post_id)
+          formatted_liked_post = Post.format_refracted_post_of_like(
+            current_v1_user,
+            liked_post,
+            performed_current_user_refract.updated_at
+          )
+          formatted_refracted_posts.push(formatted_liked_post)
+        when 'reply'
+          replied_leaf_post       = Post.with_deleted.find(performed_current_user_refract.post_id)
+          formatted_replied_posts = Post.format_refracted_posts_of_reply(
+            current_v1_user,
+            replied_leaf_post,
+            performed_current_user_refract.updated_at
+          )
+          formatted_refracted_posts.push(formatted_replied_posts)
+        end
+      end
+      render json: formatted_refracted_posts, status: :ok
+    end
+
     private
 
     def post_params
