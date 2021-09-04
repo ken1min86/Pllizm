@@ -20,6 +20,8 @@ Rails.application.routes.draw do
     get '/posts/replies',                                      to: 'posts#index_replies',            as: :post_replies
     get '/posts/refract_candidates',                           to: 'posts#index_refract_candidates', as: :post_refract_candidates
     get '/posts/:refract_candidate_id/thread_above_candidate', to: 'posts#thread_above_candidate',   as: :thread_above_candidate
+    get '/posts/refracts/by_current_user',                     to: 'posts#index_posts_refracted_by_current_user',
+                                                               as: :post_refracted_by_current_user
     get '/posts/current_user',                                 to: 'posts#index_current_user_posts', as: :current_user_posts
     get '/posts/current_user_and_mutual_follower',             to: 'posts#index_current_user_and_mutual_follower_posts',
                                                                as: :current_user_and_mutual_follower_posts
