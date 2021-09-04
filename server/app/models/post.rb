@@ -364,6 +364,69 @@ class Post < ApplicationRecord
     [hashed_refract_candidates_of_like, hashed_refract_candidates_of_reply]
   end
 
+  # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
+  # あり得るステータスは以下3種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:             deleted
+  # - 非相互フォロワーの投稿: not_mutual_follower_post
+  # - 相互フォロワーの投稿:   mutual_follower_post
+  def self.format_refracted_post_of_like(current_user, liked_post, refracted_at)
+    formatted_refracted_post = {}
+    status                   = Post.check_status_of_current_post(current_user, liked_post.id)
+    case status
+    when Settings.constants.status_of_post[:deleted]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [deleted: nil],
+      }
+    when Settings.constants.status_of_post[:not_mutual_follower_post]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [not_mutual_follower_post: nil],
+      }
+    when Settings.constants.status_of_post[:mutual_follower_post]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [liked_post.format_follower_refracted_post(current_user, refracted_at)],
+      }
+    end
+    formatted_refracted_post
+  end
+
+  # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
+  # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:             deleted
+  # - 非相互フォロワーの投稿: not_mutual_follower_post
+  # - カレントユーザの投稿:   current_user_post
+  # - 相互フォロワーの投稿:   mutual_follower_post
+  def self.format_refracted_posts_of_reply(current_user, replied_leaf_post, refracted_at)
+    array_of_formatted_refracted_posts = []
+    tree_paths_above_current_post      = TreePath.where(descendant: replied_leaf_post).order(depth: :desc)
+
+    tree_paths_above_current_post.each do |tree_path_above_current_post|
+      post   = Post.with_deleted.find(tree_path_above_current_post.ancestor)
+      status = Post.check_status_of_current_post(current_user, post.id)
+
+      case status
+      when Settings.constants.status_of_post[:deleted]
+        array_of_formatted_refracted_posts.push({ deleted: nil })
+
+      when Settings.constants.status_of_post[:not_mutual_follower_post]
+        array_of_formatted_refracted_posts.push({ not_mutual_follower_post: nil })
+
+      when Settings.constants.status_of_post[:current_user_post]
+        formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
+        array_of_formatted_refracted_posts.push(formatted_current_user_post)
+
+      when Settings.constants.status_of_post[:mutual_follower_post]
+        formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
+        array_of_formatted_refracted_posts.push(formatted_follower_post)
+      end
+    end
+
+    formatted_refracted_posts = { refracted_at: I18n.l(refracted_at), posts: array_of_formatted_refracted_posts }
+    formatted_refracted_posts
+  end
+
   def format_post(current_user)
     if your_post?(current_user)
       formated_post = format_current_user_post(current_user)
@@ -402,6 +465,38 @@ class Post < ApplicationRecord
     formatted_follower_post
   end
 
+  def format_follower_refracted_post(current_user, refracted_at)
+    follower    = user
+    hashed_post = attributes.symbolize_keys
+    hashed_post.delete(:icon_id)
+    hashed_post[:created_at]               = I18n.l(created_at)
+    hashed_post[:image]                    = image.url
+    hashed_post[:icon_url]                 = follower.image.url
+    hashed_post[:userid]                   = follower.userid
+    hashed_post[:username]                 = follower.username
+    hashed_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
+    hashed_post[:is_reply]                 = is_reply?
+    hashed_post[:replies]                  = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
+    refracted_follower_post                = { mutual_follower_post: hashed_post }
+    refracted_follower_post
+  end
+
+  def format_current_user_refracted_post(current_user, refracted_at)
+    hashed_post = attributes.symbolize_keys
+    hashed_post.delete(:icon_id)
+    hashed_post[:created_at]               = I18n.l(created_at)
+    hashed_post[:image]                    = image.url
+    hashed_post[:icon_url]                 = current_user.image.url
+    hashed_post[:userid]                   = current_user.userid
+    hashed_post[:username]                 = current_user.username
+    hashed_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
+    hashed_post[:is_reply]                 = is_reply?
+    hashed_post[:likes]                    = likes.length
+    hashed_post[:replies]                  = count_replies_of_current_user_post(current_user)
+    refracted_current_user_post            = { current_user_post: hashed_post }
+    refracted_current_user_post
+  end
+
   def count_replies_of_current_user_post(current_user)
     num_of_replies_exclude_logically_deleted_posts        = 0
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
@@ -418,7 +513,7 @@ class Post < ApplicationRecord
     followers = current_user.followings
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
     tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
-      unless tree_path_of_reply_include_logically_deleted_post.descendant_post.nil?
+      if tree_path_of_reply_include_logically_deleted_post.descendant_post.present?
         tree_path_of_reply_exclude_logically_deleted_post = tree_path_of_reply_include_logically_deleted_post
         if tree_path_of_reply_exclude_logically_deleted_post.descendant_post.user_id == current_user.id
           num_of_replies_exclude_logically_deleted_posts += 1

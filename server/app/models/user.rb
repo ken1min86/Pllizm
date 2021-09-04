@@ -77,4 +77,8 @@ class User < ActiveRecord::Base
   def get_current_user_refract
     current_user_refracts.find_by(performed_refract: false)
   end
+
+  def get_performed_current_user_refracts
+    current_user_refracts.where(performed_refract: true).order(created_at: :desc)
+  end
 end
