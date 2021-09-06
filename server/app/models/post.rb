@@ -76,22 +76,28 @@ class Post < ApplicationRecord
 
   def self.get_current_according_to_status_of_current_post(current_user, current_post_id, status_of_current_post)
     current = {}
-    if status_of_current_post == Settings.constants.status_of_post[:current_user_post]
-      current_post_of_current_user = Post.find(current_post_id)
+    case status_of_current_post
+
+    when Settings.constants.status_of_post[:current_user_post]
+      current_post_of_current_user           = Post.find(current_post_id)
       formatted_current_post_of_current_user = current_post_of_current_user.format_current_user_post(current_user)
       current.merge!(formatted_current_post_of_current_user)
 
-    elsif status_of_current_post == Settings.constants.status_of_post[:mutual_follower_post]
-      current_post_of_follower = Post.find(current_post_id)
+    when Settings.constants.status_of_post[:mutual_follower_post]
+      current_post_of_follower           = Post.find(current_post_id)
       formatted_current_post_of_follower = current_post_of_follower.format_follower_post(current_user)
       current.merge!(formatted_current_post_of_follower)
-    elsif status_of_current_post == Settings.constants.status_of_post[:not_mutual_follower_post]
+
+    when Settings.constants.status_of_post[:not_mutual_follower_post]
       current[:not_mutual_follower_post] = nil
-    elsif status_of_current_post == Settings.constants.status_of_post[:deleted]
+
+    when Settings.constants.status_of_post[:deleted]
       current[:deleted] = nil
-    elsif status_of_current_post == Settings.constants.status_of_post[:not_exist]
+
+    when Settings.constants.status_of_post[:not_exist]
       current[:not_exist] = nil
     end
+
     current
   end
 
