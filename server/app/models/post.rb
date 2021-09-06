@@ -446,6 +446,7 @@ class Post < ApplicationRecord
     hashed_current_user_post = attributes.symbolize_keys
     hashed_current_user_post.delete(:user_id)
     hashed_current_user_post.delete(:icon_id)
+    hashed_current_user_post[:created_at]               = I18n.l(created_at)
     hashed_current_user_post[:image]                    = image.url
     hashed_current_user_post[:icon_url]                 = current_user.image.url
     hashed_current_user_post[:userid]                   = current_user.userid
@@ -462,6 +463,7 @@ class Post < ApplicationRecord
     hashed_follower_post = attributes.symbolize_keys
     hashed_follower_post.delete(:user_id)
     hashed_follower_post.delete(:icon_id)
+    hashed_follower_post[:created_at]               = I18n.l(created_at)
     hashed_follower_post[:image]                    = image.url
     hashed_follower_post[:icon_url]                 = icon.image.url
     hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
