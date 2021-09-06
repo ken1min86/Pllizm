@@ -7,11 +7,11 @@ module V1
       render json: current_v1_user, status: :ok
     end
 
-    def index_of_mutual_follow_users
-      mutual_follow_users = current_v1_user.followings
-      # mutual_follow_usersのうち、仕様書に指定されたカラムだけを抽出して配列に代入する
-      extracted_mutual_follow_users = User.extract_disclosable_culumns_from_users_array(mutual_follow_users)
-      render json: extracted_mutual_follow_users, status: :ok
+    def index_of_follow_users
+      follow_users = current_v1_user.followings
+      # follow_usersのうち、仕様書に指定されたカラムだけを抽出して配列に代入する
+      extracted_follow_users = User.extract_disclosable_culumns_from_users_array(follow_users)
+      render json: extracted_follow_users, status: :ok
     end
 
     def index_of_users_follow_requested_by_me

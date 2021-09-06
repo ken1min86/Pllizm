@@ -6,7 +6,7 @@ RSpec.describe FollowerRefract, type: :model do
   end
 
   let(:user)                 { create(:user) }
-  let(:follower)             { create_mutual_follow_user(user) }
+  let(:follower)             { create_follow_user(user) }
   let(:non_existent_user_id) { get_non_existent_user_id }
   let!(:user_post)           { create(:post, user_id: user.id) }
   let(:non_existent_post_id) { get_non_existent_post_id }

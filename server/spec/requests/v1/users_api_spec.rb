@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "V1::UsersApi", type: :request do
-  describe "GET /v1/mutual_follow_users - v1/mutual_follow_users#index - Get mutual follow users" do
+  describe "GET /v1/follow_users - v1/follow_users#index - Get follow users" do
     context "when client doesn't have token" do
       it "returns 401" do
-        get v1_mutual_follow_users_path
+        get v1_follow_users_path
         expect(response).to have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
@@ -13,17 +13,17 @@ RSpec.describe "V1::UsersApi", type: :request do
     context "when client has token" do
       let(:client_user)         { create(:user) }
       let(:headers)             { client_user.create_new_auth_token }
-      let(:mutual_follow_user1) { create_mutual_follow_user(client_user) }
-      let(:mutual_follow_user2) { create_mutual_follow_user(client_user) }
+      let(:follow_user1) { create_follow_user(client_user) }
+      let(:follow_user2) { create_follow_user(client_user) }
 
-      it 'returns 200 and mutual follow users when client has some mutual follow users' do
+      it 'returns 200 and follow users when client has some follow users' do
         # current_userのフォロアーが2人いることを確認
-        expect(Follower.where(followed_by: client_user.id, follow_to: mutual_follow_user1.id)).to exist
-        expect(Follower.where(followed_by: client_user.id, follow_to: mutual_follow_user2.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user1.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user2.id)).to exist
         expect(Follower.where(followed_by: client_user.id).length).to eq(2)
 
         # API
-        get v1_mutual_follow_users_path, headers: headers
+        get v1_follow_users_path, headers: headers
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
 
@@ -33,30 +33,30 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response_body[0].length).to eq(6)
         expect(response_body[1].length).to eq(6)
         expect(response_body[0]).to include(
-          id: mutual_follow_user1.id,
-          userid: mutual_follow_user1.userid,
-          username: mutual_follow_user1.username,
-          image: mutual_follow_user1.image.url,
-          bio: mutual_follow_user1.bio,
-          need_description_about_lock: mutual_follow_user1.need_description_about_lock
+          id: follow_user1.id,
+          userid: follow_user1.userid,
+          username: follow_user1.username,
+          image: follow_user1.image.url,
+          bio: follow_user1.bio,
+          need_description_about_lock: follow_user1.need_description_about_lock
         )
         expect(response_body[1]).to include(
-          id: mutual_follow_user2.id,
-          userid: mutual_follow_user2.userid,
-          username: mutual_follow_user2.username,
-          image: mutual_follow_user2.image.url,
-          bio: mutual_follow_user2.bio,
-          need_description_about_lock: mutual_follow_user2.need_description_about_lock
+          id: follow_user2.id,
+          userid: follow_user2.userid,
+          username: follow_user2.username,
+          image: follow_user2.image.url,
+          bio: follow_user2.bio,
+          need_description_about_lock: follow_user2.need_description_about_lock
         )
       end
 
-      it 'returns 200 and mutual follow user when client has a mutual follow user' do
+      it 'returns 200 and follow user when client has a follow user' do
         # current_userのフォロアーが1人いることを確認
-        expect(Follower.where(followed_by: client_user.id, follow_to: mutual_follow_user1.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user1.id)).to exist
         expect(Follower.where(followed_by: client_user.id).length).to eq(1)
 
         # API
-        get v1_mutual_follow_users_path, headers: headers
+        get v1_follow_users_path, headers: headers
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
 
@@ -65,19 +65,19 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response_body.length).to eq(1)
         expect(response_body[0].length).to eq(6)
         expect(response_body[0]).to include(
-          id: mutual_follow_user1.id,
-          userid: mutual_follow_user1.userid,
-          username: mutual_follow_user1.username,
-          image: mutual_follow_user1.image.url,
-          bio: mutual_follow_user1.bio,
-          need_description_about_lock: mutual_follow_user1.need_description_about_lock
+          id: follow_user1.id,
+          userid: follow_user1.userid,
+          username: follow_user1.username,
+          image: follow_user1.image.url,
+          bio: follow_user1.bio,
+          need_description_about_lock: follow_user1.need_description_about_lock
         )
       end
 
-      it "returns 200 and no users when client has no mutual follow users" do
+      it "returns 200 and no users when client has no follow users" do
         expect(Follower.where(followed_by: client_user.id)).not_to exist
 
-        get v1_mutual_follow_users_path, headers: headers
+        get v1_follow_users_path, headers: headers
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
 

@@ -333,13 +333,13 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context "when try to reply to mutual follower's post" do
-        let(:mutual_follow_user)       { create_mutual_follow_user(client_user) }
-        let!(:mutual_follow_user_post) { create(:post, user_id: mutual_follow_user.id) }
+      context "when try to reply to follower's post" do
+        let(:follow_user)       { create_follow_user(client_user) }
+        let!(:follow_user_post) { create(:post, user_id: follow_user.id) }
 
         it 'returns 200 and create post and tree_path' do
           expect do
-            post v1_post_reply_path(mutual_follow_user_post.id), params: params, headers: headers
+            post v1_post_reply_path(follow_user_post.id), params: params, headers: headers
           end.to change(Post, :count).by(1).and change(TreePath, :count).by(2)
 
           expect(response).to have_http_status(200)
@@ -348,11 +348,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           reply_post = Post.order(created_at: :desc).limit(1)[0]
 
           expect(TreePath.where(ancestor: reply_post.id, descendant: reply_post.id, depth: 0)).to exist
-          expect(TreePath.where(ancestor: mutual_follow_user_post.id, descendant: reply_post.id, depth: 1)).to exist
+          expect(TreePath.where(ancestor: follow_user_post.id, descendant: reply_post.id, depth: 1)).to exist
         end
       end
 
-      context "when try to reply to not mutual follower's post" do
+      context "when try to reply to not follower's post" do
         let(:non_following_user)       { create(:user) }
         let!(:non_following_user_post) { create(:post, user_id: non_following_user.id) }
 
@@ -399,11 +399,11 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
-      let(:follower1)            { create_mutual_follow_user(client_user) }
+      let(:follower1)            { create_follow_user(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
-      let(:follower2)            { create_mutual_follow_user(client_user) }
+      let(:follower2)            { create_follow_user(client_user) }
       let(:follower2_headers)    { follower2.create_new_auth_token }
-      let(:non_follower)         { create_mutual_follow_user(follower2) }
+      let(:non_follower)         { create_follow_user(follower2) }
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
       context "when client has liked 3 client posts whose num of likes are 1 or 2 and num of replies are 0 or 1 or 2 and
@@ -453,15 +453,15 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(7)
 
-          expect(response_body[0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[0][:follower_post].length).to eq(11)
           expect(response_body[1][:current_user_post].length).to eq(14)
-          expect(response_body[2][:mutual_follower_post].length).to eq(11)
+          expect(response_body[2][:follower_post].length).to eq(11)
           expect(response_body[3][:current_user_post].length).to eq(14)
-          expect(response_body[4][:mutual_follower_post].length).to eq(11)
-          expect(response_body[5][:mutual_follower_post].length).to eq(11)
+          expect(response_body[4][:follower_post].length).to eq(11)
+          expect(response_body[5][:follower_post].length).to eq(11)
           expect(response_body[6][:current_user_post].length).to eq(14)
 
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post]).to include(
             id: follower2_post_1reply_by_non_follower.id,
             content: follower2_post_1reply_by_non_follower.content,
             image: follower2_post_1reply_by_non_follower.image.url,
@@ -471,7 +471,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_reply: false,
             is_liked_by_current_user: true,
           )
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post]).to include(
             :deleted_at,
             :created_at,
             :updated_at,
@@ -495,7 +495,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             :updated_at,
           )
 
-          expect(response_body[2][:mutual_follower_post]).to include(
+          expect(response_body[2][:follower_post]).to include(
             id: follower1_post_1reply.id,
             replies: 1,
           )
@@ -504,11 +504,11 @@ RSpec.describe "V1::PostsApi", type: :request do
             likes: 1,
             replies: 0,
           )
-          expect(response_body[4][:mutual_follower_post]).to include(
+          expect(response_body[4][:follower_post]).to include(
             id: follower1_post_0reply.id,
             replies: 0,
           )
-          expect(response_body[5][:mutual_follower_post]).to include(
+          expect(response_body[5][:follower_post]).to include(
             id: follower2_post_2reply.id,
             replies: 2,
           )
@@ -542,8 +542,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:mutual_follower_post].length).to eq(11)
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post].length).to eq(11)
+          expect(response_body[0][:follower_post]).to include(
             id: follower2_post_1reply_by_non_follower.id,
             content: follower2_post_1reply_by_non_follower.content,
             image: follower2_post_1reply_by_non_follower.image.url,
@@ -553,7 +553,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_reply: false,
             is_liked_by_current_user: true,
           )
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post]).to include(
             :deleted_at,
             :created_at,
             :updated_at,
@@ -585,8 +585,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           follower1_reply = Post.order(created_at: :desc).limit(1)[0]
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:mutual_follower_post].length).to eq(11)
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post].length).to eq(11)
+          expect(response_body[0][:follower_post]).to include(
             id: follower1_reply.id,
             content: follower1_reply.content,
             image: follower1_reply.image.url,
@@ -596,7 +596,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_reply: true,
             is_liked_by_current_user: true,
           )
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post]).to include(
             :deleted_at,
             :created_at,
             :updated_at,
@@ -616,12 +616,12 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
   end
 
-  describe "GET /v1/posts/current_user_and_mutual_follower
-  - v1/likes#index_current_user_and_mutual_follower_posts
-  - Get current user and mutual follower posts" do
+  describe "GET /v1/posts/current_user_and_follower
+  - v1/posts#index_current_user_and_follower_posts
+  - Get current user and follower posts" do
     context "when client doesn't have token" do
       it "returns 401" do
-        get v1_current_user_and_mutual_follower_posts_path
+        get v1_current_user_and_followers_posts_path
         expect(response).to have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
@@ -634,9 +634,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
-      let(:follower1)            { create_mutual_follow_user(client_user) }
+      let(:follower1)            { create_follow_user(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
-      let(:follower2)            { create_mutual_follow_user(client_user) }
+      let(:follower2)            { create_follow_user(client_user) }
       let(:non_follower)         { create(:user) }
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
@@ -669,7 +669,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
 
         it "return 200 and client's and followers's sorted posts" do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -679,13 +679,13 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body.length).to eq(4)
 
           # ソートが正しく実装されているかテスト
-          expect(response_body[0][:mutual_follower_post]).to have_id(follower2_post_with_reply.id)
-          expect(response_body[1][:mutual_follower_post]).to have_id(follower1_post_without_reply.id)
+          expect(response_body[0][:follower_post]).to have_id(follower2_post_with_reply.id)
+          expect(response_body[1][:follower_post]).to have_id(follower1_post_without_reply.id)
           expect(response_body[2][:current_user_post]).to have_id(client_post_with_reply.id)
           expect(response_body[3][:current_user_post]).to have_id(client_post_without_reply.id)
 
-          expect(response_body[0][:mutual_follower_post].length).to eq(11)
-          expect(response_body[1][:mutual_follower_post].length).to eq(11)
+          expect(response_body[0][:follower_post].length).to eq(11)
+          expect(response_body[1][:follower_post].length).to eq(11)
           expect(response_body[2][:current_user_post].length).to eq(14)
           expect(response_body[3][:current_user_post].length).to eq(14)
 
@@ -707,7 +707,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             :created_at,
             :updated_at,
           )
-          expect(response_body[1][:mutual_follower_post]).to include(
+          expect(response_body[1][:follower_post]).to include(
             id: follower1_post_without_reply.id,
             content: follower1_post_without_reply.content,
             image: follower1_post_without_reply.image.url,
@@ -717,7 +717,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_liked_by_current_user: false,
             is_reply: false,
           )
-          expect(response_body[1][:mutual_follower_post]).to include(
+          expect(response_body[1][:follower_post]).to include(
             :deleted_at,
             :created_at,
             :updated_at,
@@ -729,7 +729,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         let!(:client_post_without_reply) { create(:post, user_id: client_user.id) }
 
         it "returns 200 and client's post" do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -763,7 +763,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         let!(:follower1_post_without_reply) { create(:post, user_id: follower1.id) }
 
         it "returns 200 and follower's post" do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -771,8 +771,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
 
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:mutual_follower_post].length).to eq(11)
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post].length).to eq(11)
+          expect(response_body[0][:follower_post]).to include(
             id: follower1_post_without_reply.id,
             content: follower1_post_without_reply.content,
             image: follower1_post_without_reply.image.url,
@@ -782,7 +782,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_liked_by_current_user: false,
             is_reply: false,
           )
-          expect(response_body[0][:mutual_follower_post]).to include(
+          expect(response_body[0][:follower_post]).to include(
             :deleted_at,
             :created_at,
             :updated_at,
@@ -794,7 +794,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         let!(:non_follower_post_without_reply) { create(:post, user_id: non_follower.id) }
 
         it 'returns 200 and no posts' do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -812,7 +812,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
 
         it 'returns 200 and no posts' do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -824,7 +824,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when posts aren't exist" do
         it 'retruns 200 and no posts' do
-          get v1_current_user_and_mutual_follower_posts_path, headers: client_user_headers
+          get v1_current_user_and_followers_posts_path, headers: client_user_headers
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -933,7 +933,7 @@ RSpec.describe "V1::PostsApi", type: :request do
     # 親や子の投稿の情報は返さない。
     #
     # params[:post_id]に紐づく投稿が、カレントユーザまたは相互フォロワーのものであった場合でかつ、
-    # 親の投稿が非相互フォロワーのものであった場合は、parent: not_mutual_follower_postを返し、
+    # 親の投稿が非相互フォロワーのものであった場合は、parent: not_follower_postを返し、
     # 子の投稿が複数でかつ非相互フォロワーのものを含む場合は、非相互フォロワーに関連する情報を返さず、
     # 子の投稿が単数でかつ非相互フォロワーのものである場合は、children: not_existを返し、
     # 子の投稿が削除済でかつ非相互フォロワーのものである場合は、children: not_existを返す。
@@ -961,8 +961,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
-      let(:mutual_follower)     { create_mutual_follow_user(client_user) }
-      let(:not_mutual_follower) { create_mutual_follow_user(mutual_follower) }
+      let(:follower)     { create_follow_user(client_user) }
+      let(:not_follower) { create_follow_user(follower) }
 
       context "when no posts related to params[:post_id]" do
         let(:non_existent_post_id) { get_non_existent_post_id }
@@ -994,26 +994,26 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context "when post related to params[:post_id] is exist and posted by not mutual follower" do
-        let!(:current_post_of_not_mutual_follower) { create(:post, user_id: not_mutual_follower.id) }
+      context "when post related to params[:post_id] is exist and posted by not follower" do
+        let!(:current_post_of_not_follower) { create(:post, user_id: not_follower.id) }
 
-        it 'returns 200 and current: not_mutual_follower_post' do
-          get v1_post_threads_path(current_post_of_not_mutual_follower.id), headers: client_user_headers
+        it 'returns 200 and current: not_follower_post' do
+          get v1_post_threads_path(current_post_of_not_follower.id), headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
-          expect(response_body[:current]).to eq(not_mutual_follower_post: nil)
+          expect(response_body[:current]).to eq(not_follower_post: nil)
         end
       end
 
       context "when post related to params[:post_id] is exist and posted by current user
       and the post has 1 parent post of current user
-      and the post has 2 child posts of current user and mutual follower" do
+      and the post has 2 child posts of current user and follower" do
         let!(:parent_post_of_client_user)    { create(:post, user_id: client_user.id) }
         let!(:current_post_of_client_user)   { create_reply_to_prams_post(client_user, parent_post_of_client_user) }
         let!(:child_post_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
-        let!(:child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+        let!(:child_post_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
 
         it 'returns 200 and thread' do
           get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
@@ -1031,18 +1031,18 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body[:current][:current_user_post].length).to eq(14)
 
           expect(response_body[:children].length).to eq(2)
-          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:children][0][:follower_post].length).to eq(11)
           expect(response_body[:children][1][:current_user_post].length).to eq(14)
-          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post_of_mutual_follower.id)
+          expect(response_body[:children][0][:follower_post]).to have_id(child_post_of_follower.id)
           expect(response_body[:children][1][:current_user_post]).to have_id(child_post_of_client_user.id)
         end
       end
 
       context "when post related to params[:post_id] is exist and posted by current user
-      and the post has 1 parent post of mutual follower
+      and the post has 1 parent post of follower
       and the post has 2 child posts of current user" do
-        let!(:parent_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
-        let!(:current_post_of_client_user)    { create_reply_to_prams_post(client_user, parent_post_of_mutual_follower) }
+        let!(:parent_post_of_follower) { create(:post, user_id: follower.id) }
+        let!(:current_post_of_client_user)    { create_reply_to_prams_post(client_user, parent_post_of_follower) }
         let!(:child_post1_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
         let!(:child_post2_of_client_user)     { create_reply_to_prams_post(client_user, current_post_of_client_user) }
 
@@ -1054,8 +1054,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
 
           expect(response_body.length).to eq(3)
-          expect(response_body[:parent][:mutual_follower_post]).to have_id(parent_post_of_mutual_follower.id)
-          expect(response_body[:parent][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:parent][:follower_post]).to have_id(parent_post_of_follower.id)
+          expect(response_body[:parent][:follower_post].length).to eq(11)
 
           expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
           expect(response_body[:current][:current_user_post].length).to eq(14)
@@ -1070,10 +1070,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when post related to params[:post_id] is exist and posted by current user
       and the post doesn't have parent post
-      and the post has 2 child posts of mutual follower" do
-        let!(:current_post_of_client_user)    { create(:post, user_id: client_user.id) }
-        let!(:child_post1_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
-        let!(:child_post2_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+      and the post has 2 child posts of follower" do
+        let!(:current_post_of_client_user) { create(:post, user_id: client_user.id) }
+        let!(:child_post1_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
+        let!(:child_post2_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
 
         it 'returns 200 and thread' do
           get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
@@ -1090,10 +1090,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body[:current][:current_user_post].length).to eq(14)
 
           expect(response_body[:children].length).to eq(2)
-          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
-          expect(response_body[:children][1][:mutual_follower_post].length).to eq(11)
-          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post2_of_mutual_follower.id)
-          expect(response_body[:children][1][:mutual_follower_post]).to have_id(child_post1_of_mutual_follower.id)
+          expect(response_body[:children][0][:follower_post].length).to eq(11)
+          expect(response_body[:children][1][:follower_post].length).to eq(11)
+          expect(response_body[:children][0][:follower_post]).to have_id(child_post2_of_follower.id)
+          expect(response_body[:children][1][:follower_post]).to have_id(child_post1_of_follower.id)
         end
       end
 
@@ -1128,9 +1128,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when post related to params[:post_id] is exist and posted by current user
       and the post doesn't have parent post
-      and the post has 1 deleted child post of client user or mutual follower" do
-        let!(:current_post_of_client_user)           { create(:post, user_id: client_user.id) }
-        let!(:deleted_child_post_of_mutual_follower) { create_reply_to_prams_post(mutual_follower, current_post_of_client_user) }
+      and the post has 1 deleted child post of client user or follower" do
+        let!(:current_post_of_client_user) { create(:post, user_id: client_user.id) }
+        let!(:deleted_child_post_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
 
         it 'returns 200 and thread' do
           get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
@@ -1151,22 +1151,22 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context "when post related to params[:post_id] is exist and posted by mutual follower
-      and the post has 1 parent post of not mutual follower of current user
-      and the post has 2 child posts of not mutual follower of current user" do
-        let!(:parent_post_of_not_mutual_follower) { create(:post, user_id: not_mutual_follower.id) }
-        let!(:current_post_of_mutual_follower) do
-          create_reply_to_prams_post(mutual_follower, parent_post_of_not_mutual_follower)
+      context "when post related to params[:post_id] is exist and posted by follower
+      and the post has 1 parent post of not follower of current user
+      and the post has 2 child posts of not follower of current user" do
+        let!(:parent_post_of_not_follower) { create(:post, user_id: not_follower.id) }
+        let!(:current_post_of_follower) do
+          create_reply_to_prams_post(follower, parent_post_of_not_follower)
         end
-        let!(:child_post1_of_not_mutual_follower) do
-          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+        let!(:child_post1_of_not_follower) do
+          create_reply_to_prams_post(not_follower, current_post_of_follower)
         end
-        let!(:child_post2_of_not_mutual_follower) do
-          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+        let!(:child_post2_of_not_follower) do
+          create_reply_to_prams_post(not_follower, current_post_of_follower)
         end
 
         it 'returns 200 and thread' do
-          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          get v1_post_threads_path(current_post_of_follower.id), headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
 
@@ -1174,27 +1174,27 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[:parent][:not_follower_post]).to eq(nil)
 
-          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
-          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
+          expect(response_body[:current][:follower_post].length).to eq(11)
 
           expect(response_body[:children].length).to eq(1)
           expect(response_body[:children][0][:not_exist]).to eq(nil)
         end
       end
 
-      context "when post related to params[:post_id] is exist and posted by mutual follower
+      context "when post related to params[:post_id] is exist and posted by follower
       and the post doesn't have parent post
-      and the post has 2 child post of current user and not mutual follower of current user" do
-        let!(:current_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
-        let!(:child_post_of_not_mutual_follower) do
-          create_reply_to_prams_post(not_mutual_follower, current_post_of_mutual_follower)
+      and the post has 2 child post of current user and not follower of current user" do
+        let!(:current_post_of_follower) { create(:post, user_id: follower.id) }
+        let!(:child_post_of_not_follower) do
+          create_reply_to_prams_post(not_follower, current_post_of_follower)
         end
-        let!(:child_post_of_current_user) { create_reply_to_prams_post(client_user, current_post_of_mutual_follower) }
+        let!(:child_post_of_current_user) { create_reply_to_prams_post(client_user, current_post_of_follower) }
 
         it 'returns 200 and thread' do
-          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          get v1_post_threads_path(current_post_of_follower.id), headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
 
@@ -1202,10 +1202,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[:parent][:not_follower_post]).to eq(nil)
 
-          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
-          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
+          expect(response_body[:current][:follower_post].length).to eq(11)
 
           expect(response_body[:children].length).to eq(1)
           expect(response_body[:children][0][:current_user_post]).to have_id(child_post_of_current_user.id)
@@ -1213,14 +1213,14 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context "when post related to params[:post_id] is exist and posted by mutual follower
+      context "when post related to params[:post_id] is exist and posted by follower
       and the post doesn't have parent post
-      and the post has 1 child post of mutual follower" do
-        let!(:current_post_of_mutual_follower) { create(:post, user_id: mutual_follower.id) }
-        let!(:child_post_of_mutual_follower)   { create_reply_to_prams_post(mutual_follower, current_post_of_mutual_follower) }
+      and the post has 1 child post of follower" do
+        let!(:current_post_of_follower) { create(:post, user_id: follower.id) }
+        let!(:child_post_of_follower)   { create_reply_to_prams_post(follower, current_post_of_follower) }
 
         it 'returns 200 and thread' do
-          get v1_post_threads_path(current_post_of_mutual_follower.id), headers: client_user_headers
+          get v1_post_threads_path(current_post_of_follower.id), headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
 
@@ -1228,14 +1228,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[:parent][:not_follower_post]).to eq(nil)
 
-          expect(response_body[:current][:mutual_follower_post]).to have_id(current_post_of_mutual_follower.id)
-          expect(response_body[:current][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
+          expect(response_body[:current][:follower_post].length).to eq(11)
 
           expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:mutual_follower_post]).to have_id(child_post_of_mutual_follower.id)
-          expect(response_body[:children][0][:mutual_follower_post].length).to eq(11)
+          expect(response_body[:children][0][:follower_post]).to have_id(child_post_of_follower.id)
+          expect(response_body[:children][0][:follower_post].length).to eq(11)
         end
       end
     end
@@ -1267,33 +1267,33 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)                 { create(:user) }
       let(:client_user_headers)         { client_user.create_new_auth_token }
-      let(:mutual_follower)             { create_mutual_follow_user(client_user) }
-      let(:mutual_follower_headers)     { mutual_follower.create_new_auth_token }
-      # not_mutual_follower: 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
-      let(:not_mutual_follower)         { create_mutual_follow_user(client_user) }
-      let(:not_mutual_follower_headers) { not_mutual_follower.create_new_auth_token }
+      let(:follower)             { create_follow_user(client_user) }
+      let(:follower_headers)     { follower.create_new_auth_token }
+      # not_follower: 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
+      let(:not_follower)         { create_follow_user(client_user) }
+      let(:not_follower_headers) { not_follower.create_new_auth_token }
 
       context "case1, 2, 4, 6, 8" do
         let!(:case1_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case1_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case1_current_user_post_1) }
+        let!(:case1_follower_post_1)     { create_reply_to_prams_post(follower, case1_current_user_post_1) }
 
         let!(:case2_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case2_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
-        let!(:case2_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case2_current_user_post_1) }
+        let!(:case2_follower_post_1)     { create_reply_to_prams_post(follower, case2_current_user_post_1) }
+        let!(:case2_follower_post_2)     { create_reply_to_prams_post(follower, case2_current_user_post_1) }
 
         let!(:case4_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case4_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case4_current_user_post_1) }
+        let!(:case4_follower_post_1)     { create_reply_to_prams_post(follower, case4_current_user_post_1) }
 
         let!(:case6_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case6_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case6_current_user_post_1) }
+        let!(:case6_not_follower_post_1) { create_reply_to_prams_post(not_follower, case6_current_user_post_1) }
 
         let!(:case8_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case8_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case8_current_user_post_1) }
+        let!(:case8_follower_post_1)     { create_reply_to_prams_post(follower, case8_current_user_post_1) }
         let!(:case8_current_user_post_2) { create_reply_to_prams_post(client_user, case8_follower_post_1) }
 
         before do
-          delete v1_post_path(case4_follower_post_1.id), headers: mutual_follower_headers
-          delete v1_follower_path(client_user.id),       headers: not_mutual_follower_headers
+          delete v1_post_path(case4_follower_post_1.id), headers: follower_headers
+          delete v1_follower_path(client_user.id),       headers: not_follower_headers
         end
 
         it 'returns 200 and replies' do
@@ -1317,24 +1317,24 @@ RSpec.describe "V1::PostsApi", type: :request do
         let!(:case3_current_user_post_1) { create(:post, user_id: client_user.id) }
 
         let!(:case5_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case5_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
-        let!(:case5_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case5_current_user_post_1) }
+        let!(:case5_follower_post_1)     { create_reply_to_prams_post(follower, case5_current_user_post_1) }
+        let!(:case5_follower_post_2)     { create_reply_to_prams_post(follower, case5_current_user_post_1) }
 
         let!(:case7_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case7_not_follower_post_1) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
-        let!(:case7_not_follower_post_2) { create_reply_to_prams_post(not_mutual_follower, case7_current_user_post_1) }
+        let!(:case7_not_follower_post_1) { create_reply_to_prams_post(not_follower, case7_current_user_post_1) }
+        let!(:case7_not_follower_post_2) { create_reply_to_prams_post(not_follower, case7_current_user_post_1) }
 
         let!(:case9_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case9_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_1) }
+        let!(:case9_follower_post_1)     { create_reply_to_prams_post(follower, case9_current_user_post_1) }
         let!(:case9_current_user_post_2) { create_reply_to_prams_post(client_user, case9_follower_post_1) }
-        let!(:case9_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case9_current_user_post_2) }
+        let!(:case9_follower_post_2)     { create_reply_to_prams_post(follower, case9_current_user_post_2) }
         let!(:case9_current_user_post_3) { create_reply_to_prams_post(client_user, case9_follower_post_2) }
 
         before do
-          delete v1_post_path(case5_follower_post_1.id),     headers: mutual_follower_headers
-          delete v1_post_path(case5_follower_post_2.id),     headers: mutual_follower_headers
+          delete v1_post_path(case5_follower_post_1.id),     headers: follower_headers
+          delete v1_post_path(case5_follower_post_2.id),     headers: follower_headers
           delete v1_post_path(case9_current_user_post_3.id), headers: client_user_headers
-          delete v1_follower_path(client_user.id),           headers: not_mutual_follower_headers
+          delete v1_follower_path(client_user.id),           headers: not_follower_headers
         end
 
         it 'returns 200 and replies' do
@@ -1352,27 +1352,27 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "case10, 11, 12" do
         let!(:case10_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case10_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case10_current_user_post_1) }
+        let!(:case10_follower_post_1)     { create_reply_to_prams_post(follower, case10_current_user_post_1) }
         let!(:case10_current_user_post_2) { create_reply_to_prams_post(client_user, case10_follower_post_1) }
-        let!(:case10_current_user_post_3) { create_reply_to_prams_post(mutual_follower, case10_current_user_post_2) }
+        let!(:case10_current_user_post_3) { create_reply_to_prams_post(follower, case10_current_user_post_2) }
 
-        let!(:case11_follower_post_1)     { create(:post, user_id: mutual_follower.id) }
+        let!(:case11_follower_post_1)     { create(:post, user_id: follower.id) }
         let!(:case11_current_user_post_1) { create_reply_to_prams_post(client_user, case11_follower_post_1) }
-        let!(:case11_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_1) }
+        let!(:case11_follower_post_2)     { create_reply_to_prams_post(follower, case11_current_user_post_1) }
         let!(:case11_current_user_post_2) { create_reply_to_prams_post(client_user, case11_follower_post_2) }
-        let!(:case11_follower_post_3)     { create_reply_to_prams_post(mutual_follower, case11_current_user_post_2) }
+        let!(:case11_follower_post_3)     { create_reply_to_prams_post(follower, case11_current_user_post_2) }
 
-        let!(:case12_follower_post_1)     { create(:post, user_id: mutual_follower.id) }
+        let!(:case12_follower_post_1)     { create(:post, user_id: follower.id) }
         let!(:case12_current_user_post_1) { create_reply_to_prams_post(client_user, case12_follower_post_1) }
-        let!(:case12_follower_post_2)     { create_reply_to_prams_post(mutual_follower, case12_current_user_post_1) }
+        let!(:case12_follower_post_2)     { create_reply_to_prams_post(follower, case12_current_user_post_1) }
         let!(:case12_current_user_post_2) { create_reply_to_prams_post(client_user, case12_follower_post_2) }
-        let!(:case12_follower_post_3)     { create_reply_to_prams_post(mutual_follower, case12_current_user_post_2) }
+        let!(:case12_follower_post_3)     { create_reply_to_prams_post(follower, case12_current_user_post_2) }
         let!(:case12_current_user_post_3) { create_reply_to_prams_post(client_user, case12_follower_post_3) }
 
         before do
           delete v1_post_path(case10_current_user_post_3.id), headers: client_user_headers
           delete v1_post_path(case11_current_user_post_1.id), headers: client_user_headers
-          delete v1_post_path(case11_follower_post_2.id), headers: mutual_follower_headers
+          delete v1_post_path(case11_follower_post_2.id), headers: follower_headers
           delete v1_post_path(case11_current_user_post_2.id), headers: client_user_headers
           delete v1_post_path(case12_current_user_post_2.id), headers: client_user_headers
           delete v1_post_path(case12_current_user_post_3.id), headers: client_user_headers
@@ -1395,16 +1395,16 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "13, 14" do
         let!(:case13_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case13_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case13_current_user_post_1) }
+        let!(:case13_follower_post_1)     { create_reply_to_prams_post(follower, case13_current_user_post_1) }
         let!(:case13_current_user_post_2) { create_reply_to_prams_post(client_user, case13_follower_post_1) }
 
         let!(:case14_current_user_post_1) { create(:post, user_id: client_user.id) }
-        let!(:case14_follower_post_1)     { create_reply_to_prams_post(mutual_follower, case14_current_user_post_1) }
+        let!(:case14_follower_post_1)     { create_reply_to_prams_post(follower, case14_current_user_post_1) }
         let!(:case14_current_user_post_2) { create_reply_to_prams_post(client_user, case14_follower_post_1) }
 
         before do
           delete v1_post_path(case13_current_user_post_2.id), headers: client_user_headers
-          delete v1_post_path(case14_follower_post_1.id),     headers: mutual_follower_headers
+          delete v1_post_path(case14_follower_post_1.id),     headers: follower_headers
           delete v1_post_path(case14_current_user_post_2.id), headers: client_user_headers
         end
 
@@ -1423,7 +1423,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when number of current user's posts is 1" do
         let!(:current_user_post) { create(:post, user_id: client_user.id) }
-        let!(:follower_reply)    { create_reply_to_prams_post(mutual_follower, current_user_post) }
+        let!(:follower_reply)    { create_reply_to_prams_post(follower, current_user_post) }
 
         it 'returns 200 and replies' do
           get v1_post_replies_path, headers: client_user_headers
@@ -1493,44 +1493,44 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 15) do
             create(:icon)
             @client_user = create(:user)
-            @mutual_follower = create_mutual_follow_user(@client_user)
-            @not_mutual_follower = create_mutual_follow_user(@client_user)
+            @follower = create_follow_user(@client_user)
+            @not_follower = create_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
-            @mutual_follower_headers = @mutual_follower.create_new_auth_token
-            @not_mutual_follower_headers = @not_mutual_follower.create_new_auth_token
+            @follower_headers = @follower.create_new_auth_token
+            @not_follower_headers = @not_follower.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 21, 4, 30, 0o0) do
-            @case3_11_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case3_11_follower_post = create(:post, user_id: @follower.id)
 
-            @case24_not_follower_post1 = create(:post, user_id: @not_mutual_follower.id)
+            @case24_not_follower_post1 = create(:post, user_id: @not_follower.id)
             @case24_current_user_post = create_reply_to_prams_post(@client_user, @case24_not_follower_post1)
-            create_reply_to_prams_post(@not_mutual_follower, @case24_current_user_post) # case24_not_follower_post2
+            create_reply_to_prams_post(@not_follower, @case24_current_user_post) # case24_not_follower_post2
 
             @case25_current_user_post1 = create(:post, user_id: @client_user.id)
-            @case25_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post1)
+            @case25_follower_post1 = create_reply_to_prams_post(@follower, @case25_current_user_post1)
             @case25_current_user_post2 = create_reply_to_prams_post(@client_user, @case25_follower_post1)
-            @case25_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case25_current_user_post2)
+            @case25_follower_post2 = create_reply_to_prams_post(@follower, @case25_current_user_post2)
 
-            @case26_27_follower_post1 = create(:post, user_id: @mutual_follower.id)
+            @case26_27_follower_post1 = create(:post, user_id: @follower.id)
             @case26_27_current_user_post1 = create_reply_to_prams_post(@client_user, @case26_27_follower_post1)
-            @case26_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
-            @case27_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case26_27_current_user_post1)
+            @case26_follower_post2 = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
+            @case27_follower_post2 = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
             post v1_post_likes_path(@case3_11_follower_post.id), headers: @client_user_headers
-            delete v1_post_path(@case25_follower_post1.id), headers: @mutual_follower_headers
-            delete v1_post_path(@case25_follower_post2.id), headers: @mutual_follower_headers
-            delete v1_post_path(@case26_follower_post2.id), headers: @mutual_follower_headers
-            delete v1_post_path(@case27_follower_post2.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case25_follower_post1.id), headers: @follower_headers
+            delete v1_post_path(@case25_follower_post2.id), headers: @follower_headers
+            delete v1_post_path(@case26_follower_post2.id), headers: @follower_headers
+            delete v1_post_path(@case27_follower_post2.id), headers: @follower_headers
           end
         end
 
         it 'return 200 and refract candidates' do
           travel_to Time.zone.local(2021, 8, 22, 2, 0o0, 0o0) do
-            delete v1_follower_path(@client_user.id), headers: @not_mutual_follower_headers
+            delete v1_follower_path(@client_user.id), headers: @not_follower_headers
           end
 
           travel_to Time.zone.local(2021, 8, 22, 3, 0o0, 0o0) do
@@ -1550,20 +1550,20 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
             @client_user = create(:user)
-            @mutual_follower = create_mutual_follow_user(@client_user)
+            @follower = create_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
-            @case4_9_follower_post = create(:post, user_id: @mutual_follower.id)
-            @case4_10_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case4_9_follower_post = create(:post, user_id: @follower.id)
+            @case4_10_follower_post = create(:post, user_id: @follower.id)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 29, 59) do
             post v1_post_likes_path(@case4_10_follower_post.id), headers: @client_user_headers
             @case14_current_user_post = create(:post, user_id: @client_user.id)
-            @case14_follower_post = create_reply_to_prams_post(@mutual_follower, @case14_current_user_post)
+            @case14_follower_post = create_reply_to_prams_post(@follower, @case14_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
@@ -1573,20 +1573,20 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           travel_to Time.zone.local(2021, 8, 25) do
             @case17_current_user_post = create(:post, user_id: @client_user.id)
-            @case17_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case17_current_user_post)
-            @case17_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case17_follower_post1)
+            @case17_follower_post1 = create_reply_to_prams_post(@follower, @case17_current_user_post)
+            @case17_follower_post2 = create_reply_to_prams_post(@follower, @case17_follower_post1)
             @case17_follower_post1.update(is_locked: true)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 29, 59) do
             @case16_current_user_post = create(:post, user_id: @client_user.id)
-            @case16_follower_post = create_reply_to_prams_post(@mutual_follower, @case16_current_user_post)
+            @case16_follower_post = create_reply_to_prams_post(@follower, @case16_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
             @case15_current_user_post = create(:post, user_id: @client_user.id)
-            @case15_follower_post = create_reply_to_prams_post(@mutual_follower, @case15_current_user_post)
+            @case15_follower_post = create_reply_to_prams_post(@follower, @case15_current_user_post)
           end
         end
 
@@ -1598,10 +1598,10 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response.message).to include('OK')
             response_body = JSON.parse(response.body, symbolize_names: true)
             expect(response_body.length).to eq(2)
-            expect(response_body[0][:reply][:mutual_follower_post]).to have_id(@case16_follower_post.id)
-            expect(response_body[0][:reply][:mutual_follower_post].length).to eq(11)
-            expect(response_body[1][:like][:mutual_follower_post]).to have_id(@case4_9_follower_post.id)
-            expect(response_body[1][:like][:mutual_follower_post].length).to eq(11)
+            expect(response_body[0][:reply][:follower_post]).to have_id(@case16_follower_post.id)
+            expect(response_body[0][:reply][:follower_post].length).to eq(11)
+            expect(response_body[1][:like][:follower_post]).to have_id(@case4_9_follower_post.id)
+            expect(response_body[1][:like][:follower_post].length).to eq(11)
           end
         end
       end
@@ -1611,30 +1611,30 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
             @client_user = create(:user)
-            @mutual_follower = create_mutual_follow_user(@client_user)
+            @follower = create_follow_user(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
-            @mutual_follower_headers = @mutual_follower.create_new_auth_token
+            @follower_headers = @follower.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 14, 3, 30, 0o0) do
-            @case_20_21_follower_post1 = create(:post, user_id: @mutual_follower.id)
-            @case_20_21_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post1)
-            @case21_follower_post = create_reply_to_prams_post(@mutual_follower, @case_20_21_follower_post2)
+            @case_20_21_follower_post1 = create(:post, user_id: @follower.id)
+            @case_20_21_follower_post2 = create_reply_to_prams_post(@follower, @case_20_21_follower_post1)
+            @case21_follower_post = create_reply_to_prams_post(@follower, @case_20_21_follower_post2)
           end
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
             @case13_current_user_post = create(:post, user_id: @client_user.id)
-            @case13_follower_post = create_reply_to_prams_post(@mutual_follower, @case13_current_user_post)
+            @case13_follower_post = create_reply_to_prams_post(@follower, @case13_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 15) do
-            @case18_19_follower_post1 = create(:post, user_id: @mutual_follower.id)
-            @case18_19_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post1)
-            @case18_follower_post = create_reply_to_prams_post(@mutual_follower, @case18_19_follower_post2)
+            @case18_19_follower_post1 = create(:post, user_id: @follower.id)
+            @case18_19_follower_post2 = create_reply_to_prams_post(@follower, @case18_19_follower_post1)
+            @case18_follower_post = create_reply_to_prams_post(@follower, @case18_19_follower_post2)
             @case18_current_user_post = create_reply_to_prams_post(@client_user, @case18_follower_post)
             @case19_current_user_post = create_reply_to_prams_post(@client_user, @case18_19_follower_post2)
-            delete v1_post_path(@case18_follower_post.id), headers: @mutual_follower_headers
+            delete v1_post_path(@case18_follower_post.id), headers: @follower_headers
             delete v1_post_path(@case18_current_user_post.id), headers: @client_user_headers
           end
 
@@ -1645,19 +1645,19 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 17) do
-            @case22_23_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case22_23_follower_post = create(:post, user_id: @follower.id)
             @case22_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
-            @case22_follower_post1 = create_reply_to_prams_post(@mutual_follower, @case22_current_user_post)
-            @case22_follower_post2 = create_reply_to_prams_post(@mutual_follower, @case22_follower_post1)
+            @case22_follower_post1 = create_reply_to_prams_post(@follower, @case22_current_user_post)
+            @case22_follower_post2 = create_reply_to_prams_post(@follower, @case22_follower_post1)
             @case23_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
             delete v1_post_path(@case23_current_user_post.id), headers: @client_user_headers
           end
 
           travel_to Time.zone.local(2021, 8, 20) do
             @case5_current_user_post = create(:post, user_id: @client_user.id)
-            @case6_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case6_follower_post = create(:post, user_id: @follower.id)
             @case7_current_user_post = create(:post, user_id: @client_user.id)
-            @case8_follower_post = create(:post, user_id: @mutual_follower.id)
+            @case8_follower_post = create(:post, user_id: @follower.id)
             @case5_current_user_post.update(is_locked: true)
             @case6_follower_post.update(is_locked: true)
           end
@@ -1682,16 +1682,16 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response.message).to include('OK')
             response_body = JSON.parse(response.body, symbolize_names: true)
             expect(response_body.length).to eq(5)
-            expect(response_body[0][:like][:mutual_follower_post]).to have_id(@case8_follower_post.id)
-            expect(response_body[0][:like][:mutual_follower_post].length).to eq(11)
-            expect(response_body[1][:reply][:mutual_follower_post]).to have_id(@case22_follower_post2.id)
-            expect(response_body[1][:reply][:mutual_follower_post].length).to eq(11)
+            expect(response_body[0][:like][:follower_post]).to have_id(@case8_follower_post.id)
+            expect(response_body[0][:like][:follower_post].length).to eq(11)
+            expect(response_body[1][:reply][:follower_post]).to have_id(@case22_follower_post2.id)
+            expect(response_body[1][:reply][:follower_post].length).to eq(11)
             expect(response_body[2][:reply][:current_user_post]).to have_id(@case20_current_user_post.id)
             expect(response_body[2][:reply][:current_user_post].length).to eq(14)
             expect(response_body[3][:reply][:current_user_post]).to have_id(@case19_current_user_post.id)
             expect(response_body[3][:reply][:current_user_post].length).to eq(14)
-            expect(response_body[4][:reply][:mutual_follower_post]).to have_id(@case13_follower_post.id)
-            expect(response_body[4][:reply][:mutual_follower_post].length).to eq(11)
+            expect(response_body[4][:reply][:follower_post]).to have_id(@case13_follower_post.id)
+            expect(response_body[4][:reply][:follower_post].length).to eq(11)
           end
         end
       end
@@ -1775,8 +1775,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       3/5 posted by current user and 1 of them is deleted
       and 1/5 posted by follower
       and 1/5 posted by not follower" do
-        let(:follower)                  { create_mutual_follow_user(client_user) }
-        let(:not_follower)              { create_mutual_follow_user(follower) }
+        let(:follower)                  { create_follow_user(client_user) }
+        let(:not_follower)              { create_follow_user(follower) }
 
         let!(:deleted_client_user_post) { create(:post, user_id: client_user.id) }
         let!(:follower_post1)           { create_reply_to_prams_post(follower, deleted_client_user_post) }
@@ -1797,11 +1797,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(5)
           expect(response_body[0][:deleted]).to eq(nil)
-          expect(response_body[1][:mutual_follower_post].length).to eq(11)
-          expect(response_body[1][:mutual_follower_post]).to have_id(follower_post1.id)
-          expect(response_body[2][:not_mutual_follower_post]).to eq(nil)
-          expect(response_body[3][:mutual_follower_post].length).to eq(11)
-          expect(response_body[3][:mutual_follower_post]).to have_id(follower_post2.id)
+          expect(response_body[1][:follower_post].length).to eq(11)
+          expect(response_body[1][:follower_post]).to have_id(follower_post1.id)
+          expect(response_body[2][:not_follower_post]).to eq(nil)
+          expect(response_body[3][:follower_post].length).to eq(11)
+          expect(response_body[3][:follower_post]).to have_id(follower_post2.id)
           expect(response_body[4][:current_user_post].length).to eq(14)
           expect(response_body[4][:current_user_post]).to have_id(client_user_post.id)
         end
@@ -1830,8 +1830,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
-      let(:follower)            { create_mutual_follow_user(client_user) }
-      let(:not_follower)        { create_mutual_follow_user(follower) }
+      let(:follower)            { create_follow_user(client_user) }
+      let(:not_follower)        { create_follow_user(follower) }
 
       context "when client doesn't have performed CurrentUserRefract" do
         it 'returns 200' do
@@ -1869,8 +1869,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                                      eq(1)
           expect(response_body[0][:refracted_at]).to                           eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts][0][:mutual_follower_post].length).to eq(14)
-          expect(response_body[0][:posts][0][:mutual_follower_post]).to        include(
+          expect(response_body[0][:posts][0][:follower_post].length).to eq(14)
+          expect(response_body[0][:posts][0][:follower_post]).to        include(
             id: follower_post.id,
             user_id: follower_post.user_id,
             content: follower_post.content,
@@ -1884,7 +1884,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             is_liked_by_current_user: true,
             created_at: I18n.l(follower_post.created_at),
           )
-          expect(response_body[0][:posts][0][:mutual_follower_post]).to include(
+          expect(response_body[0][:posts][0][:follower_post]).to include(
             :deleted_at,
             :updated_at,
           )
@@ -1918,7 +1918,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                                   eq(1)
           expect(response_body[0][:refracted_at]).to                        eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts][0][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[0][:posts][0][:not_follower_post]).to eq(nil)
         end
       end
 
@@ -2007,8 +2007,8 @@ RSpec.describe "V1::PostsApi", type: :request do
             :updated_at,
           )
 
-          expect(response_body[0][:posts][1][:mutual_follower_post].length).to eq(14)
-          expect(response_body[0][:posts][1][:mutual_follower_post]).to        include(
+          expect(response_body[0][:posts][1][:follower_post].length).to eq(14)
+          expect(response_body[0][:posts][1][:follower_post]).to        include(
             id: follower_reply.id,
             user_id: follower_reply.user_id,
             content: follower_reply.content,
@@ -2022,13 +2022,13 @@ RSpec.describe "V1::PostsApi", type: :request do
             userid: follower.userid,
             is_liked_by_current_user: false,
           )
-          expect(response_body[0][:posts][1][:mutual_follower_post]).to include(
+          expect(response_body[0][:posts][1][:follower_post]).to include(
             :deleted_at,
             :updated_at,
           )
 
-          expect(response_body[0][:posts][2]).to                            include(:not_mutual_follower_post)
-          expect(response_body[0][:posts][2][:not_mutual_follower_post]).to eq(nil)
+          expect(response_body[0][:posts][2]).to include(:not_follower_post)
+          expect(response_body[0][:posts][2][:not_follower_post]).to eq(nil)
 
           expect(response_body[0][:posts][3]).to           include(:deleted)
           expect(response_body[0][:posts][3][:deleted]).to eq(nil)
@@ -2072,10 +2072,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body.length).to eq(2)
 
           expect(response_body[0][:refracted_at]).to eq(I18n.l(client_refract2.updated_at))
-          expect(response_body[0][:posts][0][:mutual_follower_post]).to have_id(follower_post2.id)
+          expect(response_body[0][:posts][0][:follower_post]).to have_id(follower_post2.id)
 
           expect(response_body[1][:refracted_at]).to eq(I18n.l(client_refract1.updated_at))
-          expect(response_body[1][:posts][0][:mutual_follower_post]).to have_id(follower_post1.id)
+          expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post1.id)
         end
       end
 
@@ -2114,11 +2114,11 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body[0][:refracted_at]).to                    eq(I18n.l(client_refract2.updated_at))
           expect(response_body[0][:posts][0][:current_user_post]).to    have_id(client_user_post2.id)
-          expect(response_body[0][:posts][1][:mutual_follower_post]).to have_id(follower_reply2.id)
+          expect(response_body[0][:posts][1][:follower_post]).to have_id(follower_reply2.id)
 
           expect(response_body[1][:refracted_at]).to                    eq(I18n.l(client_refract1.updated_at))
           expect(response_body[1][:posts][0][:current_user_post]).to    have_id(client_user_post1.id)
-          expect(response_body[1][:posts][1][:mutual_follower_post]).to have_id(follower_reply1.id)
+          expect(response_body[1][:posts][1][:follower_post]).to have_id(follower_reply1.id)
         end
       end
 
@@ -2170,14 +2170,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body[0][:refracted_at]).to                    eq(I18n.l(client_refract3.updated_at))
           expect(response_body[0][:posts][0][:current_user_post]).to    have_id(client_user_post2.id)
-          expect(response_body[0][:posts][1][:mutual_follower_post]).to have_id(follower_reply2.id)
+          expect(response_body[0][:posts][1][:follower_post]).to have_id(follower_reply2.id)
 
-          expect(response_body[1][:refracted_at]).to                    eq(I18n.l(client_refract2.updated_at))
-          expect(response_body[1][:posts][0][:mutual_follower_post]).to have_id(follower_post.id)
+          expect(response_body[1][:refracted_at]).to eq(I18n.l(client_refract2.updated_at))
+          expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post.id)
 
           expect(response_body[2][:refracted_at]).to                    eq(I18n.l(client_refract1.updated_at))
           expect(response_body[2][:posts][0][:current_user_post]).to    have_id(client_user_post1.id)
-          expect(response_body[2][:posts][1][:mutual_follower_post]).to have_id(follower_reply1.id)
+          expect(response_body[2][:posts][1][:follower_post]).to have_id(follower_reply1.id)
         end
       end
     end

@@ -12,8 +12,8 @@ Rails.application.routes.draw do
     delete '/follow_requests_by_me',        to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
 
     resources :followers, only: [:create]
-    get    '/mutual_follow_users',    to: 'users#index_of_mutual_follow_users', as: :mutual_follow_users
-    delete '/followers/:follower_id', to: 'followers#destroy',                  as: :follower
+    get    '/follow_users', to: 'users#index_of_follow_users', as: :follow_users
+    delete '/followers/:follower_id', to: 'followers#destroy', as: :follower
 
     resources :posts, only: [:create, :destroy]
     get '/posts/liked',                                        to: 'posts#index_liked_posts',        as: :liked_posts
@@ -23,8 +23,8 @@ Rails.application.routes.draw do
     get '/posts/refracts/by_current_user',                     to: 'posts#index_posts_refracted_by_current_user',
                                                                as: :post_refracted_by_current_user
     get '/posts/current_user',                                 to: 'posts#index_current_user_posts', as: :current_user_posts
-    get '/posts/current_user_and_mutual_follower',             to: 'posts#index_current_user_and_mutual_follower_posts',
-                                                               as: :current_user_and_mutual_follower_posts
+    get '/posts/current_user_and_followers',                   to: 'posts#index_current_user_and_followers_posts',
+                                                               as: :current_user_and_followers_posts
     resources :posts do
       resources :likes, only: [:create]
     end

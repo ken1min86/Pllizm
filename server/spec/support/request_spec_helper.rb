@@ -42,11 +42,11 @@ module RequestSpecHelper
     non_existent_post_id
   end
 
-  def create_mutual_follow_user(user)
-    mutual_follow_user = create(:user, userid: get_non_existent_user_id)
-    Follower.create(followed_by: user.id, follow_to: mutual_follow_user.id)
-    Follower.create(followed_by: mutual_follow_user.id, follow_to: user.id)
-    mutual_follow_user
+  def create_follow_user(user)
+    follow_user = create(:user, userid: get_non_existent_user_id)
+    Follower.create(followed_by: user.id, follow_to: follow_user.id)
+    Follower.create(followed_by: follow_user.id, follow_to: user.id)
+    follow_user
   end
 
   def create_follow_requested_user_by_argument_user(user)

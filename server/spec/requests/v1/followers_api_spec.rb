@@ -53,7 +53,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
     end
   end
 
-  describe "DELETE /v1/follower - v1/followers#destroy - Cancel mutual follow" do
+  describe "DELETE /v1/follower - v1/followers#destroy - Cancel follow" do
     context "when client doesn't have token" do
       let(:follower) { create(:user) }
 

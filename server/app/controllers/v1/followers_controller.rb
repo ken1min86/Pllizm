@@ -9,7 +9,7 @@ module V1
         render_json_bad_request_with_custom_errors('フォローリクエストされていません', 'フォローリクエストされていないユーザに対してフォロー承認できません')
       else
         follow_request.destroy
-        followers = current_v1_user.mutual_follow(follow_user)
+        followers = current_v1_user.follow(follow_user)
         render json: followers, status: :ok
       end
     end

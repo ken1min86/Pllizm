@@ -9,7 +9,7 @@ module V1
           '存在しない投稿です',
           '存在しない投稿に対していいねできません'
         )
-      elsif liked_post.your_post?(current_v1_user) || liked_post.mutual_followers_post?(current_v1_user)
+      elsif liked_post.your_post?(current_v1_user) || liked_post.followers_post?(current_v1_user)
         like = current_v1_user.likes.create(post_id: liked_post.id)
         render json: like, status: :ok
       else

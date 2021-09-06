@@ -36,7 +36,7 @@ module V1
           '投稿が存在しません',
           '存在しない投稿に対してリプライはできません'
         )
-      elsif replied_post.your_post?(current_v1_user) || replied_post.mutual_followers_post?(current_v1_user)
+      elsif replied_post.your_post?(current_v1_user) || replied_post.followers_post?(current_v1_user)
         if reply_post.save
           descendant_is_prams_id_tree_paths = TreePath.where(descendant: params[:post_id]).order(created_at: :asc)
           depth = 1
@@ -90,7 +90,7 @@ module V1
       render json: return_posts, status: :ok
     end
 
-    def index_current_user_and_mutual_follower_posts
+    def index_current_user_and_followers_posts
       followers = current_v1_user.followings
 
       # カレントユーザとフォロワーのすべての投稿を取得
@@ -134,7 +134,7 @@ module V1
       thread = {}
       status_of_current_post = Post.check_status_of_post(current_v1_user, params[:post_id])
       if status_of_current_post == Settings.constants.status_of_post[:current_user_post] \
-        || status_of_current_post == Settings.constants.status_of_post[:mutual_follower_post]
+        || status_of_current_post == Settings.constants.status_of_post[:follower_post]
         parent = Post.get_parent_of_current_post(current_v1_user, params[:post_id])
         thread.merge!(parent: parent)
 
@@ -144,7 +144,7 @@ module V1
         children = Post.get_children_of_current_post(current_v1_user, params[:post_id])
         thread.merge!(children: children)
 
-      elsif status_of_current_post == Settings.constants.status_of_post[:not_mutual_follower_post] \
+      elsif status_of_current_post == Settings.constants.status_of_post[:not_follower_post] \
         || status_of_current_post == Settings.constants.status_of_post[:deleted] \
         || status_of_current_post == Settings.constants.status_of_post[:not_exist]
         current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:post_id], status_of_current_post)
