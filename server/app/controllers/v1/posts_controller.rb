@@ -132,7 +132,7 @@ module V1
 
     def index_threads
       thread = {}
-      status_of_current_post = Post.check_status_of_current_post(current_v1_user, params[:post_id])
+      status_of_current_post = Post.check_status_of_post(current_v1_user, params[:post_id])
       if status_of_current_post == Settings.constants.status_of_post[:current_user_post] \
         || status_of_current_post == Settings.constants.status_of_post[:mutual_follower_post]
         parent = Post.get_parent_of_current_post(current_v1_user, params[:post_id])
@@ -196,7 +196,7 @@ module V1
         posts_above_candidate_post = candidate_post.ancestor_posts.with_deleted.order(created_at: :asc)
         thread_above_candidate = []
         posts_above_candidate_post.each do |post_above_candidate|
-          status = Post.check_status_of_current_post(current_v1_user, post_above_candidate.id)
+          status = Post.check_status_of_post(current_v1_user, post_above_candidate.id)
           formatted_post = Post.get_current_according_to_status_of_current_post(current_v1_user, post_above_candidate.id, status)
           thread_above_candidate.push(formatted_post)
         end

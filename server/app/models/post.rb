@@ -54,24 +54,24 @@ class Post < ApplicationRecord
   # カレントユーザの投稿:   current_user_post
   # 相互フォロワーの投稿:   mutual_follower_post
   # 非相互フォロワーの投稿: not_mutual_follower_post
-  def self.check_status_of_current_post(current_user, current_post_id)
-    current_post = Post.find_by(id: current_post_id)
+  def self.check_status_of_post(current_user, post_id)
+    post = Post.find_by(id: post_id)
     followers = current_user.followings
-    status_of_current_post = ''
-    if current_post.nil?
-      if Post.only_deleted.find_by(id: current_post_id)
-        status_of_current_post = Settings.constants.status_of_post[:deleted]
+    status_of_post = ''
+    if post.nil?
+      if Post.only_deleted.find_by(id: post_id)
+        status_of_post = Settings.constants.status_of_post[:deleted]
       else
-        status_of_current_post = Settings.constants.status_of_post[:not_exist]
+        status_of_post = Settings.constants.status_of_post[:not_exist]
       end
-    elsif current_post.user == current_user
-      status_of_current_post = Settings.constants.status_of_post[:current_user_post]
-    elsif followers.index(current_post.user)
-      status_of_current_post = Settings.constants.status_of_post[:mutual_follower_post]
+    elsif post.user == current_user
+      status_of_post = Settings.constants.status_of_post[:current_user_post]
+    elsif followers.index(post.user)
+      status_of_post = Settings.constants.status_of_post[:mutual_follower_post]
     else
-      status_of_current_post = Settings.constants.status_of_post[:not_mutual_follower_post]
+      status_of_post = Settings.constants.status_of_post[:not_mutual_follower_post]
     end
-    status_of_current_post
+    status_of_post
   end
 
   def self.get_current_according_to_status_of_current_post(current_user, current_post_id, status_of_current_post)
@@ -371,7 +371,7 @@ class Post < ApplicationRecord
   # - 相互フォロワーの投稿:   mutual_follower_post
   def self.format_refracted_post_of_like(current_user, liked_post, refracted_at)
     formatted_refracted_post = {}
-    status                   = Post.check_status_of_current_post(current_user, liked_post.id)
+    status                   = Post.check_status_of_post(current_user, liked_post.id)
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
@@ -404,7 +404,7 @@ class Post < ApplicationRecord
 
     tree_paths_above_current_post.each do |tree_path_above_current_post|
       post   = Post.with_deleted.find(tree_path_above_current_post.ancestor)
-      status = Post.check_status_of_current_post(current_user, post.id)
+      status = Post.check_status_of_post(current_user, post.id)
 
       case status
       when Settings.constants.status_of_post[:deleted]
