@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       registrations: 'v1/auth/registrations',
     }
-    put '/user/disable_lock_description', to: 'users#disable_lock_description', as: :user_disableLockDescription
+    put '/users/disable_lock_description', to: 'users#disable_lock_description', as: :user_disableLockDescription
 
     get    '/follow_requested_by_me_users', to: 'users#index_of_users_follow_requested_by_me',   as: :follow_requested_by_me_users
     get    '/follow_request_to_me_users',   to: 'users#index_of_users_follow_request_to_me',     as: :follow_request_to_me_users
@@ -12,8 +12,8 @@ Rails.application.routes.draw do
     delete '/follow_requests_by_me',        to: 'follow_requests#destroy_follow_requests_by_me', as: :follow_requests_by_me
 
     resources :followers, only: [:create]
-    get    '/follow_users', to: 'users#index_of_follow_users', as: :follow_users
-    delete '/followers/:follower_id', to: 'followers#destroy', as: :follower
+    get    '/followers',              to: 'users#index_of_follow_users', as: :follow_users
+    delete '/followers/:follower_id', to: 'followers#destroy',           as: :follower
 
     resources :posts, only: [:create, :destroy]
     get '/posts/liked',                                        to: 'posts#index_liked_posts',        as: :liked_posts
@@ -28,9 +28,9 @@ Rails.application.routes.draw do
     resources :posts do
       resources :likes, only: [:create]
     end
-    get  '/posts/:post_id/threads',     to: 'posts#index_threads', as: :post_threads
-    post '/posts/:post_id/reply',       to: 'posts#create_reply',  as: :post_reply
-    put  '/posts/:post_id/change_lock', to: 'posts#change_lock',   as: :post_changeLock
+    get  '/posts/:post_id/threads',     to: 'posts#index_threads',  as: :post_threads
+    post '/posts/:post_id/replies',     to: 'posts#create_replies', as: :post_reply
+    put  '/posts/:post_id/change_lock', to: 'posts#change_lock',    as: :post_changeLock
 
     post '/posts/:refract_candidate_id/refracts', to: 'refracts#perform_refract', as: :refract_performed
 

@@ -4,9 +4,9 @@ module V1
   module Auth
     class RegistrationsController < DeviseTokenAuth::RegistrationsController
       before_action :check_password_confirmation_existence, only: :create
-      before_action :check_email_existence, only: :create
-      before_action :add_userid_to_params, only: :create
-      before_action :add_username_to_params, only: :create
+      before_action :check_email_existence,                 only: :create
+      before_action :add_userid_to_params,                  only: :create
+      before_action :add_username_to_params,                only: :create
       before_action :check_userid_is_at_least_4_characters, only: :update
 
       private

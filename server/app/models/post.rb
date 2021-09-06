@@ -30,7 +30,7 @@ class Post < ApplicationRecord
   def self.extract_disclosable_culumns_from_posts_array(posts_array)
     extracted_posts = []
     posts_array.each do |post|
-      hashed_post = post.attributes.symbolize_keys
+      hashed_post         = post.attributes.symbolize_keys
       hashed_post[:image] = post.image.url
       hashed_post.delete(:user_id)
       extracted_posts.push(hashed_post)
@@ -175,7 +175,8 @@ class Post < ApplicationRecord
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
-                                                                descendant: current_user_post_with_deleted.id, depth: 0)
+                                                                descendant: current_user_post_with_deleted.id,
+                                                                depth: 0)
     tree_paths_below_child_post = tree_paths_except_current_post_depth_0.where(ancestor: current_user_post_with_deleted.id)
     tree_paths_above_parent_post = tree_paths_except_current_post_depth_0.where(descendant: current_user_post_with_deleted.id)
     # *********************************************
@@ -288,7 +289,7 @@ class Post < ApplicationRecord
     #  -カレントユーザの投稿だった場合、親以上に削除されていないフォロワーの投稿を持つ
     #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
     leaves.each do |leaf|
-      checked_lock = false
+      checked_lock    = false
       has_locked_post = false
       while true
         # 作成日が対象期間内かチェック
@@ -536,7 +537,7 @@ class Post < ApplicationRecord
   def get_parent_post_with_deleted
     if is_reply?
       tree_path_of_parent = TreePath.find_by(descendant: id, depth: 1)
-      parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
+      parent_post         = Post.with_deleted.find(tree_path_of_parent.ancestor)
       parent_post
     else
       nil
@@ -568,9 +569,9 @@ class Post < ApplicationRecord
   end
 
   def get_leaves
-    leaves = []
+    leaves                   = []
     tree_paths_below_current = TreePath.where(ancestor: id)
-    below_current_posts = []
+    below_current_posts      = []
     tree_paths_below_current.each do |tree_path_below_current|
       below_current_posts.push(Post.with_deleted.find(tree_path_below_current.descendant))
     end
@@ -602,7 +603,7 @@ class Post < ApplicationRecord
   end
 
   def followers_post?(current_user)
-    followers = current_user.followings
+    followers         = current_user.followings
     is_followers_post = false
     followers.each do |follower|
       if user_id == follower.id

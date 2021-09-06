@@ -28,7 +28,7 @@ module V1
       end
     end
 
-    def create_reply
+    def create_replies
       replied_post = Post.find_by(id: params[:post_id])
       reply_post = Post.new(post_params)
       if replied_post.blank?
@@ -71,7 +71,7 @@ module V1
     end
 
     def index_liked_posts
-      likes = current_v1_user.likes.order(created_at: 'DESC')
+      likes       = current_v1_user.likes.order(created_at: 'DESC')
       liked_posts = []
       likes.each do |like|
         liked_posts.push(like.liked_post)
@@ -95,7 +95,7 @@ module V1
 
       # カレントユーザとフォロワーのすべての投稿を取得
       current_user_posts = current_v1_user.posts
-      followers_posts = []
+      followers_posts    = []
       followers.each do |follower|
         follower_posts = follower.posts
         followers_posts.push(follower_posts)
@@ -122,7 +122,7 @@ module V1
 
     def index_current_user_posts
       current_user_posts = current_v1_user.posts.order(created_at: :desc)
-      return_posts = []
+      return_posts       = []
       current_user_posts.each do |current_user_post|
         formatted_current_user_post = current_user_post.format_current_user_post(current_v1_user)
         return_posts.push(formatted_current_user_post)
@@ -196,7 +196,7 @@ module V1
         posts_above_candidate_post = candidate_post.ancestor_posts.with_deleted.order(created_at: :asc)
         thread_above_candidate = []
         posts_above_candidate_post.each do |post_above_candidate|
-          status = Post.check_status_of_post(current_v1_user, post_above_candidate.id)
+          status         = Post.check_status_of_post(current_v1_user, post_above_candidate.id)
           formatted_post = Post.get_current_according_to_status_of_current_post(current_v1_user, post_above_candidate.id, status)
           thread_above_candidate.push(formatted_post)
         end
