@@ -31,5 +31,7 @@ Rails.application.routes.draw do
     post '/refracts/skip',                  to: 'refracts#skip',                               as: :skip
     get  '/refracts/by_me',                 to: 'posts#index_posts_refracted_by_current_user', as: :post_refracted_by_current_user
     get  '/refracts/by_followers',          to: 'posts#index_posts_refracted_by_followers',    as: :post_refracted_by_folowers
+
+    get '/statuses/refracts', to: 'current_user_refracts#show_statuses', as: :refracts_statuses
   end
 end
