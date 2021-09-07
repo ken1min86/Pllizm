@@ -7,7 +7,7 @@ module V1
       render json: current_v1_user, status: :ok
     end
 
-    def index_of_follow_users
+    def index_of_followers
       follow_users = current_v1_user.followings
       # follow_usersのうち、仕様書に指定されたカラムだけを抽出して配列に代入する
       extracted_follow_users = User.extract_disclosable_culumns_from_users_array(follow_users)

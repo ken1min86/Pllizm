@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "V1::FollowRequestsApi", type: :request do
-  describe "POST /v1/follow_requests - v1/follow_requests#create - Follow request" do
+  describe "POST /v1/follow_requests/create - v1/follow_requests#create - Follow request" do
     context "when client doesn't have token" do
       let(:request_to) { create(:user) }
 
       it "returns 401" do
         expect do
           post v1_follow_requests_path, params: {
-            request_to: request_to.id,
+            request_to: request_to.userid,
           }
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(401)
@@ -25,7 +25,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
         expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).not_to exist
 
         post v1_follow_requests_path, params: {
-          request_to: request_to.id,
+          request_to: request_to.userid,
         }, headers: headers
 
         expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).to exist
@@ -59,7 +59,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: request_to.id,
+            request_to: request_to.userid,
           }, headers: headers
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
@@ -73,7 +73,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: request_to.id,
+            request_to: request_to.userid,
           }, headers: headers
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
@@ -87,7 +87,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
         expect do
           post v1_follow_requests_path, params: {
-            request_to: request_to.id,
+            request_to: request_to.userid,
           }, headers: headers
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
@@ -98,7 +98,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
       it "returns 400 when client request following to client" do
         expect do
           post v1_follow_requests_path, params: {
-            request_to: requested_by.id,
+            request_to: requested_by.userid,
           }, headers: headers
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(400)
@@ -108,14 +108,14 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
     end
   end
 
-  describe "DELETE /v1/follow_requests_to_me - v1/follow_requests#destroy_follow_requests_to_me - Deny follow request" do
+  describe "DELETE /v1/follow_requests/refuse - v1/follow_requests#destroy_follow_requests_to_me - Refuse follow request" do
     context "when client doesn't have token" do
       let(:user) { create(:user) }
 
       it "returns 401" do
         expect do
           delete v1_follow_requests_to_me_path, params: {
-            requested_by: user.id,
+            requested_by: user.userid,
           }
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(401)
@@ -133,7 +133,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
         expect do
           delete v1_follow_requests_to_me_path, params: {
-            requested_by: request_follow_user.id,
+            requested_by: request_follow_user.userid,
           }, headers: headers
         end.to change(FollowRequest.where(requested_by: request_follow_user.id, request_to: client_user.id), :count).by(-1)
         expect(response).to have_http_status(200)
@@ -144,7 +144,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
         expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: client_user.id)).not_to exist
 
         delete v1_follow_requests_to_me_path, params: {
-          requested_by: request_follow_user.id,
+          requested_by: request_follow_user.userid,
         }, headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
@@ -153,14 +153,14 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
     end
   end
 
-  describe "DELETE /v1/follow_requests_by_me - v1/follow_requests#destroy_follow_requests_by_me - Withdraw follow request" do
+  describe "DELETE /v1/follow_requests/outgoing - v1/follow_requests#destroy_follow_requests_by_me - Withdraw follow request" do
     context "when client doesn't have token" do
       let(:request_to_user) { create(:user) }
 
       it "returns 401" do
         expect do
           delete v1_follow_requests_by_me_path, params: {
-            request_to: request_to_user.id,
+            request_to: request_to_user.userid,
           }
         end.to change(FollowRequest.all, :count).by(0)
         expect(response).to have_http_status(401)
@@ -178,7 +178,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
 
         expect do
           delete v1_follow_requests_by_me_path, params: {
-            request_to: request_to_user.id,
+            request_to: request_to_user.userid,
           }, headers: headers
         end.to change(FollowRequest.where(requested_by: client_user.id, request_to: request_to_user.id), :count).by(-1)
         expect(response).to have_http_status(200)
@@ -188,7 +188,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
       it "returns 400 when client hasn't requested follow" do
         expect do
           delete v1_follow_requests_by_me_path, params: {
-            request_to: request_to_user.id,
+            request_to: request_to_user.userid,
           }, headers: headers
         end.to change(FollowRequest.where(requested_by: client_user.id, request_to: request_to_user.id), :count).by(0)
         expect(response).to have_http_status(400)

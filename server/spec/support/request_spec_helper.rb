@@ -68,7 +68,7 @@ module RequestSpecHelper
       image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
       is_locked: false,
     }
-    post v1_post_reply_path(replied_post.id), params: params, headers: headers
+    post v1_post_replies_path(replied_post.id), params: params, headers: headers
     expect(response).to have_http_status(200)
     response_body = JSON.parse(response.body, symbolize_names: true)
     reply         = Post.find(response_body[:id])

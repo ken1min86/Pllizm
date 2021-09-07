@@ -1,18 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "V1::UsersApi", type: :request do
-  describe "GET /v1/follow_users - v1/follow_users#index - Get follow users" do
+  describe "GET /v1/followers - v1/users#index_of_followers - Get followers" do
     context "when client doesn't have token" do
       it "returns 401" do
         get v1_follow_users_path
-        expect(response).to have_http_status(401)
+        expect(response).to         have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
     end
 
     context "when client has token" do
-      let(:client_user)         { create(:user) }
-      let(:headers)             { client_user.create_new_auth_token }
+      let(:client_user)  { create(:user) }
+      let(:headers)      { client_user.create_new_auth_token }
       let(:follow_user1) { create_follow_user(client_user) }
       let(:follow_user2) { create_follow_user(client_user) }
 
@@ -24,15 +24,15 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # API
         get v1_follow_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォロアー2人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(2)
+        expect(response_body.length).to    eq(2)
         expect(response_body[0].length).to eq(6)
         expect(response_body[1].length).to eq(6)
-        expect(response_body[0]).to include(
+        expect(response_body[0]).to        include(
           id: follow_user1.id,
           userid: follow_user1.userid,
           username: follow_user1.username,
@@ -57,14 +57,14 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # API
         get v1_follow_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォロアー1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(1)
+        expect(response_body.length).to    eq(1)
         expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to include(
+        expect(response_body[0]).to        include(
           id: follow_user1.id,
           userid: follow_user1.userid,
           username: follow_user1.username,
@@ -78,7 +78,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(Follower.where(followed_by: client_user.id)).not_to exist
 
         get v1_follow_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
@@ -87,11 +87,11 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
   end
 
-  describe "GET /v1/follow_requested_by_me_users - v1/users#index_of_users_follow_requested_by_me - Get users requested by me" do
+  describe "GET /v1/follow_requests/outgoing - v1/users#index_of_users_follow_requested_by_me - Get users requested by me" do
     context "when client doesn't have token" do
       it "returns 401" do
         get v1_follow_requested_by_me_users_path
-        expect(response).to have_http_status(401)
+        expect(response).to         have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
     end
@@ -110,7 +110,7 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # API
         get v1_follow_requested_by_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォローリクエストしているユーザ2人分で、仕様書通りのカラムのみ返していることを確認
@@ -143,14 +143,14 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # API
         get v1_follow_requested_by_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォローリクエストしているユーザ1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(1)
+        expect(response_body.length).to    eq(1)
         expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to include(
+        expect(response_body[0]).to        include(
           id: follow_requested_user1.id,
           userid: follow_requested_user1.userid,
           username: follow_requested_user1.username,
@@ -164,7 +164,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(FollowRequest.where(requested_by: client_user.id)).not_to exist
 
         get v1_follow_requested_by_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
@@ -173,11 +173,11 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
   end
 
-  describe "GET /v1/v1_follow_request_to_me_users - v1/users#index_of_users_follow_request_to_me - Get users requested to me" do
+  describe "GET /v1/follow_requests/incoming - v1/users#index_of_users_follow_request_to_me - Get users requested to me" do
     context "when client doesn't have token" do
       it "returns 401" do
         get v1_follow_request_to_me_users_path
-        expect(response).to have_http_status(401)
+        expect(response).to         have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
     end
@@ -196,14 +196,15 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # API
         get v1_follow_request_to_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォローリクエストしているユーザ2人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(2)
+        expect(response_body.length).to    eq(2)
         expect(response_body[0].length).to eq(6)
         expect(response_body[1].length).to eq(6)
+
         expect(response_body[0]).to include(
           id: follow_request_to_me_user1.id,
           userid: follow_request_to_me_user1.userid,
@@ -227,16 +228,15 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(FollowRequest.where(requested_by: follow_request_to_me_user1.id, request_to: client_user.id)).to exist
         expect(FollowRequest.where(request_to: client_user.id).length).to eq(1)
 
-        # API
         get v1_follow_request_to_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         # レスポンスボディのデータがフォローリクエストしているユーザ1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(1)
+        expect(response_body.length).to    eq(1)
         expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to include(
+        expect(response_body[0]).to        include(
           id: follow_request_to_me_user1.id,
           userid: follow_request_to_me_user1.userid,
           username: follow_request_to_me_user1.username,
@@ -250,11 +250,50 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(FollowRequest.where(requested_by: client_user.id)).not_to exist
 
         get v1_follow_request_to_me_users_path, headers: headers
-        expect(response).to have_http_status(200)
+        expect(response).to         have_http_status(200)
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
         expect(response_body.length).to eq(0)
+      end
+    end
+  end
+
+  describe "PUT /v1/disable_lock_description - v1/users#disable_lock_description - Disable lock description" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        put v1_disableLockDescription_path
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        sign_up(Faker::Name.first_name)
+        @request_headers = create_header_from_response(response)
+        @current_user    = get_current_user_by_response(response)
+      end
+
+      it 'returns 200 and change false when need_description_about_lock is true' do
+        expect(@current_user.need_description_about_lock).to eq(true)
+
+        put v1_disableLockDescription_path, headers: @request_headers
+        @current_user.reload
+        expect(@current_user.need_description_about_lock).to eq(false)
+        expect(response).to         have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it 'returns 200 and keep false when need_description_about_lock is false' do
+        @current_user.update(need_description_about_lock: false)
+        expect(@current_user.need_description_about_lock).to eq(false)
+
+        put v1_disableLockDescription_path, headers: @request_headers
+        @current_user.reload
+        expect(@current_user.need_description_about_lock).to eq(false)
+        expect(response).to         have_http_status(200)
+        expect(response.message).to include('OK')
       end
     end
   end

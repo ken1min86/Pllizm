@@ -29,7 +29,7 @@ module V1
     end
 
     def create_replies
-      replied_post = Post.find_by(id: params[:post_id])
+      replied_post = Post.find_by(id: params[:id])
       reply_post = Post.new(post_params)
       if replied_post.blank?
         render_json_bad_request_with_custom_errors(
@@ -38,7 +38,7 @@ module V1
         )
       elsif replied_post.your_post?(current_v1_user) || replied_post.followers_post?(current_v1_user)
         if reply_post.save
-          descendant_is_prams_id_tree_paths = TreePath.where(descendant: params[:post_id]).order(created_at: :asc)
+          descendant_is_prams_id_tree_paths = TreePath.where(descendant: params[:id]).order(created_at: :asc)
           depth = 1
           descendant_is_prams_id_tree_paths.each do |descendant_is_prams_id_tree_path|
             TreePath.create(
@@ -61,7 +61,7 @@ module V1
     end
 
     def change_lock
-      post = Post.find(params[:post_id])
+      post = Post.find(params[:id])
       if post&.user_id == current_v1_user.id
         post.update(is_locked: !post.is_locked)
         render json: post, status: :ok
@@ -90,7 +90,7 @@ module V1
       render json: return_posts, status: :ok
     end
 
-    def index_current_user_and_followers_posts
+    def index_me_and_followers_posts
       followers = current_v1_user.followings
 
       # カレントユーザとフォロワーのすべての投稿を取得
@@ -132,22 +132,22 @@ module V1
 
     def index_threads
       thread = {}
-      status_of_current_post = Post.check_status_of_post(current_v1_user, params[:post_id])
+      status_of_current_post = Post.check_status_of_post(current_v1_user, params[:id])
       if status_of_current_post == Settings.constants.status_of_post[:current_user_post] \
         || status_of_current_post == Settings.constants.status_of_post[:follower_post]
-        parent = Post.get_parent_of_current_post(current_v1_user, params[:post_id])
+        parent = Post.get_parent_of_current_post(current_v1_user, params[:id])
         thread.merge!(parent: parent)
 
-        current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:post_id], status_of_current_post)
+        current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:id], status_of_current_post)
         thread.merge!(current: current)
 
-        children = Post.get_children_of_current_post(current_v1_user, params[:post_id])
+        children = Post.get_children_of_current_post(current_v1_user, params[:id])
         thread.merge!(children: children)
 
       elsif status_of_current_post == Settings.constants.status_of_post[:not_follower_post] \
         || status_of_current_post == Settings.constants.status_of_post[:deleted] \
         || status_of_current_post == Settings.constants.status_of_post[:not_exist]
-        current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:post_id], status_of_current_post)
+        current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:id], status_of_current_post)
         thread.merge!(current: current)
       end
       render json: thread, status: :ok
@@ -186,7 +186,7 @@ module V1
     end
 
     def thread_above_candidate
-      candidate_post = Post.find_by(id: params[:refract_candidate_id])
+      candidate_post = Post.find_by(id: params[:id])
       if candidate_post.blank?
         render_json_bad_request_with_custom_errors(
           'パラメータのidが不正です',

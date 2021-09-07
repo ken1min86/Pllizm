@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "V1::LikesApi", type: :request do
-  describe "POST /v1/posts/:post_id/likes - v1/likes#create - Create likes" do
+  describe "POST /v1/posts/:id/likess - v1/likes#create - Create likes" do
     context "when client doesn't have token" do
       before do
         create(:icon)

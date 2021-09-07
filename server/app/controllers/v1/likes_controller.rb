@@ -3,7 +3,7 @@ module V1
     before_action :authenticate_v1_user!
 
     def create
-      liked_post = Post.find_by(id: params[:post_id])
+      liked_post = Post.find_by(id: params[:id])
       if liked_post.blank?
         render_json_bad_request_with_custom_errors(
           '存在しない投稿です',
