@@ -258,43 +258,4 @@ RSpec.describe "V1::Auth::AuthUsersApi", type: :request do
       end
     end
   end
-
-  describe "PUT /v1/user/disable_lock_description - v1/users#disable_lock_description - Disable lock description" do
-    context "when client doesn't have token" do
-      it "returns 401" do
-        put v1_user_disableLockDescription_path
-        expect(response).to have_http_status(401)
-        expect(response.message).to include('Unauthorized')
-      end
-    end
-
-    context "when client has token" do
-      before do
-        sign_up(Faker::Name.first_name)
-        @request_headers = create_header_from_response(response)
-        @current_user = get_current_user_by_response(response)
-      end
-
-      it 'returns 200 and change false when need_description_about_lock is true' do
-        expect(@current_user.need_description_about_lock).to eq(true)
-
-        put v1_user_disableLockDescription_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to have_http_status(200)
-        expect(response.message).to include('OK')
-      end
-
-      it 'returns 200 and keep false when need_description_about_lock is false' do
-        @current_user.update(need_description_about_lock: false)
-        expect(@current_user.need_description_about_lock).to eq(false)
-
-        put v1_user_disableLockDescription_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to have_http_status(200)
-        expect(response.message).to include('OK')
-      end
-    end
-  end
 end

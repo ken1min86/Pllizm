@@ -7,5 +7,5 @@ constants:
     deleted: 'deleted'
     not_exist: 'not_exist'
     current_user_post: 'current_user_post'
-    mutual_follower_post: 'mutual_follower_post'
-    not_mutual_follower_post: 'not_mutual_follower_post'
+    follower_post: 'follower_post'
+    not_follower_post: 'not_follower_post'

@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
     followings.include?(other_user)
   end
 
-  def mutual_follow(other_user)
+  def follow(other_user)
     unless self == other_user
       follow_relationship            = follow_relationships.create(follow_to: other_user.id)
       reverse_of_follow_relationship = reverse_of_follow_relationships.create(followed_by: other_user.id)
@@ -80,5 +80,9 @@ class User < ActiveRecord::Base
 
   def get_performed_current_user_refracts
     current_user_refracts.where(performed_refract: true).order(created_at: :desc)
+  end
+
+  def get_follower_refracts
+    follower_refracts.order(created_at: :desc)
   end
 end

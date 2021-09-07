@@ -30,7 +30,7 @@ class Post < ApplicationRecord
   def self.extract_disclosable_culumns_from_posts_array(posts_array)
     extracted_posts = []
     posts_array.each do |post|
-      hashed_post = post.attributes.symbolize_keys
+      hashed_post         = post.attributes.symbolize_keys
       hashed_post[:image] = post.image.url
       hashed_post.delete(:user_id)
       extracted_posts.push(hashed_post)
@@ -52,46 +52,52 @@ class Post < ApplicationRecord
   # 削除済み:             deleted
   # 存在しない:           not_exist
   # カレントユーザの投稿:   current_user_post
-  # 相互フォロワーの投稿:   mutual_follower_post
-  # 非相互フォロワーの投稿: not_mutual_follower_post
-  def self.check_status_of_current_post(current_user, current_post_id)
-    current_post = Post.find_by(id: current_post_id)
+  # 相互フォロワーの投稿:   follower_post
+  # 非相互フォロワーの投稿: not_follower_post
+  def self.check_status_of_post(current_user, post_id)
+    post = Post.find_by(id: post_id)
     followers = current_user.followings
-    status_of_current_post = ''
-    if current_post.nil?
-      if Post.only_deleted.find_by(id: current_post_id)
-        status_of_current_post = Settings.constants.status_of_post[:deleted]
+    status_of_post = ''
+    if post.nil?
+      if Post.only_deleted.find_by(id: post_id)
+        status_of_post = Settings.constants.status_of_post[:deleted]
       else
-        status_of_current_post = Settings.constants.status_of_post[:not_exist]
+        status_of_post = Settings.constants.status_of_post[:not_exist]
       end
-    elsif current_post.user == current_user
-      status_of_current_post = Settings.constants.status_of_post[:current_user_post]
-    elsif followers.index(current_post.user)
-      status_of_current_post = Settings.constants.status_of_post[:mutual_follower_post]
+    elsif post.user == current_user
+      status_of_post = Settings.constants.status_of_post[:current_user_post]
+    elsif followers.index(post.user)
+      status_of_post = Settings.constants.status_of_post[:follower_post]
     else
-      status_of_current_post = Settings.constants.status_of_post[:not_mutual_follower_post]
+      status_of_post = Settings.constants.status_of_post[:not_follower_post]
     end
-    status_of_current_post
+    status_of_post
   end
 
   def self.get_current_according_to_status_of_current_post(current_user, current_post_id, status_of_current_post)
     current = {}
-    if status_of_current_post == Settings.constants.status_of_post[:current_user_post]
-      current_post_of_current_user = Post.find(current_post_id)
+    case status_of_current_post
+
+    when Settings.constants.status_of_post[:current_user_post]
+      current_post_of_current_user           = Post.find(current_post_id)
       formatted_current_post_of_current_user = current_post_of_current_user.format_current_user_post(current_user)
       current.merge!(formatted_current_post_of_current_user)
 
-    elsif status_of_current_post == Settings.constants.status_of_post[:mutual_follower_post]
-      current_post_of_follower = Post.find(current_post_id)
+    when Settings.constants.status_of_post[:follower_post]
+      current_post_of_follower           = Post.find(current_post_id)
       formatted_current_post_of_follower = current_post_of_follower.format_follower_post(current_user)
       current.merge!(formatted_current_post_of_follower)
-    elsif status_of_current_post == Settings.constants.status_of_post[:not_mutual_follower_post]
-      current[:not_mutual_follower_post] = nil
-    elsif status_of_current_post == Settings.constants.status_of_post[:deleted]
+
+    when Settings.constants.status_of_post[:not_follower_post]
+      current[:not_follower_post] = nil
+
+    when Settings.constants.status_of_post[:deleted]
       current[:deleted] = nil
-    elsif status_of_current_post == Settings.constants.status_of_post[:not_exist]
+
+    when Settings.constants.status_of_post[:not_exist]
       current[:not_exist] = nil
     end
+
     current
   end
 
@@ -114,7 +120,7 @@ class Post < ApplicationRecord
         formatted_parent_post_of_follower = parent_post_of_follower.format_follower_post(current_user)
         parent.merge!(formatted_parent_post_of_follower)
       else
-        parent[:not_mutual_follower_post] = nil
+        parent[:not_follower_post] = nil
       end
     end
     parent
@@ -125,26 +131,26 @@ class Post < ApplicationRecord
     children = []
     if tree_path_of_children_posts.length > 0
       # カレントの投稿の子の投稿のうち、非相互フォロワーの投稿を除く
-      children_posts_of_current_user_or_mutual_follower = []
+      children_posts_of_current_user_or_follower = []
       tree_path_of_children_posts.each do |tree_path_of_children_post|
         children_post = tree_path_of_children_post.descendant_post
-        if children_post.your_post?(current_user) || children_post.mutual_followers_post?(current_user)
-          children_posts_of_current_user_or_mutual_follower.push(children_post)
+        if children_post.your_post?(current_user) || children_post.followers_post?(current_user)
+          children_posts_of_current_user_or_follower.push(children_post)
         end
       end
 
-      if children_posts_of_current_user_or_mutual_follower.empty?
+      if children_posts_of_current_user_or_follower.empty?
         children.push({ not_exist: nil })
       else
-        children_posts_of_current_user_or_mutual_follower.sort_by! { |post| post["created_at"] }.reverse!
-        children_posts_of_current_user_or_mutual_follower.each do |children_post|
+        children_posts_of_current_user_or_follower.sort_by! { |post| post["created_at"] }.reverse!
+        children_posts_of_current_user_or_follower.each do |children_post|
           if children_post.your_post?(current_user)
             formatted_children_post_of_current_user = children_post.format_current_user_post(current_user)
             children.push(formatted_children_post_of_current_user)
           # フォロワーの投稿だった場合
           else
-            formatted_children_post_of_mutual_follower = children_post.format_follower_post(current_user)
-            children.push(formatted_children_post_of_mutual_follower)
+            formatted_children_post_of_follower = children_post.format_follower_post(current_user)
+            children.push(formatted_children_post_of_follower)
           end
         end
       end
@@ -169,7 +175,8 @@ class Post < ApplicationRecord
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
     tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
-                                                                descendant: current_user_post_with_deleted.id, depth: 0)
+                                                                descendant: current_user_post_with_deleted.id,
+                                                                depth: 0)
     tree_paths_below_child_post = tree_paths_except_current_post_depth_0.where(ancestor: current_user_post_with_deleted.id)
     tree_paths_above_parent_post = tree_paths_except_current_post_depth_0.where(descendant: current_user_post_with_deleted.id)
     # *********************************************
@@ -189,7 +196,7 @@ class Post < ApplicationRecord
           tree_paths_of_children.each do |tree_path_of_child|
             child_post = Post.with_deleted.find(tree_path_of_child.descendant)
             unless child_post.deleted?
-              if child_post.mutual_followers_post?(current_user)
+              if child_post.followers_post?(current_user)
                 reply = current_user_post_with_deleted
                 break
               end
@@ -226,7 +233,7 @@ class Post < ApplicationRecord
                   tree_paths_of_children.each do |tree_path_of_child|
                     child_post = Post.with_deleted.find(tree_path_of_child.descendant)
                     unless child_post.deleted?
-                      if child_post.mutual_followers_post?(current_user)
+                      if child_post.followers_post?(current_user)
                         reply = parent_post
                         has_parent = false
                         break
@@ -256,7 +263,7 @@ class Post < ApplicationRecord
     likes = Like.where(user_id: current_user.id, created_at: target_datetime_from...target_datetime_to)
     likes.each do |like|
       liked_post = like.liked_post
-      if !liked_post.is_locked && liked_post.mutual_followers_post?(current_user)
+      if !liked_post.is_locked && liked_post.followers_post?(current_user)
         hased_liked_post                     = liked_post.attributes.symbolize_keys
         hased_liked_post[:datetime_for_sort] = like.created_at
         refract_candidates_of_like.push(hased_liked_post)
@@ -282,7 +289,7 @@ class Post < ApplicationRecord
     #  -カレントユーザの投稿だった場合、親以上に削除されていないフォロワーの投稿を持つ
     #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
     leaves.each do |leaf|
-      checked_lock = false
+      checked_lock    = false
       has_locked_post = false
       while true
         # 作成日が対象期間内かチェック
@@ -310,12 +317,12 @@ class Post < ApplicationRecord
         #  -フォロワーの投稿
         #  -カレントユーザの投稿だった場合、親以上に削除されていないフォロワーの投稿を持つ
         #  -フォロワーの投稿だった場合、親以上に削除されていないカレントユーザの投稿を持つ
-        if !leaf.deleted? && !leaf.not_mutual_follower_post?(current_user) && leaf.is_reply?
-          if leaf.your_post?(current_user) && leaf.has_not_deleted_post_of_mutual_follower_above_parent?(current_user)
+        if !leaf.deleted? && !leaf.not_follower_post?(current_user) && leaf.is_reply?
+          if leaf.your_post?(current_user) && leaf.has_not_deleted_post_of_follower_above_parent?(current_user)
             hashed_leaf                     = leaf.attributes.symbolize_keys
             hashed_leaf[:datetime_for_sort] = leaf.created_at
             refract_candidates_of_reply.push(hashed_leaf)
-          elsif leaf.mutual_followers_post?(current_user) && leaf.has_not_deleted_post_of_current_user_above_parent?(current_user)
+          elsif leaf.followers_post?(current_user) && leaf.has_not_deleted_post_of_current_user_above_parent?(current_user)
             hashed_leaf                     = leaf.attributes.symbolize_keys
             hashed_leaf[:datetime_for_sort] = leaf.created_at
             refract_candidates_of_reply.push(hashed_leaf)
@@ -367,23 +374,23 @@ class Post < ApplicationRecord
   # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
   # あり得るステータスは以下3種類のみなので、それらに関してのみ扱う。
   # - 削除済み:             deleted
-  # - 非相互フォロワーの投稿: not_mutual_follower_post
-  # - 相互フォロワーの投稿:   mutual_follower_post
-  def self.format_refracted_post_of_like(current_user, liked_post, refracted_at)
+  # - 非相互フォロワーの投稿: not_follower_post
+  # - 相互フォロワーの投稿:   follower_post
+  def self.format_refracted_by_me_post_of_like(current_user, liked_post, refracted_at)
     formatted_refracted_post = {}
-    status                   = Post.check_status_of_current_post(current_user, liked_post.id)
+    status                   = Post.check_status_of_post(current_user, liked_post.id)
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
         refracted_at: I18n.l(refracted_at),
         posts: [deleted: nil],
       }
-    when Settings.constants.status_of_post[:not_mutual_follower_post]
+    when Settings.constants.status_of_post[:not_follower_post]
       formatted_refracted_post = {
         refracted_at: I18n.l(refracted_at),
-        posts: [not_mutual_follower_post: nil],
+        posts: [not_follower_post: nil],
       }
-    when Settings.constants.status_of_post[:mutual_follower_post]
+    when Settings.constants.status_of_post[:follower_post]
       formatted_refracted_post = {
         refracted_at: I18n.l(refracted_at),
         posts: [liked_post.format_follower_refracted_post(current_user, refracted_at)],
@@ -395,29 +402,29 @@ class Post < ApplicationRecord
   # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
   # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
   # - 削除済み:             deleted
-  # - 非相互フォロワーの投稿: not_mutual_follower_post
+  # - 非相互フォロワーの投稿: not_follower_post
   # - カレントユーザの投稿:   current_user_post
-  # - 相互フォロワーの投稿:   mutual_follower_post
-  def self.format_refracted_posts_of_reply(current_user, replied_leaf_post, refracted_at)
+  # - 相互フォロワーの投稿:   follower_post
+  def self.format_refracted_by_me_posts_of_reply(current_user, replied_leaf_post, refracted_at)
     array_of_formatted_refracted_posts = []
     tree_paths_above_current_post      = TreePath.where(descendant: replied_leaf_post).order(depth: :desc)
 
     tree_paths_above_current_post.each do |tree_path_above_current_post|
       post   = Post.with_deleted.find(tree_path_above_current_post.ancestor)
-      status = Post.check_status_of_current_post(current_user, post.id)
+      status = Post.check_status_of_post(current_user, post.id)
 
       case status
       when Settings.constants.status_of_post[:deleted]
         array_of_formatted_refracted_posts.push({ deleted: nil })
 
-      when Settings.constants.status_of_post[:not_mutual_follower_post]
-        array_of_formatted_refracted_posts.push({ not_mutual_follower_post: nil })
+      when Settings.constants.status_of_post[:not_follower_post]
+        array_of_formatted_refracted_posts.push({ not_follower_post: nil })
 
       when Settings.constants.status_of_post[:current_user_post]
         formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
         array_of_formatted_refracted_posts.push(formatted_current_user_post)
 
-      when Settings.constants.status_of_post[:mutual_follower_post]
+      when Settings.constants.status_of_post[:follower_post]
         formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
         array_of_formatted_refracted_posts.push(formatted_follower_post)
       end
@@ -427,10 +434,85 @@ class Post < ApplicationRecord
     formatted_refracted_posts
   end
 
+  # ステータスは本来5種類あるが、いいねした投稿をリフラクトされた場合、
+  # あり得るステータスは以下2種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:           deleted
+  # - カレントユーザの投稿: current_user_post
+  def self.format_refracted_by_follower_post_of_like(current_user:, refracted_by:, liked_post:, refracted_at:)
+    formatted_refracted_post = {}
+    status                   = Post.check_status_of_post(current_user, liked_post.id)
+
+    case status
+    when Settings.constants.status_of_post[:deleted]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [deleted: nil],
+        refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+      }
+
+    when Settings.constants.status_of_post[:current_user_post]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [liked_post.format_current_user_refracted_post(current_user, refracted_at)],
+        refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+      }
+    end
+
+    formatted_refracted_post
+  end
+
+  # ステータスは本来5種類あるが、リプライをリフラクトされた場合、
+  # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:             deleted
+  # - 非相互フォロワーの投稿: not_follower_post
+  # - カレントユーザの投稿:   current_user_post
+  # - 相互フォロワーの投稿:   follower_post
+  def self.format_refracted_by_follower_posts_of_reply(current_user:, refracted_by:, replied_leaf_post:, refracted_at:)
+    array_of_formatted_refracted_posts = []
+    tree_paths_above_current_post      = TreePath.where(descendant: replied_leaf_post).order(depth: :desc)
+
+    tree_paths_above_current_post.each do |tree_path_above_current_post|
+      post   = Post.with_deleted.find(tree_path_above_current_post.ancestor)
+      status = Post.check_status_of_post(current_user, post.id)
+
+      case status
+      when Settings.constants.status_of_post[:deleted]
+        array_of_formatted_refracted_posts.push({ deleted: nil })
+
+      when Settings.constants.status_of_post[:not_follower_post]
+        array_of_formatted_refracted_posts.push({ other_users_post: nil })
+
+      when Settings.constants.status_of_post[:current_user_post]
+        formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
+        array_of_formatted_refracted_posts.push(formatted_current_user_post)
+
+      when Settings.constants.status_of_post[:follower_post]
+        if post.user_id == refracted_by.id
+          formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
+          array_of_formatted_refracted_posts.push(formatted_follower_post)
+
+        else
+          array_of_formatted_refracted_posts.push({ other_users_post: nil })
+        end
+      end
+    end
+
+    formatted_refracted_posts = {
+      refracted_at: I18n.l(refracted_at),
+      posts: array_of_formatted_refracted_posts,
+      refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+    }
+    formatted_refracted_posts
+  end
+
+  def self.create_hash_of_refracted_by_to_format_refract(refracted_by)
+    { userid: refracted_by.userid, username: refracted_by.username }
+  end
+
   def format_post(current_user)
     if your_post?(current_user)
       formated_post = format_current_user_post(current_user)
-    elsif mutual_followers_post?(current_user)
+    elsif followers_post?(current_user)
       formated_post = format_follower_post(current_user)
     end
     formated_post
@@ -440,6 +522,7 @@ class Post < ApplicationRecord
     hashed_current_user_post = attributes.symbolize_keys
     hashed_current_user_post.delete(:user_id)
     hashed_current_user_post.delete(:icon_id)
+    hashed_current_user_post[:created_at]               = I18n.l(created_at)
     hashed_current_user_post[:image]                    = image.url
     hashed_current_user_post[:icon_url]                 = current_user.image.url
     hashed_current_user_post[:userid]                   = current_user.userid
@@ -456,12 +539,13 @@ class Post < ApplicationRecord
     hashed_follower_post = attributes.symbolize_keys
     hashed_follower_post.delete(:user_id)
     hashed_follower_post.delete(:icon_id)
+    hashed_follower_post[:created_at]               = I18n.l(created_at)
     hashed_follower_post[:image]                    = image.url
     hashed_follower_post[:icon_url]                 = icon.image.url
     hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
     hashed_follower_post[:is_reply]                 = is_reply?
     hashed_follower_post[:replies] = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
-    formatted_follower_post = { mutual_follower_post: hashed_follower_post }
+    formatted_follower_post = { follower_post: hashed_follower_post }
     formatted_follower_post
   end
 
@@ -477,7 +561,7 @@ class Post < ApplicationRecord
     hashed_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
     hashed_post[:is_reply]                 = is_reply?
     hashed_post[:replies]                  = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
-    refracted_follower_post                = { mutual_follower_post: hashed_post }
+    refracted_follower_post                = { follower_post: hashed_post }
     refracted_follower_post
   end
 
@@ -528,7 +612,7 @@ class Post < ApplicationRecord
   def get_parent_post_with_deleted
     if is_reply?
       tree_path_of_parent = TreePath.find_by(descendant: id, depth: 1)
-      parent_post = Post.with_deleted.find(tree_path_of_parent.ancestor)
+      parent_post         = Post.with_deleted.find(tree_path_of_parent.ancestor)
       parent_post
     else
       nil
@@ -547,22 +631,22 @@ class Post < ApplicationRecord
     has_not_deleted_post_of_current_user_above_parent
   end
 
-  def has_not_deleted_post_of_mutual_follower_above_parent?(current_user)
-    has_not_deleted_post_of_mutual_follower_above_parent = false
+  def has_not_deleted_post_of_follower_above_parent?(current_user)
+    has_not_deleted_post_of_follower_above_parent = false
     posts_above_parent = ancestor_posts.where.not(id: id)
     posts_above_parent.each do |post_above_parent|
-      if post_above_parent.mutual_followers_post?(current_user)
-        has_not_deleted_post_of_mutual_follower_above_parent = true
+      if post_above_parent.followers_post?(current_user)
+        has_not_deleted_post_of_follower_above_parent = true
         break
       end
     end
-    has_not_deleted_post_of_mutual_follower_above_parent
+    has_not_deleted_post_of_follower_above_parent
   end
 
   def get_leaves
-    leaves = []
+    leaves                   = []
     tree_paths_below_current = TreePath.where(ancestor: id)
-    below_current_posts = []
+    below_current_posts      = []
     tree_paths_below_current.each do |tree_path_below_current|
       below_current_posts.push(Post.with_deleted.find(tree_path_below_current.descendant))
     end
@@ -593,20 +677,20 @@ class Post < ApplicationRecord
     user_id == current_user.id
   end
 
-  def mutual_followers_post?(current_user)
-    mutual_followers = current_user.followings
-    is_mutual_followers_post = false
-    mutual_followers.each do |mutual_follower|
-      if user_id == mutual_follower.id
-        is_mutual_followers_post = true
+  def followers_post?(current_user)
+    followers         = current_user.followings
+    is_followers_post = false
+    followers.each do |follower|
+      if user_id == follower.id
+        is_followers_post = true
         break
       end
     end
-    is_mutual_followers_post
+    is_followers_post
   end
 
-  def not_mutual_follower_post?(current_user)
-    if your_post?(current_user) || mutual_followers_post?(current_user)
+  def not_follower_post?(current_user)
+    if your_post?(current_user) || followers_post?(current_user)
       false
     else
       true
