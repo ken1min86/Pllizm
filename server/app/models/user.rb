@@ -81,4 +81,8 @@ class User < ActiveRecord::Base
   def get_performed_current_user_refracts
     current_user_refracts.where(performed_refract: true).order(created_at: :desc)
   end
+
+  def get_follower_refracts
+    follower_refracts.order(created_at: :desc)
+  end
 end

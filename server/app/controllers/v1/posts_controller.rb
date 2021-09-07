@@ -205,13 +205,13 @@ module V1
     end
 
     def index_posts_refracted_by_current_user
-      performed_current_user_refracts = current_v1_user.get_performed_current_user_refracts
       formatted_refracted_posts = []
+      performed_current_user_refracts = current_v1_user.get_performed_current_user_refracts
       performed_current_user_refracts.each do |performed_current_user_refract|
         case performed_current_user_refract.category
         when 'like'
           liked_post           = Post.with_deleted.find(performed_current_user_refract.post_id)
-          formatted_liked_post = Post.format_refracted_post_of_like(
+          formatted_liked_post = Post.format_refracted_by_me_post_of_like(
             current_v1_user,
             liked_post,
             performed_current_user_refract.updated_at
@@ -219,10 +219,42 @@ module V1
           formatted_refracted_posts.push(formatted_liked_post)
         when 'reply'
           replied_leaf_post       = Post.with_deleted.find(performed_current_user_refract.post_id)
-          formatted_replied_posts = Post.format_refracted_posts_of_reply(
+          formatted_replied_posts = Post.format_refracted_by_me_posts_of_reply(
             current_v1_user,
             replied_leaf_post,
             performed_current_user_refract.updated_at
+          )
+          formatted_refracted_posts.push(formatted_replied_posts)
+        end
+      end
+      render json: formatted_refracted_posts, status: :ok
+    end
+
+    # 【2021/09/07 メモ】
+    # FollowerRefractに紐付くfollowerは必ずフォロワーとして存在する前提で実装してよい。
+    # フォロー解除された場合や、アカウント削除した場合にはFollowerRefractも削除するように今後修正するため。
+    def index_posts_refracted_by_followers
+      formatted_refracted_posts = []
+      follower_refracts         = current_v1_user.get_follower_refracts
+      follower_refracts.each do |follower_refract|
+        follower = follower_refract.follower
+        case follower_refract.category
+        when 'like'
+          refracted_post       = Post.with_deleted.find(follower_refract.post_id)
+          formatted_liked_post = Post.format_refracted_by_follower_post_of_like(
+            current_user: current_v1_user,
+            refracted_by: follower,
+            liked_post: refracted_post,
+            refracted_at: follower_refract.created_at
+          )
+          formatted_refracted_posts.push(formatted_liked_post)
+        when 'reply'
+          refracted_post          = Post.with_deleted.find(follower_refract.post_id)
+          formatted_replied_posts = Post.format_refracted_by_follower_posts_of_reply(
+            current_user: current_v1_user,
+            refracted_by: follower,
+            replied_leaf_post: refracted_post,
+            refracted_at: follower_refract.created_at
           )
           formatted_refracted_posts.push(formatted_replied_posts)
         end

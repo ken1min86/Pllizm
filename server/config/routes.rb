@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     get  '/refract_candidates/:id/threads', to: 'posts#thread_above_candidate',                as: :thread_above_candidate
     post '/refracts/perform',               to: 'refracts#perform_refract',                    as: :refract_performed
     post '/refracts/skip',                  to: 'refracts#skip',                               as: :skip
-    get  '/posts/refracts/by_me',           to: 'posts#index_posts_refracted_by_current_user', as: :post_refracted_by_current_user
+    get  '/refracts/by_me',                 to: 'posts#index_posts_refracted_by_current_user', as: :post_refracted_by_current_user
+    get  '/refracts/by_followers',          to: 'posts#index_posts_refracted_by_followers',    as: :post_refracted_by_folowers
   end
 end

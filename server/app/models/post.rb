@@ -376,7 +376,7 @@ class Post < ApplicationRecord
   # - 削除済み:             deleted
   # - 非相互フォロワーの投稿: not_follower_post
   # - 相互フォロワーの投稿:   follower_post
-  def self.format_refracted_post_of_like(current_user, liked_post, refracted_at)
+  def self.format_refracted_by_me_post_of_like(current_user, liked_post, refracted_at)
     formatted_refracted_post = {}
     status                   = Post.check_status_of_post(current_user, liked_post.id)
     case status
@@ -405,7 +405,7 @@ class Post < ApplicationRecord
   # - 非相互フォロワーの投稿: not_follower_post
   # - カレントユーザの投稿:   current_user_post
   # - 相互フォロワーの投稿:   follower_post
-  def self.format_refracted_posts_of_reply(current_user, replied_leaf_post, refracted_at)
+  def self.format_refracted_by_me_posts_of_reply(current_user, replied_leaf_post, refracted_at)
     array_of_formatted_refracted_posts = []
     tree_paths_above_current_post      = TreePath.where(descendant: replied_leaf_post).order(depth: :desc)
 
@@ -432,6 +432,81 @@ class Post < ApplicationRecord
 
     formatted_refracted_posts = { refracted_at: I18n.l(refracted_at), posts: array_of_formatted_refracted_posts }
     formatted_refracted_posts
+  end
+
+  # ステータスは本来5種類あるが、いいねした投稿をリフラクトされた場合、
+  # あり得るステータスは以下2種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:           deleted
+  # - カレントユーザの投稿: current_user_post
+  def self.format_refracted_by_follower_post_of_like(current_user:, refracted_by:, liked_post:, refracted_at:)
+    formatted_refracted_post = {}
+    status                   = Post.check_status_of_post(current_user, liked_post.id)
+
+    case status
+    when Settings.constants.status_of_post[:deleted]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [deleted: nil],
+        refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+      }
+
+    when Settings.constants.status_of_post[:current_user_post]
+      formatted_refracted_post = {
+        refracted_at: I18n.l(refracted_at),
+        posts: [liked_post.format_current_user_refracted_post(current_user, refracted_at)],
+        refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+      }
+    end
+
+    formatted_refracted_post
+  end
+
+  # ステータスは本来5種類あるが、リプライをリフラクトされた場合、
+  # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
+  # - 削除済み:             deleted
+  # - 非相互フォロワーの投稿: not_follower_post
+  # - カレントユーザの投稿:   current_user_post
+  # - 相互フォロワーの投稿:   follower_post
+  def self.format_refracted_by_follower_posts_of_reply(current_user:, refracted_by:, replied_leaf_post:, refracted_at:)
+    array_of_formatted_refracted_posts = []
+    tree_paths_above_current_post      = TreePath.where(descendant: replied_leaf_post).order(depth: :desc)
+
+    tree_paths_above_current_post.each do |tree_path_above_current_post|
+      post   = Post.with_deleted.find(tree_path_above_current_post.ancestor)
+      status = Post.check_status_of_post(current_user, post.id)
+
+      case status
+      when Settings.constants.status_of_post[:deleted]
+        array_of_formatted_refracted_posts.push({ deleted: nil })
+
+      when Settings.constants.status_of_post[:not_follower_post]
+        array_of_formatted_refracted_posts.push({ other_users_post: nil })
+
+      when Settings.constants.status_of_post[:current_user_post]
+        formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
+        array_of_formatted_refracted_posts.push(formatted_current_user_post)
+
+      when Settings.constants.status_of_post[:follower_post]
+        if post.user_id == refracted_by.id
+          formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
+          array_of_formatted_refracted_posts.push(formatted_follower_post)
+
+        else
+          array_of_formatted_refracted_posts.push({ other_users_post: nil })
+        end
+      end
+    end
+
+    formatted_refracted_posts = {
+      refracted_at: I18n.l(refracted_at),
+      posts: array_of_formatted_refracted_posts,
+      refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
+    }
+    formatted_refracted_posts
+  end
+
+  def self.create_hash_of_refracted_by_to_format_refract(refracted_by)
+    { userid: refracted_by.userid, username: refracted_by.username }
   end
 
   def format_post(current_user)

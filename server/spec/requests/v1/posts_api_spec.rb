@@ -1809,8 +1809,313 @@ RSpec.describe "V1::PostsApi", type: :request do
     end
   end
 
-  describe "GET v1/posts/refracts/by_me
-- posts#index_post_refracted_by_current_user - Get posts refracted by current user" do
+  describe "GET v1/refracts/by_followers - posts#index_posts_refracted_by_followers - Get posts refracted by followers" do
+    context "when client doesn't have token" do
+      before do
+        create(:icon)
+      end
+
+      it "returns 401" do
+        get v1_post_refracted_by_folowers_path
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        create(:icon)
+      end
+
+      let(:client_user)                    { create(:user) }
+      let(:client_user_headers)            { client_user.create_new_auth_token }
+      let(:follower_performed_refract)     { create_follow_user(client_user) }
+      let(:follower_not_performed_refract) { create_follow_user(client_user) }
+      let(:not_follower)                   { create_follow_user(follower_performed_refract) }
+
+      context "when client doesn't have FollowerRefract" do
+        it 'returns 200' do
+          expect(client_user.follower_refracts.where(user_id: client_user.id,)).not_to exist
+
+          get v1_post_refracted_by_folowers_path, headers: client_user_headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+        end
+      end
+
+      context "when client user has 1 FollowerRefract whose category is like
+      and the refracted post hasn't been deleted" do
+        let!(:not_deleted_client_user_post) do
+          create(:post, user_id: client_user.id)
+        end
+        let!(:follower_refract) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: not_deleted_client_user_post.id,
+            category: 'like'
+          )
+        end
+
+        it 'returns 200 and formatted liked post' do
+          expect(client_user.follower_refracts.where(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: not_deleted_client_user_post.id,
+            category: 'like'
+          )).to exist
+
+          get v1_post_refracted_by_folowers_path, headers: client_user_headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to eq(1)
+          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:posts].length).to eq(1)
+          expect(response_body[0][:posts][0][:current_user_post].length).to eq(15)
+          expect(response_body[0][:posts][0][:current_user_post]).to        include(
+            id: not_deleted_client_user_post.id,
+            user_id: not_deleted_client_user_post.user_id,
+            content: not_deleted_client_user_post.content,
+            image: not_deleted_client_user_post.image.url,
+            is_locked: not_deleted_client_user_post.is_locked,
+            created_at: I18n.l(not_deleted_client_user_post.created_at),
+            is_reply: false,
+            replies: 0,
+            icon_url: client_user.image.url,
+            username: client_user.username,
+            userid: client_user.userid,
+            is_liked_by_current_user: false,
+            likes: 0
+          )
+          expect(response_body[0][:posts][0][:current_user_post]).to include(
+            :deleted_at,
+            :updated_at,
+          )
+          expect(response_body[0][:refracted_by]).to include(
+            userid: follower_performed_refract.userid,
+            username: follower_performed_refract.username
+          )
+        end
+      end
+
+      context "when client user has 1 FollowerRefract whose category is like
+        and the refracted post has been deleted" do
+        let!(:deleted_client_user_post) do
+          create(:post, user_id: client_user.id)
+        end
+        let!(:follower_refract) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: deleted_client_user_post.id,
+            category: 'like'
+          )
+        end
+
+        before do
+          deleted_client_user_post.destroy
+        end
+
+        it 'returns 200 and deleted nil post' do
+          expect(client_user.follower_refracts.where(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: deleted_client_user_post.id,
+            category: 'like'
+          ).length).to eq 1
+
+          get v1_post_refracted_by_folowers_path, headers: client_user_headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to                  eq(1)
+          expect(response_body[0][:refracted_at]).to       eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:posts].length).to       eq(1)
+          expect(response_body[0][:posts][0][:deleted]).to eq(nil)
+          expect(response_body[0][:refracted_by]).to       include(
+            userid: follower_performed_refract.userid,
+            username: follower_performed_refract.username
+          )
+        end
+      end
+
+      context "when client user has 1 FollowerRefract whose category is reply
+        and the thread includes deleted post, client post, follower post performed refract,
+        follower post not performed refract and not follower post" do
+        let!(:follower_not_performed_refract_post) do
+          create(:post, user_id: follower_not_performed_refract.id)
+        end
+        let!(:deleted_client_user_post) do
+          create_reply_to_prams_post(client_user, follower_not_performed_refract_post)
+        end
+        let!(:follower_performed_refract_post1) do
+          create_reply_to_prams_post(follower_performed_refract, deleted_client_user_post)
+        end
+        let!(:not_follower_post) do
+          create_reply_to_prams_post(not_follower, follower_performed_refract_post1)
+        end
+        let!(:follower_performed_refract_post2) do
+          create_reply_to_prams_post(follower_performed_refract, not_follower_post)
+        end
+        let!(:client_user_post) do
+          create_reply_to_prams_post(client_user, follower_performed_refract_post2)
+        end
+
+        let!(:follower_refract) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: client_user_post.id,
+            category: 'reply'
+          )
+        end
+
+        before do
+          deleted_client_user_post.destroy
+        end
+
+        it 'returns 200 and formatted thread' do
+          expect(client_user.follower_refracts.where(
+            follower_id: follower_performed_refract.id,
+            post_id: client_user_post.id,
+            category: 'reply'
+          )).to exist
+
+          get v1_post_refracted_by_folowers_path, headers: client_user_headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to                               eq(1)
+          expect(response_body[0][:refracted_at]).to                    eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:posts].length).to                    eq(6)
+          expect(response_body[0][:posts][0][:other_users_post]).to     eq(nil)
+          expect(response_body[0][:posts][1][:deleted]).to              eq(nil)
+          expect(response_body[0][:posts][2][:follower_post].length).to eq(14)
+          expect(response_body[0][:posts][2][:follower_post]).to        include(
+            id: follower_performed_refract_post1.id,
+            user_id: follower_performed_refract_post1.user_id,
+            content: follower_performed_refract_post1.content,
+            image: follower_performed_refract_post1.image.url,
+            is_locked: follower_performed_refract_post1.is_locked,
+            icon_url: follower_performed_refract.image.url,
+            username: follower_performed_refract.username,
+            userid: follower_performed_refract.userid,
+            replies: 0,
+            is_reply: true,
+            is_liked_by_current_user: false,
+            created_at: I18n.l(follower_performed_refract_post1.created_at),
+          )
+          expect(response_body[0][:posts][2][:follower_post]).to include(
+            :deleted_at,
+            :updated_at,
+          )
+          expect(response_body[0][:posts][3][:other_users_post]).to         eq(nil)
+          expect(response_body[0][:posts][4][:follower_post]).to            have_id(follower_performed_refract_post2.id)
+          expect(response_body[0][:posts][5][:current_user_post].length).to eq(15)
+          expect(response_body[0][:posts][5][:current_user_post]).to        include(
+            id: client_user_post.id,
+            user_id: client_user_post.user_id,
+            content: client_user_post.content,
+            image: client_user_post.image.url,
+            is_locked: client_user_post.is_locked,
+            created_at: I18n.l(client_user_post.created_at),
+            is_reply: true,
+            replies: 0,
+            icon_url: client_user.image.url,
+            username: client_user.username,
+            userid: client_user.userid,
+            is_liked_by_current_user: false,
+            likes: 0
+          )
+          expect(response_body[0][:posts][5][:current_user_post]).to include(
+            :deleted_at,
+            :updated_at,
+          )
+          expect(response_body[0][:refracted_by]).to include(
+            userid: follower_performed_refract.userid,
+            username: follower_performed_refract.username
+          )
+        end
+      end
+
+      context "when client user has 4 FollowerRefract 2 of them has category of reply and 2 of them has category of reply" do
+        let!(:client_user_post1)                { create(:post, user_id: client_user.id) }
+        let!(:follower_performed_refract_post1) { create_reply_to_prams_post(follower_performed_refract, client_user_post1) }
+
+        let!(:client_user_post3) { create(:post, user_id: client_user.id) }
+
+        let!(:follower_performed_refract_post2) { create(:post, user_id: follower_performed_refract.id) }
+        let!(:client_user_post2)                { create_reply_to_prams_post(client_user, follower_performed_refract_post2) }
+
+        let!(:client_user_post4) { create(:post, user_id: client_user.id) }
+
+        let!(:follower_refract1) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: follower_performed_refract_post1.id,
+            category: 'reply'
+          )
+        end
+        let!(:follower_refract2) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: client_user_post3.id,
+            category: 'like'
+          )
+        end
+        let!(:follower_refract3) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: client_user_post2.id,
+            category: 'reply'
+          )
+        end
+        let!(:follower_refract4) do
+          FollowerRefract.create(
+            user_id: client_user.id,
+            follower_id: follower_performed_refract.id,
+            post_id: client_user_post4.id,
+            category: 'like'
+          )
+        end
+
+        it 'returns 200 and formatted thread' do
+          expect(client_user.follower_refracts.where(
+            follower_id: follower_performed_refract.id,
+            category: 'reply'
+          ).length).to eq(2)
+          expect(client_user.follower_refracts.where(
+            follower_id: follower_performed_refract.id,
+            category: 'like'
+          ).length).to eq(2)
+
+          get v1_post_refracted_by_folowers_path, headers: client_user_headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body.length).to            eq(4)
+          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract4.created_at))
+          expect(response_body[0][:posts].length).to eq(1)
+          expect(response_body[1][:refracted_at]).to eq(I18n.l(follower_refract3.created_at))
+          expect(response_body[1][:posts].length).to eq(2)
+          expect(response_body[2][:refracted_at]).to eq(I18n.l(follower_refract2.created_at))
+          expect(response_body[2][:posts].length).to eq(1)
+          expect(response_body[3][:refracted_at]).to eq(I18n.l(follower_refract1.created_at))
+          expect(response_body[3][:posts].length).to eq(2)
+        end
+      end
+    end
+  end
+
+  describe "GET v1/refracts/by_me - posts#index_post_refracted_by_current_user - Get posts refracted by current user" do
     context "when client doesn't have token" do
       before do
         create(:icon)
