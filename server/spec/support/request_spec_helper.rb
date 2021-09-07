@@ -42,11 +42,11 @@ module RequestSpecHelper
     non_existent_post_id
   end
 
-  def create_mutual_follow_user(user)
-    mutual_follow_user = create(:user, userid: get_non_existent_user_id)
-    Follower.create(followed_by: user.id, follow_to: mutual_follow_user.id)
-    Follower.create(followed_by: mutual_follow_user.id, follow_to: user.id)
-    mutual_follow_user
+  def create_follow_user(user)
+    follow_user = create(:user, userid: get_non_existent_user_id)
+    Follower.create(followed_by: user.id, follow_to: follow_user.id)
+    Follower.create(followed_by: follow_user.id, follow_to: user.id)
+    follow_user
   end
 
   def create_follow_requested_user_by_argument_user(user)
@@ -68,7 +68,7 @@ module RequestSpecHelper
       image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
       is_locked: false,
     }
-    post v1_post_reply_path(replied_post.id), params: params, headers: headers
+    post v1_post_replies_path(replied_post.id), params: params, headers: headers
     expect(response).to have_http_status(200)
     response_body = JSON.parse(response.body, symbolize_names: true)
     reply         = Post.find(response_body[:id])

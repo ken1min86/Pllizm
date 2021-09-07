@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "V1::LikesApi", type: :request do
-  describe "POST /v1/posts/:post_id/likes - v1/likes#create - Create likes" do
+  describe "POST /v1/posts/:id/likess - v1/likes#create - Create likes" do
     context "when client doesn't have token" do
       before do
         create(:icon)
@@ -37,20 +37,20 @@ RSpec.describe "V1::LikesApi", type: :request do
         end
       end
 
-      context "when try to like mutual follower's post" do
-        let(:mutual_follower)      { create_mutual_follow_user(client_user) }
-        let(:mutual_follower_post) { create(:post, user_id: mutual_follower.id) }
+      context "when try to like follower's post" do
+        let(:follower)      { create_follow_user(client_user) }
+        let(:follower_post) { create(:post, user_id: follower.id) }
 
         it 'returns 200 and creates like record' do
           expect do
-            post v1_post_likes_path(mutual_follower_post.id), headers: headers
-          end.to change(Like.where(user_id: client_user.id, post_id: mutual_follower_post.id), :count).by(1)
+            post v1_post_likes_path(follower_post.id), headers: headers
+          end.to change(Like.where(user_id: client_user.id, post_id: follower_post.id), :count).by(1)
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
         end
       end
 
-      context "when try to like not client's post and mutual follower's post" do
+      context "when try to like not client's post and follower's post" do
         let(:not_follower)      { create(:user) }
         let(:not_follower_post) { create(:post, user_id: not_follower.id) }
 
