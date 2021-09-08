@@ -58,6 +58,16 @@ class User < ActiveRecord::Base
     extracted_users
   end
 
+  def self.format_searched_user(not_formatted_searched_user_id)
+    not_formatted_serached_user        = User.find(not_formatted_searched_user_id)
+    formatted_searched_user            = {}
+    formatted_searched_user[:userid]   = not_formatted_serached_user.userid
+    formatted_searched_user[:username] = not_formatted_serached_user.username
+    formatted_searched_user[:image]    = not_formatted_serached_user.image.url
+    formatted_searched_user[:bio]      = not_formatted_serached_user.bio
+    formatted_searched_user
+  end
+
   def request_following?(other_user)
     follow_requesting_users.include?(other_user)
   end

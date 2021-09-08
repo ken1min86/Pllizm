@@ -8,7 +8,7 @@ class Batch::Cron::RefractBatch
       end
       refract_this_week = CurrentUserRefract.create(user_id: user.id, performed_refract: false)
 
-      refract_candidates_of_like, refract_candidates_of_reply = Post.get_unformatted_refract_candidates(user)
+      refract_candidates_of_like, refract_candidates_of_reply = Post.get_not_formatted_refract_candidates(user)
       hashed_refract_candidates = refract_candidates_of_like.concat(refract_candidates_of_reply)
 
       if user.followings.length < 2

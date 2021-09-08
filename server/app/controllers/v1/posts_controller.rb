@@ -168,7 +168,7 @@ module V1
 
     def index_refract_candidates
       # いいねした投稿とリプライから、リフラクトの候補を取得
-      refract_candidates_of_like, refract_candidates_of_reply = Post.get_unformatted_refract_candidates(current_v1_user)
+      refract_candidates_of_like, refract_candidates_of_reply = Post.get_not_formatted_refract_candidates(current_v1_user)
       # マージ・ソートして、いいねの投稿とリプライの投稿をそれぞれ仕様書通りにフォーマット
       hashed_refract_candidates = refract_candidates_of_like.concat(refract_candidates_of_reply)
       hashed_refract_candidates.sort_by! { |post| post[:datetime_for_sort] }.reverse!
