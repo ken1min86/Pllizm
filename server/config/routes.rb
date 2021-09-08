@@ -33,5 +33,7 @@ Rails.application.routes.draw do
     get  '/refracts/by_followers',          to: 'posts#index_posts_refracted_by_followers',    as: :post_refracted_by_folowers
 
     get '/statuses/refracts', to: 'current_user_refracts#show_statuses', as: :refracts_statuses
+
+    get '/search/users', to: 'users#index_searched_users', as: :searched_users
   end
 end

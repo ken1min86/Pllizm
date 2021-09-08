@@ -297,4 +297,86 @@ RSpec.describe "V1::UsersApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/search/users - v1/users#index_searched_users - Search for users" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_searched_users_path
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        create(:icon)
+      end
+
+      let(:client_user) { create(:user, userid: 'client', username: 'client') }
+      let(:headers)     { client_user.create_new_auth_token }
+
+      context "when no query parameter is set" do
+        it 'returns 400' do
+          get v1_searched_users_path, headers: headers
+          expect(response).to         have_http_status(400)
+          expect(response.message).to include('Bad Request')
+        end
+      end
+
+      context "when there are 1 user icluding front part matching userid
+      and 1 user icluding front part matching username" do
+        let!(:user_including_front_part_match_userid)   { create(:user, userid: 'test', username: 'Tanaka') }
+        let!(:user_including_front_part_match_username) { create(:user, userid: 'takuto0320', username: 'test') }
+        let(:q) { 'test' }
+
+        it 'returns 200 and 2 formatted users' do
+          get v1_searched_users_path(q: q), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:users].length).to eq(2)
+          expect(response_body[:users][0]).to     include(
+            userid: user_including_front_part_match_userid.userid,
+            username: user_including_front_part_match_userid.username,
+            image: user_including_front_part_match_userid.image.url,
+            bio: user_including_front_part_match_userid.bio
+          )
+          expect(response_body[:users][1]).to include(
+            userid: user_including_front_part_match_username.userid,
+            username: user_including_front_part_match_username.username,
+            image: user_including_front_part_match_username.image.url,
+            bio: user_including_front_part_match_username.bio
+          )
+        end
+      end
+
+      context "when there are 3 users icluding different length of front part matching userid
+      and 2 users icluding different length of front part matching username
+      and 1 user icluding front part matching userid and username" do
+        let!(:user1_including_front_part_match_userid)             { create(:user, userid: 'test', username: 'Tanaka') }
+        let!(:user2_including_front_part_match_userid)             { create(:user, userid: 'test1', username: 'Takada') }
+        let!(:user3_including_front_part_match_userid)             { create(:user, userid: 'test123', username: 'Nakada') }
+        let!(:user1_including_front_part_match_username)           { create(:user, userid: 'takuto0320', username: 'test12') }
+        let!(:user2_including_front_part_match_username)           { create(:user, userid: 'ataka0210', username: 'test1234') }
+        let!(:user_including_front_part_match_userid_and_username) { create(:user, userid: 'test12345', username: 'test12345') }
+        let(:q) { 'test' }
+
+        it 'returns 200 and 6 formatted users sorted by degree of match' do
+          get v1_searched_users_path(q: q), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:users].length).to      eq(6)
+          expect(response_body[:users][0][:userid]).to eq(user1_including_front_part_match_userid.userid)
+          expect(response_body[:users][1][:userid]).to eq(user2_including_front_part_match_userid.userid)
+          expect(response_body[:users][2][:userid]).to eq(user1_including_front_part_match_username.userid)
+          expect(response_body[:users][3][:userid]).to eq(user3_including_front_part_match_userid.userid)
+          expect(response_body[:users][4][:userid]).to eq(user2_including_front_part_match_username.userid)
+          expect(response_body[:users][5][:userid]).to eq(user_including_front_part_match_userid_and_username.userid)
+        end
+      end
+    end
+  end
 end
