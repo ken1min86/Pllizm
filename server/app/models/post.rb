@@ -27,6 +27,10 @@ class Post < ApplicationRecord
   before_create     :set_id
   after_create      :create_self_referential_tree_paths
 
+  # 【用語定義】
+  # - above ~: "~ 以上"の意味。例えば、tree_paths_above_parent_postの場合は、親以上投稿に紐づくTreePathを示す。
+  # - below ~: "~ 以下"の意味。例えば、tree_path_below_currentの場合は、カレント以下の投稿に紐づくTreePathを示す。
+
   def self.extract_disclosable_culumns_from_posts_array(posts_array)
     extracted_posts = []
     posts_array.each do |post|
