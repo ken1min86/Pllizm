@@ -505,10 +505,13 @@ class Post < ApplicationRecord
     formatted_refracted_posts
   end
 
+  # リフラクトした or リフラクトされた投稿をクライアントに返す時に設定する、
+  # refracted_byキーに紐づくハッシュデータの作成
   def self.create_hash_of_refracted_by_to_format_refract(refracted_by)
     { userid: refracted_by.userid, username: refracted_by.username }
   end
 
+  # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
   def format_post(current_user)
     if your_post?(current_user)
       formated_post = format_current_user_post(current_user)
@@ -518,6 +521,7 @@ class Post < ApplicationRecord
     formated_post
   end
 
+  # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
   def format_current_user_post(current_user)
     hashed_current_user_post = attributes.symbolize_keys
     hashed_current_user_post.delete(:user_id)
@@ -535,6 +539,7 @@ class Post < ApplicationRecord
     formatted_current_user_post
   end
 
+  # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
   def format_follower_post(current_user)
     hashed_follower_post = attributes.symbolize_keys
     hashed_follower_post.delete(:user_id)
@@ -549,6 +554,7 @@ class Post < ApplicationRecord
     formatted_follower_post
   end
 
+  # リフラクトした or リフラクトされた投稿をクライアントに返す際に使用するフォーマッタ
   def format_follower_refracted_post(current_user, refracted_at)
     follower    = user
     hashed_post = attributes.symbolize_keys
@@ -565,6 +571,7 @@ class Post < ApplicationRecord
     refracted_follower_post
   end
 
+  # リフラクトした or リフラクトされた投稿をクライアントに返す際に使用するフォーマッタ
   def format_current_user_refracted_post(current_user, refracted_at)
     hashed_post = attributes.symbolize_keys
     hashed_post.delete(:icon_id)
