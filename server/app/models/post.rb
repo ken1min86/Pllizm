@@ -341,7 +341,7 @@ class Post < ApplicationRecord
   end
 
   # 返り値はハッシュ化したPostレコードでかつ、ソート用のdatetime_for_sortカラムが追加されている点に注意
-  def self.get_unformatted_refract_candidates(current_user)
+  def self.get_not_formatted_refract_candidates(current_user)
     # リフラクト候補取得の対象期間の取得
     target_time_from, target_time_to = CurrentUserRefract.get_target_times_of_refract(current_user)
 
