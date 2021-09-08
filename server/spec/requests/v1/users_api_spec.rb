@@ -308,10 +308,6 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      before do
-        create(:icon)
-      end
-
       let(:client_user) { create(:user, userid: 'client', username: 'client') }
       let(:headers)     { client_user.create_new_auth_token }
 
@@ -375,6 +371,179 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response_body[:users][3][:userid]).to eq(user3_including_front_part_match_userid.userid)
           expect(response_body[:users][4][:userid]).to eq(user2_including_front_part_match_username.userid)
           expect(response_body[:users][5][:userid]).to eq(user_including_front_part_match_userid_and_username.userid)
+        end
+      end
+    end
+  end
+
+  describe "GET /v1/users/:id - v1/users#show_user_info - Get user info", :focus do
+    context "when client doesn't have token" do
+      let(:client_user) { create(:user) }
+
+      it "returns 401" do
+        get v1_user_info_path(client_user.id)
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      let(:client_user) { create(:user) }
+      let(:headers)     { client_user.create_new_auth_token }
+
+      context "when psrams[:id] isn't set" do
+        it 'returns 400' do
+          get v1_user_info_path(' '), headers: headers
+          expect(response).to         have_http_status(400)
+          expect(response.message).to include('Bad Request')
+          expect(JSON.parse(response.body)['errors']['title']).to include('パラメータのidが不正です')
+        end
+      end
+
+      context "when params[:id] isn't relate to User" do
+        let(:not_existent_userid) { get_not_existent_userid }
+
+        it 'returns 400' do
+          get v1_user_info_path(not_existent_userid), headers: headers
+          expect(response).to         have_http_status(400)
+          expect(response.message).to include('Bad Request')
+          expect(JSON.parse(response.body)['errors']['title']).to include('パラメータのidが不正です')
+        end
+      end
+
+      context "when params[:id] is related to current user
+      who has 0 follower, 1 follow request to him and 2 follow requests by him" do
+        before do
+          create_user_to_request_follow_to_argument_user(client_user)
+          create_follow_requested_user_by_argument_user(client_user)
+          create_follow_requested_user_by_argument_user(client_user)
+        end
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(client_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            is_current_user: true,
+            image_url: client_user.image.url,
+            username: client_user.username,
+            userid: client_user.userid,
+            bio: client_user.bio,
+            followers_count: 0,
+            follow_requests_to_me_count: 1,
+            follow_requests_by_me_count: 2,
+            following: false,
+            follow_request_sent_to_me: false,
+            follow_requet_sent_by_me: false
+          )
+        end
+      end
+
+      context "when params[:id] is related to current user
+      who has 1 follower, 2 follow requests to him and 0 follow request by him" do
+        before do
+          create_follow_user(client_user)
+          create_user_to_request_follow_to_argument_user(client_user)
+          create_user_to_request_follow_to_argument_user(client_user)
+        end
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(client_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            followers_count: 1,
+            follow_requests_to_me_count: 2,
+            follow_requests_by_me_count: 0,
+          )
+        end
+      end
+
+      context "when params[:id] is related to current user
+      who has 2 followers, 0 follow request to him and 1 follow requests by him" do
+        before do
+          create_follow_user(client_user)
+          create_follow_user(client_user)
+          create_follow_requested_user_by_argument_user(client_user)
+        end
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(client_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            followers_count: 2,
+            follow_requests_to_me_count: 0,
+            follow_requests_by_me_count: 1,
+          )
+        end
+      end
+
+      context "when params[:id] is related to user except current user
+      who has been following current user,
+      hasn't requested following to current user
+      and hasn't been requested following by current user" do
+        let(:not_current_user) { create_follow_user(client_user) }
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(not_current_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            is_current_user: false,
+            image_url: not_current_user.image.url,
+            username: not_current_user.username,
+            userid: not_current_user.userid,
+            bio: not_current_user.bio,
+            followers_count: nil,
+            follow_requests_to_me_count: nil,
+            follow_requests_by_me_count: nil,
+            following: true,
+            follow_request_sent_to_me: false,
+            follow_requet_sent_by_me: false
+          )
+        end
+      end
+
+      context "when params[:id] is related to user except current user
+      who hasn't been following current user,
+      has requested following to current user
+      and hasn't been requested following by current user" do
+        let(:not_current_user) { create_user_to_request_follow_to_argument_user(client_user) }
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(not_current_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            following: false,
+            follow_request_sent_to_me: true,
+            follow_requet_sent_by_me: false
+          )
+        end
+      end
+
+      context "when params[:id] is related to user except current user
+      who hasn't been following current user,
+      hasn't requested following to current user
+      and has been requested following by current user" do
+        let(:not_current_user) { create_follow_requested_user_by_argument_user(client_user) }
+
+        it 'returns 200 and current user info' do
+          get v1_user_info_path(not_current_user.userid), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            following: false,
+            follow_request_sent_to_me: false,
+            follow_requet_sent_by_me: true
+          )
         end
       end
     end
