@@ -27,5 +27,42 @@ module V1
       extracted_follow_request_to_me_users = User.extract_disclosable_culumns_from_users_array(follow_request_to_me_users)
       render json: extracted_follow_request_to_me_users, status: :ok
     end
+
+    def index_searched_users
+      if params[:q].blank?
+        render_json_bad_request_with_custom_errors(
+          'クエリパラメータが不正です',
+          'クエリパラメータに検索したい値を設定してください'
+        )
+      else
+        not_formatted_serached_users = []
+        searched_users_by_userid     = User.where("userid LIKE ?", "#{params[:q]}%")
+        searched_users_by_username   = User.where("username LIKE ?", "#{params[:q]}%")
+
+        # 一致度を評価する指標として、lengthカラムを追加
+        searched_users_by_userid.each do |searched_user_by_userid|
+          hashed_searched_user_by_userid          = searched_user_by_userid.attributes.symbolize_keys
+          hashed_searched_user_by_userid[:length] = hashed_searched_user_by_userid[:userid].length
+          not_formatted_serached_users.push(hashed_searched_user_by_userid)
+        end
+        searched_users_by_username.each do |searched_user_by_username|
+          hashed_searched_user_by_username          = searched_user_by_username.attributes.symbolize_keys
+          hashed_searched_user_by_username[:length] = hashed_searched_user_by_username[:username].length
+          not_formatted_serached_users.push(hashed_searched_user_by_username)
+        end
+
+        # 一致度が高い順にソートし、重複データ削除
+        not_formatted_serached_users.sort_by! { |user| user[:length] }
+        not_formatted_serached_users.uniq!    { |user| user[:id] }
+
+        # 仕様書通りにフォーマット
+        formatted_searched_users = []
+        not_formatted_serached_users.each do |not_formatted_serached_user|
+          formatted_searched_user = User.format_searched_user(not_formatted_serached_user[:id])
+          formatted_searched_users.push(formatted_searched_user)
+        end
+        render json: { users: formatted_searched_users }, status: :ok
+      end
+    end
   end
 end

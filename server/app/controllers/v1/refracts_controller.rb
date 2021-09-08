@@ -4,12 +4,12 @@ module V1
     before_action :authenticate_v1_user!
     before_action :verify_refractable_after_authenticate, only: [:perform_refract, :skip]
 
-    # リフラクト候補取得メソッド(Post.get_unformatted_refract_candidates)では、
+    # リフラクト候補取得メソッド(Post.get_not_formatted_refract_candidates)では、
     # いいねした投稿とリプライの投稿が重複した場合はリプライの投稿のみが返されるため、
     # 本APIではいいねとリプライの投稿が重複するケースについて考慮する必要はない。
     def perform_refract
       params_post = Post.find_by(id: params[:refract_candidate_id])
-      refract_candidates_of_like, refract_candidates_of_reply = Post.get_unformatted_refract_candidates(current_v1_user)
+      refract_candidates_of_like, refract_candidates_of_reply = Post.get_not_formatted_refract_candidates(current_v1_user)
 
       if params_post.blank?
         render_json_forbitten_with_custom_errors(
