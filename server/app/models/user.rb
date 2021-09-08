@@ -58,6 +58,7 @@ class User < ActiveRecord::Base
     extracted_users
   end
 
+  # 検索されたユーザのフォーマッタ
   def self.format_searched_user(not_formatted_searched_user_id)
     not_formatted_serached_user        = User.find(not_formatted_searched_user_id)
     formatted_searched_user            = {}
@@ -66,6 +67,55 @@ class User < ActiveRecord::Base
     formatted_searched_user[:image]    = not_formatted_serached_user.image.url
     formatted_searched_user[:bio]      = not_formatted_serached_user.bio
     formatted_searched_user
+  end
+
+  # アカウント画面から呼び出されるAPIなどで、アカウント情報を返す場合のフォーマッタ
+  def self.format_user_in_form_of_user_info(current_user:, not_formatted_user:)
+    user_info = {}
+    if not_formatted_user.current_user?(current_user)
+      user_info = not_formatted_user.format_current_user_in_form_of_user_info
+    else
+      user_info = not_formatted_user.format_not_current_user_in_form_of_user_info(current_user)
+    end
+    user_info
+  end
+
+  # アカウント画面から呼び出されるAPIなどで、アカウント情報を返す場合のフォーマッタ
+  def format_current_user_in_form_of_user_info
+    user_info = {}
+    user_info[:is_current_user]             = true
+    user_info[:image_url]                   = image.url
+    user_info[:username]                    = username
+    user_info[:userid]                      = userid
+    user_info[:bio]                         = bio
+    user_info[:followers_count]             = get_num_of_followers
+    user_info[:follow_requests_to_me_count] = get_num_of_follow_requests_to_me
+    user_info[:follow_requests_by_me_count] = get_num_of_follow_requests_by_me
+    user_info[:following]                   = false
+    user_info[:follow_request_sent_to_me]   = false
+    user_info[:follow_requet_sent_by_me]    = false
+    user_info
+  end
+
+  # アカウント画面から呼び出されるAPIなどで、アカウント情報を返す場合のフォーマッタ
+  def format_not_current_user_in_form_of_user_info(current_user)
+    user_info = {}
+    user_info[:is_current_user]             = false
+    user_info[:image_url]                   = image.url
+    user_info[:username]                    = username
+    user_info[:userid]                      = userid
+    user_info[:bio]                         = bio
+    user_info[:followers_count]             = nil
+    user_info[:follow_requests_to_me_count] = nil
+    user_info[:follow_requests_by_me_count] = nil
+    user_info[:following]                   = current_user.following?(self)
+    user_info[:follow_request_sent_to_me]   = request_following?(current_user)
+    user_info[:follow_requet_sent_by_me]    = current_user.request_following?(self)
+    user_info
+  end
+
+  def current_user?(current_user)
+    id == current_user.id
   end
 
   def request_following?(other_user)
@@ -94,5 +144,17 @@ class User < ActiveRecord::Base
 
   def get_follower_refracts
     follower_refracts.order(created_at: :desc)
+  end
+
+  def get_num_of_followers
+    followers.count
+  end
+
+  def get_num_of_follow_requests_to_me
+    follow_requesting_to_me_users.count
+  end
+
+  def get_num_of_follow_requests_by_me
+    follow_requesting_users.count
   end
 end

@@ -26,12 +26,12 @@ module RequestSpecHelper
     User.find_by(uid: response.header['uid'])
   end
 
-  def get_non_existent_user_id
-    non_existent_userid = SecureRandom.alphanumeric(15)
-    while User.find_by(userid: non_existent_userid)
-      non_existent_userid = SecureRandom.alphanumeric(15)
+  def get_not_existent_userid
+    not_existent_userid = SecureRandom.alphanumeric(15)
+    while User.find_by(userid: not_existent_userid)
+      not_existent_userid = SecureRandom.alphanumeric(15)
     end
-    non_existent_userid
+    not_existent_userid
   end
 
   def get_non_existent_post_id
