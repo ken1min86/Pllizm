@@ -3,7 +3,6 @@ Rails.application.routes.draw do
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       registrations: 'v1/auth/registrations',
     }
-    put '/disable_lock_description', to: 'users#disable_lock_description', as: :disableLockDescription
 
     post   '/follow_requests/create',   to: 'follow_requests#create',                        as: :follow_requests
     post   '/follow_requests/accept',   to: 'followers#create',                              as: :followers
@@ -31,9 +30,10 @@ Rails.application.routes.draw do
     post '/refracts/skip',                  to: 'refracts#skip',                               as: :skip
     get  '/refracts/by_me',                 to: 'posts#index_posts_refracted_by_current_user', as: :post_refracted_by_current_user
     get  '/refracts/by_followers',          to: 'posts#index_posts_refracted_by_followers',    as: :post_refracted_by_folowers
+    get  '/statuses/refracts',              to: 'current_user_refracts#show_statuses',         as: :refracts_statuses
 
-    get '/statuses/refracts', to: 'current_user_refracts#show_statuses', as: :refracts_statuses
-
-    get '/search/users', to: 'users#index_searched_users', as: :searched_users
+    get '/users/:id',                to: 'users#show_user_info',           as: :user_info
+    put '/disable_lock_description', to: 'users#disable_lock_description', as: :disableLockDescription
+    get '/search/users',             to: 'users#index_searched_users',     as: :searched_users
   end
 end

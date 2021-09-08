@@ -64,5 +64,22 @@ module V1
         render json: { users: formatted_searched_users }, status: :ok
       end
     end
+
+    def show_user_info
+      user_info = {}
+      user = User.find_by(userid: params[:id])
+      if user.blank?
+        render_json_bad_request_with_custom_errors(
+          'パラメータのidが不正です',
+          'パラメータのidに、実際のユーザに紐づくuseridを設定してください'
+        )
+      else
+        user_info = User.format_user_in_form_of_user_info(
+          current_user: current_v1_user,
+          not_formatted_user: user
+        )
+        render json: user_info, status: :ok
+      end
+    end
   end
 end
