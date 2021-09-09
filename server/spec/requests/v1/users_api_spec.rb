@@ -376,7 +376,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
   end
 
-  describe "GET /v1/users/:id - v1/users#show_user_info - Get user info", :focus do
+  describe "GET /v1/users/:id - v1/users#show_user_info - Get user info" do
     context "when client doesn't have token" do
       let(:client_user) { create(:user) }
 

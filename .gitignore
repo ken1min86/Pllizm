@@ -37,7 +37,11 @@
 /server/config/settings/*.local.yml
 /server/config/environments/*.local.yml
 
+# Ignore env
 /server/.env
+
+# Ignore seeds
+/server/db/seeds.rb
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
