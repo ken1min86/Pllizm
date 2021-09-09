@@ -3,42 +3,44 @@ module V1
     before_action :authenticate_v1_user!
 
     def create
-      be_requested_to_follow_user = User.find_by(userid: params[:request_to])
-      # follow_request = FollowRequest.new(requested_by: current_v1_user.id, request_to: params[:request_to])
-      if be_requested_to_follow_user.blank?
+      user_requested_following_by_me = User.find_by(userid: params[:request_to])
+      if user_requested_following_by_me.blank?
         render_json_bad_request_with_custom_errors(
           'リクエスト対象のユーザが見つかりません',
           'request_toのIDと一致するユーザが見つかりません'
         )
-
-      elsif current_v1_user.request_following?(be_requested_to_follow_user)
+        return
+      end
+      if current_v1_user.request_following?(user_requested_following_by_me)
         render_json_bad_request_with_custom_errors(
           'すでにフォローリクエスト済みです',
           'すでにフォローリクエストをしています'
         )
-
-      elsif be_requested_to_follow_user.request_following?(current_v1_user)
+        return
+      end
+      if user_requested_following_by_me.request_following?(current_v1_user)
         render_json_bad_request_with_custom_errors(
           'フォローリクエストされています',
           'request_toで指定したユーザからすでにフォローリクエストされています'
         )
-
-      elsif current_v1_user.following?(be_requested_to_follow_user)
+        return
+      end
+      if current_v1_user.following?(user_requested_following_by_me)
         render_json_bad_request_with_custom_errors(
           'すでにフォロー中です',
           'フォロー中のユーザにフォローリクエストは送れません'
         )
-
-      elsif current_v1_user == be_requested_to_follow_user
+        return
+      end
+      if current_v1_user == user_requested_following_by_me
         render_json_bad_request_with_custom_errors(
           '自身に対するフォローリクエストです',
           '自身に対するフォローリクエストはできません'
         )
-
-      else
-        FollowRequest.create(requested_by: current_v1_user.id, request_to: be_requested_to_follow_user.id)
-        render json: {}, status: :ok
+        return
       end
+      FollowRequest.create(requested_by: current_v1_user.id, request_to: user_requested_following_by_me.id)
+      render json: {}, status: :ok
     end
 
     def destroy_follow_requests_to_me
