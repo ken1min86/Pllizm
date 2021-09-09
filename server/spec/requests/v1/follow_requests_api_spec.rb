@@ -20,6 +20,8 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
       let(:request_to)   { create(:user) }
       let(:requested_by) { create(:user) }
       let(:headers)      { requested_by.create_new_auth_token }
+      let(:ken10806)     { create(:user, userid: Settings.users_to_follow_immediately[0]) }
+      let(:jun_okada)    { create(:user, userid: Settings.users_to_follow_immediately[1]) }
 
       it 'returns 200' do
         expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).not_to exist
@@ -31,6 +33,28 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
         expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).to exist
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+      end
+
+      it 'returns 200 when request to user whose userid is ken10806' do
+        post v1_follow_requests_path, params: {
+          request_to: ken10806.userid,
+        }, headers: headers
+
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+        expect(Follower.where(followed_by: requested_by.id, follow_to: ken10806.id)).to exist
+        expect(Follower.where(followed_by: ken10806.id, follow_to: requested_by.id)).to exist
+      end
+
+      it 'returns 200 when request to user whose userid is jun_okada' do
+        post v1_follow_requests_path, params: {
+          request_to: jun_okada.userid,
+        }, headers: headers
+
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+        expect(Follower.where(followed_by: requested_by.id, follow_to: jun_okada.id)).to exist
+        expect(Follower.where(followed_by: jun_okada.id, follow_to: requested_by.id)).to exist
       end
 
       it "returns 400 without request_to" do
