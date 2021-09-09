@@ -66,7 +66,6 @@ module V1
     end
 
     def show_user_info
-      user_info = {}
       user = User.find_by(userid: params[:id])
       if user.blank?
         render_json_bad_request_with_custom_errors(

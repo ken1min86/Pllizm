@@ -39,6 +39,12 @@ module V1
         )
         return
       end
+      if user_requested_following_by_me.userid == Settings.users_to_follow_immediately[0] \
+        || user_requested_following_by_me.userid == Settings.users_to_follow_immediately[1]
+        current_v1_user.follow(user_requested_following_by_me)
+        render json: {}, status: :ok
+        return
+      end
       FollowRequest.create(requested_by: current_v1_user.id, request_to: user_requested_following_by_me.id)
       render json: {}, status: :ok
     end
