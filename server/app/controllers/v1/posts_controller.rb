@@ -173,6 +173,16 @@ module V1
       render json: replies, status: :ok
     end
 
+    def index_locks
+      formatted_locked_posts = []
+      locked_posts           = Post.where(user_id: current_v1_user.id, is_locked: true).order('created_at desc')
+      locked_posts.each do |locked_post|
+        formatted_locked_post = locked_post.format_current_user_post(current_v1_user)
+        formatted_locked_posts.push(formatted_locked_post)
+      end
+      render json: { posts: formatted_locked_posts }, status: :ok
+    end
+
     def index_refract_candidates
       # いいねした投稿とリプライから、リフラクトの候補を取得
       refract_candidates_of_like, refract_candidates_of_reply = Post.get_not_formatted_refract_candidates(current_v1_user)

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     get  '/posts/me',               to: 'posts#index_current_user_posts',     as: :current_user_posts
     get  '/likes',                  to: 'posts#index_liked_posts',            as: :liked_posts
     get  '/replies',                to: 'posts#index_replies',                as: :replies
+    get  '/locks',                  to: 'posts#index_locks',                  as: :locks
     post '/posts/:id/likes',        to: 'likes#create',                       as: :post_likes
     get  '/posts/:id/threads',      to: 'posts#index_threads',                as: :post_threads
     post '/posts/:id/replies',      to: 'posts#create_replies',               as: :post_replies
