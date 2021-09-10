@@ -664,6 +664,27 @@ class Post < ApplicationRecord
     end
   end
 
+  # 使用方法: リプライに該当する投稿のインスタンスに対して実行する
+  # 仕様:     リプライした投稿以上の投稿の投稿主のうち、フォロワーに対してのみ通知レコードを作成する
+  def create_notification_reply!(current_user)
+    tree_paths_above_parent_of_reply             = TreePath.where(descendant: id).where.not(depth: 0)
+    followers_posted_posts_above_parent_of_reply = []
+    tree_paths_above_parent_of_reply.each do |tree_path|
+      post_above_parent_of_reply = tree_path.ancestor_post
+      if post_above_parent_of_reply.present? && post_above_parent_of_reply.followers_post?(current_user)
+        followers_posted_posts_above_parent_of_reply.push(post_above_parent_of_reply.user)
+      end
+    end
+    followers_posted_posts_above_parent_of_reply.uniq!
+    followers_posted_posts_above_parent_of_reply.each do |follower|
+      current_user.notifications_by_me.create(
+        notified_user_id: follower.id,
+        action: 'reply',
+        post_id: id,
+      )
+    end
+  end
+
   def is_liked_by_current_user?(current_user)
     is_liked_by_current_user = false
     liked_users.each do |liked_user|

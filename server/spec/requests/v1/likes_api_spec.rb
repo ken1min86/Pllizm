@@ -17,7 +17,7 @@ RSpec.describe "V1::LikesApi", type: :request do
       end
     end
 
-    context "when client has token", :focus do
+    context "when client has token" do
       before do
         create(:icon)
       end
