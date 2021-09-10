@@ -646,6 +646,7 @@ class Post < ApplicationRecord
     leaves
   end
 
+  # 使用方法: いいねした投稿のインスタンスに対して実行する
   def create_notification_like!(current_user)
     notification = Notification.where(
       notify_user_id: current_user.id,
@@ -659,7 +660,7 @@ class Post < ApplicationRecord
       current_user.notifications_by_me.create(
         notified_user_id: user_id,
         post_id: id,
-        action: 'like'
+        action: 'like',
       )
     end
   end
@@ -679,10 +680,28 @@ class Post < ApplicationRecord
     followers_posted_posts_above_parent_of_reply.each do |follower|
       current_user.notifications_by_me.create(
         notified_user_id: follower.id,
-        action: 'reply',
         post_id: id,
+        action: 'reply',
       )
     end
+  end
+
+  # 使用方法: リフラクトした、いいねの投稿のインスタンスに対して実行する
+  def create_notification_refract_when_refracted_like!(current_user)
+    current_user.notifications_by_me.create(
+      notified_user_id: user_id,
+      post_id: id,
+      action: 'refract',
+    )
+  end
+
+  # 使用方法: リフラクトした、リプライに該当する投稿のインスタンスに対して実行する
+  def create_notification_refract_when_refracted_reply!(current_user, notified_user_id)
+    current_user.notifications_by_me.create(
+      notified_user_id: notified_user_id,
+      post_id: id,
+      action: 'refract',
+    )
   end
 
   def is_liked_by_current_user?(current_user)

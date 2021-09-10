@@ -83,7 +83,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             expect do
               post v1_refract_performed_path(refract_candidate_id: @liked_post_of_follower.id), headers: @client_user_headers
             end.to change(FollowerRefract.all, :count).by(1).
-              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1)
+              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1).
+              and change(Notification.where(notify_user_id: @client_user.id, action: 'refract'), :count).from(0).to(1)
 
             expect(response).to         have_http_status(200)
             expect(response.message).to include('OK')
@@ -97,6 +98,13 @@ RSpec.describe "V1::RefractsApi", type: :request do
               follower_id: @client_user.id,
               post_id: @liked_post_of_follower.id,
               category: 'like'
+            )).to exist
+            expect(Notification.where(
+              notify_user_id: @client_user.id,
+              notified_user_id: @follower.id,
+              post_id: @liked_post_of_follower.id,
+              action: 'refract',
+              is_checked: false
             )).to exist
           end
         end
@@ -132,7 +140,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             expect do
               post v1_refract_performed_path(refract_candidate_id: @reply_of_follwer.id), headers: @client_user_headers
             end.to change(FollowerRefract.all, :count).by(1).
-              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1)
+              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1).
+              and change(Notification.where(notify_user_id: @client_user.id, action: 'refract'), :count).from(0).to(1)
 
             expect(response).to         have_http_status(200)
             expect(response.message).to include('OK')
@@ -146,6 +155,13 @@ RSpec.describe "V1::RefractsApi", type: :request do
               follower_id: @client_user.id,
               post_id: @reply_of_follwer.id,
               category: 'reply'
+            )).to exist
+            expect(Notification.where(
+              notify_user_id: @client_user.id,
+              notified_user_id: @follower.id,
+              post_id: @reply_of_follwer.id,
+              action: 'refract',
+              is_checked: false
             )).to exist
           end
         end
@@ -184,7 +200,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
               post v1_refract_performed_path(refract_candidate_id: @reply_of_follwer2.id), headers: @client_user_headers
             end.to change(FollowerRefract.all, :count).by(2).
               and change(FollowerRefract.where(user_id: @follower1.id), :count).from(0).to(1).
-              and change(FollowerRefract.where(user_id: @follower2.id), :count).from(0).to(1)
+              and change(FollowerRefract.where(user_id: @follower2.id), :count).from(0).to(1).
+              and change(Notification.where(notify_user_id: @client_user.id, action: 'refract'), :count).from(0).to(2)
 
             expect(response).to         have_http_status(200)
             expect(response.message).to include('OK')
@@ -205,6 +222,20 @@ RSpec.describe "V1::RefractsApi", type: :request do
               follower_id: @client_user.id,
               post_id: @reply_of_follwer2.id,
               category: 'reply'
+            )).to exist
+            expect(Notification.where(
+              notify_user_id: @client_user.id,
+              notified_user_id: @follower1.id,
+              post_id: @reply_of_follwer2.id,
+              action: 'refract',
+              is_checked: false
+            )).to exist
+            expect(Notification.where(
+              notify_user_id: @client_user.id,
+              notified_user_id: @follower2.id,
+              post_id: @reply_of_follwer2.id,
+              action: 'refract',
+              is_checked: false
             )).to exist
           end
         end
@@ -249,7 +280,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             expect do
               post v1_refract_performed_path(refract_candidate_id: @reply2_of_follower.id), headers: @client_user_headers
             end.to change(FollowerRefract.all, :count).by(1).
-              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1)
+              and change(FollowerRefract.where(user_id: @follower.id), :count).from(0).to(1).
+              and change(Notification.where(notify_user_id: @client_user.id, action: 'refract'), :count).from(0).to(1)
 
             expect(response).to         have_http_status(200)
             expect(response.message).to include('OK')
@@ -263,6 +295,13 @@ RSpec.describe "V1::RefractsApi", type: :request do
               follower_id: @client_user.id,
               post_id: @reply2_of_follower.id,
               category: 'reply'
+            )).to exist
+            expect(Notification.where(
+              notify_user_id: @client_user.id,
+              notified_user_id: @follower.id,
+              post_id: @reply2_of_follower.id,
+              action: 'refract',
+              is_checked: false
             )).to exist
           end
         end
