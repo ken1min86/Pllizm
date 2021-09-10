@@ -179,11 +179,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         create(:icon)
       end
 
-      let(:user)              { create(:user) }
-      let(:post)              { create(:post, user_id: user.id) }
-      let(:headers)           { user.create_new_auth_token }
-      let(:another_user)      { create(:user) }
-      let(:another_user_post) { create(:post, user_id: another_user.id) }
+      let(:user)                 { create(:user) }
+      let(:post)                 { create(:post, user_id: user.id) }
+      let(:headers)              { user.create_new_auth_token }
+      let(:another_user)         { create(:user) }
+      let(:another_user_post)    { create(:post, user_id: another_user.id) }
+      let(:not_existent_post_id) { get_non_existent_post_id }
 
       it "returns 200 and locks post when try to lock login user's unlocked post" do
         expect(Post.find(post.id).is_locked).to eq(false)
@@ -219,6 +220,12 @@ RSpec.describe "V1::PostsApi", type: :request do
 
         put v1_post_changeLock_path(another_user_post.id), headers: headers
         expect(Post.find(another_user_post.id).is_locked).to eq(true)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+      end
+
+      it "returns 400 when params[:id] isn't related to post" do
+        put v1_post_changeLock_path(not_existent_post_id), headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end

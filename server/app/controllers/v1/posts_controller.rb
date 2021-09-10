@@ -66,12 +66,15 @@ module V1
     end
 
     def change_lock
-      post = Post.find(params[:id])
-      if post&.user_id == current_v1_user.id
+      post = Post.find_by(id: params[:id])
+      if post&.your_post?(current_v1_user)
         post.update(is_locked: !post.is_locked)
         render json: post, status: :ok
       else
-        render json: post.errors, status: :bad_request
+        render_json_bad_request_with_custom_errors(
+          '対象外の投稿です',
+          '削除済みでない自分の投稿のidを指定してください'
+        )
       end
     end
 
