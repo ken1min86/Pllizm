@@ -646,6 +646,27 @@ class Post < ApplicationRecord
     leaves
   end
 
+  def create_notification_like(current_user)
+    notification = Notification.where(
+      notify_user_id: current_user.id,
+      notified_user_id: user_id,
+      post_id: id,
+      action: 'like',
+    )
+    # いいねを連打された時の対策として、いいねされていない場合のみ通知レコードを作成
+    if notification.blank?
+      notification = current_user.notifications_by_me.new(
+        notified_user_id: user_id,
+        post_id: id,
+        action: 'like'
+      )
+      if your_post?(current_user)
+        notification.is_checked = true
+      end
+      notification.save
+    end
+  end
+
   def is_liked_by_current_user?(current_user)
     is_liked_by_current_user = false
     liked_users.each do |liked_user|
