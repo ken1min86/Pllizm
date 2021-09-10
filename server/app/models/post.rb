@@ -31,17 +31,6 @@ class Post < ApplicationRecord
   # - above ~: "~ 以上"の意味。例えば、tree_paths_above_parent_postの場合は、親以上投稿に紐づくTreePathを示す。
   # - below ~: "~ 以下"の意味。例えば、tree_path_below_currentの場合は、カレント以下の投稿に紐づくTreePathを示す。
 
-  def self.extract_disclosable_culumns_from_posts_array(posts_array)
-    extracted_posts = []
-    posts_array.each do |post|
-      hashed_post         = post.attributes.symbolize_keys
-      hashed_post[:image] = post.image.url
-      hashed_post.delete(:user_id)
-      extracted_posts.push(hashed_post)
-    end
-    extracted_posts
-  end
-
   def self.extract_root_posts(posts_array)
     root_posts_array = []
     posts_array.each do |post|
@@ -59,18 +48,15 @@ class Post < ApplicationRecord
   # 相互フォロワーの投稿:   follower_post
   # 非相互フォロワーの投稿: not_follower_post
   def self.check_status_of_post(current_user, post_id)
-    post = Post.find_by(id: post_id)
-    followers = current_user.followings
+    post = Post.with_deleted.find_by(id: post_id)
     status_of_post = ''
-    if post.nil?
-      if Post.only_deleted.find_by(id: post_id)
-        status_of_post = Settings.constants.status_of_post[:deleted]
-      else
-        status_of_post = Settings.constants.status_of_post[:not_exist]
-      end
-    elsif post.user == current_user
+    if post.blank?
+      status_of_post = Settings.constants.status_of_post[:not_exist]
+    elsif post.deleted?
+      status_of_post = Settings.constants.status_of_post[:deleted]
+    elsif post.your_post?(current_user)
       status_of_post = Settings.constants.status_of_post[:current_user_post]
-    elsif followers.index(post.user)
+    elsif post.followers_post?(current_user)
       status_of_post = Settings.constants.status_of_post[:follower_post]
     else
       status_of_post = Settings.constants.status_of_post[:not_follower_post]
@@ -107,22 +93,17 @@ class Post < ApplicationRecord
 
   def self.get_parent_of_current_post(current_user, current_post_id)
     parent = {}
-    followers = current_user.followings
     tree_path_of_parent_post = TreePath.find_by(descendant: current_post_id, depth: 1)
-    if tree_path_of_parent_post.nil?
+    if tree_path_of_parent_post.blank?
       parent[:not_exist] = nil
     else
       parent_post = Post.find_by(id: tree_path_of_parent_post.ancestor)
-      if parent_post.nil?
+      if parent_post.blank?
         parent[:deleted] = nil
-      elsif parent_post.user == current_user
-        parent_post_of_current_user           = tree_path_of_parent_post.ancestor_post
-        formatted_parent_post_of_current_user = parent_post_of_current_user.format_current_user_post(current_user)
-        parent.merge!(formatted_parent_post_of_current_user)
-      elsif followers.index(parent_post.user)
-        parent_post_of_follower           = tree_path_of_parent_post.ancestor_post
-        formatted_parent_post_of_follower = parent_post_of_follower.format_follower_post(current_user)
-        parent.merge!(formatted_parent_post_of_follower)
+      elsif parent_post.your_post?(current_user) || parent_post.followers_post?(current_user)
+        parent_post           = tree_path_of_parent_post.ancestor_post
+        formatted_parent_post = parent_post.format_post(current_user)
+        parent.merge!(formatted_parent_post)
       else
         parent[:not_follower_post] = nil
       end
@@ -131,8 +112,8 @@ class Post < ApplicationRecord
   end
 
   def self.get_children_of_current_post(current_user, current_post_id)
+    children                    = []
     tree_path_of_children_posts = TreePath.where(ancestor: current_post_id, depth: 1)
-    children = []
     if tree_path_of_children_posts.length > 0
       # カレントの投稿の子の投稿のうち、非相互フォロワーの投稿を除く
       children_posts_of_current_user_or_follower = []
@@ -148,14 +129,8 @@ class Post < ApplicationRecord
       else
         children_posts_of_current_user_or_follower.sort_by! { |post| post["created_at"] }.reverse!
         children_posts_of_current_user_or_follower.each do |children_post|
-          if children_post.your_post?(current_user)
-            formatted_children_post_of_current_user = children_post.format_current_user_post(current_user)
-            children.push(formatted_children_post_of_current_user)
-          # フォロワーの投稿だった場合
-          else
-            formatted_children_post_of_follower = children_post.format_follower_post(current_user)
-            children.push(formatted_children_post_of_follower)
-          end
+          formatted_children_post = children_post.format_post(current_user)
+          children.push(formatted_children_post)
         end
       end
     else
@@ -178,11 +153,8 @@ class Post < ApplicationRecord
   # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   def self.get_reply(current_user, current_user_post_with_deleted)
     reply = nil
-    tree_paths_except_current_post_depth_0 = TreePath.where.not(ancestor: current_user_post_with_deleted.id,
-                                                                descendant: current_user_post_with_deleted.id,
-                                                                depth: 0)
-    tree_paths_below_child_post = tree_paths_except_current_post_depth_0.where(ancestor: current_user_post_with_deleted.id)
-    tree_paths_above_parent_post = tree_paths_except_current_post_depth_0.where(descendant: current_user_post_with_deleted.id)
+    tree_paths_below_child_post = TreePath.where(ancestor: current_user_post_with_deleted.id).where.not(depth: 0)
+    tree_paths_above_parent_post = TreePath.where(descendant: current_user_post_with_deleted.id).where.not(depth: 0)
     # *********************************************
     # パターンAのルートを取得
     if tree_paths_below_child_post.length > 0 && tree_paths_above_parent_post.length == 0
@@ -276,6 +248,10 @@ class Post < ApplicationRecord
     refract_candidates_of_like
   end
 
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+  # Issue #100
+  # 処理が理解しづらいため、理解がしやすくなるようにリファクタリングする。
+  # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
   # 返り値は、Postレコードがハッシュ化されているだけでなく、ソート用の'datetime_for_sort'カラムが追加されている点に注意
   def self.get_hashed_refract_candidates_of_reply(current_user, target_time_from, target_time_to, replies)
     # リプライに紐づくリーフの投稿を取得
@@ -595,8 +571,8 @@ class Post < ApplicationRecord
   def count_replies_of_current_user_post(current_user)
     num_of_replies_exclude_logically_deleted_posts        = 0
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
-    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
-      unless tree_path_of_reply_include_logically_deleted_post.descendant_post.nil?
+    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply|
+      if tree_path_of_reply.descendant_post.present?
         num_of_replies_exclude_logically_deleted_posts += 1
       end
     end
@@ -605,14 +581,13 @@ class Post < ApplicationRecord
 
   def count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
     num_of_replies_exclude_logically_deleted_posts = 0
-    followers = current_user.followings
     tree_paths_of_replies_include_logically_deleted_posts = TreePath.where(ancestor: id, depth: 1)
-    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply_include_logically_deleted_post|
-      if tree_path_of_reply_include_logically_deleted_post.descendant_post.present?
-        tree_path_of_reply_exclude_logically_deleted_post = tree_path_of_reply_include_logically_deleted_post
-        if tree_path_of_reply_exclude_logically_deleted_post.descendant_post.user_id == current_user.id
+    tree_paths_of_replies_include_logically_deleted_posts.each do |tree_path_of_reply|
+      reply = tree_path_of_reply.descendant_post
+      if reply.present?
+        if reply.your_post?(current_user)
           num_of_replies_exclude_logically_deleted_posts += 1
-        elsif followers.index(tree_path_of_reply_exclude_logically_deleted_post.descendant_post.user)
+        elsif reply.followers_post?(current_user)
           num_of_replies_exclude_logically_deleted_posts += 1
         end
       end
