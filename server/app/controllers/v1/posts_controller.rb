@@ -39,7 +39,9 @@ module V1
           '投稿が存在しません',
           '存在しない投稿に対してリプライはできません'
         )
-      elsif replied_post.your_post?(current_v1_user) || replied_post.followers_post?(current_v1_user)
+        return
+      end
+      if replied_post.your_post?(current_v1_user) || replied_post.followers_post?(current_v1_user)
         if reply_post.save
           descendant_is_prams_id_tree_paths = TreePath.where(descendant: params[:id]).order(created_at: :asc)
           depth = 1
@@ -96,7 +98,6 @@ module V1
     def index_me_and_followers_posts
       followers = current_v1_user.followings
 
-      # カレントユーザとフォロワーのすべての投稿を取得
       current_user_posts = current_v1_user.posts
       followers_posts    = []
       followers.each do |follower|
@@ -105,10 +106,10 @@ module V1
       end
       current_user_and_followers_posts = followers_posts.push(current_user_posts)
       current_user_and_followers_posts.flatten!
-      # 取得したすべての投稿のうち、ルートのみを抽出(=リプライの除去)
+
       current_user_and_followers_root_posts = Post.extract_root_posts(current_user_and_followers_posts)
-      # 作成日の降順でソート
       current_user_and_followers_root_posts.sort_by! { |post| post["created_at"] }.reverse!
+
       # カレントユーザの投稿と、フォロワーの投稿それぞれに対して、仕様書通りにフォーマット
       return_posts = []
       current_user_and_followers_root_posts.each do |current_user_and_followers_root_post|
