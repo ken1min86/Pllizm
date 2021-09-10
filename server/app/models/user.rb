@@ -30,6 +30,12 @@ class User < ActiveRecord::Base
   has_many :likes, dependent: :destroy
   has_many :liked_posts, through: :likes, source: 'liked_post'
 
+  has_many :notifications_by_me, class_name: 'Notification', :foreign_key => 'notify_user_id', dependent: :destroy
+  has_many :notified_by_me_users, through: :notifications_by_me, source: 'notified_user_id'
+
+  has_many :notifications_to_me, class_name: 'Notification', :foreign_key => 'notified_user_id', dependent: :destroy
+  has_many :notified_to_me_users, through: :notifications_to_me, source: 'notify_user_id'
+
   has_many :current_user_refracts
 
   has_many :follower_refracts
@@ -112,6 +118,29 @@ class User < ActiveRecord::Base
     user_info[:follow_request_sent_to_me]   = request_following?(current_user)
     user_info[:follow_requet_sent_by_me]    = current_user.request_following?(self)
     user_info
+  end
+
+  # カレントユーザがフォローリクエストしたユーザのインスタンスに対して使用
+  def create_notification_follow_request!(current_user)
+    notification = Notification.where(
+      notify_user_id: current_user.id,
+      notified_user_id: id,
+      action: 'request',
+    )
+    if notification.blank?
+      current_user.notifications_by_me.create(
+        notified_user_id: id,
+        action: 'request',
+      )
+    end
+  end
+
+  # カレントユーザがフォロー承認したユーザのインスタンスに対して使用
+  def create_notification_follow_accept!(current_user)
+    current_user.notifications_by_me.create(
+      notified_user_id: id,
+      action: 'accept',
+    )
   end
 
   def current_user?(current_user)

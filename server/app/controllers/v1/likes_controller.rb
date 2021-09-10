@@ -10,8 +10,9 @@ module V1
           '存在しない投稿に対していいねできません'
         )
       elsif liked_post.your_post?(current_v1_user) || liked_post.followers_post?(current_v1_user)
-        like = current_v1_user.likes.create(post_id: liked_post.id)
-        render json: like, status: :ok
+        current_v1_user.likes.create(post_id: liked_post.id)
+        liked_post.create_notification_like!(current_v1_user)
+        render json: {}, status: :ok
       else
         render_json_bad_request_with_custom_errors(
           'いいね対象外の投稿です',

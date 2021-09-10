@@ -14,6 +14,8 @@ class Post < ApplicationRecord
 
   has_many :follower_refracts, class_name: 'FollowerRefract', foreign_key: 'post_id'
 
+  has_many :notifications, class_name: 'Notification', foreign_key: 'post_id'
+
   has_many :tree_paths,       class_name: 'TreePath',  foreign_key: 'ancestor'
   has_many :descendant_posts, through:    :tree_paths, source:      'descendant_post'
 
@@ -642,6 +644,64 @@ class Post < ApplicationRecord
       end
     end
     leaves
+  end
+
+  # 使用方法: いいねした投稿のインスタンスに対して実行する
+  def create_notification_like!(current_user)
+    notification = Notification.where(
+      notify_user_id: current_user.id,
+      notified_user_id: user_id,
+      post_id: id,
+      action: 'like',
+    )
+    # いいねを連打された時の対策として、一度もいいねしていない場合のみ通知レコードを作成
+    # また、自分の投稿をいいねした場合は通知する必要がないため、通知レコードを作成しない
+    if notification.blank? && followers_post?(current_user)
+      current_user.notifications_by_me.create(
+        notified_user_id: user_id,
+        post_id: id,
+        action: 'like',
+      )
+    end
+  end
+
+  # 使用方法: リプライに該当する投稿のインスタンスに対して実行する
+  # 仕様:     リプライした投稿以上の投稿の投稿主のうち、フォロワーに対してのみ通知レコードを作成する
+  def create_notification_reply!(current_user)
+    tree_paths_above_parent_of_reply             = TreePath.where(descendant: id).where.not(depth: 0)
+    followers_posted_posts_above_parent_of_reply = []
+    tree_paths_above_parent_of_reply.each do |tree_path|
+      post_above_parent_of_reply = tree_path.ancestor_post
+      if post_above_parent_of_reply.present? && post_above_parent_of_reply.followers_post?(current_user)
+        followers_posted_posts_above_parent_of_reply.push(post_above_parent_of_reply.user)
+      end
+    end
+    followers_posted_posts_above_parent_of_reply.uniq!
+    followers_posted_posts_above_parent_of_reply.each do |follower|
+      current_user.notifications_by_me.create(
+        notified_user_id: follower.id,
+        post_id: id,
+        action: 'reply',
+      )
+    end
+  end
+
+  # 使用方法: リフラクトした、いいねの投稿のインスタンスに対して実行する
+  def create_notification_refract_when_refracted_like!(current_user)
+    current_user.notifications_by_me.create(
+      notified_user_id: user_id,
+      post_id: id,
+      action: 'refract',
+    )
+  end
+
+  # 使用方法: リフラクトした、リプライに該当する投稿のインスタンスに対して実行する
+  def create_notification_refract_when_refracted_reply!(current_user, notified_user_id)
+    current_user.notifications_by_me.create(
+      notified_user_id: notified_user_id,
+      post_id: id,
+      action: 'refract',
+    )
   end
 
   def is_liked_by_current_user?(current_user)

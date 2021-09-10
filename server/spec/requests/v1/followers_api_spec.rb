@@ -24,6 +24,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
         expect(FollowRequest.where(requested_by: follow_user.id, request_to: client_user.id)).to exist
         expect(Follower.where(followed_by: client_user.id, follow_to: follow_user.id)).not_to exist
         expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).not_to exist
+        expect(Notification.where(notify_user_id: client_user.id, action: 'accept')).not_to exist
 
         post v1_followers_path, params: {
           follow_to: follow_user.userid,
@@ -33,6 +34,7 @@ RSpec.describe "V1::FollowersApi", type: :request do
         expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).to exist
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+        expect(Notification.where(notify_user_id: client_user.id, notified_user_id: follow_user.id, action: 'accept')).to exist
       end
 
       it "returns 400 when client haven't requested following" do
