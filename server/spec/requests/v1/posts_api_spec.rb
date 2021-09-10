@@ -323,17 +323,16 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to current_user's post that it has two series of replies" do
-        let(:replied_post) { create(:post, user_id: client_user.id) }
+        let!(:replied_post) { create(:post, user_id: client_user.id) }
+        let!(:first_reply_post) { create_reply_to_prams_post(client_user, replied_post) }
+        let!(:second_reply_post) { create_reply_to_prams_post(client_user, first_reply_post) }
 
         it 'returns 200 and create post and tree_path' do
-          post v1_post_replies_path(replied_post.id), params: params, headers: headers
-          first_reply_post = Post.order(created_at: :desc).limit(1)[0]
-          post v1_post_replies_path(first_reply_post.id), params: params, headers: headers
-          second_reply_post = Post.order(created_at: :desc).limit(1)[0]
-
           expect do
             post v1_post_replies_path(second_reply_post.id), params: params, headers: headers
-          end.to change(Post, :count).by(1).and change(TreePath, :count).by(4)
+          end.to change(Post, :count).by(1).
+            and change(TreePath, :count).by(4).
+            and change(Notification, :count).by(0)
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -354,7 +353,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         it 'returns 200 and create post and tree_path' do
           expect do
             post v1_post_replies_path(follow_user_post.id), params: params, headers: headers
-          end.to change(Post, :count).by(1).and change(TreePath, :count).by(2)
+          end.to change(Post, :count).by(1).
+            and change(TreePath, :count).by(2).
+            and change(Notification, :count).by(1)
 
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
@@ -363,6 +364,48 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(TreePath.where(ancestor: reply_post.id, descendant: reply_post.id, depth: 0)).to exist
           expect(TreePath.where(ancestor: follow_user_post.id, descendant: reply_post.id, depth: 1)).to exist
+          expect(Notification.where(
+            notify_user_id: client_user.id,
+            notified_user_id: follow_user.id,
+            post_id: reply_post.id,
+            action: 'reply',
+            is_checked: false
+          )).to exist
+        end
+      end
+
+      context "when try to reply to follower's post
+      that has posts above parent posted by current_user, follower and not follower" do
+        let(:follower) { create_follow_user(client_user) }
+        let(:not_follower) { create_follow_user(follower) }
+        let!(:reply1_of_follower) { create_reply_to_prams_post(follower, replied_post) }
+        let!(:reply_of_not_follower) { create_reply_to_prams_post(not_follower, reply1_of_follower) }
+        let!(:reply2_of_follower) { create_reply_to_prams_post(follower, reply_of_not_follower) }
+
+        it 'returns 200 and create post and tree_path and notifications' do
+          expect do
+            post v1_post_replies_path(reply2_of_follower.id), params: params, headers: headers
+          end.to change(Post, :count).by(1).
+            and change(TreePath, :count).by(5).
+            and change(Notification, :count).by(1)
+
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          reply_post = Post.order(created_at: :desc).limit(1)[0]
+
+          expect(TreePath.where(ancestor: reply_post.id, descendant: reply_post.id, depth: 0)).to exist
+          expect(TreePath.where(ancestor: reply2_of_follower.id, descendant: reply_post.id, depth: 1)).to exist
+          expect(TreePath.where(ancestor: reply_of_not_follower.id, descendant: reply_post.id, depth: 2)).to exist
+          expect(TreePath.where(ancestor: reply1_of_follower.id, descendant: reply_post.id, depth: 3)).to exist
+          expect(TreePath.where(ancestor: replied_post.id, descendant: reply_post.id, depth: 4)).to exist
+          expect(Notification.where(
+            notify_user_id: client_user.id,
+            notified_user_id: follower.id,
+            post_id: reply_post.id,
+            action: 'reply',
+            is_checked: false
+          )).to exist
         end
       end
 

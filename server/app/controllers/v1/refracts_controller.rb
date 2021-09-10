@@ -24,6 +24,8 @@ module V1
         liked_follower = params_post.user
         FollowerRefract.create_follower_refract_when_refarced_liked_post(current_v1_user, liked_follower, params_post)
 
+        params_post.create_notification_refract_when_refracted_like!(current_v1_user)
+
         render json: {}, status: :ok
 
       elsif refract_candidates_of_reply.select { |c| c[:id] == params_post.id }.present?
@@ -43,6 +45,8 @@ module V1
 
         followers.each do |follower|
           FollowerRefract.create_follower_refract_when_refarced_replied_post(current_v1_user, follower, params_post)
+
+          params_post.create_notification_refract_when_refracted_reply!(current_v1_user, follower.id)
         end
 
         render json: {}, status: :ok

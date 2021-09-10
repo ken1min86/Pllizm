@@ -53,6 +53,7 @@ module V1
             )
             depth += 1
           end
+          reply_post.create_notification_reply!(current_v1_user)
           render json: reply_post, status: :ok
         else
           render json: reply_post.errors, status: :bad_request
