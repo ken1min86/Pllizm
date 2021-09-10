@@ -262,7 +262,7 @@ RSpec.describe "V1::UsersApi", type: :request do
   describe "PUT /v1/disable_lock_description - v1/users#disable_lock_description - Disable lock description" do
     context "when client doesn't have token" do
       it "returns 401" do
-        put v1_disableLockDescription_path
+        put v1_disable_lock_description_path
         expect(response).to         have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
@@ -278,7 +278,7 @@ RSpec.describe "V1::UsersApi", type: :request do
       it 'returns 200 and change false when need_description_about_lock is true' do
         expect(@current_user.need_description_about_lock).to eq(true)
 
-        put v1_disableLockDescription_path, headers: @request_headers
+        put v1_disable_lock_description_path, headers: @request_headers
         @current_user.reload
         expect(@current_user.need_description_about_lock).to eq(false)
         expect(response).to         have_http_status(200)
@@ -289,7 +289,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         @current_user.update(need_description_about_lock: false)
         expect(@current_user.need_description_about_lock).to eq(false)
 
-        put v1_disableLockDescription_path, headers: @request_headers
+        put v1_disable_lock_description_path, headers: @request_headers
         @current_user.reload
         expect(@current_user.need_description_about_lock).to eq(false)
         expect(response).to         have_http_status(200)

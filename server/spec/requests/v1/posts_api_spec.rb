@@ -131,6 +131,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       let!(:client_user_post)     { create(:post, user_id: client_user.id) }
       let(:not_client_user)       { create(:user) }
       let!(:not_client_user_post) { create(:post, user_id: not_client_user.id) }
+      let(:non_existent_post_id)  { get_non_existent_post_id }
 
       it "returns 200 and logically deletes post when try to delete login user's post" do
         expect do
@@ -145,6 +146,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         expect do
           delete v1_post_path(not_client_user_post.id), headers: headers
         end.to change(Post.all, :count).by(0)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+      end
+
+      it "returns 400 when params[:id] isn't related to any posts" do
+        delete v1_post_path(non_existent_post_id), headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end
@@ -172,11 +179,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         create(:icon)
       end
 
-      let(:user)              { create(:user) }
-      let(:post)              { create(:post, user_id: user.id) }
-      let(:headers)           { user.create_new_auth_token }
-      let(:another_user)      { create(:user) }
-      let(:another_user_post) { create(:post, user_id: another_user.id) }
+      let(:user)                 { create(:user) }
+      let(:post)                 { create(:post, user_id: user.id) }
+      let(:headers)              { user.create_new_auth_token }
+      let(:another_user)         { create(:user) }
+      let(:another_user_post)    { create(:post, user_id: another_user.id) }
+      let(:not_existent_post_id) { get_non_existent_post_id }
 
       it "returns 200 and locks post when try to lock login user's unlocked post" do
         expect(Post.find(post.id).is_locked).to eq(false)
@@ -212,6 +220,12 @@ RSpec.describe "V1::PostsApi", type: :request do
 
         put v1_post_changeLock_path(another_user_post.id), headers: headers
         expect(Post.find(another_user_post.id).is_locked).to eq(true)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+      end
+
+      it "returns 400 when params[:id] isn't related to post" do
+        put v1_post_changeLock_path(not_existent_post_id), headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end
@@ -2483,6 +2497,91 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response_body[2][:refracted_at]).to                 eq(I18n.l(client_refract1.updated_at))
           expect(response_body[2][:posts][0][:current_user_post]).to have_id(client_user_post1.id)
           expect(response_body[2][:posts][1][:follower_post]).to     have_id(follower_reply1.id)
+        end
+      end
+    end
+  end
+
+  describe "GET /v1/locks - posts#index_locks - Get lockes posts" do
+    context "when client doesn't have token" do
+      it "returns 401" do
+        get v1_locks_path
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        create(:icon)
+      end
+
+      let(:client)  { create(:user) }
+      let(:headers) { client.create_new_auth_token }
+
+      context "when client has any posts" do
+        it 'returns 200 and no posts' do
+          expect(Post.where(user_id: client.id)).not_to exist
+
+          get v1_locks_path, headers: headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(0)
+        end
+      end
+
+      context "when client only has not-locked post" do
+        let!(:not_locked_post) { create(:post, user_id: client.id, is_locked: false) }
+
+        it 'returns 200 and no posts' do
+          expect(Post.where(user_id: client.id, is_locked: false)).to exist
+          expect(Post.where(user_id: client.id, is_locked: true)).not_to exist
+
+          get v1_locks_path, headers: headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(0)
+        end
+      end
+
+      context "when client has 1 locked post" do
+        let!(:locked_post) { create(:post, user_id: client.id, is_locked: true) }
+
+        it 'returns 200 and 1 locked posts' do
+          expect(Post.where(user_id: client.id, is_locked: true).length).to eq(1)
+
+          get v1_locks_path, headers: headers
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(1)
+          expect(response_body[:posts][0][:current_user_post].length).to eq(14)
+          expect(response_body[:posts][0][:current_user_post]).to have_id(locked_post.id)
+        end
+      end
+
+      context "when client has 2 locked posts" do
+        let!(:locked_post1) { create(:post, user_id: client.id, is_locked: true) }
+        let!(:locked_post2) { create(:post, user_id: client.id, is_locked: true) }
+
+        it 'returns 200 and 2 locked posts' do
+          expect(Post.where(user_id: client.id, is_locked: true).length).to eq(2)
+
+          get v1_locks_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(2)
+          expect(response_body[:posts][0][:current_user_post].length).to eq(14)
+          expect(response_body[:posts][0][:current_user_post]).to have_id(locked_post2.id)
+          expect(response_body[:posts][1][:current_user_post].length).to eq(14)
+          expect(response_body[:posts][1][:current_user_post]).to have_id(locked_post1.id)
         end
       end
     end
