@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     get  '/statuses/refracts',              to: 'current_user_refracts#show_statuses',         as: :refracts_statuses
 
     get '/users/:id',                to: 'users#show_user_info',           as: :user_info
-    put '/disable_lock_description', to: 'users#disable_lock_description', as: :disableLockDescription
+    put '/disable_lock_description', to: 'users#disable_lock_description', as: :disable_lock_description
     get '/search/users',             to: 'users#index_searched_users',     as: :searched_users
   end
 end
