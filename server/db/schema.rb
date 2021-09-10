@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_10_042103) do
+ActiveRecord::Schema.define(version: 2021_09_10_093013) do
 
   create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 2021_09_10_042103) do
     t.bigint "notify_user_id", null: false
     t.bigint "notified_user_id", null: false
     t.string "action", null: false
-    t.string "post_id", null: false
+    t.string "post_id"
     t.boolean "is_checked", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

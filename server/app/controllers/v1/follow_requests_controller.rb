@@ -46,6 +46,7 @@ module V1
         return
       end
       FollowRequest.create(requested_by: current_v1_user.id, request_to: user_requested_following_by_me.id)
+      user_requested_following_by_me.create_notification_follow_request!(current_v1_user)
       render json: {}, status: :ok
     end
 

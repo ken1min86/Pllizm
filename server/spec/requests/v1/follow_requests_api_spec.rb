@@ -24,15 +24,21 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
       let(:jun_okada)    { create(:user, userid: Settings.users_to_follow_immediately[1]) }
 
       it 'returns 200' do
-        expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).not_to exist
+        expect do
+          post v1_follow_requests_path, params: {
+            request_to: request_to.userid,
+          }, headers: headers
+        end.to change(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id), :count).from(0).to(1).
+          and change(Notification.where(notify_user_id: requested_by.id), :count).from(0).to(1)
 
-        post v1_follow_requests_path, params: {
-          request_to: request_to.userid,
-        }, headers: headers
-
-        expect(FollowRequest.where(requested_by: requested_by.id, request_to: request_to.id)).to exist
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
+        expect(Notification.where(
+          notify_user_id: requested_by.id,
+          notified_user_id: request_to.id,
+          action: 'request',
+          is_checked: false
+        )).to exist
       end
 
       it 'returns 200 when request to user whose userid is ken10806' do
@@ -44,6 +50,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
         expect(response.message).to include('OK')
         expect(Follower.where(followed_by: requested_by.id, follow_to: ken10806.id)).to exist
         expect(Follower.where(followed_by: ken10806.id, follow_to: requested_by.id)).to exist
+        expect(Notification.where(notify_user_id: requested_by.id)).not_to exist
       end
 
       it 'returns 200 when request to user whose userid is jun_okada' do
@@ -55,6 +62,7 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
         expect(response.message).to include('OK')
         expect(Follower.where(followed_by: requested_by.id, follow_to: jun_okada.id)).to exist
         expect(Follower.where(followed_by: jun_okada.id, follow_to: requested_by.id)).to exist
+        expect(Notification.where(notify_user_id: requested_by.id)).not_to exist
       end
 
       it "returns 400 without request_to" do

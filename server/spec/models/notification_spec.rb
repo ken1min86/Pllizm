@@ -121,14 +121,4 @@ RSpec.describe Notification, type: :model do
     )
     expect(notification).to be_invalid
   end
-
-  it "is invalid when post_id isn't related to post" do
-    notification = Notification.new(
-      notify_user_id: notify_user.id,
-      notified_user_id: notified_user.id,
-      action: 'like',
-      post_id: not_existent_post_id
-    )
-    expect(notification).to be_invalid
-  end
 end
