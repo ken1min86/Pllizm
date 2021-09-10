@@ -131,6 +131,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       let!(:client_user_post)     { create(:post, user_id: client_user.id) }
       let(:not_client_user)       { create(:user) }
       let!(:not_client_user_post) { create(:post, user_id: not_client_user.id) }
+      let(:non_existent_post_id)  { get_non_existent_post_id }
 
       it "returns 200 and logically deletes post when try to delete login user's post" do
         expect do
@@ -145,6 +146,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         expect do
           delete v1_post_path(not_client_user_post.id), headers: headers
         end.to change(Post.all, :count).by(0)
+        expect(response).to have_http_status(400)
+        expect(response.message).to include('Bad Request')
+      end
+
+      it "returns 400 when params[:id] isn't related to any posts" do
+        delete v1_post_path(non_existent_post_id), headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end

@@ -19,12 +19,15 @@ module V1
     end
 
     def destroy
-      post = Post.find(params[:id])
-      if post&.user_id == current_v1_user.id
+      post = Post.find_by(id: params[:id])
+      if post.present? && post.user_id == current_v1_user.id
         post.destroy
         render json: post, status: :ok
       else
-        render json: post.errors, status: :bad_request
+        render_json_bad_request_with_custom_errors(
+          '投稿idが不正です',
+          '自分の投稿に紐づくidを設定してください'
+        )
       end
     end
 
