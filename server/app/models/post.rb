@@ -646,24 +646,21 @@ class Post < ApplicationRecord
     leaves
   end
 
-  def create_notification_like(current_user)
+  def create_notification_like!(current_user)
     notification = Notification.where(
       notify_user_id: current_user.id,
       notified_user_id: user_id,
       post_id: id,
       action: 'like',
     )
-    # いいねを連打された時の対策として、いいねされていない場合のみ通知レコードを作成
-    if notification.blank?
-      notification = current_user.notifications_by_me.new(
+    # いいねを連打された時の対策として、一度もいいねしていない場合のみ通知レコードを作成
+    # また、自分の投稿をいいねした場合は通知する必要がないため、通知レコードを作成しない
+    if notification.blank? && followers_post?(current_user)
+      current_user.notifications_by_me.create(
         notified_user_id: user_id,
         post_id: id,
         action: 'like'
       )
-      if your_post?(current_user)
-        notification.is_checked = true
-      end
-      notification.save
     end
   end
 

@@ -17,7 +17,7 @@ RSpec.describe "V1::LikesApi", type: :request do
       end
     end
 
-    context "when client has token" do
+    context "when client has token", :focus do
       before do
         create(:icon)
       end
@@ -28,20 +28,13 @@ RSpec.describe "V1::LikesApi", type: :request do
       context "when try to like client's post" do
         let(:client_post) { create(:post, user_id: client_user.id) }
 
-        it 'returns 200 and creates like record and notification record' do
+        it "returns 200 and creates like record and doesn't create notification record" do
           expect do
             post v1_post_likes_path(client_post.id), headers: headers
           end.to change(Like.where(user_id: client_user.id, post_id: client_post.id), :count).by(1).
-            and change(Notification.where(notify_user_id: client_user.id), :count).from(0).to(1)
+            and change(Notification.where(notify_user_id: client_user.id), :count).by(0)
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          expect(Notification.where(
-            notify_user_id: client_user.id,
-            notified_user_id: client_post.user_id,
-            action: 'like',
-            post_id: client_post.id,
-            is_checked: true
-          )).to exist
         end
       end
 
