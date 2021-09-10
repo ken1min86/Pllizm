@@ -135,6 +135,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  # カレントユーザがフォロー承認したユーザのインスタンスに対して使用
+  def create_notification_follow_accept!(current_user)
+    current_user.notifications_by_me.create(
+      notified_user_id: id,
+      action: 'accept',
+    )
+  end
+
   def current_user?(current_user)
     id == current_user.id
   end

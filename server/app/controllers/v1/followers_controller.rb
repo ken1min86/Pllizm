@@ -13,6 +13,7 @@ module V1
         else
           follow_request.destroy
           follower = current_v1_user.follow(follow_user)
+          follow_user.create_notification_follow_accept!(current_v1_user)
           render json: follower, status: :ok
         end
       end
