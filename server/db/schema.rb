@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_02_065344) do
+ActiveRecord::Schema.define(version: 2021_09_10_042103) do
 
   create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -71,6 +71,19 @@ ActiveRecord::Schema.define(version: 2021_09_02_065344) do
     t.index ["post_id"], name: "index_likes_on_post_id"
     t.index ["user_id", "post_id"], name: "index_likes_on_user_id_and_post_id", unique: true
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "notify_user_id", null: false
+    t.bigint "notified_user_id", null: false
+    t.string "action", null: false
+    t.string "post_id", null: false
+    t.boolean "is_checked", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["notified_user_id"], name: "index_notifications_on_notified_user_id"
+    t.index ["notify_user_id"], name: "index_notifications_on_notify_user_id"
+    t.index ["post_id"], name: "index_notifications_on_post_id"
   end
 
   create_table "posts", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -140,6 +153,9 @@ ActiveRecord::Schema.define(version: 2021_09_02_065344) do
   add_foreign_key "followers", "users", column: "followed_by"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "notifications", "posts"
+  add_foreign_key "notifications", "users", column: "notified_user_id"
+  add_foreign_key "notifications", "users", column: "notify_user_id"
   add_foreign_key "posts", "icons"
   add_foreign_key "posts", "users"
   add_foreign_key "tree_paths", "posts", column: "ancestor"

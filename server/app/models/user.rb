@@ -30,6 +30,12 @@ class User < ActiveRecord::Base
   has_many :likes, dependent: :destroy
   has_many :liked_posts, through: :likes, source: 'liked_post'
 
+  has_many :notifications_by_me, class_name: 'Notification', :foreign_key => 'notify_user_id', dependent: :destroy
+  has_many :notified_by_me_users, through: :notifications_by_me, source: 'notified_user_id'
+
+  has_many :notifications_to_me, class_name: 'Notification', :foreign_key => 'notified_user_id', dependent: :destroy
+  has_many :notified_to_me_users, through: :notifications_to_me, source: 'notify_user_id'
+
   has_many :current_user_refracts
 
   has_many :follower_refracts

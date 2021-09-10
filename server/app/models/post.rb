@@ -14,6 +14,8 @@ class Post < ApplicationRecord
 
   has_many :follower_refracts, class_name: 'FollowerRefract', foreign_key: 'post_id'
 
+  has_many :notifications, class_name: 'Notification', foreign_key: 'post_id'
+
   has_many :tree_paths,       class_name: 'TreePath',  foreign_key: 'ancestor'
   has_many :descendant_posts, through:    :tree_paths, source:      'descendant_post'
 
