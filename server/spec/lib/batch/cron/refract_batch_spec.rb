@@ -17,10 +17,10 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
         @user1 = create(:user)
         @user2 = create(:user)
 
-        @follower_of_user1 = create_follow_user(@user1)
-        create_follow_user(@user1)
-        @follower_of_user2 = create_follow_user(@user2)
-        create_follow_user(@user2)
+        @follower_of_user1 = create_follower(@user1)
+        create_follower(@user1)
+        @follower_of_user2 = create_follower(@user2)
+        create_follower(@user2)
 
         @post_of_user1 = create(:post, user_id: @user1.id)
         @post_of_user2 = create(:post, user_id: @user2.id)
@@ -50,8 +50,8 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
 
         @user = create(:user)
 
-        @follower_of_user = create_follow_user(@user)
-        create_follow_user(@user)
+        @follower_of_user = create_follower(@user)
+        create_follower(@user)
 
         @post_of_user = create(:post, user_id: @user.id)
         create_reply_to_prams_post(@follower_of_user, @post_of_user)
@@ -78,8 +78,8 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
 
         @user = create(:user)
 
-        @follower_of_user = create_follow_user(@user)
-        create_follow_user(@user)
+        @follower_of_user = create_follower(@user)
+        create_follower(@user)
 
         @post1_of_user = create(:post, user_id: @user.id)
         create_reply_to_prams_post(@follower_of_user, @post1_of_user)
@@ -116,7 +116,7 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
       travel_to Time.zone.local(2021, 8, 27) do
         create(:icon)
         @user = create(:user)
-        @follower_of_user = create_follow_user(@user)
+        @follower_of_user = create_follower(@user)
         @post_of_user = create(:post, user_id: @user.id)
         create_reply_to_prams_post(@follower_of_user, @post_of_user)
       end
@@ -139,8 +139,8 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
       travel_to Time.zone.local(2021, 8, 27) do
         create(:icon)
         @user = create(:user)
-        create_follow_user(@user)
-        create_follow_user(@user)
+        create_follower(@user)
+        create_follower(@user)
       end
     end
 

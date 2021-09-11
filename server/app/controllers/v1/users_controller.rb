@@ -8,10 +8,10 @@ module V1
     end
 
     def index_of_followers
-      follow_users = current_v1_user.followings
-      # follow_usersのうち、仕様書に指定されたカラムだけを抽出して配列に代入する
-      extracted_follow_users = User.extract_disclosable_culumns_from_users_array(follow_users)
-      render json: extracted_follow_users, status: :ok
+      followers = current_v1_user.followings
+      # followersのうち、仕様書に指定されたカラムだけを抽出して配列に代入する
+      extracted_followers = User.extract_disclosable_culumns_from_users_array(followers)
+      render json: extracted_followers, status: :ok
     end
 
     def index_of_users_follow_requested_by_me

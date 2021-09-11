@@ -13,13 +13,13 @@ RSpec.describe "V1::UsersApi", type: :request do
     context "when client has token" do
       let(:client_user)  { create(:user) }
       let(:headers)      { client_user.create_new_auth_token }
-      let(:follow_user1) { create_follow_user(client_user) }
-      let(:follow_user2) { create_follow_user(client_user) }
+      let(:follower1) { create_follower(client_user) }
+      let(:follower2) { create_follower(client_user) }
 
       it 'returns 200 and follow users when client has some follow users' do
         # current_userのフォロアーが2人いることを確認
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user1.id)).to exist
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user2.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower1.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower2.id)).to exist
         expect(Follower.where(followed_by: client_user.id).length).to eq(2)
 
         # API
@@ -33,26 +33,26 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response_body[0].length).to eq(6)
         expect(response_body[1].length).to eq(6)
         expect(response_body[0]).to        include(
-          id: follow_user1.id,
-          userid: follow_user1.userid,
-          username: follow_user1.username,
-          image: follow_user1.image.url,
-          bio: follow_user1.bio,
-          need_description_about_lock: follow_user1.need_description_about_lock
+          id: follower1.id,
+          userid: follower1.userid,
+          username: follower1.username,
+          image: follower1.image.url,
+          bio: follower1.bio,
+          need_description_about_lock: follower1.need_description_about_lock
         )
         expect(response_body[1]).to include(
-          id: follow_user2.id,
-          userid: follow_user2.userid,
-          username: follow_user2.username,
-          image: follow_user2.image.url,
-          bio: follow_user2.bio,
-          need_description_about_lock: follow_user2.need_description_about_lock
+          id: follower2.id,
+          userid: follower2.userid,
+          username: follower2.username,
+          image: follower2.image.url,
+          bio: follower2.bio,
+          need_description_about_lock: follower2.need_description_about_lock
         )
       end
 
       it 'returns 200 and follow user when client has a follow user' do
         # current_userのフォロアーが1人いることを確認
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user1.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower1.id)).to exist
         expect(Follower.where(followed_by: client_user.id).length).to eq(1)
 
         # API
@@ -65,12 +65,12 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response_body.length).to    eq(1)
         expect(response_body[0].length).to eq(6)
         expect(response_body[0]).to        include(
-          id: follow_user1.id,
-          userid: follow_user1.userid,
-          username: follow_user1.username,
-          image: follow_user1.image.url,
-          bio: follow_user1.bio,
-          need_description_about_lock: follow_user1.need_description_about_lock
+          id: follower1.id,
+          userid: follower1.userid,
+          username: follower1.username,
+          image: follower1.image.url,
+          bio: follower1.bio,
+          need_description_about_lock: follower1.need_description_about_lock
         )
       end
 
@@ -443,7 +443,7 @@ RSpec.describe "V1::UsersApi", type: :request do
       context "when params[:id] is related to current user
       who has 1 follower, 2 follow requests to him and 0 follow request by him" do
         before do
-          create_follow_user(client_user)
+          create_follower(client_user)
           create_user_to_request_follow_to_argument_user(client_user)
           create_user_to_request_follow_to_argument_user(client_user)
         end
@@ -464,8 +464,8 @@ RSpec.describe "V1::UsersApi", type: :request do
       context "when params[:id] is related to current user
       who has 2 followers, 0 follow request to him and 1 follow requests by him" do
         before do
-          create_follow_user(client_user)
-          create_follow_user(client_user)
+          create_follower(client_user)
+          create_follower(client_user)
           create_follow_requested_user_by_argument_user(client_user)
         end
 
@@ -486,7 +486,7 @@ RSpec.describe "V1::UsersApi", type: :request do
       who has been following current user,
       hasn't requested following to current user
       and hasn't been requested following by current user" do
-        let(:not_current_user) { create_follow_user(client_user) }
+        let(:not_current_user) { create_follower(client_user) }
 
         it 'returns 200 and current user info' do
           get v1_user_info_path(not_current_user.userid), headers: headers

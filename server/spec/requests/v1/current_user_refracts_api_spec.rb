@@ -17,7 +17,6 @@ RSpec.describe "V1::CurrentUserRefractsApi", type: :request do
 
       let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
-      let(:follower)    { create(:user) }
       let(:post)        { create(:post, user_id: client_user.id) }
 
       context 'when client has no CurrentUserRefracts' do

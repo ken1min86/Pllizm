@@ -7,4 +7,44 @@ class Notification < ApplicationRecord
   validates :notified_user_id, presence: true
   validates :action,           inclusion: { in: ['like', 'reply', 'request', 'accept', 'refract'] }
   validates :is_checked,       inclusion: { in: [true, false] }
+
+  def format_notification
+    formatted_notification = {}
+    case action
+    when 'like', 'reply'
+      liked_or_replied_post                         = Post.find(post_id)
+      formatted_notification[:action]               = action
+      formatted_notification[:notify_userid]        = nil
+      formatted_notification[:notify_username]      = nil
+      formatted_notification[:notify_user_icon_url] = nil
+      formatted_notification[:is_checked]           = is_checked
+      formatted_notification[:notified_at]          = I18n.l(created_at)
+      formatted_notification[:post_id]              = post_id
+      formatted_notification[:content]              = liked_or_replied_post.content
+
+    when 'request', 'accept'
+      requested_or_accepted_user                    = User.find(notify_user_id)
+      formatted_notification[:action]               = action
+      formatted_notification[:notify_userid]        = requested_or_accepted_user.userid
+      formatted_notification[:notify_username]      = requested_or_accepted_user.username
+      formatted_notification[:notify_user_icon_url] = requested_or_accepted_user.image.url
+      formatted_notification[:is_checked]           = is_checked
+      formatted_notification[:notified_at]          = I18n.l(created_at)
+      formatted_notification[:post_id]              = nil
+      formatted_notification[:content]              = nil
+
+    when 'refract'
+      refracted_user                                = User.find(notify_user_id)
+      refracted_post                                = Post.find(post_id)
+      formatted_notification[:action]               = action
+      formatted_notification[:notify_userid]        = refracted_user.userid
+      formatted_notification[:notify_username]      = refracted_user.username
+      formatted_notification[:notify_user_icon_url] = refracted_user.image.url
+      formatted_notification[:is_checked]           = is_checked
+      formatted_notification[:notified_at]          = I18n.l(created_at)
+      formatted_notification[:post_id]              = refracted_post.id
+      formatted_notification[:content]              = refracted_post.content
+    end
+    formatted_notification
+  end
 end

@@ -39,7 +39,7 @@ RSpec.describe "V1::LikesApi", type: :request do
       end
 
       context "when try to like follower's post" do
-        let(:follower)      { create_follow_user(client_user) }
+        let(:follower)      { create_follower(client_user) }
         let(:follower_post) { create(:post, user_id: follower.id) }
 
         it 'returns 200 and creates like record and notification record' do

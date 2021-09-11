@@ -156,27 +156,27 @@ RSpec.describe "V1::FollowRequestsApi", type: :request do
     end
 
     context "when client has token" do
-      let(:request_follow_user) { create(:user) }
+      let(:request_follower) { create(:user) }
       let(:client_user)         { create(:user) }
       let(:headers)             { client_user.create_new_auth_token }
 
       it 'returns 200 and delete follow request' do
-        request_follow_user.follow_requests.create(request_to: client_user.id)
+        request_follower.follow_requests.create(request_to: client_user.id)
 
         expect do
           delete v1_follow_requests_to_me_path, params: {
-            requested_by: request_follow_user.userid,
+            requested_by: request_follower.userid,
           }, headers: headers
-        end.to change(FollowRequest.where(requested_by: request_follow_user.id, request_to: client_user.id), :count).by(-1)
+        end.to change(FollowRequest.where(requested_by: request_follower.id, request_to: client_user.id), :count).by(-1)
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
       end
 
       it "returns 400 when client hasn't been requested follow" do
-        expect(FollowRequest.where(requested_by: request_follow_user.id, request_to: client_user.id)).not_to exist
+        expect(FollowRequest.where(requested_by: request_follower.id, request_to: client_user.id)).not_to exist
 
         delete v1_follow_requests_to_me_path, params: {
-          requested_by: request_follow_user.userid,
+          requested_by: request_follower.userid,
         }, headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
