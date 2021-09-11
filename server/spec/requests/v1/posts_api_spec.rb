@@ -347,12 +347,12 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
 
       context "when try to reply to follower's post" do
-        let(:follow_user)       { create_follow_user(client_user) }
-        let!(:follow_user_post) { create(:post, user_id: follow_user.id) }
+        let(:follower)       { create_follower(client_user) }
+        let!(:follower_post) { create(:post, user_id: follower.id) }
 
         it 'returns 200 and create post and tree_path' do
           expect do
-            post v1_post_replies_path(follow_user_post.id), params: params, headers: headers
+            post v1_post_replies_path(follower_post.id), params: params, headers: headers
           end.to change(Post, :count).by(1).
             and change(TreePath, :count).by(2).
             and change(Notification, :count).by(1)
@@ -363,10 +363,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           reply_post = Post.order(created_at: :desc).limit(1)[0]
 
           expect(TreePath.where(ancestor: reply_post.id, descendant: reply_post.id, depth: 0)).to exist
-          expect(TreePath.where(ancestor: follow_user_post.id, descendant: reply_post.id, depth: 1)).to exist
+          expect(TreePath.where(ancestor: follower_post.id, descendant: reply_post.id, depth: 1)).to exist
           expect(Notification.where(
             notify_user_id: client_user.id,
-            notified_user_id: follow_user.id,
+            notified_user_id: follower.id,
             post_id: reply_post.id,
             action: 'reply',
             is_checked: false
@@ -376,8 +376,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       context "when try to reply to follower's post
       that has posts above parent posted by current_user, follower and not follower" do
-        let(:follower) { create_follow_user(client_user) }
-        let(:not_follower) { create_follow_user(follower) }
+        let(:follower) { create_follower(client_user) }
+        let(:not_follower) { create_follower(follower) }
         let!(:reply1_of_follower) { create_reply_to_prams_post(follower, replied_post) }
         let!(:reply_of_not_follower) { create_reply_to_prams_post(not_follower, reply1_of_follower) }
         let!(:reply2_of_follower) { create_reply_to_prams_post(follower, reply_of_not_follower) }
@@ -456,11 +456,11 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
-      let(:follower1)            { create_follow_user(client_user) }
+      let(:follower1)            { create_follower(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
-      let(:follower2)            { create_follow_user(client_user) }
+      let(:follower2)            { create_follower(client_user) }
       let(:follower2_headers)    { follower2.create_new_auth_token }
-      let(:non_follower)         { create_follow_user(follower2) }
+      let(:non_follower)         { create_follower(follower2) }
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
       context "when client has liked 3 client posts whose num of likes are 1 or 2 and num of replies are 0 or 1 or 2 and
@@ -691,9 +691,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
-      let(:follower1)            { create_follow_user(client_user) }
+      let(:follower1)            { create_follower(client_user) }
       let(:follower1_headers)    { follower1.create_new_auth_token }
-      let(:follower2)            { create_follow_user(client_user) }
+      let(:follower2)            { create_follower(client_user) }
       let(:non_follower)         { create(:user) }
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
@@ -1018,8 +1018,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
-      let(:follower)            { create_follow_user(client_user) }
-      let(:not_follower)        { create_follow_user(follower) }
+      let(:follower)            { create_follower(client_user) }
+      let(:not_follower)        { create_follower(follower) }
 
       context "when no posts related to params[:post_id]" do
         let(:non_existent_post_id) { get_non_existent_post_id }
@@ -1324,10 +1324,10 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
-      let(:follower)             { create_follow_user(client_user) }
+      let(:follower)             { create_follower(client_user) }
       let(:follower_headers)     { follower.create_new_auth_token }
       # not_follower: 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
-      let(:not_follower)         { create_follow_user(client_user) }
+      let(:not_follower)         { create_follower(client_user) }
       let(:not_follower_headers) { not_follower.create_new_auth_token }
 
       context "case1, 2, 4, 6, 8" do
@@ -1550,8 +1550,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 15) do
             create(:icon)
             @client_user = create(:user)
-            @follower = create_follow_user(@client_user)
-            @not_follower = create_follow_user(@client_user)
+            @follower = create_follower(@client_user)
+            @not_follower = create_follower(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
             @follower_headers = @follower.create_new_auth_token
             @not_follower_headers = @not_follower.create_new_auth_token
@@ -1607,7 +1607,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
             @client_user = create(:user)
-            @follower = create_follow_user(@client_user)
+            @follower = create_follower(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
           end
 
@@ -1668,7 +1668,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
             @client_user = create(:user)
-            @follower = create_follow_user(@client_user)
+            @follower = create_follower(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
             @follower_headers = @follower.create_new_auth_token
           end
@@ -1832,8 +1832,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       3/5 posted by current user and 1 of them is deleted
       and 1/5 posted by follower
       and 1/5 posted by not follower" do
-        let(:follower)     { create_follow_user(client_user) }
-        let(:not_follower) { create_follow_user(follower) }
+        let(:follower)     { create_follower(client_user) }
+        let(:not_follower) { create_follower(follower) }
 
         let!(:deleted_client_user_post) { create(:post, user_id: client_user.id) }
         let!(:follower_post1)           { create_reply_to_prams_post(follower, deleted_client_user_post) }
@@ -1886,9 +1886,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)                    { create(:user) }
       let(:client_user_headers)            { client_user.create_new_auth_token }
-      let(:follower_performed_refract)     { create_follow_user(client_user) }
-      let(:follower_not_performed_refract) { create_follow_user(client_user) }
-      let(:not_follower)                   { create_follow_user(follower_performed_refract) }
+      let(:follower_performed_refract)     { create_follower(client_user) }
+      let(:follower_not_performed_refract) { create_follower(client_user) }
+      let(:not_follower)                   { create_follower(follower_performed_refract) }
 
       context "when client doesn't have FollowerRefract" do
         it 'returns 200' do
@@ -2192,8 +2192,8 @@ RSpec.describe "V1::PostsApi", type: :request do
 
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
-      let(:follower)            { create_follow_user(client_user) }
-      let(:not_follower)        { create_follow_user(follower) }
+      let(:follower)            { create_follower(client_user) }
+      let(:not_follower)        { create_follower(follower) }
 
       context "when client doesn't have performed CurrentUserRefract" do
         it 'returns 200' do
