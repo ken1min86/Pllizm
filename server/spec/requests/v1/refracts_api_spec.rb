@@ -65,8 +65,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             @client_user         = create(:user)
             @client_user_headers = @client_user.create_new_auth_token
 
-            @follower = create_follow_user(@client_user)
-            create_follow_user(@client_user)
+            @follower = create_follower(@client_user)
+            create_follower(@client_user)
 
             @liked_post_of_follower = create(:post, user_id: @follower.id)
             post v1_post_likes_path(@liked_post_of_follower.id), headers: @client_user_headers
@@ -119,8 +119,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             @client_user         = create(:user)
             @client_user_headers = @client_user.create_new_auth_token
 
-            @follower = create_follow_user(@client_user)
-            create_follow_user(@client_user)
+            @follower = create_follower(@client_user)
+            create_follower(@client_user)
 
             @post_of_client_user = create(:post, user_id: @client_user.id)
           end
@@ -176,8 +176,8 @@ RSpec.describe "V1::RefractsApi", type: :request do
             @client_user         = create(:user)
             @client_user_headers = @client_user.create_new_auth_token
 
-            @follower1 = create_follow_user(@client_user)
-            @follower2 = create_follow_user(@client_user)
+            @follower1 = create_follower(@client_user)
+            @follower2 = create_follower(@client_user)
 
             @post_of_client_user = create(:post, user_id: @client_user.id)
           end
@@ -250,9 +250,9 @@ RSpec.describe "V1::RefractsApi", type: :request do
             @client_user         = create(:user)
             @client_user_headers = @client_user.create_new_auth_token
 
-            create_follow_user(@client_user)
-            @follower     = create_follow_user(@client_user)
-            @not_follower = create_follow_user(@follower)
+            create_follower(@client_user)
+            @follower     = create_follower(@client_user)
+            @not_follower = create_follower(@follower)
 
             @post_of_client_user = create(:post, user_id: @client_user.id)
           end

@@ -17,37 +17,37 @@ RSpec.describe "V1::FollowersApi", type: :request do
     context "when client has token" do
       let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
-      let(:follow_user) { create(:user) }
+      let(:follower) { create(:user) }
 
       it 'returns 200 and deletes follow_request and create followers' do
-        follow_user.follow_requests.create(request_to: client_user.id)
-        expect(FollowRequest.where(requested_by: follow_user.id, request_to: client_user.id)).to exist
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user.id)).not_to exist
-        expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).not_to exist
+        follower.follow_requests.create(request_to: client_user.id)
+        expect(FollowRequest.where(requested_by: follower.id, request_to: client_user.id)).to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).not_to exist
+        expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).not_to exist
         expect(Notification.where(notify_user_id: client_user.id, action: 'accept')).not_to exist
 
         post v1_followers_path, params: {
-          follow_to: follow_user.userid,
+          follow_to: follower.userid,
         }, headers: headers
-        expect(FollowRequest.where(requested_by: follow_user.id, request_to: client_user.id)).not_to exist
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user.id)).to exist
-        expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).to exist
+        expect(FollowRequest.where(requested_by: follower.id, request_to: client_user.id)).not_to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).to exist
+        expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).to exist
         expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
-        expect(Notification.where(notify_user_id: client_user.id, notified_user_id: follow_user.id, action: 'accept')).to exist
+        expect(Notification.where(notify_user_id: client_user.id, notified_user_id: follower.id, action: 'accept')).to exist
       end
 
       it "returns 400 when client haven't requested following" do
-        expect(FollowRequest.where(requested_by: follow_user.id, request_to: client_user.id)).not_to exist
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user.id)).not_to exist
-        expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).not_to exist
+        expect(FollowRequest.where(requested_by: follower.id, request_to: client_user.id)).not_to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).not_to exist
+        expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).not_to exist
 
         post v1_followers_path, params: {
-          follow_to: follow_user.userid,
+          follow_to: follower.userid,
         }, headers: headers
 
-        expect(Follower.where(followed_by: client_user.id, follow_to: follow_user.id)).not_to exist
-        expect(Follower.where(followed_by: follow_user.id, follow_to: client_user.id)).not_to exist
+        expect(Follower.where(followed_by: client_user.id, follow_to: follower.id)).not_to exist
+        expect(Follower.where(followed_by: follower.id, follow_to: client_user.id)).not_to exist
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
         expect(JSON.parse(response.body)['errors']['title']).to include('フォローリクエストされていません')
