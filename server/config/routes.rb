@@ -15,15 +15,16 @@ Rails.application.routes.draw do
     delete '/followers/:follower_id', to: 'followers#destroy',        as: :follower
 
     resources :posts, only: [:create, :destroy]
-    get  '/posts/me_and_followers', to: 'posts#index_me_and_followers_posts', as: :me_and_followers_posts
-    get  '/posts/me',               to: 'posts#index_current_user_posts',     as: :current_user_posts
-    get  '/likes',                  to: 'posts#index_liked_posts',            as: :liked_posts
-    get  '/replies',                to: 'posts#index_replies',                as: :replies
-    get  '/locks',                  to: 'posts#index_locks',                  as: :locks
-    post '/posts/:id/likes',        to: 'likes#create',                       as: :post_likes
-    get  '/posts/:id/threads',      to: 'posts#index_threads',                as: :post_threads
-    post '/posts/:id/replies',      to: 'posts#create_replies',               as: :post_replies
-    put  '/posts/:id/change_lock',  to: 'posts#change_lock',                  as: :post_changeLock
+    get    '/posts/me_and_followers', to: 'posts#index_me_and_followers_posts', as: :me_and_followers_posts
+    get    '/posts/me',               to: 'posts#index_current_user_posts',     as: :current_user_posts
+    get    '/likes',                  to: 'posts#index_liked_posts',            as: :liked_posts
+    get    '/replies',                to: 'posts#index_replies',                as: :replies
+    get    '/locks',                  to: 'posts#index_locks',                  as: :locks
+    post   '/posts/:id/likes',        to: 'likes#create',                       as: :post_likes
+    delete '/posts/:id/likes',        to: 'likes#destroy',                      as: :cancel_likes
+    get    '/posts/:id/threads',      to: 'posts#index_threads',                as: :post_threads
+    post   '/posts/:id/replies',      to: 'posts#create_replies',               as: :post_replies
+    put    '/posts/:id/change_lock',  to: 'posts#change_lock',                  as: :post_changeLock
 
     get  '/refract_candidates',             to: 'posts#index_refract_candidates',              as: :post_refract_candidates
     get  '/refract_candidates/:id/threads', to: 'posts#thread_above_candidate',                as: :thread_above_candidate

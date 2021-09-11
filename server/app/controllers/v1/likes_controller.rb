@@ -20,5 +20,18 @@ module V1
         )
       end
     end
+
+    def destroy
+      like = Like.find_by(user_id: current_v1_user.id, post_id: params[:id])
+      if like.blank?
+        render_json_bad_request_with_custom_errors(
+          'いいねをキャンセルできません',
+          'いいねしていない投稿に対していいねのキャンセルはできません'
+        )
+      else
+        like.destroy
+        render json: {}, status: :ok
+      end
+    end
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "V1::LikesApi", type: :request do
-  describe "POST /v1/posts/:id/likess - v1/likes#create - Create likes" do
+  describe "POST /v1/posts/:id/likes - v1/likes#create - Create likes" do
     context "when client doesn't have token" do
       before do
         create(:icon)
@@ -84,6 +84,57 @@ RSpec.describe "V1::LikesApi", type: :request do
           expect(response).to have_http_status(400)
           expect(response.message).to include('Bad Request')
           expect(JSON.parse(response.body)['errors']['title']).to include('存在しない投稿です')
+        end
+      end
+    end
+  end
+
+  describe "DELETE /v1/posts/:id/likes - v1/likes#destroy - Cancel likes" do
+    context "when client doesn't have token" do
+      before do
+        create(:icon)
+      end
+
+      let(:client) { create(:user) }
+      let(:post)   { create(:post, user_id: client.id) }
+
+      it "returns 401" do
+        delete v1_cancel_likes_path(post.id)
+        expect(response).to have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      before do
+        create(:icon)
+      end
+
+      context "when id set in path doesn't related to client's Like" do
+        let(:client)               { create(:user) }
+        let(:headers)              { client.create_new_auth_token }
+        let(:not_existent_like_id) { Like.order('id').last.present? ? Like.order('id').last.id + 1 : 1 }
+
+        it "returns 400" do
+          delete v1_cancel_likes_path(not_existent_like_id), headers: headers
+          expect(response).to have_http_status(400)
+          expect(response.message).to include('Bad Request')
+          expect(JSON.parse(response.body)['errors']['title']).to include('いいねをキャンセルできません')
+        end
+      end
+
+      context "when id set in path related to client's Like" do
+        let(:client)  { create(:user) }
+        let(:headers) { client.create_new_auth_token }
+        let(:post)    { create(:post, user_id: client.id) }
+        let!(:like)   { Like.create(user_id: client.id, post_id: post.id) }
+
+        it "returns 200 and delete like" do
+          expect do
+            delete v1_cancel_likes_path(post.id), headers: headers
+          end.to change(Like.where(user_id: client.id, post_id: post.id), :count).by(-1)
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
         end
       end
     end
