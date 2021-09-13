@@ -42,11 +42,11 @@
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:conflict": "eslint-config-prettier 'src/**/*.{js,jsx,ts,tsx}'",
     "preinstall": "typesync || :",
-    "cypress": "cypress open",
-    "cypress:run": "cypress run --env failOnSnapshotDiff=false",
-    "cypress:run:chrome": "cypress run --browser chrome --env failOnSnapshotDiff=false",
-    "cypress:snap": "cypress run",
-    "cypress:snap:update": "cypress run --env updateSnapshots=true"
+    "cy:open": "cypress open",
+    "cy:run": "cypress run --env failOnSnapshotDiff=false",
+    "cy:run:chrome": "cypress run --browser chrome --env failOnSnapshotDiff=false",
+    "cy:snap": "cypress run",
+    "cy:snap:update": "cypress run --env updateSnapshots=true"
   },
   "eslintConfig": {
     "extends": [

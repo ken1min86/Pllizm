@@ -39,6 +39,7 @@
 
 # Ignore env
 /server/.env
+/client/.env
 
 # Ignore seeds
 /server/db/seeds.rb
