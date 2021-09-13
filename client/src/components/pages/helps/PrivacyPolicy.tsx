@@ -1,33 +1,34 @@
-import { VFC } from 'react';
+import { VFC } from 'react'
 
-import { Box, Container } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { Box, Container } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import { HelpContentItemTitle } from '../../atoms/index';
-import { HelpContentTitleContainer } from '../../molecules/index';
-import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index';
+import { HelpContentItemTitle } from '../../atoms/index'
+import { HelpContentTitleContainer } from '../../molecules/index'
+import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    body: {
+    main: {
       paddingTop: '32px',
       paddingBottom: '32px',
       backgroundColor: theme.palette.primary.main,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         paddingTop: '24px',
         paddingBottom: '24px',
       },
     },
     container: {
       maxWidth: '810px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         maxWidth: '330px',
       },
     },
     h1: {
       fontSize: '30px',
       marginBottom: '8px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         fontSize: '24px',
         marginBottom: '8px',
       },
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) =>
     p: {
       fontSize: '16px',
       marginLeft: '24px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         fontSize: '12px',
         marginLeft: '8px',
       },
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) =>
       marginLeft: '24px',
       marginBottom: '8px',
       fontSize: '16px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginLeft: '8px',
         fontSize: '12px',
       },
@@ -59,17 +60,17 @@ const useStyles = makeStyles((theme) =>
       marginBottom: '8px',
     },
   }),
-);
+)
 
 const PrivacyPolicy: VFC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <>
       <header>
         <HeaderWithTitleAndReturnArrow title="プライバシーポリシー" />
       </header>
-      <body className={classes.body}>
+      <main className={classes.main}>
         <Container className={classes.container}>
           <HelpContentTitleContainer
             title="プライバシーポリシー"
@@ -89,31 +90,21 @@ const PrivacyPolicy: VFC = () => {
           </Box>
           <Box mb={3}>
             <HelpContentItemTitle itemTitle="第3条（個人情報を収集・利用する目的）" />
-            <p className={classes.p}>
-              当サービス提供者が個人情報を収集・利用する目的は，以下のとおりです。
-            </p>
+            <p className={classes.p}>当サービス提供者が個人情報を収集・利用する目的は，以下のとおりです。</p>
             <ol className={classes.ol}>
-              <li className={classes.li}>
-                当サービス提供者サービスの提供・運営のため
-              </li>
-              <li className={classes.li}>
-                ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）
-              </li>
+              <li className={classes.li}>当サービス提供者サービスの提供・運営のため</li>
+              <li className={classes.li}>ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）</li>
               <li className={classes.li}>
                 ユーザーが利用中のサービスの新機能，更新情報，キャンペーン等及び当サービス提供者が提供する他のサービスの案内のメールを送付するため
               </li>
-              <li className={classes.li}>
-                メンテナンス，重要なお知らせなど必要に応じたご連絡のため
-              </li>
+              <li className={classes.li}>メンテナンス，重要なお知らせなど必要に応じたご連絡のため</li>
               <li className={classes.li}>
                 利用規約に違反したユーザーや，不正・不当な目的でサービスを利用しようとするユーザーの特定をし，ご利用をお断りするため
               </li>
               <li className={classes.li}>
                 ユーザーにご自身の登録情報の閲覧や変更，削除，ご利用状況の閲覧を行っていただくため
               </li>
-              <li className={classes.li}>
-                有料サービスにおいて，ユーザーに利用料金を請求するため
-              </li>
+              <li className={classes.li}>有料サービスにおいて，ユーザーに利用料金を請求するため</li>
               <li className={classes.li}>上記の利用目的に付随する目的</li>
             </ol>
           </Box>
@@ -151,14 +142,10 @@ const PrivacyPolicy: VFC = () => {
                   予め次の事項を告知あるいは公表し，かつ当サービス提供者が個人情報保護委員会に届出をしたとき
                 </li>
                 <ol className={classes.ol}>
-                  <li className={classes.li}>
-                    利用目的に第三者への提供を含むこと
-                  </li>
+                  <li className={classes.li}>利用目的に第三者への提供を含むこと</li>
                   <li className={classes.li}>第三者に提供されるデータの項目</li>
                   <li className={classes.li}>第三者への提供の手段または方法</li>
-                  <li className={classes.li}>
-                    本人の求めに応じて個人情報の第三者への提供を停止すること
-                  </li>
+                  <li className={classes.li}>本人の求めに応じて個人情報の第三者への提供を停止すること</li>
                   <li className={classes.li}>本人の求めを受け付ける方法</li>
                 </ol>
               </ol>
@@ -169,9 +156,7 @@ const PrivacyPolicy: VFC = () => {
                 <li className={classes.li}>
                   当サービス提供者が利用目的の達成に必要な範囲内において個人情報の取扱いの全部または一部を委託する場合
                 </li>
-                <li className={classes.li}>
-                  合併その他の事由による事業の承継に伴って個人情報が提供される場合
-                </li>
+                <li className={classes.li}>合併その他の事由による事業の承継に伴って個人情報が提供される場合</li>
                 <li className={classes.li}>
                   個人情報を特定の者との間で共同して利用する場合であって，その旨並びに共同して利用される個人情報の項目，共同して利用する者の範囲，利用する者の利用目的および当該個人情報の管理について責任を有する者の氏名または名称について，あらかじめ本人に通知し，または本人が容易に知り得る状態に置いた場合
                 </li>
@@ -187,12 +172,8 @@ const PrivacyPolicy: VFC = () => {
                   <li className={classes.li}>
                     本人または第三者の生命，身体，財産その他の権利利益を害するおそれがある場合
                   </li>
-                  <li className={classes.li}>
-                    当サービス提供者の業務の適正な実施に著しい支障を及ぼすおそれがある場合
-                  </li>
-                  <li className={classes.li}>
-                    その他法令に違反することとなる場合
-                  </li>
+                  <li className={classes.li}>当サービス提供者の業務の適正な実施に著しい支障を及ぼすおそれがある場合</li>
+                  <li className={classes.li}>その他法令に違反することとなる場合</li>
                 </ol>
               </li>
               <li className={classes.li}>
@@ -243,12 +224,12 @@ const PrivacyPolicy: VFC = () => {
             <p className={classes.p}>以上</p>
           </Box>
         </Container>
-      </body>
+      </main>
       <footer>
         <Footer />
       </footer>
     </>
-  );
-};
+  )
+}
 
-export default PrivacyPolicy;
+export default PrivacyPolicy

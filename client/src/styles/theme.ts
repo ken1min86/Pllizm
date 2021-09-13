@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   palette: {
@@ -38,6 +38,6 @@ const theme = createTheme({
       textTransform: 'none', // ボタン内アルファベット文字を大文字変換しない
     },
   },
-});
+})
 
-export default theme;
+export default theme

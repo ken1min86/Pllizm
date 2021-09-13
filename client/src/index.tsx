@@ -1,37 +1,41 @@
-import './index.css';
-import './styles/reset.css';
+import { ConnectedRouter } from 'connected-react-router'
+import * as History from 'history'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 
-import { ConnectedRouter } from 'connected-react-router';
-import * as History from 'history';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles'
 
-import { ThemeProvider } from '@material-ui/core';
+import App from './App'
+import createStore from './reducks/store/store'
+import reportWebVitals from './reportWebVitals'
+import theme from './styles/theme'
 
-import App from './App';
-import createStore from './reducks/store/store';
-import reportWebVitals from './reportWebVitals';
-import theme from './styles/theme';
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
-const history = History.createBrowserHistory();
+const history = History.createBrowserHistory()
 // eslint-disable-next-line import/prefer-default-export
-export const store = createStore(history);
+export const store = createStore(history)
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </StyledEngineProvider>
       </ConnectedRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
-);
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()

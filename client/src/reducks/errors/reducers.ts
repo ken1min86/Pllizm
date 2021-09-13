@@ -2,9 +2,9 @@ import initialState from '../store/initialState'
 import * as Actions from './actions'
 import { Reducer } from './types'
 
-const UsersReducer: Reducer = (state = initialState.users, action) => {
+const ErrorsReducer: Reducer = (state = initialState.errors, action) => {
   switch (action.type) {
-    case Actions.SIGN_UP:
+    case Actions.SET_ERRORS:
       return {
         ...state,
         ...action.payload,
@@ -14,4 +14,4 @@ const UsersReducer: Reducer = (state = initialState.users, action) => {
   }
 }
 
-export default UsersReducer
+export default ErrorsReducer

@@ -1,12 +1,13 @@
-import { goBack } from 'connected-react-router';
-import { VFC } from 'react';
-import { useDispatch } from 'react-redux';
+import { goBack } from 'connected-react-router'
+import { VFC } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { Box, Hidden } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { Box, Hidden } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import Logo from '../../assets/HeaderLogo.png';
+import Logo from '../../../assets/HeaderLogo.png'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -23,30 +24,24 @@ const useStyles = makeStyles((theme) =>
       marginLeft: '24px',
     },
   }),
-);
+)
 
 const ReturnableHeaderTable: VFC<{ title: string }> = ({ title }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
+  const classes = useStyles()
+  const dispatch = useDispatch()
   const back = () => {
-    dispatch(goBack());
-  };
+    dispatch(goBack())
+  }
 
   return (
-    <Box
-      className={classes.table}
-      display="flex"
-      alignItems="center"
-      height="49px"
-      paddingLeft="21px"
-    >
+    <Box className={classes.table} display="flex" alignItems="center" height="49px" paddingLeft="21px">
       <div>
         <Hidden smUp>
           <button type="button" onClick={back}>
             <ArrowBackIcon className={classes.arrow} />
           </button>
         </Hidden>
-        <Hidden xsDown>
+        <Hidden smDown>
           <img src={Logo} alt="ロゴ" />
         </Hidden>
       </div>
@@ -56,7 +51,7 @@ const ReturnableHeaderTable: VFC<{ title: string }> = ({ title }) => {
         </div>
       </div>
     </Box>
-  );
-};
+  )
+}
 
-export default ReturnableHeaderTable;
+export default ReturnableHeaderTable

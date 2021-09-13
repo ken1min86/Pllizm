@@ -1,10 +1,18 @@
-const initialState = {
-  // usersは不要なので削除する
+import { Errors } from '../errors/types'
+import { Users } from '../users/types'
+
+const initialState: { users: Users; errors: Errors } = {
   users: {
     isSignedIn: false,
     uid: '',
-    username: '',
+    accessToken: '',
+    client: '',
+    userId: '',
+    userName: '',
   },
-};
+  errors: {
+    list: [],
+  },
+}
 
-export default initialState;
+export default initialState

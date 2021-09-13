@@ -1,10 +1,11 @@
-import { VFC } from 'react';
+import { VFC } from 'react'
 
+import TwitterIcon from '@mui/icons-material/Twitter'
 // お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
 // import { useDispatch } from 'react-redux';
-import { Box, Link } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import TwitterIcon from '@material-ui/icons/Twitter';
+import { Box, Link } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) =>
       paddingBottom: '24px',
       backgroundColor: theme.palette.secondary.main,
       paddingLeft: '24px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         padding: 0,
         paddingTop: '21px',
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) =>
       color: theme.palette.primary.main,
       marginRight: '56px',
       whiteSpace: 'nowrap',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         order: 3,
         marginBottom: '21px',
       },
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) =>
       paddingRight: '16px',
       lineHeight: '1',
       textAlign: 'center',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         order: 2,
         padding: 0,
       },
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) =>
 
     separatorLine: {
       borderRight: '1px solid #4C524C',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         borderRight: 'none',
       },
     },
@@ -63,12 +64,12 @@ const useStyles = makeStyles((theme) =>
       fontSize: '18px',
       position: 'relative',
       color: theme.palette.secondary.main,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginLeft: 0,
       },
     },
     snsContainer: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         display: 'flex',
         justifyContent: 'center',
         order: 1,
@@ -78,7 +79,7 @@ const useStyles = makeStyles((theme) =>
       },
     },
     separatorWhenMobile: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         width: '50%',
         textAlign: 'center',
         paddingTop: '16px',
@@ -86,30 +87,30 @@ const useStyles = makeStyles((theme) =>
       },
     },
     borderTopWhenMobile: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         borderTop: '1px solid #4C524C',
       },
     },
     borderBottomWhenMobile: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         borderBottom: '1px solid #4C524C',
         marginBottom: '-1px',
       },
     },
     borderRightWhenMobile: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         borderRight: '1px solid #4C524C',
       },
     },
     marginBotomWhenMobile: {
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginBottom: '21px',
       },
     },
   }),
-);
+)
 const Footer: VFC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
   // お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
   // const dispatch = useDispatch();
 
@@ -146,7 +147,7 @@ const Footer: VFC = () => {
         </li>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer
