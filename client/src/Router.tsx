@@ -1,11 +1,11 @@
 import { Route, Switch } from 'react-router';
 
-import TermsOfUse from './components/templates/common/TermsOfUse';
+import { PrivacyPolicy, TermsOfUse } from './components/pages/index';
 
 const Router: React.VFC = () => (
   <Switch>
     <Route exact path="/help/terms_of_use" component={TermsOfUse} />
-    <Route exact path="/help/privacy_policy" component={TermsOfUse} />
+    <Route exact path="/help/privacy_policy" component={PrivacyPolicy} />
   </Switch>
 );
 

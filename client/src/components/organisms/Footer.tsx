@@ -2,7 +2,7 @@ import { VFC } from 'react';
 
 // お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
 // import { useDispatch } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box, Link } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import TwitterIcon from '@material-ui/icons/Twitter';
 
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) =>
       paddingLeft: '16px',
       paddingRight: '16px',
       lineHeight: '1',
+      textAlign: 'center',
       [theme.breakpoints.down('xs')]: {
         order: 2,
         padding: 0,
@@ -49,13 +50,18 @@ const useStyles = makeStyles((theme) =>
       },
     },
     snsIcon: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       marginLeft: '20px',
       backgroundColor: theme.palette.primary.main,
       borderRadius: '50%',
       width: '30px',
       height: '30px',
       textAlign: 'center',
+      verticalAlign: 'middle',
       fontSize: '18px',
+      position: 'relative',
       color: theme.palette.secondary.main,
       [theme.breakpoints.down('xs')]: {
         marginLeft: 0,
@@ -63,6 +69,8 @@ const useStyles = makeStyles((theme) =>
     },
     snsContainer: {
       [theme.breakpoints.down('xs')]: {
+        display: 'flex',
+        justifyContent: 'center',
         order: 1,
         width: '100%',
         textAlign: 'center',
@@ -132,9 +140,9 @@ const Footer: VFC = () => {
           プライバシーポリシー
         </li>
         <li className={`${classes.link} ${classes.snsContainer}`}>
-          <button type="button" className={classes.snsIcon}>
+          <Link className={classes.snsIcon} href="https://twitter.com/plizm_jp">
             <TwitterIcon fontSize="small" />
-          </button>
+          </Link>
         </li>
       </Box>
     </Box>

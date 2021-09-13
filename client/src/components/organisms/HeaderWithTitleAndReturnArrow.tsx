@@ -51,7 +51,9 @@ const ReturnableHeaderTable: VFC<{ title: string }> = ({ title }) => {
         </Hidden>
       </div>
       <div>
-        <div className={classes.title}>{title}</div>
+        <div data-testid="header-title" className={classes.title}>
+          {title}
+        </div>
       </div>
     </Box>
   );
