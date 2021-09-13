@@ -3,6 +3,8 @@ import { VFC } from 'react';
 import { Box, Container } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
+import { HelpContentItemTitle } from '../../atoms/index';
+import { HelpContentTitleContainer } from '../../molecules/index';
 import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index';
 
 const useStyles = makeStyles((theme) =>
@@ -69,16 +71,12 @@ const TermsOfUse: VFC = () => {
       </header>
       <body className={classes.body}>
         <Container className={classes.container}>
-          <Box mb={4}>
-            <h1 className={classes.h1} data-testid="terms-of-use-header">
-              利用規約
-            </h1>
-            <p className={classes.p}>
-              この利用規約（以下，「本規約」といいます。）は，中村謙一（以下，「当サービス提供者」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。
-            </p>
-          </Box>
+          <HelpContentTitleContainer
+            title="利用規約"
+            description="この利用規約（以下，「本規約」といいます。）は，中村謙一（以下，「当サービス提供者」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。"
+          />
           <Box mb={3}>
-            <h2 className={classes.h2}>第1条（適用）</h2>
+            <HelpContentItemTitle itemTitle="第1条（適用）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 本規約は，ユーザーと当サービス提供者との間の本サービスの利用に関わる一切の関係に適用されるものとします。
@@ -92,7 +90,7 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第2条（利用登録）</h2>
+            <HelpContentItemTitle itemTitle="第2条（利用登録）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 登録希望者が当サービス提供者の定める方法によって利用登録を申請し，当サービス提供者がこれを承認することによって，利用登録が完了するものとします。
@@ -114,9 +112,7 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>
-              第3条（ユーザーIDおよびパスワードの管理）
-            </h2>
+            <HelpContentItemTitle itemTitle="第3条（ユーザーIDおよびパスワードの管理）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 ユーザーは，自己の責任において，本サービスのユーザーIDおよびパスワードを管理するものとします。
@@ -127,13 +123,13 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第4条（利用料金および支払方法）</h2>
+            <HelpContentItemTitle itemTitle="第4条（利用料金および支払方法）" />
             <p className={classes.p}>
               ユーザーは，本サービスの有料部分の対価として，当サービス提供者が別途定め，本ウェブサイトに表示する利用料金を，当サービス提供者が指定する方法により支払うものとします。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第5条（禁止事項）</h2>
+            <HelpContentItemTitle itemTitle="第5条（禁止事項）" />
             <p className={classes.p}>
               ユーザーは，本サービスの利用にあたり，以下の行為をしてはなりません。
             </p>
@@ -205,7 +201,7 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第6条（本サービスの提供の停止等）</h2>
+            <HelpContentItemTitle itemTitle="第6条（本サービスの提供の停止等）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 当サービス提供者は，以下のいずれかの事由があると判断した場合，ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
@@ -230,7 +226,7 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第7条（著作権）</h2>
+            <HelpContentItemTitle itemTitle="第7条（著作権）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 ユーザーは，自ら著作権等の必要な知的財産権を有するか，または必要な権利者の許諾を得た文章，画像や映像等の情報に関してのみ，本サービスを利用し，投稿ないしアップロードすることができるものとします。
@@ -244,7 +240,7 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第8条（利用制限および登録抹消）</h2>
+            <HelpContentItemTitle itemTitle="第8条（利用制限および登録抹消）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 当サービス提供者は，ユーザーが以下のいずれかに該当する場合には，事前の通知なく，投稿データを削除し，ユーザーに対して本サービスの全部もしくは一部の利用を制限しまたはユーザーとしての登録を抹消することができるものとします。
@@ -281,13 +277,13 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第9条（退会）</h2>
+            <HelpContentItemTitle itemTitle="第9条（退会）" />
             <p className={classes.p}>
               ユーザーは，当サービス提供者の定める退会手続により，本サービスから退会できるものとします。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第10条（保証の否認および免責事項）</h2>
+            <HelpContentItemTitle itemTitle="第10条（保証の否認および免責事項）" />
             <ol className={classes.ol}>
               <li className={classes.li}>
                 当サービス提供者は，本サービスに事実上または法律上の瑕疵（安全性，信頼性，正確性，完全性，有効性，特定の目的への適合性，セキュリティなどに関する欠陥，エラーやバグ，権利侵害などを含みます。）がないことを明示的にも黙示的にも保証しておりません。
@@ -304,31 +300,31 @@ const TermsOfUse: VFC = () => {
             </ol>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第11条（サービス内容の変更等）</h2>
+            <HelpContentItemTitle itemTitle="第11条（サービス内容の変更等）" />
             <p className={classes.p}>
               当サービス提供者は，ユーザーに通知することなく，本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし，これによってユーザーに生じた損害について一切の責任を負いません。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第12条（利用規約の変更）</h2>
+            <HelpContentItemTitle itemTitle="第12条（利用規約の変更）" />
             <p className={classes.p}>
               当サービス提供者は，必要と判断した場合には，ユーザーに通知することなくいつでも本規約を変更することができるものとします。なお，本規約の変更後，本サービスの利用を開始した場合には，当該ユーザーは変更後の規約に同意したものとみなします。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第13条（個人情報の取扱い）</h2>
+            <HelpContentItemTitle itemTitle="第13条（個人情報の取扱い）" />
             <p className={classes.p}>
               当サービス提供者は，本サービスの利用によって取得する個人情報については，当サービス提供者「プライバシーポリシー」に従い適切に取り扱うものとします。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第14条（通知または連絡）</h2>
+            <HelpContentItemTitle itemTitle="第14条（通知または連絡）" />
             <p className={classes.p}>
               ユーザーと当サービス提供者との間の通知または連絡は，当サービス提供者の定める方法によって行うものとします。当サービス提供者は,ユーザーから,当サービス提供者が別途定める方式に従った変更届け出がない限り,現在登録されている連絡先が有効なものとみなして当該連絡先へ通知または連絡を行い,これらは,発信時にユーザーへ到達したものとみなします。
             </p>
           </Box>
           <Box mb={3}>
-            <h2 className={classes.h2}>第15条（権利義務の譲渡の禁止）</h2>
+            <HelpContentItemTitle itemTitle="第15条（権利義務の譲渡の禁止）" />
             <p className={classes.p}>
               ユーザーは，当サービス提供者の書面による事前の承諾なく，利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し，または担保に供することはできません。
             </p>
