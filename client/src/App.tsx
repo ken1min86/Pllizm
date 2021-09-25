@@ -1,9 +1,11 @@
-import './App.css';
+import './styles/reset.css'
+import './index.css'
+import './App.css'
 
-import { VFC } from 'react';
+import { VFC } from 'react'
 
-import Router from './Router';
+import Router from './Router'
 
-const App: VFC = () => <Router />;
+const App: VFC = () => <Router />
 
-export default App;
+export default App

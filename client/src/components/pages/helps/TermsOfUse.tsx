@@ -1,33 +1,34 @@
-import { VFC } from 'react';
+import { VFC } from 'react'
 
-import { Box, Container } from '@material-ui/core';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { Box, Container } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import { HelpContentItemTitle } from '../../atoms/index';
-import { HelpContentTitleContainer } from '../../molecules/index';
-import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index';
+import { HelpContentItemTitle } from '../../atoms/index'
+import { HelpContentTitleContainer } from '../../molecules/index'
+import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    body: {
+    main: {
       paddingTop: '32px',
       paddingBottom: '32px',
       backgroundColor: theme.palette.primary.main,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         paddingTop: '24px',
         paddingBottom: '24px',
       },
     },
     container: {
       maxWidth: '810px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         maxWidth: '330px',
       },
     },
     h1: {
       fontSize: '30px',
       marginBottom: '8px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         fontSize: '24px',
         marginBottom: '8px',
       },
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) =>
     p: {
       fontSize: '16px',
       marginLeft: '24px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         fontSize: '12px',
         marginLeft: '8px',
       },
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) =>
       marginLeft: '24px',
       marginBottom: '8px',
       fontSize: '16px',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginLeft: '8px',
         fontSize: '12px',
       },
@@ -59,17 +60,17 @@ const useStyles = makeStyles((theme) =>
       marginBottom: '8px',
     },
   }),
-);
+)
 
 const TermsOfUse: VFC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <>
       <header>
         <HeaderWithTitleAndReturnArrow title="利用規約" />
       </header>
-      <body className={classes.body}>
+      <main className={classes.main}>
         <Container className={classes.container}>
           <HelpContentTitleContainer
             title="利用規約"
@@ -99,15 +100,11 @@ const TermsOfUse: VFC = () => {
                 当サービス提供者は，利用登録の申請者に以下の事由があると判断した場合，利用登録の申請を承認しないことがあり，その理由については一切の開示義務を負わないものとします。
               </li>
               <ol className={classes.ol}>
-                <li className={classes.li}>
-                  本規約に違反したことがある者からの申請である場合
-                </li>
+                <li className={classes.li}>本規約に違反したことがある者からの申請である場合</li>
                 <li className={classes.li}>
                   反社会的勢力等（暴力団，暴力団員，右翼団体，反社会的勢力，その他これに準ずる者を意味します。）である，または資金提供その他を通じて反社会的勢力等の維持，運営もしくは経営に協力もしくは関与する等反社会的勢力との何らかの交流もしくは関与を行っていると当サービス提供者が判断した場合
                 </li>
-                <li className={classes.li}>
-                  その他，当サービス提供者が利用登録を相当でないと判断した場合
-                </li>
+                <li className={classes.li}>その他，当サービス提供者が利用登録を相当でないと判断した場合</li>
               </ol>
             </ol>
           </Box>
@@ -130,25 +127,17 @@ const TermsOfUse: VFC = () => {
           </Box>
           <Box mb={3}>
             <HelpContentItemTitle itemTitle="第5条（禁止事項）" />
-            <p className={classes.p}>
-              ユーザーは，本サービスの利用にあたり，以下の行為をしてはなりません。
-            </p>
+            <p className={classes.p}>ユーザーは，本サービスの利用にあたり，以下の行為をしてはなりません。</p>
             <ol className={classes.ol}>
               <li className={classes.li}>法令または公序良俗に違反する行為</li>
               <li className={classes.li}>犯罪行為に関連する行為</li>
               <li className={classes.li}>
                 当サービス提供者のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為
               </li>
-              <li className={classes.li}>
-                当サービス提供者のサービスの運営を妨害するおそれのある行為
-              </li>
-              <li className={classes.li}>
-                他のユーザーに関する個人情報等を収集または蓄積する行為
-              </li>
+              <li className={classes.li}>当サービス提供者のサービスの運営を妨害するおそれのある行為</li>
+              <li className={classes.li}>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
               <li className={classes.li}>他のユーザーに成りすます行為</li>
-              <li className={classes.li}>
-                不正アクセスをし，またはこれを試みる行為
-              </li>
+              <li className={classes.li}>不正アクセスをし，またはこれを試みる行為</li>
               <li className={classes.li}>
                 当サービス提供者のサービスに関連して，反社会的勢力に対して直接または間接に利益を供与する行為
               </li>
@@ -161,32 +150,18 @@ const TermsOfUse: VFC = () => {
               <ol className={classes.ol}>
                 <li className={classes.li}>過度に暴力的な表現</li>
                 <li className={classes.li}>露骨な性的表現</li>
-                <li className={classes.li}>
-                  人種，国籍，信条，性別，社会的身分，門地等による差別につながる表現
-                </li>
-                <li className={classes.li}>
-                  自殺，自傷行為，薬物乱用を誘引または助長する表現
-                </li>
-                <li className={classes.li}>
-                  その他反社会的な内容を含み他人に不快感を与える表現
-                </li>
+                <li className={classes.li}>人種，国籍，信条，性別，社会的身分，門地等による差別につながる表現</li>
+                <li className={classes.li}>自殺，自傷行為，薬物乱用を誘引または助長する表現</li>
+                <li className={classes.li}>その他反社会的な内容を含み他人に不快感を与える表現</li>
               </ol>
-              <li className={classes.li}>
-                以下を目的とし，または目的とすると当サービス提供者が判断する行為
-              </li>
+              <li className={classes.li}>以下を目的とし，または目的とすると当サービス提供者が判断する行為</li>
               <ol className={classes.ol}>
                 <li className={classes.li}>
                   営業，宣伝，広告，勧誘，その他営利を目的とする行為（当サービス提供者の認めたものを除きます。）
                 </li>
-                <li className={classes.li}>
-                  性行為やわいせつな行為を目的とする行為
-                </li>
-                <li className={classes.li}>
-                  面識のない異性との出会いや交際を目的とする行為
-                </li>
-                <li className={classes.li}>
-                  他のユーザーに対する嫌がらせや誹謗中傷を目的とする行為
-                </li>
+                <li className={classes.li}>性行為やわいせつな行為を目的とする行為</li>
+                <li className={classes.li}>面識のない異性との出会いや交際を目的とする行為</li>
+                <li className={classes.li}>他のユーザーに対する嫌がらせや誹謗中傷を目的とする行為</li>
                 <li className={classes.li}>
                   当サービス提供者，本サービスの他のユーザー，または第三者に不利益，損害または不快感を与えることを目的とする行為
                 </li>
@@ -195,9 +170,7 @@ const TermsOfUse: VFC = () => {
                 </li>
               </ol>
               <li className={classes.li}>宗教活動または宗教団体への勧誘行為</li>
-              <li className={classes.li}>
-                その他，当サービス提供者が不適切と判断する行為
-              </li>
+              <li className={classes.li}>その他，当サービス提供者が不適切と判断する行為</li>
             </ol>
           </Box>
           <Box mb={3}>
@@ -206,18 +179,12 @@ const TermsOfUse: VFC = () => {
               <li className={classes.li}>
                 当サービス提供者は，以下のいずれかの事由があると判断した場合，ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
                 <ol className={classes.ol}>
-                  <li className={classes.li}>
-                    本サービスにかかるコンピュータシステムの保守点検または更新を行う場合
-                  </li>
+                  <li className={classes.li}>本サービスにかかるコンピュータシステムの保守点検または更新を行う場合</li>
                   <li className={classes.li}>
                     地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合
                   </li>
-                  <li className={classes.li}>
-                    コンピュータまたは通信回線等が事故により停止した場合
-                  </li>
-                  <li className={classes.li}>
-                    その他，当サービス提供者が本サービスの提供が困難と判断した場合
-                  </li>
+                  <li className={classes.li}>コンピュータまたは通信回線等が事故により停止した場合</li>
+                  <li className={classes.li}>その他，当サービス提供者が本サービスの提供が困難と判断した場合</li>
                 </ol>
               </li>
               <li className={classes.li}>
@@ -245,27 +212,15 @@ const TermsOfUse: VFC = () => {
               <li className={classes.li}>
                 当サービス提供者は，ユーザーが以下のいずれかに該当する場合には，事前の通知なく，投稿データを削除し，ユーザーに対して本サービスの全部もしくは一部の利用を制限しまたはユーザーとしての登録を抹消することができるものとします。
                 <ol className={classes.ol}>
-                  <li className={classes.li}>
-                    本規約のいずれかの条項に違反した場合
-                  </li>
-                  <li className={classes.li}>
-                    登録事項に虚偽の事実があることが判明した場合
-                  </li>
+                  <li className={classes.li}>本規約のいずれかの条項に違反した場合</li>
+                  <li className={classes.li}>登録事項に虚偽の事実があることが判明した場合</li>
                   <li className={classes.li}>
                     決済手段として当該ユーザーが届け出たクレジットカードが利用停止となった場合
                   </li>
-                  <li className={classes.li}>
-                    料金等の支払債務の不履行があった場合
-                  </li>
-                  <li className={classes.li}>
-                    当サービス提供者からの連絡に対し，一定期間返答がない場合
-                  </li>
-                  <li className={classes.li}>
-                    本サービスについて，最終の利用から一定期間利用がない場合
-                  </li>
-                  <li className={classes.li}>
-                    その他，当サービス提供者が本サービスの利用を適当でないと判断した場合
-                  </li>
+                  <li className={classes.li}>料金等の支払債務の不履行があった場合</li>
+                  <li className={classes.li}>当サービス提供者からの連絡に対し，一定期間返答がない場合</li>
+                  <li className={classes.li}>本サービスについて，最終の利用から一定期間利用がない場合</li>
+                  <li className={classes.li}>その他，当サービス提供者が本サービスの利用を適当でないと判断した場合</li>
                 </ol>
               </li>
               <li className={classes.li}>
@@ -333,12 +288,12 @@ const TermsOfUse: VFC = () => {
             <p className={classes.p}>以上</p>
           </Box>
         </Container>
-      </body>
+      </main>
       <footer>
         <Footer />
       </footer>
     </>
-  );
-};
+  )
+}
 
-export default TermsOfUse;
+export default TermsOfUse

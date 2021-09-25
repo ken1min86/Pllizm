@@ -12,6 +12,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:cypress/recommended',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -24,14 +25,7 @@ module.exports = {
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
-  plugins: [
-    '@typescript-eslint',
-    'import',
-    'jsx-a11y',
-    'prefer-arrow',
-    'react',
-    'react-hooks',
-  ],
+  plugins: ['@typescript-eslint', 'import', 'jsx-a11y', 'prefer-arrow', 'react', 'react-hooks'],
   root: true,
   rules: {
     // occur error in `import React from 'react'` with react-scripts 4.0.1
@@ -101,6 +95,7 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
+    'import/no-unresolved': 'off',
   },
   overrides: [
     {
@@ -121,4 +116,4 @@ module.exports = {
     cy: 'readonly',
     Cypress: 'readonly',
   },
-};
+}
