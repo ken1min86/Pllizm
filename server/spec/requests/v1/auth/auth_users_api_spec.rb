@@ -23,7 +23,7 @@ RSpec.describe "V1::Auth::AuthUsersApi", type: :request do
       expect(response).to have_http_status(422)
     end
 
-    it 'returns 404 without password_confirmation' do
+    it 'returns 422 without password_confirmation' do
       post v1_user_registration_path, params: {
         password: 'password123',
         email: 'tester@gmail.com',
