@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getErrors } from 'reducks/errors/selectors';
 import { Errors, ErrorsList } from 'reducks/errors/types';
-import { signUp } from 'reducks/users/operations';
+import { signIn } from 'reducks/users/operations';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Box, IconButton } from '@mui/material';
@@ -16,7 +16,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import Logo from '../../assets/PopupHeaderLogo.png';
 // eslint-disable-next-line import/no-useless-path-segments
-import { SigninModal } from './';
+import { SignupModal } from './';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -50,10 +50,11 @@ const useStyles = makeStyles((theme) =>
       fontSize: '12px',
       color: theme.palette.primary.light,
     },
-
-    loginText: {
+    signUpText: {
       fontSize: '12px',
       color: theme.palette.primary.light,
+      marginLeft: -10,
+      marginRight: -10,
     },
     link: {
       color: theme.palette.info.main,
@@ -67,9 +68,14 @@ const useStyles = makeStyles((theme) =>
       width: '100%',
       height: '100%',
     },
-    signUpLink: {
+    signInLink: {
       fontSize: '12px',
       color: theme.palette.info.main,
+      textDecoration: 'underline',
+    },
+    forgetPassword: {
+      fontSize: '12px',
+      color: theme.palette.text.secondary,
       textDecoration: 'underline',
     },
   }),
@@ -81,14 +87,13 @@ type Props = {
   type: 'text' | 'button'
 }
 
-const SignupModal: VFC<Props> = ({ type }) => {
+const SigninModal: VFC<Props> = ({ type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { errors: Errors }) => state)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const errors: ErrorsList = getErrors(selector)
 
@@ -116,14 +121,6 @@ const SignupModal: VFC<Props> = ({ type }) => {
     [setPassword],
   )
 
-  const inputPasswordConfirmation = useCallback(
-    (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setPasswordConfirmation(event.target.value)
-    },
-    [setPasswordConfirmation],
-  )
-
   return (
     <>
       {type === 'button' && (
@@ -132,15 +129,15 @@ const SignupModal: VFC<Props> = ({ type }) => {
             width: 217,
           }}
         >
-          <BlueRoundedCornerButton label="アカウント作成" onClick={openModal} />
+          <BlueRoundedCornerButton label="ログイン" onClick={openModal} />
         </Box>
       )}
       {type === 'text' && (
-        <button type="button" className={classes.signUpLink} onClick={openModal}>
-          アカウント作成
+        <button type="button" className={classes.signInLink} onClick={openModal}>
+          ログイン
         </button>
       )}
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className={classes.content} contentLabel="SignUp Modal">
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className={classes.content} contentLabel="login Modal">
         <Box className={classes.main}>
           <Box className={classes.popupContainer}>
             <IconButton aria-label="close" className={classes.closeButton} size="large" onClick={closeModal}>
@@ -150,7 +147,7 @@ const SignupModal: VFC<Props> = ({ type }) => {
               <img src={Logo} alt="ロゴ" />
             </Box>
             <Box mb={3} textAlign="center">
-              <p className={classes.popupTitle}>アカウント作成</p>
+              <p className={classes.popupTitle}>ログイン</p>
             </Box>
             <Box mb={1}>
               <BasicTextField
@@ -164,37 +161,29 @@ const SignupModal: VFC<Props> = ({ type }) => {
               <BasicTextField
                 id="outlined-password-input"
                 label="パスワード"
-                helperText="8文字以上で設定してください"
                 type="password"
                 autoComplete="password"
                 variant="outlined"
                 onChange={inputPassword}
               />
             </Box>
-            <Box mb={1} width="100%">
-              <BasicTextField
-                id="outlined-password-input"
-                label="パスワード(確認)"
-                type="password"
-                autoComplete="password"
-                variant="outlined"
-                onChange={inputPasswordConfirmation}
-              />
+            <Box className={classes.forgetPassword} mb={2}>
+              パスワードをお忘れの方はこちら
             </Box>
             <Box mb={2}>
               <ErrorMessages errors={errors} />
             </Box>
             <Box mb={2}>
               <BlueSquareButton
-                label="アカウント作成"
+                label="ログイン"
                 onClick={() => {
-                  dispatch(signUp(email, password, passwordConfirmation))
+                  dispatch(signIn(email, password))
                 }}
               />
             </Box>
-            <Box className={classes.loginText} mb={3}>
-              すでにアカウントをお持ちの方は
-              <SigninModal type="text" />へ
+            <Box className={classes.signUpText} mb={3}>
+              アカウントをお持ちでない方は
+              <SignupModal type="text" />へ
             </Box>
             <Box className={classes.agreementText}>
               ※利用開始をもって
@@ -214,4 +203,4 @@ const SignupModal: VFC<Props> = ({ type }) => {
   )
 }
 
-export default SignupModal
+export default SigninModal

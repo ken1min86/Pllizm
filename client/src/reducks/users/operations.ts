@@ -7,8 +7,11 @@ import Cookies from 'js-cookie';
 import { setErrors } from 'reducks/errors/operations';
 
 import axiosBase from '../../api';
-import { signUpAction } from './actions';
-import { ListenAuthStateRequest, SignUpRequest, SignUpResponse } from './types';
+import { signInAction, signUpAction } from './actions';
+import {
+    ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
+    SignUpResponse
+} from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const signUp = (email: string, password: string, passwordConfirmation: string) => async (dispatch: any) => {
@@ -76,6 +79,63 @@ export const signUp = (email: string, password: string, passwordConfirmation: st
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(setErrors(['不正なリクエストです。']))
+
+      return false
+    })
+
+  return false
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const signIn = (email: string, password: string) => async (dispatch: any, getState: any) => {
+  if (email === '' || password === '') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    dispatch(setErrors(['メールアドレスとパスワードを入力してください。']))
+
+    return false
+  }
+
+  if (!isValidEmailFormat(email)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    dispatch(setErrors(['メールアドレスの形式が不正です。']))
+
+    return false
+  }
+
+  const requestData: SignInRequest = { email, password }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const { uid, accessToken, client } = getState().users
+  const requestHeaders: RequestHeadersForAuthentication = {
+    'access-token': accessToken,
+    client,
+    uid,
+  }
+
+  await axiosBase
+    .post('/v1/auth/sign_in', requestData, { headers: requestHeaders })
+    .then((response) => {
+      const { headers } = response
+      Cookies.set('access-token', headers['access-token'])
+      Cookies.set('client', headers.client)
+      Cookies.set('uid', headers.uid)
+
+      const userData = response.data.data
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(
+        signInAction({
+          uid,
+          accessToken,
+          client,
+          userId: userData.userid,
+          userName: userData.username,
+        }),
+      )
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(push('/home'))
+    })
+    .catch(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(setErrors(['オフラインか、メールアドレスまたはパスワードが間違っています。']))
 
       return false
     })

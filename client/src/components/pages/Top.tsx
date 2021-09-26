@@ -1,8 +1,15 @@
-import SignupModal from '../organisms/SignupModal'
+import { SigninModal, SignupModal } from 'components/organisms';
+
+import { Box } from '@mui/material';
 
 const Top = () => (
   <>
-    <SignupModal type="button" />
+    <Box mb={2}>
+      <SignupModal type="button" />
+    </Box>
+    <Box>
+      <SigninModal type="button" />
+    </Box>
   </>
 )
 
