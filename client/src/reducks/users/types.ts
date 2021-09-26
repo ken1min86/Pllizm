@@ -16,6 +16,24 @@ export type SignUpAction = (userState: {
   }
 }
 
+export type SignInAction = (userState: {
+  uid: string
+  accessToken: string
+  client: string
+  userId: string
+  userName: string
+}) => {
+  type: string
+  payload: {
+    isSignedIn: true
+    uid: string
+    accessToken: string
+    client: string
+    userId: string
+    userName: string
+  }
+}
+
 export type Reducer = (
   state: {
     isSignedIn: boolean
@@ -75,4 +93,16 @@ export type ListenAuthStateRequest = {
   'access-token': string | undefined
   client: string | undefined
   uid: string | undefined
+}
+
+export type SignInRequest = {
+  email: string
+  password: string
+}
+
+export type RequestHeadersForAuthentication = {
+  // eslint-disable-next-line camelcase
+  'access-token': string
+  client: string
+  uid: string
 }
