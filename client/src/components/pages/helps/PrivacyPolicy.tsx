@@ -1,12 +1,12 @@
-import { VFC } from 'react'
+import { VFC } from 'react';
 
-import { Box, Container } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import { Box, Container } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { HelpContentItemTitle } from '../../atoms/index'
-import { HelpContentTitleContainer } from '../../molecules/index'
-import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index'
+import { HelpContentItemTitle } from '../../atoms/index';
+import { HelpContentTitleContainer } from '../../molecules/index';
+import { Footer, HeaderWithTitleAndReturnArrow } from '../../organisms/index';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
