@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) =>
       justifyContent: 'center',
     },
     container: {
-      padding: '0px, 16px',
+      paddingLeft: 16,
+      paddingRight: 16,
       maxWidth: 600,
       width: '100%',
     },

@@ -233,3 +233,75 @@ export const sendMailOfPasswordReset = (email: string, setError: any) => async (
 
   return false
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const resetPassword =
+  (
+    password: string,
+    passwordConfirmation: string,
+    accessToken: string | null,
+    client: string | null,
+    uid: string | null,
+    setError: any,
+  ) =>
+  async (dispatch: any) => {
+    if (password === '' || passwordConfirmation === '') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setError('必須項目が未入力です。')
+
+      return false
+    }
+
+    if (password.length < 8) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setError('パスワードは8文字以上で設定してください。')
+
+      return false
+    }
+
+    if (password !== passwordConfirmation) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setError('パスワードが一致しません。')
+
+      return false
+    }
+
+    const requestHeaders = {
+      'access-token': accessToken,
+      client,
+      uid,
+    }
+
+    await axiosBase
+      .put('/v1/auth/password', { password, password_confirmation: passwordConfirmation }, { headers: requestHeaders })
+      .then((response) => {
+        const { headers } = response
+        Cookies.set('access-token', headers['access-token'])
+        Cookies.set('client', headers.client)
+        Cookies.set('uid', headers.uid)
+
+        const userData = response.data.data
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(
+          signInAction({
+            uid: headers.uid,
+            accessToken: headers.accessToken,
+            client: headers.client,
+            userId: userData.userid,
+            userName: userData.username,
+          }),
+        )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/users/end_password_reset'))
+      })
+      .catch(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setError(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
+
+        return false
+      })
+
+    return false
+  }
