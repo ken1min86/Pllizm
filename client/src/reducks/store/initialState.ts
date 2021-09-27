@@ -1,7 +1,6 @@
-import { Errors } from '../errors/types'
-import { Users } from '../users/types'
+import { Users } from '../users/types';
 
-const initialState: { users: Users; errors: Errors } = {
+const initialState: { users: Users } = {
   users: {
     isSignedIn: false,
     uid: '',
@@ -9,9 +8,6 @@ const initialState: { users: Users; errors: Errors } = {
     client: '',
     userId: '',
     userName: '',
-  },
-  errors: {
-    list: [],
   },
 }
 
