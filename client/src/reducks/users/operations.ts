@@ -17,7 +17,7 @@ import {
 export const signUp = (email: string, password: string, passwordConfirmation: string) => async (dispatch: any) => {
   if (email === '' || password === '' || passwordConfirmation === '') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    dispatch(setErrors(['必須項目が未入力です']))
+    dispatch(setErrors(['必須項目が未入力です。']))
 
     return false
   }
@@ -185,4 +185,51 @@ export const listenAuthState = () => async (dispatch: any) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(push('/'))
     })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const sendMailOfPasswordReset = (email: string, setError: any) => async (dispatch: any) => {
+  if (email === '') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setError('メールアドレスが未入力です。')
+
+    return false
+  }
+
+  if (!isValidEmailFormat(email)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setError('メールアドレスの形式が不正です。')
+
+    return false
+  }
+
+  let redirectUrl
+  switch (process.env.NODE_ENV) {
+    case 'production':
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      redirectUrl = `${process.env.REACT_APP_PROD_CLIENT_URL}/users/password_reset`
+      break
+
+    case 'development':
+    case 'test':
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      redirectUrl = `${process.env.REACT_APP_DEV_CLIENT_URL}/users/password_reset`
+      break
+
+    default:
+      break
+  }
+
+  await axiosBase
+    .post('/v1/auth/password', { email, redirect_url: redirectUrl })
+    .then(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(push('/users/sent_mail_of_password_reset'))
+    })
+    .catch(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(push('/users/sent_mail_of_password_reset'))
+    })
+
+  return false
 }

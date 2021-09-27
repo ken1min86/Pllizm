@@ -176,6 +176,7 @@ const SigninModal: VFC<Props> = ({ type }) => {
             <Box mb={2}>
               <BlueSquareButton
                 label="ログイン"
+                size="large"
                 onClick={() => {
                   dispatch(signIn(email, password))
                 }}

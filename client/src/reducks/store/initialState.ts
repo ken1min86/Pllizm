@@ -1,5 +1,5 @@
-import { Errors } from '../errors/types'
-import { Users } from '../users/types'
+import { Errors } from '../errors/types';
+import { Users } from '../users/types';
 
 const initialState: { users: Users; errors: Errors } = {
   users: {

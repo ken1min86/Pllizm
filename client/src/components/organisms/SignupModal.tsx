@@ -187,6 +187,7 @@ const SignupModal: VFC<Props> = ({ type }) => {
             <Box mb={2}>
               <BlueSquareButton
                 label="アカウント作成"
+                size="large"
                 onClick={() => {
                   dispatch(signUp(email, password, passwordConfirmation))
                 }}
