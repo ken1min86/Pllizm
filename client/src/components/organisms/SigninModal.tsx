@@ -3,10 +3,8 @@ import {
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getErrors } from 'reducks/errors/selectors';
-import { Errors, ErrorsList } from 'reducks/errors/types';
 import { signIn } from 'reducks/users/operations';
 
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -77,6 +75,7 @@ const useStyles = makeStyles((theme) =>
       fontSize: '12px',
       color: theme.palette.text.secondary,
       textDecoration: 'underline',
+      marginBottom: 16,
     },
   }),
 )
@@ -90,12 +89,11 @@ type Props = {
 const SigninModal: VFC<Props> = ({ type }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const selector = useSelector((state: { errors: Errors }) => state)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const errors: ErrorsList = getErrors(selector)
+  const [error, setError] = useState('')
 
   const openModal = () => {
     setModalIsOpen(true)
@@ -167,17 +165,18 @@ const SigninModal: VFC<Props> = ({ type }) => {
                 onChange={inputPassword}
               />
             </Box>
-            <Box className={classes.forgetPassword} mb={2}>
+            <Link to="/users/begin_password_reset" className={classes.forgetPassword}>
               パスワードをお忘れの方はこちら
-            </Box>
+            </Link>
             <Box mb={2}>
-              <ErrorMessages errors={errors} />
+              <ErrorMessages errors={[error]} />
             </Box>
             <Box mb={2}>
               <BlueSquareButton
                 label="ログイン"
+                size="large"
                 onClick={() => {
-                  dispatch(signIn(email, password))
+                  dispatch(signIn(email, password, setError))
                 }}
               />
             </Box>

@@ -1,8 +1,8 @@
-import { VFC } from 'react'
+import { VFC } from 'react';
 
-import Button from '@mui/material/Button'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import Button from '@mui/material/Button';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -23,13 +23,14 @@ const useStyles = makeStyles((theme) =>
 type Props = {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
   label: string
+  size: 'small' | 'medium' | 'large'
 }
 
-const BlueSquareButton: VFC<Props> = ({ onClick, label }) => {
+const BlueSquareButton: VFC<Props> = ({ onClick, label, size }) => {
   const classes = useStyles({})
 
   return (
-    <Button size="large" variant="contained" className={classes.button} onClick={onClick}>
+    <Button variant="contained" size={size} className={classes.button} onClick={onClick}>
       {label}
     </Button>
   )
