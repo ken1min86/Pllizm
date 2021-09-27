@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) =>
       fontSize: '12px',
       color: theme.palette.text.secondary,
       textDecoration: 'underline',
+      marginBottom: 16,
     },
   }),
 )
@@ -164,9 +165,9 @@ const SigninModal: VFC<Props> = ({ type }) => {
                 onChange={inputPassword}
               />
             </Box>
-            <Box className={classes.forgetPassword} mb={2}>
+            <Link to="/users/begin_password_reset" className={classes.forgetPassword}>
               パスワードをお忘れの方はこちら
-            </Box>
+            </Link>
             <Box mb={2}>
               <ErrorMessages errors={[error]} />
             </Box>
