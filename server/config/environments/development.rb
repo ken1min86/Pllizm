@@ -33,7 +33,7 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: ENV['CLIENT_DEV_HOST'], port: ENV['CLIENT_DEV_PORT'] }
+  config.action_mailer.default_url_options = { host: ENV['SERVER_DEV_HOST'], port: ENV['SERVER_DEV_PORT'] }
   config.action_mailer.default_options = { from: ENV['EMAIL_ADDRESS'] }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
