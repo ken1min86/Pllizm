@@ -63,7 +63,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: nil,
             notify_user_icon_url: nil,
             is_checked: false,
-            notified_at: I18n.l(notification_like.created_at),
+            notified_at: format_to_rfc3339(notification_like.created_at),
             post_id: liked_post.id,
             content: liked_post.content,
           )
@@ -151,7 +151,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: refracted_follower.username,
             notify_user_icon_url: refracted_follower.image.url,
             is_checked: false,
-            notified_at: I18n.l(notification_refract.created_at),
+            notified_at: format_to_rfc3339(notification_refract.created_at),
             post_id: refracted_post.id,
             content: refracted_post.content,
           )
@@ -161,7 +161,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: accepted_following_follower.username,
             notify_user_icon_url: accepted_following_follower.image.url,
             is_checked: false,
-            notified_at: I18n.l(notification_accept.created_at),
+            notified_at: format_to_rfc3339(notification_accept.created_at),
             post_id: nil,
             content: nil,
           )
@@ -171,7 +171,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: requested_following_follower.username,
             notify_user_icon_url: requested_following_follower.image.url,
             is_checked: false,
-            notified_at: I18n.l(notification_request.created_at),
+            notified_at: format_to_rfc3339(notification_request.created_at),
             post_id: nil,
             content: nil,
           )
@@ -181,7 +181,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: nil,
             notify_user_icon_url: nil,
             is_checked: true,
-            notified_at: I18n.l(notification_reply.created_at),
+            notified_at: format_to_rfc3339(notification_reply.created_at),
             post_id: replied_post.id,
             content: replied_post.content,
           )
@@ -191,7 +191,7 @@ RSpec.describe "V1::Notifications", type: :request do
             notify_username: nil,
             notify_user_icon_url: nil,
             is_checked: true,
-            notified_at: I18n.l(notification_like.created_at),
+            notified_at: format_to_rfc3339(notification_like.created_at),
             post_id: liked_post.id,
             content: liked_post.content,
           )

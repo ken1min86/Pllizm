@@ -33,6 +33,10 @@ class Post < ApplicationRecord
   # - above ~: "~ 以上"の意味。例えば、tree_paths_above_parent_postの場合は、親以上投稿に紐づくTreePathを示す。
   # - below ~: "~ 以下"の意味。例えば、tree_path_below_currentの場合は、カレント以下の投稿に紐づくTreePathを示す。
 
+  def self.format_to_rfc3339(formatted_time)
+    formatted_time.to_datetime.new_offset('+0000').rfc3339
+  end
+
   def self.extract_root_posts(posts_array)
     root_posts_array = []
     posts_array.each do |post|
@@ -364,17 +368,17 @@ class Post < ApplicationRecord
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [deleted: nil],
       }
     when Settings.constants.status_of_post[:not_follower_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [not_follower_post: nil],
       }
     when Settings.constants.status_of_post[:follower_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [liked_post.format_follower_refracted_post(current_user, refracted_at)],
       }
     end
@@ -412,7 +416,10 @@ class Post < ApplicationRecord
       end
     end
 
-    formatted_refracted_posts = { refracted_at: I18n.l(refracted_at), posts: array_of_formatted_refracted_posts }
+    formatted_refracted_posts = {
+      refracted_at: Post.format_to_rfc3339(refracted_at),
+      posts: array_of_formatted_refracted_posts,
+    }
     formatted_refracted_posts
   end
 
@@ -427,14 +434,14 @@ class Post < ApplicationRecord
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [deleted: nil],
         refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
       }
 
     when Settings.constants.status_of_post[:current_user_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [liked_post.format_current_user_refracted_post(current_user, refracted_at)],
         refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
       }
@@ -480,7 +487,7 @@ class Post < ApplicationRecord
     end
 
     formatted_refracted_posts = {
-      refracted_at: I18n.l(refracted_at),
+      refracted_at: Post.format_to_rfc3339(refracted_at),
       posts: array_of_formatted_refracted_posts,
       refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
     }
@@ -508,7 +515,7 @@ class Post < ApplicationRecord
     hashed_current_user_post = attributes.symbolize_keys
     hashed_current_user_post.delete(:user_id)
     hashed_current_user_post.delete(:icon_id)
-    hashed_current_user_post[:created_at]               = I18n.l(created_at)
+    hashed_current_user_post[:created_at]               = Post.format_to_rfc3339(created_at)
     hashed_current_user_post[:image]                    = image.url
     hashed_current_user_post[:icon_url]                 = current_user.image.url
     hashed_current_user_post[:userid]                   = current_user.userid
@@ -526,7 +533,7 @@ class Post < ApplicationRecord
     hashed_follower_post = attributes.symbolize_keys
     hashed_follower_post.delete(:user_id)
     hashed_follower_post.delete(:icon_id)
-    hashed_follower_post[:created_at]               = I18n.l(created_at)
+    hashed_follower_post[:created_at]               = Post.format_to_rfc3339(created_at)
     hashed_follower_post[:image]                    = image.url
     hashed_follower_post[:icon_url]                 = icon.image.url
     hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
@@ -541,7 +548,7 @@ class Post < ApplicationRecord
     follower    = user
     hashed_post = attributes.symbolize_keys
     hashed_post.delete(:icon_id)
-    hashed_post[:created_at]               = I18n.l(created_at)
+    hashed_post[:created_at]               = Post.format_to_rfc3339(created_at)
     hashed_post[:image]                    = image.url
     hashed_post[:icon_url]                 = follower.image.url
     hashed_post[:userid]                   = follower.userid
@@ -557,7 +564,7 @@ class Post < ApplicationRecord
   def format_current_user_refracted_post(current_user, refracted_at)
     hashed_post = attributes.symbolize_keys
     hashed_post.delete(:icon_id)
-    hashed_post[:created_at]               = I18n.l(created_at)
+    hashed_post[:created_at]               = Post.format_to_rfc3339(created_at)
     hashed_post[:image]                    = image.url
     hashed_post[:icon_url]                 = current_user.image.url
     hashed_post[:userid]                   = current_user.userid

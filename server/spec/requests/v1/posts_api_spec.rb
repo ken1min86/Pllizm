@@ -1928,7 +1928,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
-          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:refracted_at]).to eq(format_to_rfc3339(follower_refract.created_at))
           expect(response_body[0][:posts].length).to eq(1)
           expect(response_body[0][:posts][0][:current_user_post].length).to eq(15)
           expect(response_body[0][:posts][0][:current_user_post]).to        include(
@@ -1937,7 +1937,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             content: not_deleted_client_user_post.content,
             image: not_deleted_client_user_post.image.url,
             is_locked: not_deleted_client_user_post.is_locked,
-            created_at: I18n.l(not_deleted_client_user_post.created_at),
+            created_at: format_to_rfc3339(not_deleted_client_user_post.created_at),
             is_reply: false,
             replies: 0,
             icon_url: client_user.image.url,
@@ -1989,7 +1989,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                  eq(1)
-          expect(response_body[0][:refracted_at]).to       eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:refracted_at]).to       eq(format_to_rfc3339(follower_refract.created_at))
           expect(response_body[0][:posts].length).to       eq(1)
           expect(response_body[0][:posts][0][:deleted]).to eq(nil)
           expect(response_body[0][:refracted_by]).to       include(
@@ -2047,7 +2047,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                               eq(1)
-          expect(response_body[0][:refracted_at]).to                    eq(I18n.l(follower_refract.created_at))
+          expect(response_body[0][:refracted_at]).to                    eq(format_to_rfc3339(follower_refract.created_at))
           expect(response_body[0][:posts].length).to                    eq(6)
           expect(response_body[0][:posts][0][:other_users_post]).to     eq(nil)
           expect(response_body[0][:posts][1][:deleted]).to              eq(nil)
@@ -2064,7 +2064,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             replies: 0,
             is_reply: true,
             is_liked_by_current_user: false,
-            created_at: I18n.l(follower_performed_refract_post1.created_at),
+            created_at: format_to_rfc3339(follower_performed_refract_post1.created_at),
           )
           expect(response_body[0][:posts][2][:follower_post]).to include(
             :deleted_at,
@@ -2079,7 +2079,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             content: client_user_post.content,
             image: client_user_post.image.url,
             is_locked: client_user_post.is_locked,
-            created_at: I18n.l(client_user_post.created_at),
+            created_at: format_to_rfc3339(client_user_post.created_at),
             is_reply: true,
             replies: 0,
             icon_url: client_user.image.url,
@@ -2159,13 +2159,13 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to            eq(4)
-          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract4.created_at))
+          expect(response_body[0][:refracted_at]).to eq(format_to_rfc3339(follower_refract4.created_at))
           expect(response_body[0][:posts].length).to eq(1)
-          expect(response_body[1][:refracted_at]).to eq(I18n.l(follower_refract3.created_at))
+          expect(response_body[1][:refracted_at]).to eq(format_to_rfc3339(follower_refract3.created_at))
           expect(response_body[1][:posts].length).to eq(2)
-          expect(response_body[2][:refracted_at]).to eq(I18n.l(follower_refract2.created_at))
+          expect(response_body[2][:refracted_at]).to eq(format_to_rfc3339(follower_refract2.created_at))
           expect(response_body[2][:posts].length).to eq(1)
-          expect(response_body[3][:refracted_at]).to eq(I18n.l(follower_refract1.created_at))
+          expect(response_body[3][:refracted_at]).to eq(format_to_rfc3339(follower_refract1.created_at))
           expect(response_body[3][:posts].length).to eq(2)
         end
       end
@@ -2230,7 +2230,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                               eq(1)
-          expect(response_body[0][:refracted_at]).to                    eq(I18n.l(client_refract.updated_at))
+          expect(response_body[0][:refracted_at]).to                    eq(format_to_rfc3339(client_refract.updated_at))
           expect(response_body[0][:posts][0][:follower_post].length).to eq(14)
           expect(response_body[0][:posts][0][:follower_post]).to        include(
             id: follower_post.id,
@@ -2244,7 +2244,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             replies: 0,
             is_reply: false,
             is_liked_by_current_user: true,
-            created_at: I18n.l(follower_post.created_at),
+            created_at: format_to_rfc3339(follower_post.created_at),
           )
           expect(response_body[0][:posts][0][:follower_post]).to include(
             :deleted_at,
@@ -2279,7 +2279,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                            eq(1)
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract.updated_at))
+          expect(response_body[0][:refracted_at]).to                 eq(format_to_rfc3339(client_refract.updated_at))
           expect(response_body[0][:posts][0][:not_follower_post]).to eq(nil)
         end
       end
@@ -2310,7 +2310,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to                  eq(1)
-          expect(response_body[0][:refracted_at]).to       eq(I18n.l(client_refract.updated_at))
+          expect(response_body[0][:refracted_at]).to       eq(format_to_rfc3339(client_refract.updated_at))
           expect(response_body[0][:posts][0][:deleted]).to eq(nil)
         end
       end
@@ -2346,7 +2346,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(1)
 
-          expect(response_body[0][:refracted_at]).to                        eq(I18n.l(client_refract.updated_at))
+          expect(response_body[0][:refracted_at]).to                        eq(format_to_rfc3339(client_refract.updated_at))
           expect(response_body[0][:posts].length).to                        eq(4)
           expect(response_body[0][:posts][0][:current_user_post].length).to eq(15)
           expect(response_body[0][:posts][0][:current_user_post]).to        include(
@@ -2355,7 +2355,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             content: client_user_post.content,
             image: client_user_post.image.url,
             is_locked: client_user_post.is_locked,
-            created_at: I18n.l(client_user_post.created_at),
+            created_at: client_user_post.created_at.to_datetime.new_offset('+0000').rfc3339,
             is_reply: false,
             replies: 1,
             icon_url: client_user.image.url,
@@ -2376,7 +2376,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             content: follower_reply.content,
             image: follower_reply.image.url,
             is_locked: follower_reply.is_locked,
-            created_at: I18n.l(follower_reply.created_at),
+            created_at: format_to_rfc3339(follower_reply.created_at),
             is_reply: true,
             replies: 0,
             icon_url: follower.image.url,
@@ -2433,10 +2433,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(2)
 
-          expect(response_body[0][:refracted_at]).to             eq(I18n.l(client_refract2.updated_at))
+          expect(response_body[0][:refracted_at]).to             eq(format_to_rfc3339(client_refract2.updated_at))
           expect(response_body[0][:posts][0][:follower_post]).to have_id(follower_post2.id)
 
-          expect(response_body[1][:refracted_at]).to             eq(I18n.l(client_refract1.updated_at))
+          expect(response_body[1][:refracted_at]).to             eq(format_to_rfc3339(client_refract1.updated_at))
           expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post1.id)
         end
       end
@@ -2474,11 +2474,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(2)
 
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract2.updated_at))
+          expect(response_body[0][:refracted_at]).to                 eq(format_to_rfc3339(client_refract2.updated_at))
           expect(response_body[0][:posts][0][:current_user_post]).to have_id(client_user_post2.id)
           expect(response_body[0][:posts][1][:follower_post]).to     have_id(follower_reply2.id)
 
-          expect(response_body[1][:refracted_at]).to                 eq(I18n.l(client_refract1.updated_at))
+          expect(response_body[1][:refracted_at]).to                 eq(format_to_rfc3339(client_refract1.updated_at))
           expect(response_body[1][:posts][0][:current_user_post]).to have_id(client_user_post1.id)
           expect(response_body[1][:posts][1][:follower_post]).to     have_id(follower_reply1.id)
         end
@@ -2530,14 +2530,14 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body.length).to eq(3)
 
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract3.updated_at))
+          expect(response_body[0][:refracted_at]).to                 eq(format_to_rfc3339(client_refract3.updated_at))
           expect(response_body[0][:posts][0][:current_user_post]).to have_id(client_user_post2.id)
           expect(response_body[0][:posts][1][:follower_post]).to     have_id(follower_reply2.id)
 
-          expect(response_body[1][:refracted_at]).to             eq(I18n.l(client_refract2.updated_at))
+          expect(response_body[1][:refracted_at]).to             eq(format_to_rfc3339(client_refract2.updated_at))
           expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post.id)
 
-          expect(response_body[2][:refracted_at]).to                 eq(I18n.l(client_refract1.updated_at))
+          expect(response_body[2][:refracted_at]).to                 eq(format_to_rfc3339(client_refract1.updated_at))
           expect(response_body[2][:posts][0][:current_user_post]).to have_id(client_user_post1.id)
           expect(response_body[2][:posts][1][:follower_post]).to     have_id(follower_reply1.id)
         end
