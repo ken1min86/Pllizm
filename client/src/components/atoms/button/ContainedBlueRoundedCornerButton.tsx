@@ -1,10 +1,11 @@
-import { VFC } from 'react';
+import { VFC } from 'react'
 
-import Button from '@mui/material/Button';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Theme } from '@mui/material'
+import Button from '@mui/material/Button'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
       fontSize: '14px',
@@ -27,7 +28,7 @@ type Props = {
   label: string
 }
 
-const BlueRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
+const ContainedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
   const classes = useStyles({})
 
   return (
@@ -37,4 +38,4 @@ const BlueRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
   )
 }
 
-export default BlueRoundedCornerButton
+export default ContainedBlueRoundedCornerButton

@@ -3,13 +3,13 @@ import { VFC } from 'react'
 import { useDispatch } from 'react-redux'
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { Box, Hidden } from '@mui/material'
+import { Box, Hidden, Theme } from '@mui/material'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
 
 import Logo from '../../../assets/HeaderLogo.png'
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     arrow: {
       color: theme.palette.info.main,

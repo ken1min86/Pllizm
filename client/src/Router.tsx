@@ -1,10 +1,16 @@
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router'
 
-import Auth from './Auth';
+import Auth from './Auth'
 import {
-    BeginPasswordReset, EndPasswordReset, Home, PasswordReset, PrivacyPolicy,
-    SentMailOfPasswordReset, TermsOfUse, Top
-} from './components/pages';
+  BeginPasswordReset,
+  EndPasswordReset,
+  Home,
+  PasswordReset,
+  PrivacyPolicy,
+  SentMailOfPasswordReset,
+  TermsOfUse,
+  Top,
+} from './components/pages'
 
 const Router: React.VFC = () => (
   <Switch>

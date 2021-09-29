@@ -1,4 +1,4 @@
-import { Users } from '../users/types';
+import { Users } from '../users/types'
 
 const initialState: { users: Users } = {
   users: {

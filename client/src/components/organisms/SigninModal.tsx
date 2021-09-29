@@ -1,22 +1,20 @@
-import {
-    BasicTextField, BlueRoundedCornerButton, BlueSquareButton, ErrorMessages
-} from 'components/atoms';
-import { useCallback, useState, VFC } from 'react';
-import Modal from 'react-modal';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { signIn } from 'reducks/users/operations';
+import { BasicTextField, BlueSquareButton, ErrorMessages, OutlinedBlueRoundedCornerButton } from 'components/atoms'
+import { useCallback, useState, VFC } from 'react'
+import Modal from 'react-modal'
+import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { signIn } from 'reducks/users/operations'
 
-import CancelIcon from '@mui/icons-material/Cancel';
-import { Box, IconButton } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import CancelIcon from '@mui/icons-material/Cancel'
+import { Box, IconButton, Theme } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import Logo from '../../assets/PopupHeaderLogo.png';
+import Logo from '../../assets/PopupHeaderLogo.png'
 // eslint-disable-next-line import/no-useless-path-segments
-import { SignupModal } from './';
+import { SignupModal } from './'
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
       padding: '32px 40px',
@@ -127,7 +125,7 @@ const SigninModal: VFC<Props> = ({ type }) => {
             width: 217,
           }}
         >
-          <BlueRoundedCornerButton label="ログイン" onClick={openModal} />
+          <OutlinedBlueRoundedCornerButton label="ログイン" onClick={openModal} />
         </Box>
       )}
       {type === 'text' && (

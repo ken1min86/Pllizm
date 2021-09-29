@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { VFC } from 'react'
 
 import { Theme } from '@mui/material'
@@ -8,12 +10,15 @@ import makeStyles from '@mui/styles/makeStyles'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
-      backgroundColor: theme.palette.info.main,
+      fontSize: '14px',
+      paddingTop: '8px',
+      paddingBottom: '8px',
       width: '100%',
-      color: theme.palette.primary.light,
+      borderRadius: '24px',
+      color: theme.palette.info.main,
+      border: '1px solid #2699fb',
       fontWeight: 'bold',
       '&:hover': {
-        backgroundColor: theme.palette.info.main,
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
       },
@@ -24,17 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
   label: string
-  size: 'small' | 'medium' | 'large'
 }
 
-const BlueSquareButton: VFC<Props> = ({ onClick, label, size }) => {
+const ContainedWhiteRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
   const classes = useStyles({})
 
   return (
-    <Button variant="contained" size={size} className={classes.button} onClick={onClick}>
+    <Button className={classes.button} variant="contained" onClick={onClick} style={{ backgroundColor: '#fffffe' }}>
       {label}
     </Button>
   )
 }
 
-export default BlueSquareButton
+export default ContainedWhiteRoundedCornerButton

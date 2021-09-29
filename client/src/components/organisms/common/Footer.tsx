@@ -3,11 +3,11 @@ import { VFC } from 'react'
 import TwitterIcon from '@mui/icons-material/Twitter'
 // お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
 // import { useDispatch } from 'react-redux';
-import { Box, Link } from '@mui/material'
+import { Box, Link, Theme } from '@mui/material'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footer: {
       paddingTop: '24px',

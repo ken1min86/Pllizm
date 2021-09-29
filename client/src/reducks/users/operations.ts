@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { push } from 'connected-react-router';
-import { isValidEmailFormat } from 'function/common';
-import Cookies from 'js-cookie';
+import { push } from 'connected-react-router'
+import { isValidEmailFormat } from 'function/common'
+import Cookies from 'js-cookie'
 
-import axiosBase from '../../api';
-import { signInAction, signUpAction } from './actions';
+import axiosBase from '../../api'
+import { signInAction, signUpAction } from './actions'
 import {
-    ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
-    SignUpResponse
-} from './types';
+  ListenAuthStateRequest,
+  RequestHeadersForAuthentication,
+  SignInRequest,
+  SignUpRequest,
+  SignUpResponse,
+} from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const signUp =

@@ -1,8 +1,8 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { listenAuthState } from 'reducks/users/operations';
-import { getIsSignedIn } from 'reducks/users/selectors';
-import { Users } from 'reducks/users/types';
+import { FC, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { listenAuthState } from 'reducks/users/operations'
+import { getIsSignedIn } from 'reducks/users/selectors'
+import { Users } from 'reducks/users/types'
 
 const Auth: FC = ({ children }) => {
   const dispatch = useDispatch()
