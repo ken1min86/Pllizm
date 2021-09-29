@@ -464,7 +464,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:non_follower_headers) { non_follower.create_new_auth_token }
 
       context "when client has liked 3 client posts whose num of likes are 1 or 2 and num of replies are 0 or 1 or 2 and
-       liked 4 followers's post whose num of replies are 0 or 1 or 2" do
+      liked 4 followers's post whose num of replies are 0 or 1 or 2" do
         let!(:client_post_1liked_0reply)             { create(:post, user_id: client_user.id) }
         let!(:client_post_2liked_1reply)             { create(:post, user_id: client_user.id) }
         let!(:client_post_1liked_2reply)             { create(:post, user_id: client_user.id) }
@@ -508,71 +508,69 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(7)
+          expect(response_body[:posts].length).to eq(7)
 
-          expect(response_body[0][:follower_post].length).to eq(11)
-          expect(response_body[1][:current_user_post].length).to eq(14)
-          expect(response_body[2][:follower_post].length).to eq(11)
-          expect(response_body[3][:current_user_post].length).to eq(14)
-          expect(response_body[4][:follower_post].length).to eq(11)
-          expect(response_body[5][:follower_post].length).to eq(11)
-          expect(response_body[6][:current_user_post].length).to eq(14)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][2].length).to eq(14)
+          expect(response_body[:posts][3].length).to eq(14)
+          expect(response_body[:posts][4].length).to eq(14)
+          expect(response_body[:posts][5].length).to eq(14)
+          expect(response_body[:posts][6].length).to eq(14)
 
-          expect(response_body[0][:follower_post]).to include(
+          expect(response_body[:posts][0]).to include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower2_post_1reply_by_non_follower.id,
-            content: follower2_post_1reply_by_non_follower.content,
-            image: follower2_post_1reply_by_non_follower.image.url,
-            is_locked: follower2_post_1reply_by_non_follower.is_locked,
             icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
-            replies: 0,
+            locked: nil,
+            content: follower2_post_1reply_by_non_follower.content,
+            image_url: follower2_post_1reply_by_non_follower.image.url,
+            created_at: format_to_rfc3339(follower2_post_1reply_by_non_follower.created_at),
             is_reply: false,
-            is_liked_by_current_user: true,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: true,
+            user_name: nil,
+            user_id: nil
           )
-          expect(response_body[0][:follower_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
-          )
-          expect(response_body[1][:current_user_post]).to include(
+          expect(response_body[:posts][1]).to include(
+            status: 'exist',
+            posted_by: 'me',
             id: client_post_2liked_1reply.id,
-            content: client_post_2liked_1reply.content,
-            image: client_post_2liked_1reply.image.url,
-            is_locked: client_post_2liked_1reply.is_locked,
             icon_url: client_user.image.url,
-            likes: 2,
-            replies: 1,
+            locked: client_post_2liked_1reply.is_locked,
+            content: client_post_2liked_1reply.content,
+            image_url: client_post_2liked_1reply.image.url,
+            created_at: format_to_rfc3339(client_post_2liked_1reply.created_at),
             is_reply: false,
-            username: client_user.username,
-            userid: client_user.userid,
-            is_liked_by_current_user: true,
+            likes_count: 2,
+            replies_count: 1,
+            liked_by_current_user: true,
+            user_name: client_user.username,
+            user_id: client_user.userid,
           )
-          expect(response_body[1][:current_user_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
-          )
-
-          expect(response_body[2][:follower_post]).to include(
+          expect(response_body[:posts][2]).to include(
             id: follower1_post_1reply.id,
-            replies: 1,
+            replies_count: 1,
           )
-          expect(response_body[3][:current_user_post]).to include(
+          expect(response_body[:posts][3]).to include(
             id: client_post_1liked_0reply.id,
-            likes: 1,
-            replies: 0,
+            likes_count: 1,
+            replies_count: 0,
           )
-          expect(response_body[4][:follower_post]).to include(
+          expect(response_body[:posts][4]).to include(
             id: follower1_post_0reply.id,
-            replies: 0,
+            replies_count: 0,
           )
-          expect(response_body[5][:follower_post]).to include(
+          expect(response_body[:posts][5]).to include(
             id: follower2_post_2reply.id,
-            replies: 2,
+            replies_count: 2,
           )
-          expect(response_body[6][:current_user_post]).to include(
+          expect(response_body[:posts][6]).to include(
             id: client_post_1liked_2reply.id,
-            likes: 1,
-            replies: 2,
+            likes_count: 1,
+            replies_count: 2,
           )
         end
       end
@@ -598,22 +596,23 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:follower_post].length).to eq(11)
-          expect(response_body[0][:follower_post]).to include(
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower2_post_1reply_by_non_follower.id,
-            content: follower2_post_1reply_by_non_follower.content,
-            image: follower2_post_1reply_by_non_follower.image.url,
-            is_locked: follower2_post_1reply_by_non_follower.is_locked,
             icon_url: follower2_post_1reply_by_non_follower.icon.image.url,
-            replies: 0,
+            locked: nil,
+            content: follower2_post_1reply_by_non_follower.content,
+            image_url: follower2_post_1reply_by_non_follower.image.url,
+            created_at: format_to_rfc3339(follower2_post_1reply_by_non_follower.created_at),
             is_reply: false,
-            is_liked_by_current_user: true,
-          )
-          expect(response_body[0][:follower_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: true,
+            user_name: nil,
+            user_id: nil
           )
         end
       end
@@ -641,22 +640,23 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           follower1_reply = Post.order(created_at: :desc).limit(1)[0]
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:follower_post].length).to eq(11)
-          expect(response_body[0][:follower_post]).to include(
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower1_reply.id,
-            content: follower1_reply.content,
-            image: follower1_reply.image.url,
-            is_locked: follower1_reply.is_locked,
             icon_url: follower1_reply.icon.image.url,
-            replies: 0,
+            locked: nil,
+            content: follower1_reply.content,
+            image_url: follower1_reply.image.url,
+            created_at: format_to_rfc3339(follower1_reply.created_at),
             is_reply: true,
-            is_liked_by_current_user: true,
-          )
-          expect(response_body[0][:follower_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: true,
+            user_name: nil,
+            user_id: nil
           )
         end
       end
@@ -667,7 +667,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(0)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
     end
@@ -733,51 +733,50 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(4)
+          expect(response_body[:posts].length).to eq(4)
 
           # ソートが正しく実装されているかテスト
-          expect(response_body[0][:follower_post]).to have_id(follower2_post_with_reply.id)
-          expect(response_body[1][:follower_post]).to have_id(follower1_post_without_reply.id)
-          expect(response_body[2][:current_user_post]).to have_id(client_post_with_reply.id)
-          expect(response_body[3][:current_user_post]).to have_id(client_post_without_reply.id)
+          expect(response_body[:posts][0]).to have_id(follower2_post_with_reply.id)
+          expect(response_body[:posts][1]).to have_id(follower1_post_without_reply.id)
+          expect(response_body[:posts][2]).to have_id(client_post_with_reply.id)
+          expect(response_body[:posts][3]).to have_id(client_post_without_reply.id)
 
-          expect(response_body[0][:follower_post].length).to eq(11)
-          expect(response_body[1][:follower_post].length).to eq(11)
-          expect(response_body[2][:current_user_post].length).to eq(14)
-          expect(response_body[3][:current_user_post].length).to eq(14)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][2].length).to eq(14)
+          expect(response_body[:posts][3].length).to eq(14)
 
-          expect(response_body[2][:current_user_post]).to include(
+          expect(response_body[:posts][2]).to include(
+            status: 'exist',
+            posted_by: 'me',
             id: client_post_with_reply.id,
-            content: client_post_with_reply.content,
-            image: client_post_with_reply.image.url,
-            is_locked: client_post_with_reply.is_locked,
             icon_url: client_user.image.url,
-            likes: 2,
-            replies: 1,
-            is_liked_by_current_user: true,
-            username: client_user.username,
-            userid: client_user.userid,
+            locked: client_post_with_reply.is_locked,
+            content: client_post_with_reply.content,
+            image_url: client_post_with_reply.image.url,
+            created_at: format_to_rfc3339(client_post_with_reply.created_at),
             is_reply: false,
+            likes_count: 2,
+            replies_count: 1,
+            liked_by_current_user: true,
+            user_name: client_user.username,
+            user_id: client_user.userid,
           )
-          expect(response_body[2][:current_user_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
-          )
-          expect(response_body[1][:follower_post]).to include(
+          expect(response_body[:posts][1]).to include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower1_post_without_reply.id,
-            content: follower1_post_without_reply.content,
-            image: follower1_post_without_reply.image.url,
-            is_locked: follower1_post_without_reply.is_locked,
             icon_url: follower1_post_without_reply.icon.image.url,
-            replies: 0,
-            is_liked_by_current_user: false,
+            locked: nil,
+            content: follower1_post_without_reply.content,
+            image_url: follower1_post_without_reply.image.url,
+            created_at: format_to_rfc3339(follower1_post_without_reply.created_at),
             is_reply: false,
-          )
-          expect(response_body[1][:follower_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: nil,
+            user_id: nil,
           )
         end
       end
@@ -793,25 +792,23 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to include(
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'me',
             id: client_post_without_reply.id,
-            content: client_post_without_reply.content,
-            image: client_post_without_reply.image.url,
-            is_locked: client_post_without_reply.is_locked,
             icon_url: client_user.image.url,
-            likes: 0,
-            replies: 0,
-            is_liked_by_current_user: false,
-            username: client_user.username,
-            userid: client_user.userid,
+            locked: client_post_without_reply.is_locked,
+            content: client_post_without_reply.content,
+            image_url: client_post_without_reply.image.url,
+            created_at: format_to_rfc3339(client_post_without_reply.created_at),
             is_reply: false,
-          )
-          expect(response_body[0][:current_user_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
+            likes_count: 0,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: client_user.username,
+            user_id: client_user.userid,
           )
         end
       end
@@ -827,22 +824,23 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:follower_post].length).to eq(11)
-          expect(response_body[0][:follower_post]).to include(
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower1_post_without_reply.id,
-            content: follower1_post_without_reply.content,
-            image: follower1_post_without_reply.image.url,
-            is_locked: follower1_post_without_reply.is_locked,
             icon_url: follower1_post_without_reply.icon.image.url,
-            replies: 0,
-            is_liked_by_current_user: false,
+            locked: nil,
+            content: follower1_post_without_reply.content,
+            image_url: follower1_post_without_reply.image.url,
+            created_at: format_to_rfc3339(follower1_post_without_reply.created_at),
             is_reply: false,
-          )
-          expect(response_body[0][:follower_post]).to include(
-            :deleted_at,
-            :created_at,
-            :updated_at,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: nil,
+            user_id: nil
           )
         end
       end
@@ -857,7 +855,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(0)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
 
@@ -875,7 +873,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(0)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
 
@@ -887,7 +885,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(0)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
     end
@@ -930,10 +928,10 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(3)
-          expect(response_body[0][:current_user_post]).to have_id(client_post2.id)
-          expect(response_body[1][:current_user_post]).to have_id(client_reply.id)
-          expect(response_body[2][:current_user_post]).to have_id(client_post1.id)
+          expect(response_body[:posts].length).to eq(3)
+          expect(response_body[:posts][0]).to have_id(client_post2.id)
+          expect(response_body[:posts][1]).to have_id(client_reply.id)
+          expect(response_body[:posts][2]).to have_id(client_post1.id)
         end
       end
 
@@ -944,8 +942,9 @@ RSpec.describe "V1::PostsApi", type: :request do
           get v1_current_user_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          response_body = JSON.parse(response.body)
-          expect(response_body.length).to eq(1)
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(1)
+          expect(response_body[:posts][0]).to have_id(client_post.id)
         end
       end
 
@@ -954,8 +953,8 @@ RSpec.describe "V1::PostsApi", type: :request do
           get v1_current_user_posts_path, headers: client_user_headers
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
-          response_body = JSON.parse(response.body)
-          expect(response_body.length).to eq(0)
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
     end
@@ -1029,8 +1028,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[:current]).to eq(not_exist: nil)
+          expect(response_body.length).to             eq(3)
+          expect(response_body[:parent]).to           eq(nil)
+          expect(response_body[:current][:status]).to eq('not_exist')
+          expect(response_body[:current].length).to   eq(14)
+          expect(response_body[:children]).to         eq([nil])
         end
       end
 
@@ -1046,8 +1048,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[:current]).to eq(deleted: nil)
+          expect(response_body.length).to             eq(3)
+          expect(response_body[:parent]).to           eq(nil)
+          expect(response_body[:current][:status]).to eq('deleted')
+          expect(response_body[:current].length).to   eq(14)
+          expect(response_body[:children]).to         eq([nil])
         end
       end
 
@@ -1059,8 +1064,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[:current]).to eq(not_follower_post: nil)
+          expect(response_body.length).to                eq(3)
+          expect(response_body[:parent]).to              eq(nil)
+          expect(response_body[:current][:posted_by]).to eq('not_follower')
+          expect(response_body[:current].length).to      eq(14)
+          expect(response_body[:children]).to            eq([nil])
         end
       end
 
@@ -1081,17 +1089,17 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:current_user_post]).to have_id(parent_post_of_client_user.id)
-          expect(response_body[:parent][:current_user_post].length).to eq(14)
+          expect(response_body[:parent]).to        have_id(parent_post_of_client_user.id)
+          expect(response_body[:parent].length).to eq(14)
 
-          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
-          expect(response_body[:current][:current_user_post].length).to eq(14)
+          expect(response_body[:current]).to        have_id(current_post_of_client_user.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(2)
-          expect(response_body[:children][0][:follower_post].length).to eq(11)
-          expect(response_body[:children][1][:current_user_post].length).to eq(14)
-          expect(response_body[:children][0][:follower_post]).to have_id(child_post_of_follower.id)
-          expect(response_body[:children][1][:current_user_post]).to have_id(child_post_of_client_user.id)
+          expect(response_body[:children].length).to    eq(2)
+          expect(response_body[:children][0].length).to eq(14)
+          expect(response_body[:children][0]).to        have_id(child_post_of_follower.id)
+          expect(response_body[:children][1].length).to eq(14)
+          expect(response_body[:children][1]).to        have_id(child_post_of_client_user.id)
         end
       end
 
@@ -1111,17 +1119,18 @@ RSpec.describe "V1::PostsApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
 
           expect(response_body.length).to eq(3)
-          expect(response_body[:parent][:follower_post]).to have_id(parent_post_of_follower.id)
-          expect(response_body[:parent][:follower_post].length).to eq(11)
 
-          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
-          expect(response_body[:current][:current_user_post].length).to eq(14)
+          expect(response_body[:parent]).to        have_id(parent_post_of_follower.id)
+          expect(response_body[:parent].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(2)
-          expect(response_body[:children][0][:current_user_post].length).to eq(14)
-          expect(response_body[:children][1][:current_user_post].length).to eq(14)
-          expect(response_body[:children][0][:current_user_post]).to have_id(child_post2_of_client_user.id)
-          expect(response_body[:children][1][:current_user_post]).to have_id(child_post1_of_client_user.id)
+          expect(response_body[:current]).to        have_id(current_post_of_client_user.id)
+          expect(response_body[:current].length).to eq(14)
+
+          expect(response_body[:children].length).to    eq(2)
+          expect(response_body[:children][0].length).to eq(14)
+          expect(response_body[:children][0]).to        have_id(child_post2_of_client_user.id)
+          expect(response_body[:children][1].length).to eq(14)
+          expect(response_body[:children][1]).to        have_id(child_post1_of_client_user.id)
         end
       end
 
@@ -1129,8 +1138,8 @@ RSpec.describe "V1::PostsApi", type: :request do
       and the post doesn't have parent post
       and the post has 2 child posts of follower" do
         let!(:current_post_of_client_user) { create(:post, user_id: client_user.id) }
-        let!(:child_post1_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
-        let!(:child_post2_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
+        let!(:child_post1_of_follower)     { create_reply_to_prams_post(follower, current_post_of_client_user) }
+        let!(:child_post2_of_follower)     { create_reply_to_prams_post(follower, current_post_of_client_user) }
 
         it 'returns 200 and thread' do
           get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
@@ -1141,16 +1150,17 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_exist]).to eq(nil)
+          expect(response_body[:parent][:status]).to eq('not_exist')
+          expect(response_body[:parent].length).to  eq(14)
 
-          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
-          expect(response_body[:current][:current_user_post].length).to eq(14)
+          expect(response_body[:current]).to        have_id(current_post_of_client_user.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(2)
-          expect(response_body[:children][0][:follower_post].length).to eq(11)
-          expect(response_body[:children][1][:follower_post].length).to eq(11)
-          expect(response_body[:children][0][:follower_post]).to have_id(child_post2_of_follower.id)
-          expect(response_body[:children][1][:follower_post]).to have_id(child_post1_of_follower.id)
+          expect(response_body[:children].length).to    eq(2)
+          expect(response_body[:children][0].length).to eq(14)
+          expect(response_body[:children][0]).to        have_id(child_post2_of_follower.id)
+          expect(response_body[:children][1].length).to eq(14)
+          expect(response_body[:children][1]).to        have_id(child_post1_of_follower.id)
         end
       end
 
@@ -1173,21 +1183,27 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:deleted]).to eq(nil)
+          expect(response_body[:parent][:status]).to eq('deleted')
+          expect(response_body[:parent].length).to   eq(14)
 
-          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
-          expect(response_body[:current][:current_user_post].length).to eq(14)
+          expect(response_body[:current]).to        have_id(current_post_of_client_user.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:not_exist]).to eq(nil)
+          expect(response_body[:children].length).to      eq(1)
+          expect(response_body[:children][0][:status]).to eq('not_exist')
+          expect(response_body[:children][0].length).to   eq(14)
         end
       end
 
       context "when post related to params[:post_id] is exist and posted by current user
       and the post doesn't have parent post
       and the post has 1 deleted child post of client user or follower" do
-        let!(:current_post_of_client_user) { create(:post, user_id: client_user.id) }
+        let!(:current_post_of_client_user)    { create(:post, user_id: client_user.id) }
         let!(:deleted_child_post_of_follower) { create_reply_to_prams_post(follower, current_post_of_client_user) }
+
+        before do
+          deleted_child_post_of_follower.destroy
+        end
 
         it 'returns 200 and thread' do
           get v1_post_threads_path(current_post_of_client_user.id), headers: client_user_headers
@@ -1198,13 +1214,15 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_exist]).to eq(nil)
+          expect(response_body[:parent][:status]).to eq('not_exist')
+          expect(response_body[:parent].length).to   eq(14)
 
-          expect(response_body[:current][:current_user_post]).to have_id(current_post_of_client_user.id)
-          expect(response_body[:current][:current_user_post].length).to eq(14)
+          expect(response_body[:current]).to        have_id(current_post_of_client_user.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:deleted]).to eq(nil)
+          expect(response_body[:children].length).to      eq(1)
+          expect(response_body[:children][0][:status]).to eq('not_exist')
+          expect(response_body[:children][0].length).to   eq(14)
         end
       end
 
@@ -1231,13 +1249,15 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_follower_post]).to eq(nil)
+          expect(response_body[:parent][:posted_by]).to eq('not_follower')
+          expect(response_body[:parent].length).to     eq(14)
 
-          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
-          expect(response_body[:current][:follower_post].length).to eq(11)
+          expect(response_body[:current]).to        have_id(current_post_of_follower.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:not_exist]).to eq(nil)
+          expect(response_body[:children].length).to      eq(1)
+          expect(response_body[:children][0][:status]).to eq('not_exist')
+          expect(response_body[:children][0].length).to   eq(14)
         end
       end
 
@@ -1259,14 +1279,15 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_follower_post]).to eq(nil)
+          expect(response_body[:parent][:status]).to eq('not_exist')
+          expect(response_body[:parent].length).to   eq(14)
 
-          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
-          expect(response_body[:current][:follower_post].length).to eq(11)
+          expect(response_body[:current]).to        have_id(current_post_of_follower.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:current_user_post]).to have_id(child_post_of_current_user.id)
-          expect(response_body[:children][0][:current_user_post].length).to eq(14)
+          expect(response_body[:children].length).to    eq(1)
+          expect(response_body[:children][0]).to        have_id(child_post_of_current_user.id)
+          expect(response_body[:children][0].length).to eq(14)
         end
       end
 
@@ -1285,14 +1306,15 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           expect(response_body.length).to eq(3)
 
-          expect(response_body[:parent][:not_follower_post]).to eq(nil)
+          expect(response_body[:parent][:status]).to eq('not_exist')
+          expect(response_body[:parent].length).to   eq(14)
 
-          expect(response_body[:current][:follower_post]).to have_id(current_post_of_follower.id)
-          expect(response_body[:current][:follower_post].length).to eq(11)
+          expect(response_body[:current]).to        have_id(current_post_of_follower.id)
+          expect(response_body[:current].length).to eq(14)
 
-          expect(response_body[:children].length).to eq(1)
-          expect(response_body[:children][0][:follower_post]).to have_id(child_post_of_follower.id)
-          expect(response_body[:children][0][:follower_post].length).to eq(11)
+          expect(response_body[:children].length).to    eq(1)
+          expect(response_body[:children][0]).to        have_id(child_post_of_follower.id)
+          expect(response_body[:children][0].length).to eq(14)
         end
       end
     end
@@ -1326,8 +1348,7 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user_headers)  { client_user.create_new_auth_token }
       let(:follower)             { create_follower(client_user) }
       let(:follower_headers)     { follower.create_new_auth_token }
-      # not_follower: 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
-      let(:not_follower)         { create_follower(client_user) }
+      let(:not_follower)         { create_follower(client_user) } # 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
       let(:not_follower_headers) { not_follower.create_new_auth_token }
 
       context "case1, 2, 4, 6, 8" do
@@ -1360,13 +1381,13 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(3)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to have_id(case8_current_user_post_2.id)
-          expect(response_body[1][:current_user_post].length).to eq(14)
-          expect(response_body[1][:current_user_post]).to have_id(case2_current_user_post_1.id)
-          expect(response_body[2][:current_user_post].length).to eq(14)
-          expect(response_body[2][:current_user_post]).to have_id(case1_current_user_post_1.id)
+          expect(response_body[:posts].length).to    eq(3)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(case8_current_user_post_2.id)
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][1]).to        have_id(case2_current_user_post_1.id)
+          expect(response_body[:posts][2].length).to eq(14)
+          expect(response_body[:posts][2]).to        have_id(case1_current_user_post_1.id)
         end
       end
 
@@ -1401,9 +1422,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to have_id(case9_current_user_post_2.id)
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(case9_current_user_post_2.id)
         end
       end
 
@@ -1429,7 +1450,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         before do
           delete v1_post_path(case10_current_user_post_3.id), headers: client_user_headers
           delete v1_post_path(case11_current_user_post_1.id), headers: client_user_headers
-          delete v1_post_path(case11_follower_post_2.id), headers: follower_headers
+          delete v1_post_path(case11_follower_post_2.id),     headers: follower_headers
           delete v1_post_path(case11_current_user_post_2.id), headers: client_user_headers
           delete v1_post_path(case12_current_user_post_2.id), headers: client_user_headers
           delete v1_post_path(case12_current_user_post_3.id), headers: client_user_headers
@@ -1442,11 +1463,11 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(2)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to have_id(case12_current_user_post_1.id)
-          expect(response_body[1][:current_user_post].length).to eq(14)
-          expect(response_body[1][:current_user_post]).to have_id(case10_current_user_post_2.id)
+          expect(response_body[:posts].length).to    eq(2)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(case12_current_user_post_1.id)
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][1]).to        have_id(case10_current_user_post_2.id)
         end
       end
 
@@ -1472,9 +1493,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to have_id(case13_current_user_post_1.id)
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(case13_current_user_post_1.id)
         end
       end
 
@@ -1489,9 +1510,9 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           response_body = JSON.parse(response.body, symbolize_names: true)
 
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:current_user_post].length).to eq(14)
-          expect(response_body[0][:current_user_post]).to have_id(current_user_post.id)
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(current_user_post.id)
         end
       end
 
@@ -1501,7 +1522,7 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response).to have_http_status(200)
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(0)
+          expect(response_body[:posts].length).to eq(0)
         end
       end
     end
@@ -1561,18 +1582,18 @@ RSpec.describe "V1::PostsApi", type: :request do
             @case3_11_follower_post = create(:post, user_id: @follower.id)
 
             @case24_not_follower_post1 = create(:post, user_id: @not_follower.id)
-            @case24_current_user_post = create_reply_to_prams_post(@client_user, @case24_not_follower_post1)
+            @case24_current_user_post  = create_reply_to_prams_post(@client_user, @case24_not_follower_post1)
             create_reply_to_prams_post(@not_follower, @case24_current_user_post) # case24_not_follower_post2
 
             @case25_current_user_post1 = create(:post, user_id: @client_user.id)
-            @case25_follower_post1 = create_reply_to_prams_post(@follower, @case25_current_user_post1)
+            @case25_follower_post1     = create_reply_to_prams_post(@follower, @case25_current_user_post1)
             @case25_current_user_post2 = create_reply_to_prams_post(@client_user, @case25_follower_post1)
-            @case25_follower_post2 = create_reply_to_prams_post(@follower, @case25_current_user_post2)
+            @case25_follower_post2     = create_reply_to_prams_post(@follower, @case25_current_user_post2)
 
-            @case26_27_follower_post1 = create(:post, user_id: @follower.id)
+            @case26_27_follower_post1     = create(:post, user_id: @follower.id)
             @case26_27_current_user_post1 = create_reply_to_prams_post(@client_user, @case26_27_follower_post1)
-            @case26_follower_post2 = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
-            @case27_follower_post2 = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
+            @case26_follower_post2        = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
+            @case27_follower_post2        = create_reply_to_prams_post(@follower, @case26_27_current_user_post1)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
@@ -1595,9 +1616,10 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response).to have_http_status(200)
             expect(response.message).to include('OK')
             response_body = JSON.parse(response.body, symbolize_names: true)
-            expect(response_body.length).to eq(1)
-            expect(response_body[0][:reply][:current_user_post]).to have_id(@case26_27_current_user_post1.id)
-            expect(response_body[0][:reply][:current_user_post].length).to eq(14)
+            expect(response_body[:posts].length).to        eq(1)
+            expect(response_body[:posts][0]).to            have_id(@case26_27_current_user_post1.id)
+            expect(response_body[:posts][0][:category]).to eq('reply')
+            expect(response_body[:posts][0].length).to     eq(15)
           end
         end
       end
@@ -1613,14 +1635,14 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
-            @case4_9_follower_post = create(:post, user_id: @follower.id)
+            @case4_9_follower_post  = create(:post, user_id: @follower.id)
             @case4_10_follower_post = create(:post, user_id: @follower.id)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 29, 59) do
             post v1_post_likes_path(@case4_10_follower_post.id), headers: @client_user_headers
             @case14_current_user_post = create(:post, user_id: @client_user.id)
-            @case14_follower_post = create_reply_to_prams_post(@follower, @case14_current_user_post)
+            @case14_follower_post     = create_reply_to_prams_post(@follower, @case14_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 21, 5, 30, 0o0) do
@@ -1630,20 +1652,20 @@ RSpec.describe "V1::PostsApi", type: :request do
 
           travel_to Time.zone.local(2021, 8, 25) do
             @case17_current_user_post = create(:post, user_id: @client_user.id)
-            @case17_follower_post1 = create_reply_to_prams_post(@follower, @case17_current_user_post)
-            @case17_follower_post2 = create_reply_to_prams_post(@follower, @case17_follower_post1)
+            @case17_follower_post1    = create_reply_to_prams_post(@follower, @case17_current_user_post)
+            @case17_follower_post2    = create_reply_to_prams_post(@follower, @case17_follower_post1)
             @case17_follower_post1.update(is_locked: true)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 29, 59) do
             @case16_current_user_post = create(:post, user_id: @client_user.id)
-            @case16_follower_post = create_reply_to_prams_post(@follower, @case16_current_user_post)
+            @case16_follower_post     = create_reply_to_prams_post(@follower, @case16_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: false)
             @case15_current_user_post = create(:post, user_id: @client_user.id)
-            @case15_follower_post = create_reply_to_prams_post(@follower, @case15_current_user_post)
+            @case15_follower_post     = create_reply_to_prams_post(@follower, @case15_current_user_post)
           end
         end
 
@@ -1654,11 +1676,13 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response).to have_http_status(200)
             expect(response.message).to include('OK')
             response_body = JSON.parse(response.body, symbolize_names: true)
-            expect(response_body.length).to eq(2)
-            expect(response_body[0][:reply][:follower_post]).to have_id(@case16_follower_post.id)
-            expect(response_body[0][:reply][:follower_post].length).to eq(11)
-            expect(response_body[1][:like][:follower_post]).to have_id(@case4_9_follower_post.id)
-            expect(response_body[1][:like][:follower_post].length).to eq(11)
+            expect(response_body[:posts].length).to        eq(2)
+            expect(response_body[:posts][0]).to            have_id(@case16_follower_post.id)
+            expect(response_body[:posts][0][:category]).to eq('reply')
+            expect(response_body[:posts][0].length).to     eq(15)
+            expect(response_body[:posts][1]).to            have_id(@case4_9_follower_post.id)
+            expect(response_body[:posts][1][:category]).to eq('like')
+            expect(response_body[:posts][1].length).to     eq(15)
           end
         end
       end
@@ -1667,28 +1691,28 @@ RSpec.describe "V1::PostsApi", type: :request do
         before do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
-            @client_user = create(:user)
-            @follower = create_follower(@client_user)
+            @client_user         = create(:user)
+            @follower            = create_follower(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
-            @follower_headers = @follower.create_new_auth_token
+            @follower_headers    = @follower.create_new_auth_token
           end
 
           travel_to Time.zone.local(2021, 8, 14, 3, 30, 0o0) do
             @case_20_21_follower_post1 = create(:post, user_id: @follower.id)
             @case_20_21_follower_post2 = create_reply_to_prams_post(@follower, @case_20_21_follower_post1)
-            @case21_follower_post = create_reply_to_prams_post(@follower, @case_20_21_follower_post2)
+            @case21_follower_post      = create_reply_to_prams_post(@follower, @case_20_21_follower_post2)
           end
 
           travel_to Time.zone.local(2021, 8, 14, 5, 30, 0o0) do
             CurrentUserRefract.create(user_id: @client_user.id, performed_refract: true)
             @case13_current_user_post = create(:post, user_id: @client_user.id)
-            @case13_follower_post = create_reply_to_prams_post(@follower, @case13_current_user_post)
+            @case13_follower_post     = create_reply_to_prams_post(@follower, @case13_current_user_post)
           end
 
           travel_to Time.zone.local(2021, 8, 15) do
             @case18_19_follower_post1 = create(:post, user_id: @follower.id)
             @case18_19_follower_post2 = create_reply_to_prams_post(@follower, @case18_19_follower_post1)
-            @case18_follower_post = create_reply_to_prams_post(@follower, @case18_19_follower_post2)
+            @case18_follower_post     = create_reply_to_prams_post(@follower, @case18_19_follower_post2)
             @case18_current_user_post = create_reply_to_prams_post(@client_user, @case18_follower_post)
             @case19_current_user_post = create_reply_to_prams_post(@client_user, @case18_19_follower_post2)
             delete v1_post_path(@case18_follower_post.id), headers: @follower_headers
@@ -1702,19 +1726,19 @@ RSpec.describe "V1::PostsApi", type: :request do
           end
 
           travel_to Time.zone.local(2021, 8, 17) do
-            @case22_23_follower_post = create(:post, user_id: @follower.id)
+            @case22_23_follower_post  = create(:post, user_id: @follower.id)
             @case22_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
-            @case22_follower_post1 = create_reply_to_prams_post(@follower, @case22_current_user_post)
-            @case22_follower_post2 = create_reply_to_prams_post(@follower, @case22_follower_post1)
+            @case22_follower_post1    = create_reply_to_prams_post(@follower, @case22_current_user_post)
+            @case22_follower_post2    = create_reply_to_prams_post(@follower, @case22_follower_post1)
             @case23_current_user_post = create_reply_to_prams_post(@client_user, @case22_23_follower_post)
             delete v1_post_path(@case23_current_user_post.id), headers: @client_user_headers
           end
 
           travel_to Time.zone.local(2021, 8, 20) do
             @case5_current_user_post = create(:post, user_id: @client_user.id)
-            @case6_follower_post = create(:post, user_id: @follower.id)
+            @case6_follower_post     = create(:post, user_id: @follower.id)
             @case7_current_user_post = create(:post, user_id: @client_user.id)
-            @case8_follower_post = create(:post, user_id: @follower.id)
+            @case8_follower_post     = create(:post, user_id: @follower.id)
             @case5_current_user_post.update(is_locked: true)
             @case6_follower_post.update(is_locked: true)
           end
@@ -1738,17 +1762,28 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response).to have_http_status(200)
             expect(response.message).to include('OK')
             response_body = JSON.parse(response.body, symbolize_names: true)
-            expect(response_body.length).to eq(5)
-            expect(response_body[0][:like][:follower_post]).to have_id(@case8_follower_post.id)
-            expect(response_body[0][:like][:follower_post].length).to eq(11)
-            expect(response_body[1][:reply][:follower_post]).to have_id(@case22_follower_post2.id)
-            expect(response_body[1][:reply][:follower_post].length).to eq(11)
-            expect(response_body[2][:reply][:current_user_post]).to have_id(@case20_current_user_post.id)
-            expect(response_body[2][:reply][:current_user_post].length).to eq(14)
-            expect(response_body[3][:reply][:current_user_post]).to have_id(@case19_current_user_post.id)
-            expect(response_body[3][:reply][:current_user_post].length).to eq(14)
-            expect(response_body[4][:reply][:follower_post]).to have_id(@case13_follower_post.id)
-            expect(response_body[4][:reply][:follower_post].length).to eq(11)
+
+            expect(response_body[:posts].length).to eq(5)
+
+            expect(response_body[:posts][0]).to have_id(@case8_follower_post.id)
+            expect(response_body[:posts][0][:category]).to eq('like')
+            expect(response_body[:posts][0].length).to     eq(15)
+
+            expect(response_body[:posts][1]).to            have_id(@case22_follower_post2.id)
+            expect(response_body[:posts][1][:category]).to eq('reply')
+            expect(response_body[:posts][1].length).to     eq(15)
+
+            expect(response_body[:posts][2]).to            have_id(@case20_current_user_post.id)
+            expect(response_body[:posts][2][:category]).to eq('reply')
+            expect(response_body[:posts][2].length).to     eq(15)
+
+            expect(response_body[:posts][3]).to            have_id(@case19_current_user_post.id)
+            expect(response_body[:posts][3][:category]).to eq('reply')
+            expect(response_body[:posts][3].length).to     eq(15)
+
+            expect(response_body[:posts][4]).to            have_id(@case13_follower_post.id)
+            expect(response_body[:posts][4][:category]).to eq('reply')
+            expect(response_body[:posts][4].length).to     eq(15)
           end
         end
       end
@@ -1852,15 +1887,50 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                       eq(5)
-          expect(response_body[0][:deleted]).to                 eq(nil)
-          expect(response_body[1][:follower_post].length).to     eq(11)
-          expect(response_body[1][:follower_post]).to            have_id(follower_post1.id)
-          expect(response_body[2][:not_follower_post]).to        eq(nil)
-          expect(response_body[3][:follower_post].length).to     eq(11)
-          expect(response_body[3][:follower_post]).to            have_id(follower_post2.id)
-          expect(response_body[4][:current_user_post].length).to eq(14)
-          expect(response_body[4][:current_user_post]).to        have_id(client_user_post.id)
+          expect(response_body[:posts].length).to eq(5)
+
+          expect(response_body[:posts][0]).to include(
+            status: 'deleted',
+            posted_by: nil,
+            id: nil,
+            icon_url: nil,
+            locked: nil,
+            content: nil,
+            image_url: nil,
+            created_at: nil,
+            is_reply: nil,
+            likes_count: nil,
+            replies_count: nil,
+            liked_by_current_user: nil,
+            user_name: nil,
+            user_id: nil
+          )
+
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][1]).to        have_id(follower_post1.id)
+
+          expect(response_body[:posts][2]).to include(
+            status: 'exist',
+            posted_by: 'not_follower',
+            id: nil,
+            icon_url: nil,
+            locked: nil,
+            content: nil,
+            image_url: nil,
+            created_at: nil,
+            is_reply: nil,
+            likes_count: nil,
+            replies_count: nil,
+            liked_by_current_user: nil,
+            user_name: nil,
+            user_id: nil
+          )
+
+          expect(response_body[:posts][3].length).to eq(14)
+          expect(response_body[:posts][3]).to        have_id(follower_post2.id)
+
+          expect(response_body[:posts][4].length).to eq(14)
+          expect(response_body[:posts][4]).to        have_id(client_user_post.id)
         end
       end
     end
@@ -1927,32 +1997,31 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
-          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract.created_at))
-          expect(response_body[0][:posts].length).to eq(1)
-          expect(response_body[0][:posts][0][:current_user_post].length).to eq(15)
-          expect(response_body[0][:posts][0][:current_user_post]).to        include(
+
+          expect(response_body[:refracts].length).to eq(1)
+
+          expect(response_body[:refracts][0][:refracted_at]).to    eq(format_to_rfc3339(follower_refract.created_at))
+          expect(response_body[:refracts][0][:posts].length).to    eq(1)
+          expect(response_body[:refracts][0][:posts][0].length).to eq(14)
+          expect(response_body[:refracts][0][:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'me',
             id: not_deleted_client_user_post.id,
-            user_id: not_deleted_client_user_post.user_id,
-            content: not_deleted_client_user_post.content,
-            image: not_deleted_client_user_post.image.url,
-            is_locked: not_deleted_client_user_post.is_locked,
-            created_at: I18n.l(not_deleted_client_user_post.created_at),
-            is_reply: false,
-            replies: 0,
             icon_url: client_user.image.url,
-            username: client_user.username,
-            userid: client_user.userid,
-            is_liked_by_current_user: false,
-            likes: 0
+            locked: not_deleted_client_user_post.is_locked,
+            content: not_deleted_client_user_post.content,
+            image_url: not_deleted_client_user_post.image.url,
+            created_at: format_to_rfc3339(not_deleted_client_user_post.created_at),
+            is_reply: false,
+            likes_count: 0,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: client_user.username,
+            user_id: client_user.userid,
           )
-          expect(response_body[0][:posts][0][:current_user_post]).to include(
-            :deleted_at,
-            :updated_at,
-          )
-          expect(response_body[0][:refracted_by]).to include(
-            userid: follower_performed_refract.userid,
-            username: follower_performed_refract.username
+          expect(response_body[:refracts][0][:refracted_by]).to include(
+            user_id: follower_performed_refract.userid,
+            user_name: follower_performed_refract.username,
           )
         end
       end
@@ -1988,13 +2057,13 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                  eq(1)
-          expect(response_body[0][:refracted_at]).to       eq(I18n.l(follower_refract.created_at))
-          expect(response_body[0][:posts].length).to       eq(1)
-          expect(response_body[0][:posts][0][:deleted]).to eq(nil)
-          expect(response_body[0][:refracted_by]).to       include(
-            userid: follower_performed_refract.userid,
-            username: follower_performed_refract.username
+          expect(response_body[:refracts].length).to                 eq(1)
+          expect(response_body[:refracts][0][:refracted_at]).to      eq(format_to_rfc3339(follower_refract.created_at))
+          expect(response_body[:refracts][0][:posts].length).to      eq(1)
+          expect(response_body[:refracts][0][:posts][0][:status]).to eq('deleted')
+          expect(response_body[:refracts][0][:refracted_by]).to      include(
+            user_id: follower_performed_refract.userid,
+            user_name: follower_performed_refract.username
           )
         end
       end
@@ -2046,55 +2115,50 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                               eq(1)
-          expect(response_body[0][:refracted_at]).to                    eq(I18n.l(follower_refract.created_at))
-          expect(response_body[0][:posts].length).to                    eq(6)
-          expect(response_body[0][:posts][0][:other_users_post]).to     eq(nil)
-          expect(response_body[0][:posts][1][:deleted]).to              eq(nil)
-          expect(response_body[0][:posts][2][:follower_post].length).to eq(14)
-          expect(response_body[0][:posts][2][:follower_post]).to        include(
+          expect(response_body[:refracts].length).to                    eq(1)
+          expect(response_body[:refracts][0][:refracted_at]).to         eq(format_to_rfc3339(follower_refract.created_at))
+          expect(response_body[:refracts][0][:posts].length).to         eq(6)
+          expect(response_body[:refracts][0][:posts][0][:posted_by]).to eq('not_refracted_follower')
+          expect(response_body[:refracts][0][:posts][1][:status]).to    eq('deleted')
+          expect(response_body[:refracts][0][:posts][2].length).to      eq(14)
+          expect(response_body[:refracts][0][:posts][2]).to             include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower_performed_refract_post1.id,
-            user_id: follower_performed_refract_post1.user_id,
-            content: follower_performed_refract_post1.content,
-            image: follower_performed_refract_post1.image.url,
-            is_locked: follower_performed_refract_post1.is_locked,
             icon_url: follower_performed_refract.image.url,
-            username: follower_performed_refract.username,
-            userid: follower_performed_refract.userid,
-            replies: 0,
+            locked: nil,
+            content: follower_performed_refract_post1.content,
+            image_url: follower_performed_refract_post1.image.url,
+            created_at: format_to_rfc3339(follower_performed_refract_post1.created_at),
             is_reply: true,
-            is_liked_by_current_user: false,
-            created_at: I18n.l(follower_performed_refract_post1.created_at),
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: follower_performed_refract.username,
+            user_id: follower_performed_refract.userid,
           )
-          expect(response_body[0][:posts][2][:follower_post]).to include(
-            :deleted_at,
-            :updated_at,
-          )
-          expect(response_body[0][:posts][3][:other_users_post]).to         eq(nil)
-          expect(response_body[0][:posts][4][:follower_post]).to            have_id(follower_performed_refract_post2.id)
-          expect(response_body[0][:posts][5][:current_user_post].length).to eq(15)
-          expect(response_body[0][:posts][5][:current_user_post]).to        include(
+          expect(response_body[:refracts][0][:posts][3][:posted_by]).to eq('not_follower')
+          expect(response_body[:refracts][0][:posts][4]).to             have_id(follower_performed_refract_post2.id)
+          expect(response_body[:refracts][0][:posts][5].length).to      eq(14)
+          expect(response_body[:refracts][0][:posts][5]).to             include(
+            status: 'exist',
+            posted_by: 'me',
             id: client_user_post.id,
-            user_id: client_user_post.user_id,
-            content: client_user_post.content,
-            image: client_user_post.image.url,
-            is_locked: client_user_post.is_locked,
-            created_at: I18n.l(client_user_post.created_at),
-            is_reply: true,
-            replies: 0,
             icon_url: client_user.image.url,
-            username: client_user.username,
-            userid: client_user.userid,
-            is_liked_by_current_user: false,
-            likes: 0
+            locked: client_user_post.is_locked,
+            content: client_user_post.content,
+            image_url: client_user_post.image.url,
+            created_at: format_to_rfc3339(client_user_post.created_at),
+            is_reply: true,
+            likes_count: 0,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: client_user.username,
+            user_id: client_user.userid,
           )
-          expect(response_body[0][:posts][5][:current_user_post]).to include(
-            :deleted_at,
-            :updated_at,
-          )
-          expect(response_body[0][:refracted_by]).to include(
-            userid: follower_performed_refract.userid,
-            username: follower_performed_refract.username
+          expect(response_body[:refracts][0][:refracted_by]).to include(
+            user_id: follower_performed_refract.userid,
+            user_name: follower_performed_refract.username
           )
         end
       end
@@ -2158,15 +2222,15 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to            eq(4)
-          expect(response_body[0][:refracted_at]).to eq(I18n.l(follower_refract4.created_at))
-          expect(response_body[0][:posts].length).to eq(1)
-          expect(response_body[1][:refracted_at]).to eq(I18n.l(follower_refract3.created_at))
-          expect(response_body[1][:posts].length).to eq(2)
-          expect(response_body[2][:refracted_at]).to eq(I18n.l(follower_refract2.created_at))
-          expect(response_body[2][:posts].length).to eq(1)
-          expect(response_body[3][:refracted_at]).to eq(I18n.l(follower_refract1.created_at))
-          expect(response_body[3][:posts].length).to eq(2)
+          expect(response_body[:refracts].length).to            eq(4)
+          expect(response_body[:refracts][0][:refracted_at]).to eq(format_to_rfc3339(follower_refract4.created_at))
+          expect(response_body[:refracts][0][:posts].length).to eq(1)
+          expect(response_body[:refracts][1][:refracted_at]).to eq(format_to_rfc3339(follower_refract3.created_at))
+          expect(response_body[:refracts][1][:posts].length).to eq(2)
+          expect(response_body[:refracts][2][:refracted_at]).to eq(format_to_rfc3339(follower_refract2.created_at))
+          expect(response_body[:refracts][2][:posts].length).to eq(1)
+          expect(response_body[:refracts][3][:refracted_at]).to eq(format_to_rfc3339(follower_refract1.created_at))
+          expect(response_body[:refracts][3][:posts].length).to eq(2)
         end
       end
     end
@@ -2229,26 +2293,24 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                               eq(1)
-          expect(response_body[0][:refracted_at]).to                    eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts][0][:follower_post].length).to eq(14)
-          expect(response_body[0][:posts][0][:follower_post]).to        include(
+          expect(response_body[:refracts].length).to               eq(1)
+          expect(response_body[:refracts][0][:refracted_at]).to    eq(format_to_rfc3339(client_refract.updated_at))
+          expect(response_body[:refracts][0][:posts][0].length).to eq(14)
+          expect(response_body[:refracts][0][:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower_post.id,
-            user_id: follower_post.user_id,
-            content: follower_post.content,
-            image: follower_post.image.url,
-            is_locked: follower_post.is_locked,
             icon_url: follower.image.url,
-            username: follower.username,
-            userid: follower.userid,
-            replies: 0,
+            locked: nil,
+            content: follower_post.content,
+            image_url: follower_post.image.url,
+            created_at: format_to_rfc3339(follower_post.created_at),
             is_reply: false,
-            is_liked_by_current_user: true,
-            created_at: I18n.l(follower_post.created_at),
-          )
-          expect(response_body[0][:posts][0][:follower_post]).to include(
-            :deleted_at,
-            :updated_at,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: true,
+            user_name: follower.username,
+            user_id: follower.userid
           )
         end
       end
@@ -2266,8 +2328,8 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
 
         before do
-          post v1_post_likes_path(not_follower_post.id),     headers: client_user_headers
-          delete v1_follower_path(follower_id: follower.id), headers: client_user_headers
+          post v1_post_likes_path(not_follower_post.id),         headers: client_user_headers
+          delete v1_follower_path(follower_id: follower.userid), headers: client_user_headers
         end
 
         it 'returns 200 and formatted liked post' do
@@ -2278,9 +2340,9 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                            eq(1)
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts][0][:not_follower_post]).to eq(nil)
+          expect(response_body[:refracts].length).to                    eq(1)
+          expect(response_body[:refracts][0][:refracted_at]).to         eq(format_to_rfc3339(client_refract.updated_at))
+          expect(response_body[:refracts][0][:posts][0][:posted_by]).to eq('not_follower')
         end
       end
 
@@ -2309,9 +2371,9 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to                  eq(1)
-          expect(response_body[0][:refracted_at]).to       eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts][0][:deleted]).to eq(nil)
+          expect(response_body[:refracts].length).to                 eq(1)
+          expect(response_body[:refracts][0][:refracted_at]).to      eq(format_to_rfc3339(client_refract.updated_at))
+          expect(response_body[:refracts][0][:posts][0][:status]).to eq('deleted')
         end
       end
 
@@ -2344,56 +2406,51 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(1)
+          expect(response_body[:refracts].length).to eq(1)
 
-          expect(response_body[0][:refracted_at]).to                        eq(I18n.l(client_refract.updated_at))
-          expect(response_body[0][:posts].length).to                        eq(4)
-          expect(response_body[0][:posts][0][:current_user_post].length).to eq(15)
-          expect(response_body[0][:posts][0][:current_user_post]).to        include(
+          expect(response_body[:refracts][0][:refracted_at]).to    eq(format_to_rfc3339(client_refract.updated_at))
+          expect(response_body[:refracts][0][:posts].length).to    eq(4)
+          expect(response_body[:refracts][0][:posts][0].length).to eq(14)
+          expect(response_body[:refracts][0][:posts][0]).to        include(
+            status: 'exist',
+            posted_by: 'me',
             id: client_user_post.id,
-            user_id: client_user_post.user_id,
-            content: client_user_post.content,
-            image: client_user_post.image.url,
-            is_locked: client_user_post.is_locked,
-            created_at: I18n.l(client_user_post.created_at),
-            is_reply: false,
-            replies: 1,
             icon_url: client_user.image.url,
-            username: client_user.username,
-            userid: client_user.userid,
-            is_liked_by_current_user: false,
-            likes: 0
-          )
-          expect(response_body[0][:posts][0][:current_user_post]).to include(
-            :deleted_at,
-            :updated_at,
+            locked: client_user_post.is_locked,
+            content: client_user_post.content,
+            image_url: client_user_post.image.url,
+            created_at: format_to_rfc3339(client_user_post.created_at),
+            is_reply: false,
+            likes_count: 0,
+            replies_count: 1,
+            liked_by_current_user: false,
+            user_name: client_user.username,
+            user_id: client_user.userid
           )
 
-          expect(response_body[0][:posts][1][:follower_post].length).to eq(14)
-          expect(response_body[0][:posts][1][:follower_post]).to        include(
+          expect(response_body[:refracts][0][:posts][1].length).to eq(14)
+          expect(response_body[:refracts][0][:posts][1]).to        include(
+            status: 'exist',
+            posted_by: 'follower',
             id: follower_reply.id,
-            user_id: follower_reply.user_id,
-            content: follower_reply.content,
-            image: follower_reply.image.url,
-            is_locked: follower_reply.is_locked,
-            created_at: I18n.l(follower_reply.created_at),
-            is_reply: true,
-            replies: 0,
             icon_url: follower.image.url,
-            username: follower.username,
-            userid: follower.userid,
-            is_liked_by_current_user: false,
-          )
-          expect(response_body[0][:posts][1][:follower_post]).to include(
-            :deleted_at,
-            :updated_at,
+            locked: nil,
+            content: follower_reply.content,
+            image_url: follower_reply.image.url,
+            created_at: format_to_rfc3339(follower_reply.created_at),
+            is_reply: true,
+            likes_count: nil,
+            replies_count: 0,
+            liked_by_current_user: false,
+            user_name: follower.username,
+            user_id: follower.userid
           )
 
-          expect(response_body[0][:posts][2]).to                     include(:not_follower_post)
-          expect(response_body[0][:posts][2][:not_follower_post]).to eq(nil)
+          # expect(response_body[:refracts][0][:posts][2]).to                     include(:not_follower_post)
+          expect(response_body[:refracts][0][:posts][2][:posted_by]).to eq('not_follower')
 
-          expect(response_body[0][:posts][3]).to           include(:deleted)
-          expect(response_body[0][:posts][3][:deleted]).to eq(nil)
+          # expect(response_body[:refracts][0][:posts][3]).to include(:deleted)
+          expect(response_body[:refracts][0][:posts][3][:status]).to eq('deleted')
         end
       end
 
@@ -2431,13 +2488,13 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(2)
+          expect(response_body[:refracts].length).to eq(2)
 
-          expect(response_body[0][:refracted_at]).to             eq(I18n.l(client_refract2.updated_at))
-          expect(response_body[0][:posts][0][:follower_post]).to have_id(follower_post2.id)
+          expect(response_body[:refracts][0][:refracted_at]).to eq(format_to_rfc3339(client_refract2.updated_at))
+          expect(response_body[:refracts][0][:posts][0]).to     have_id(follower_post2.id)
 
-          expect(response_body[1][:refracted_at]).to             eq(I18n.l(client_refract1.updated_at))
-          expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post1.id)
+          expect(response_body[:refracts][1][:refracted_at]).to eq(format_to_rfc3339(client_refract1.updated_at))
+          expect(response_body[:refracts][1][:posts][0]).to     have_id(follower_post1.id)
         end
       end
 
@@ -2472,15 +2529,15 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(2)
+          expect(response_body[:refracts].length).to eq(2)
 
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract2.updated_at))
-          expect(response_body[0][:posts][0][:current_user_post]).to have_id(client_user_post2.id)
-          expect(response_body[0][:posts][1][:follower_post]).to     have_id(follower_reply2.id)
+          expect(response_body[:refracts][0][:refracted_at]).to eq(format_to_rfc3339(client_refract2.updated_at))
+          expect(response_body[:refracts][0][:posts][0]).to     have_id(client_user_post2.id)
+          expect(response_body[:refracts][0][:posts][1]).to     have_id(follower_reply2.id)
 
-          expect(response_body[1][:refracted_at]).to                 eq(I18n.l(client_refract1.updated_at))
-          expect(response_body[1][:posts][0][:current_user_post]).to have_id(client_user_post1.id)
-          expect(response_body[1][:posts][1][:follower_post]).to     have_id(follower_reply1.id)
+          expect(response_body[:refracts][1][:refracted_at]).to eq(format_to_rfc3339(client_refract1.updated_at))
+          expect(response_body[:refracts][1][:posts][0]).to     have_id(client_user_post1.id)
+          expect(response_body[:refracts][1][:posts][1]).to     have_id(follower_reply1.id)
         end
       end
 
@@ -2528,18 +2585,18 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body.length).to eq(3)
+          expect(response_body[:refracts].length).to eq(3)
 
-          expect(response_body[0][:refracted_at]).to                 eq(I18n.l(client_refract3.updated_at))
-          expect(response_body[0][:posts][0][:current_user_post]).to have_id(client_user_post2.id)
-          expect(response_body[0][:posts][1][:follower_post]).to     have_id(follower_reply2.id)
+          expect(response_body[:refracts][0][:refracted_at]).to eq(format_to_rfc3339(client_refract3.updated_at))
+          expect(response_body[:refracts][0][:posts][0]).to     have_id(client_user_post2.id)
+          expect(response_body[:refracts][0][:posts][1]).to     have_id(follower_reply2.id)
 
-          expect(response_body[1][:refracted_at]).to             eq(I18n.l(client_refract2.updated_at))
-          expect(response_body[1][:posts][0][:follower_post]).to have_id(follower_post.id)
+          expect(response_body[:refracts][1][:refracted_at]).to eq(format_to_rfc3339(client_refract2.updated_at))
+          expect(response_body[:refracts][1][:posts][0]).to     have_id(follower_post.id)
 
-          expect(response_body[2][:refracted_at]).to                 eq(I18n.l(client_refract1.updated_at))
-          expect(response_body[2][:posts][0][:current_user_post]).to have_id(client_user_post1.id)
-          expect(response_body[2][:posts][1][:follower_post]).to     have_id(follower_reply1.id)
+          expect(response_body[:refracts][2][:refracted_at]).to eq(format_to_rfc3339(client_refract1.updated_at))
+          expect(response_body[:refracts][2][:posts][0]).to     have_id(client_user_post1.id)
+          expect(response_body[:refracts][2][:posts][1]).to     have_id(follower_reply1.id)
         end
       end
     end
@@ -2602,9 +2659,9 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:posts].length).to eq(1)
-          expect(response_body[:posts][0][:current_user_post].length).to eq(14)
-          expect(response_body[:posts][0][:current_user_post]).to have_id(locked_post.id)
+          expect(response_body[:posts].length).to    eq(1)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(locked_post.id)
         end
       end
 
@@ -2620,11 +2677,11 @@ RSpec.describe "V1::PostsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:posts].length).to eq(2)
-          expect(response_body[:posts][0][:current_user_post].length).to eq(14)
-          expect(response_body[:posts][0][:current_user_post]).to have_id(locked_post2.id)
-          expect(response_body[:posts][1][:current_user_post].length).to eq(14)
-          expect(response_body[:posts][1][:current_user_post]).to have_id(locked_post1.id)
+          expect(response_body[:posts].length).to    eq(2)
+          expect(response_body[:posts][0].length).to eq(14)
+          expect(response_body[:posts][0]).to        have_id(locked_post2.id)
+          expect(response_body[:posts][1].length).to eq(14)
+          expect(response_body[:posts][1]).to        have_id(locked_post1.id)
         end
       end
     end
