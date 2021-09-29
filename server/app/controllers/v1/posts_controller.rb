@@ -145,8 +145,8 @@ module V1
     def index_threads
       thread = {}
       status_of_current_post = Post.check_status_of_post(current_v1_user, params[:id])
-      if status_of_current_post == Settings.constants.status_of_post[:current_user_post] \
-        || status_of_current_post == Settings.constants.status_of_post[:follower_post]
+      case status_of_current_post
+      when Settings.constants.status_of_post[:current_user_post], Settings.constants.status_of_post[:follower_post]
         parent = Post.get_parent_of_current_post(current_v1_user, params[:id])
         thread.merge!(parent: parent)
 
@@ -156,13 +156,16 @@ module V1
         children = Post.get_children_of_current_post(current_v1_user, params[:id])
         thread.merge!(children: children)
 
-      elsif status_of_current_post == Settings.constants.status_of_post[:not_follower_post] \
-        || status_of_current_post == Settings.constants.status_of_post[:deleted] \
-        || status_of_current_post == Settings.constants.status_of_post[:not_exist]
+      when Settings.constants.status_of_post[:not_follower_post],
+        Settings.constants.status_of_post[:deleted],
+        Settings.constants.status_of_post[:not_exist]
         current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:id], status_of_current_post)
         thread.merge!(parent: nil)
         thread.merge!(current: current)
         thread.merge!(children: [nil])
+
+      else
+        raise RuntimeError
       end
       render json: thread, status: :ok
     end
