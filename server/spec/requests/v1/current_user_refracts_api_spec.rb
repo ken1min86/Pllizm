@@ -28,7 +28,7 @@ RSpec.describe "V1::CurrentUserRefractsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:performed_refract]).to eq(true)
+          expect(response_body[:performed]).to eq(true)
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe "V1::CurrentUserRefractsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:performed_refract]).to eq(false)
+          expect(response_body[:performed]).to eq(false)
         end
       end
 
@@ -72,7 +72,7 @@ RSpec.describe "V1::CurrentUserRefractsApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:performed_refract]).to eq(true)
+          expect(response_body[:performed]).to eq(true)
         end
       end
     end

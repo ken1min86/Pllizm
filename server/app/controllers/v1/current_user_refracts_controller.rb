@@ -8,7 +8,7 @@ module V1
         performed_refract: false
       )
       performed_refract = !exist_not_performed_refract
-      render json: { performed_refract: performed_refract }, status: :ok
+      render json: { performed: performed_refract }, status: :ok
     end
   end
 end

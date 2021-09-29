@@ -29,24 +29,20 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォロアー2人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to    eq(2)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[1].length).to eq(6)
-        expect(response_body[0]).to        include(
-          id: follower1.id,
-          userid: follower1.userid,
-          username: follower1.username,
-          image: follower1.image.url,
+        expect(response_body[:users].length).to    eq(2)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][1].length).to eq(4)
+        expect(response_body[:users][0]).to        include(
+          user_id: follower1.userid,
+          user_name: follower1.username,
+          icon_url: follower1.image.url,
           bio: follower1.bio,
-          need_description_about_lock: follower1.need_description_about_lock
         )
-        expect(response_body[1]).to include(
-          id: follower2.id,
-          userid: follower2.userid,
-          username: follower2.username,
-          image: follower2.image.url,
+        expect(response_body[:users][1]).to include(
+          user_id: follower2.userid,
+          user_name: follower2.username,
+          icon_url: follower2.image.url,
           bio: follower2.bio,
-          need_description_about_lock: follower2.need_description_about_lock
         )
       end
 
@@ -62,15 +58,13 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォロアー1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to    eq(1)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to        include(
-          id: follower1.id,
-          userid: follower1.userid,
-          username: follower1.username,
-          image: follower1.image.url,
+        expect(response_body[:users].length).to    eq(1)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][0]).to        include(
+          user_id: follower1.userid,
+          user_name: follower1.username,
+          icon_url: follower1.image.url,
           bio: follower1.bio,
-          need_description_about_lock: follower1.need_description_about_lock
         )
       end
 
@@ -82,7 +76,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(0)
+        expect(response_body[:users].length).to eq(0)
       end
     end
   end
@@ -115,24 +109,20 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォローリクエストしているユーザ2人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(2)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[1].length).to eq(6)
-        expect(response_body[0]).to include(
-          id: follow_requested_user1.id,
-          userid: follow_requested_user1.userid,
-          username: follow_requested_user1.username,
-          image: follow_requested_user1.image.url,
+        expect(response_body[:users].length).to eq(2)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][1].length).to eq(4)
+        expect(response_body[:users][0]).to include(
+          user_id: follow_requested_user1.userid,
+          user_name: follow_requested_user1.username,
+          icon_url: follow_requested_user1.image.url,
           bio: follow_requested_user1.bio,
-          need_description_about_lock: follow_requested_user1.need_description_about_lock
         )
-        expect(response_body[1]).to include(
-          id: follow_requested_user2.id,
-          userid: follow_requested_user2.userid,
-          username: follow_requested_user2.username,
-          image: follow_requested_user2.image.url,
+        expect(response_body[:users][1]).to include(
+          user_id: follow_requested_user2.userid,
+          user_name: follow_requested_user2.username,
+          icon_url: follow_requested_user2.image.url,
           bio: follow_requested_user2.bio,
-          need_description_about_lock: follow_requested_user2.need_description_about_lock
         )
       end
 
@@ -148,15 +138,13 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォローリクエストしているユーザ1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to    eq(1)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to        include(
-          id: follow_requested_user1.id,
-          userid: follow_requested_user1.userid,
-          username: follow_requested_user1.username,
-          image: follow_requested_user1.image.url,
+        expect(response_body[:users].length).to    eq(1)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][0]).to        include(
+          user_id: follow_requested_user1.userid,
+          user_name: follow_requested_user1.username,
+          icon_url: follow_requested_user1.image.url,
           bio: follow_requested_user1.bio,
-          need_description_about_lock: follow_requested_user1.need_description_about_lock
         )
       end
 
@@ -164,11 +152,11 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(FollowRequest.where(requested_by: client_user.id)).not_to exist
 
         get v1_follow_requested_by_me_users_path, headers: headers
-        expect(response).to         have_http_status(200)
+        expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(0)
+        expect(response_body[:users].length).to eq(0)
       end
     end
   end
@@ -201,25 +189,21 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォローリクエストしているユーザ2人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to    eq(2)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[1].length).to eq(6)
+        expect(response_body[:users].length).to    eq(2)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][1].length).to eq(4)
 
-        expect(response_body[0]).to include(
-          id: follow_request_to_me_user1.id,
-          userid: follow_request_to_me_user1.userid,
-          username: follow_request_to_me_user1.username,
-          image: follow_request_to_me_user1.image.url,
+        expect(response_body[:users][0]).to include(
+          user_id: follow_request_to_me_user1.userid,
+          user_name: follow_request_to_me_user1.username,
+          icon_url: follow_request_to_me_user1.image.url,
           bio: follow_request_to_me_user1.bio,
-          need_description_about_lock: follow_request_to_me_user1.need_description_about_lock
         )
-        expect(response_body[1]).to include(
-          id: follow_request_to_me_user2.id,
-          userid: follow_request_to_me_user2.userid,
-          username: follow_request_to_me_user2.username,
-          image: follow_request_to_me_user2.image.url,
+        expect(response_body[:users][1]).to include(
+          user_id: follow_request_to_me_user2.userid,
+          user_name: follow_request_to_me_user2.username,
+          icon_url: follow_request_to_me_user2.image.url,
           bio: follow_request_to_me_user2.bio,
-          need_description_about_lock: follow_request_to_me_user2.need_description_about_lock
         )
       end
 
@@ -234,15 +218,13 @@ RSpec.describe "V1::UsersApi", type: :request do
 
         # レスポンスボディのデータがフォローリクエストしているユーザ1人分で、仕様書通りのカラムのみ返していることを確認
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to    eq(1)
-        expect(response_body[0].length).to eq(6)
-        expect(response_body[0]).to        include(
-          id: follow_request_to_me_user1.id,
-          userid: follow_request_to_me_user1.userid,
-          username: follow_request_to_me_user1.username,
-          image: follow_request_to_me_user1.image.url,
+        expect(response_body[:users].length).to    eq(1)
+        expect(response_body[:users][0].length).to eq(4)
+        expect(response_body[:users][0]).to        include(
+          user_id: follow_request_to_me_user1.userid,
+          user_name: follow_request_to_me_user1.username,
+          icon_url: follow_request_to_me_user1.image.url,
           bio: follow_request_to_me_user1.bio,
-          need_description_about_lock: follow_request_to_me_user1.need_description_about_lock
         )
       end
 
@@ -254,7 +236,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         expect(response.message).to include('OK')
 
         response_body = JSON.parse(response.body, symbolize_names: true)
-        expect(response_body.length).to eq(0)
+        expect(response_body[:users].length).to eq(0)
       end
     end
   end
@@ -292,7 +274,7 @@ RSpec.describe "V1::UsersApi", type: :request do
         put v1_disable_lock_description_path, headers: @request_headers
         @current_user.reload
         expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to         have_http_status(200)
+        expect(response).to have_http_status(200)
         expect(response.message).to include('OK')
       end
     end
@@ -302,7 +284,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     context "when client doesn't have token" do
       it "returns 401" do
         get v1_searched_users_path
-        expect(response).to         have_http_status(401)
+        expect(response).to have_http_status(401)
         expect(response.message).to include('Unauthorized')
       end
     end
@@ -314,7 +296,7 @@ RSpec.describe "V1::UsersApi", type: :request do
       context "when no query parameter is set" do
         it 'returns 400' do
           get v1_searched_users_path, headers: headers
-          expect(response).to         have_http_status(400)
+          expect(response).to have_http_status(400)
           expect(response.message).to include('Bad Request')
         end
       end
@@ -333,15 +315,15 @@ RSpec.describe "V1::UsersApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body[:users].length).to eq(2)
           expect(response_body[:users][0]).to     include(
-            userid: user_including_front_part_match_userid.userid,
-            username: user_including_front_part_match_userid.username,
-            image: user_including_front_part_match_userid.image.url,
+            user_id: user_including_front_part_match_userid.userid,
+            user_name: user_including_front_part_match_userid.username,
+            image_url: user_including_front_part_match_userid.image.url,
             bio: user_including_front_part_match_userid.bio
           )
           expect(response_body[:users][1]).to include(
-            userid: user_including_front_part_match_username.userid,
-            username: user_including_front_part_match_username.username,
-            image: user_including_front_part_match_username.image.url,
+            user_id: user_including_front_part_match_username.userid,
+            user_name: user_including_front_part_match_username.username,
+            image_url: user_including_front_part_match_username.image.url,
             bio: user_including_front_part_match_username.bio
           )
         end
@@ -364,13 +346,13 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
 
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:users].length).to      eq(6)
-          expect(response_body[:users][0][:userid]).to eq(user1_including_front_part_match_userid.userid)
-          expect(response_body[:users][1][:userid]).to eq(user2_including_front_part_match_userid.userid)
-          expect(response_body[:users][2][:userid]).to eq(user1_including_front_part_match_username.userid)
-          expect(response_body[:users][3][:userid]).to eq(user3_including_front_part_match_userid.userid)
-          expect(response_body[:users][4][:userid]).to eq(user2_including_front_part_match_username.userid)
-          expect(response_body[:users][5][:userid]).to eq(user_including_front_part_match_userid_and_username.userid)
+          expect(response_body[:users].length).to       eq(6)
+          expect(response_body[:users][0][:user_id]).to eq(user1_including_front_part_match_userid.userid)
+          expect(response_body[:users][1][:user_id]).to eq(user2_including_front_part_match_userid.userid)
+          expect(response_body[:users][2][:user_id]).to eq(user1_including_front_part_match_username.userid)
+          expect(response_body[:users][3][:user_id]).to eq(user3_including_front_part_match_userid.userid)
+          expect(response_body[:users][4][:user_id]).to eq(user2_including_front_part_match_username.userid)
+          expect(response_body[:users][5][:user_id]).to eq(user_including_front_part_match_userid_and_username.userid)
         end
       end
     end
@@ -426,9 +408,9 @@ RSpec.describe "V1::UsersApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
             is_current_user: true,
-            image_url: client_user.image.url,
-            username: client_user.username,
-            userid: client_user.userid,
+            icon_url: client_user.image.url,
+            user_name: client_user.username,
+            user_id: client_user.userid,
             bio: client_user.bio,
             followers_count: 0,
             follow_requests_to_me_count: 1,
@@ -495,9 +477,9 @@ RSpec.describe "V1::UsersApi", type: :request do
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
             is_current_user: false,
-            image_url: not_current_user.image.url,
-            username: not_current_user.username,
-            userid: not_current_user.userid,
+            icon_url: not_current_user.image.url,
+            user_name: not_current_user.username,
+            user_id: not_current_user.userid,
             bio: not_current_user.bio,
             followers_count: nil,
             follow_requests_to_me_count: nil,

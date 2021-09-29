@@ -9,3 +9,4 @@ constants:
     current_user_post: 'current_user_post'
     follower_post: 'follower_post'
     not_follower_post: 'not_follower_post'
+    not_refracted_follower_post: 'not_refracted_follower_post'

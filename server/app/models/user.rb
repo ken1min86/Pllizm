@@ -49,16 +49,11 @@ class User < ActiveRecord::Base
   def self.extract_disclosable_culumns_from_users_array(users_array)
     extracted_users = []
     users_array.each do |user|
-      hashed_user         = user.attributes.symbolize_keys
-      hashed_user[:image] = user.image.url
-      extracted_user      = hashed_user.slice(
-        :id,
-        :userid,
-        :username,
-        :image,
-        :bio,
-        :need_description_about_lock
-      )
+      extracted_user             = {}
+      extracted_user[:user_id]   = user.userid
+      extracted_user[:user_name] = user.username
+      extracted_user[:icon_url]  = user.image.url
+      extracted_user[:bio]       = user.bio
       extracted_users.push(extracted_user)
     end
     extracted_users
@@ -66,12 +61,12 @@ class User < ActiveRecord::Base
 
   # 検索されたユーザのフォーマッタ
   def self.format_searched_user(not_formatted_searched_user_id)
-    not_formatted_serached_user        = User.find(not_formatted_searched_user_id)
-    formatted_searched_user            = {}
-    formatted_searched_user[:userid]   = not_formatted_serached_user.userid
-    formatted_searched_user[:username] = not_formatted_serached_user.username
-    formatted_searched_user[:image]    = not_formatted_serached_user.image.url
-    formatted_searched_user[:bio]      = not_formatted_serached_user.bio
+    not_formatted_serached_user         = User.find(not_formatted_searched_user_id)
+    formatted_searched_user             = {}
+    formatted_searched_user[:user_id]   = not_formatted_serached_user.userid
+    formatted_searched_user[:user_name] = not_formatted_serached_user.username
+    formatted_searched_user[:image_url] = not_formatted_serached_user.image.url
+    formatted_searched_user[:bio]       = not_formatted_serached_user.bio
     formatted_searched_user
   end
 
@@ -88,11 +83,11 @@ class User < ActiveRecord::Base
 
   # アカウント画面から呼び出されるAPIなどで、アカウント情報を返す場合のフォーマッタ
   def format_current_user_in_form_of_user_info
-    user_info = {}
+    user_info                               = {}
     user_info[:is_current_user]             = true
-    user_info[:image_url]                   = image.url
-    user_info[:username]                    = username
-    user_info[:userid]                      = userid
+    user_info[:icon_url]                    = image.url
+    user_info[:user_name]                   = username
+    user_info[:user_id]                     = userid
     user_info[:bio]                         = bio
     user_info[:followers_count]             = get_num_of_followers
     user_info[:follow_requests_to_me_count] = get_num_of_follow_requests_to_me
@@ -105,11 +100,11 @@ class User < ActiveRecord::Base
 
   # アカウント画面から呼び出されるAPIなどで、アカウント情報を返す場合のフォーマッタ
   def format_not_current_user_in_form_of_user_info(current_user)
-    user_info = {}
+    user_info                               = {}
     user_info[:is_current_user]             = false
-    user_info[:image_url]                   = image.url
-    user_info[:username]                    = username
-    user_info[:userid]                      = userid
+    user_info[:icon_url]                    = image.url
+    user_info[:user_name]                   = username
+    user_info[:user_id]                     = userid
     user_info[:bio]                         = bio
     user_info[:followers_count]             = nil
     user_info[:follow_requests_to_me_count] = nil
