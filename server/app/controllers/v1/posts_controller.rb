@@ -138,10 +138,6 @@ module V1
       render json: { posts: return_posts }, status: :ok
     end
 
-    # ToDo: Switch case文に修正する
-    # ToDo: Switch case文に修正する
-    # ToDo: Switch case文に修正する
-    # ToDo: Switch case文に修正する
     def index_threads
       thread = {}
       status_of_current_post = Post.check_status_of_post(current_v1_user, params[:id])
@@ -255,6 +251,8 @@ module V1
             performed_current_user_refract.updated_at
           )
           formatted_refracted_posts.push(formatted_replied_posts)
+        else
+          raise RuntimeError
         end
       end
       render json: { refracts: formatted_refracted_posts }, status: :ok
@@ -287,6 +285,8 @@ module V1
             refracted_at: follower_refract.created_at
           )
           formatted_refracted_posts.push(formatted_replied_posts)
+        else
+          raise RuntimeError
         end
       end
       render json: { refracts: formatted_refracted_posts }, status: :ok

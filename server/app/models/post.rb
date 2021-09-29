@@ -92,6 +92,9 @@ class Post < ApplicationRecord
 
     when Settings.constants.status_of_post[:not_exist]
       current.merge!(Post.create_empty_formatted_post_according_to_status(status_of_current_post))
+
+    else
+      raise RuntimeError
     end
 
     current
@@ -419,6 +422,8 @@ class Post < ApplicationRecord
         refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [liked_post.format_follower_refracted_post(current_user, refracted_at)],
       }
+    else
+      raise RuntimeError
     end
     formatted_refracted_post
   end
@@ -451,6 +456,9 @@ class Post < ApplicationRecord
       when Settings.constants.status_of_post[:follower_post]
         formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
         array_of_formatted_refracted_posts.push(formatted_follower_post)
+
+      else
+        raise RuntimeError
       end
     end
 
@@ -483,6 +491,9 @@ class Post < ApplicationRecord
         posts: [liked_post.format_current_user_refracted_post(current_user, refracted_at)],
         refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
       }
+
+    else
+      raise RuntimeError
     end
 
     formatted_refracted_post
@@ -522,6 +533,9 @@ class Post < ApplicationRecord
           status = 'not_refracted_follower_post'
           array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
         end
+
+      else
+        raise RuntimeError
       end
     end
 

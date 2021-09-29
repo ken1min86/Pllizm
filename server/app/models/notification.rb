@@ -45,6 +45,10 @@ class Notification < ApplicationRecord
       formatted_notification[:checked]              = is_checked
       formatted_notification[:notified_at]          = Notification.format_to_rfc3339(created_at)
       formatted_notification[:post]                 = { 'id': refracted_post.id, 'content': refracted_post.content }
+
+    else
+      raise RuntimeError
+
     end
     formatted_notification
   end
