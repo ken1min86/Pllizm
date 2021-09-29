@@ -59,13 +59,15 @@ RSpec.describe "V1::Notifications", type: :request do
           expect(response_body[:notifications].length).to eq(1)
           expect(response_body[:notifications][0]).to include(
             action: 'like',
-            notify_userid: nil,
-            notify_username: nil,
-            notify_user_icon_url: nil,
-            is_checked: false,
-            notified_at: I18n.l(notification_like.created_at),
-            post_id: liked_post.id,
-            content: liked_post.content,
+            user_id: nil,
+            user_name: nil,
+            user_icon_url: nil,
+            checked: false,
+            notified_at: format_to_rfc3339(notification_like.created_at),
+            post: {
+              id: liked_post.id,
+              content: liked_post.content,
+            }
           )
 
           expect(Notification.where(notified_user_id: client.id).length).to eq(1)
@@ -147,53 +149,63 @@ RSpec.describe "V1::Notifications", type: :request do
           expect(response_body[:notifications].length).to eq(5)
           expect(response_body[:notifications][0]).to include(
             action: 'refract',
-            notify_userid: refracted_follower.userid,
-            notify_username: refracted_follower.username,
-            notify_user_icon_url: refracted_follower.image.url,
-            is_checked: false,
-            notified_at: I18n.l(notification_refract.created_at),
-            post_id: refracted_post.id,
-            content: refracted_post.content,
+            user_id: refracted_follower.userid,
+            user_name: refracted_follower.username,
+            user_icon_url: refracted_follower.image.url,
+            checked: false,
+            notified_at: format_to_rfc3339(notification_refract.created_at),
+            post: {
+              id: refracted_post.id,
+              content: refracted_post.content,
+            }
           )
           expect(response_body[:notifications][1]).to include(
             action: 'accept',
-            notify_userid: accepted_following_follower.userid,
-            notify_username: accepted_following_follower.username,
-            notify_user_icon_url: accepted_following_follower.image.url,
-            is_checked: false,
-            notified_at: I18n.l(notification_accept.created_at),
-            post_id: nil,
-            content: nil,
+            user_id: accepted_following_follower.userid,
+            user_name: accepted_following_follower.username,
+            user_icon_url: accepted_following_follower.image.url,
+            checked: false,
+            notified_at: format_to_rfc3339(notification_accept.created_at),
+            post: {
+              id: nil,
+              content: nil,
+            }
           )
           expect(response_body[:notifications][2]).to include(
             action: 'request',
-            notify_userid: requested_following_follower.userid,
-            notify_username: requested_following_follower.username,
-            notify_user_icon_url: requested_following_follower.image.url,
-            is_checked: false,
-            notified_at: I18n.l(notification_request.created_at),
-            post_id: nil,
-            content: nil,
+            user_id: requested_following_follower.userid,
+            user_name: requested_following_follower.username,
+            user_icon_url: requested_following_follower.image.url,
+            checked: false,
+            notified_at: format_to_rfc3339(notification_request.created_at),
+            post: {
+              id: nil,
+              content: nil,
+            }
           )
           expect(response_body[:notifications][3]).to include(
             action: 'reply',
-            notify_userid: nil,
-            notify_username: nil,
-            notify_user_icon_url: nil,
-            is_checked: true,
-            notified_at: I18n.l(notification_reply.created_at),
-            post_id: replied_post.id,
-            content: replied_post.content,
+            user_id: nil,
+            user_name: nil,
+            user_icon_url: nil,
+            checked: true,
+            notified_at: format_to_rfc3339(notification_reply.created_at),
+            post: {
+              id: replied_post.id,
+              content: replied_post.content,
+            }
           )
           expect(response_body[:notifications][4]).to include(
             action: 'like',
-            notify_userid: nil,
-            notify_username: nil,
-            notify_user_icon_url: nil,
-            is_checked: true,
-            notified_at: I18n.l(notification_like.created_at),
-            post_id: liked_post.id,
-            content: liked_post.content,
+            user_id: nil,
+            user_name: nil,
+            user_icon_url: nil,
+            checked: true,
+            notified_at: format_to_rfc3339(notification_like.created_at),
+            post: {
+              id: liked_post.id,
+              content: liked_post.content,
+            }
           )
 
           expect(Notification.where(notified_user_id: client.id).length).to eq(5)

@@ -8,42 +8,47 @@ class Notification < ApplicationRecord
   validates :action,           inclusion: { in: ['like', 'reply', 'request', 'accept', 'refract'] }
   validates :is_checked,       inclusion: { in: [true, false] }
 
+  def self.format_to_rfc3339(formatted_time)
+    formatted_time.to_datetime.new_offset('+0000').rfc3339
+  end
+
   def format_notification
     formatted_notification = {}
     case action
     when 'like', 'reply'
       liked_or_replied_post                         = Post.find(post_id)
       formatted_notification[:action]               = action
-      formatted_notification[:notify_userid]        = nil
-      formatted_notification[:notify_username]      = nil
-      formatted_notification[:notify_user_icon_url] = nil
-      formatted_notification[:is_checked]           = is_checked
-      formatted_notification[:notified_at]          = I18n.l(created_at)
-      formatted_notification[:post_id]              = post_id
-      formatted_notification[:content]              = liked_or_replied_post.content
+      formatted_notification[:user_id]              = nil
+      formatted_notification[:user_name]            = nil
+      formatted_notification[:user_icon_url]        = nil
+      formatted_notification[:checked]              = is_checked
+      formatted_notification[:notified_at]          = Notification.format_to_rfc3339(created_at)
+      formatted_notification[:post]                 = { 'id': liked_or_replied_post.id, 'content': liked_or_replied_post.content }
 
     when 'request', 'accept'
       requested_or_accepted_user                    = User.find(notify_user_id)
       formatted_notification[:action]               = action
-      formatted_notification[:notify_userid]        = requested_or_accepted_user.userid
-      formatted_notification[:notify_username]      = requested_or_accepted_user.username
-      formatted_notification[:notify_user_icon_url] = requested_or_accepted_user.image.url
-      formatted_notification[:is_checked]           = is_checked
-      formatted_notification[:notified_at]          = I18n.l(created_at)
-      formatted_notification[:post_id]              = nil
-      formatted_notification[:content]              = nil
+      formatted_notification[:user_id]              = requested_or_accepted_user.userid
+      formatted_notification[:user_name]            = requested_or_accepted_user.username
+      formatted_notification[:user_icon_url]        = requested_or_accepted_user.image.url
+      formatted_notification[:checked]              = is_checked
+      formatted_notification[:notified_at]          = Notification.format_to_rfc3339(created_at)
+      formatted_notification[:post]                 = { 'id': nil, 'content': nil }
 
     when 'refract'
       refracted_user                                = User.find(notify_user_id)
       refracted_post                                = Post.find(post_id)
       formatted_notification[:action]               = action
-      formatted_notification[:notify_userid]        = refracted_user.userid
-      formatted_notification[:notify_username]      = refracted_user.username
-      formatted_notification[:notify_user_icon_url] = refracted_user.image.url
-      formatted_notification[:is_checked]           = is_checked
-      formatted_notification[:notified_at]          = I18n.l(created_at)
-      formatted_notification[:post_id]              = refracted_post.id
-      formatted_notification[:content]              = refracted_post.content
+      formatted_notification[:user_id]              = refracted_user.userid
+      formatted_notification[:user_name]            = refracted_user.username
+      formatted_notification[:user_icon_url]        = refracted_user.image.url
+      formatted_notification[:checked]              = is_checked
+      formatted_notification[:notified_at]          = Notification.format_to_rfc3339(created_at)
+      formatted_notification[:post]                 = { 'id': refracted_post.id, 'content': refracted_post.content }
+
+    else
+      raise RuntimeError
+
     end
     formatted_notification
   end

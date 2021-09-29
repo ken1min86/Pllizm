@@ -33,6 +33,10 @@ class Post < ApplicationRecord
   # - above ~: "~ 以上"の意味。例えば、tree_paths_above_parent_postの場合は、親以上投稿に紐づくTreePathを示す。
   # - below ~: "~ 以下"の意味。例えば、tree_path_below_currentの場合は、カレント以下の投稿に紐づくTreePathを示す。
 
+  def self.format_to_rfc3339(formatted_time)
+    formatted_time.to_datetime.new_offset('+0000').rfc3339
+  end
+
   def self.extract_root_posts(posts_array)
     root_posts_array = []
     posts_array.each do |post|
@@ -81,13 +85,16 @@ class Post < ApplicationRecord
       current.merge!(formatted_current_post_of_follower)
 
     when Settings.constants.status_of_post[:not_follower_post]
-      current[:not_follower_post] = nil
+      current.merge!(Post.create_empty_formatted_post_according_to_status(status_of_current_post))
 
     when Settings.constants.status_of_post[:deleted]
-      current[:deleted] = nil
+      current.merge!(Post.create_empty_formatted_post_according_to_status(status_of_current_post))
 
     when Settings.constants.status_of_post[:not_exist]
-      current[:not_exist] = nil
+      current.merge!(Post.create_empty_formatted_post_according_to_status(status_of_current_post))
+
+    else
+      raise RuntimeError
     end
 
     current
@@ -97,17 +104,17 @@ class Post < ApplicationRecord
     parent = {}
     tree_path_of_parent_post = TreePath.find_by(descendant: current_post_id, depth: 1)
     if tree_path_of_parent_post.blank?
-      parent[:not_exist] = nil
+      parent = Post.create_empty_formatted_post_according_to_status('not_exist')
     else
       parent_post = Post.find_by(id: tree_path_of_parent_post.ancestor)
       if parent_post.blank?
-        parent[:deleted] = nil
+        parent = Post.create_empty_formatted_post_according_to_status('deleted')
       elsif parent_post.your_post?(current_user) || parent_post.followers_post?(current_user)
         parent_post           = tree_path_of_parent_post.ancestor_post
         formatted_parent_post = parent_post.format_post(current_user)
         parent.merge!(formatted_parent_post)
       else
-        parent[:not_follower_post] = nil
+        parent = Post.create_empty_formatted_post_according_to_status('not_follower_post')
       end
     end
     parent
@@ -121,13 +128,13 @@ class Post < ApplicationRecord
       children_posts_of_current_user_or_follower = []
       tree_path_of_children_posts.each do |tree_path_of_children_post|
         children_post = tree_path_of_children_post.descendant_post
-        if children_post.your_post?(current_user) || children_post.followers_post?(current_user)
+        if children_post&.your_post?(current_user) || children_post&.followers_post?(current_user)
           children_posts_of_current_user_or_follower.push(children_post)
         end
       end
 
       if children_posts_of_current_user_or_follower.empty?
-        children.push({ not_exist: nil })
+        children.push(Post.create_empty_formatted_post_according_to_status('not_exist'))
       else
         children_posts_of_current_user_or_follower.sort_by! { |post| post["created_at"] }.reverse!
         children_posts_of_current_user_or_follower.each do |children_post|
@@ -136,7 +143,7 @@ class Post < ApplicationRecord
         end
       end
     else
-      children.push({ not_exist: nil })
+      children.push(Post.create_empty_formatted_post_according_to_status('not_exist'))
     end
     children
   end
@@ -353,7 +360,45 @@ class Post < ApplicationRecord
     [hashed_refract_candidates_of_like, hashed_refract_candidates_of_reply]
   end
 
-  # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
+  # ステータスは本来6種類あるがここで取り得るステータスは以下4種類のみなので、それらに関してのみ扱う。
+  # 削除済み:                                       deleted
+  # 存在しない:                                     not_exist
+  # 相互フォロワーでかつリフラクトしたフォロワー以外の投稿: not_refracted_follower_post
+  # 非相互フォロワーの投稿:                            not_follower_post
+  def self.create_empty_formatted_post_according_to_status(status)
+    formatted_empty_post = {}
+    formatted_empty_post[:user_id] = nil
+    formatted_empty_post[:user_name] = nil
+    formatted_empty_post[:icon_url] = nil
+    formatted_empty_post[:id] = nil
+    formatted_empty_post[:content] = nil
+    formatted_empty_post[:image_url] = nil
+    formatted_empty_post[:locked] = nil
+    formatted_empty_post[:is_reply] = nil
+    formatted_empty_post[:likes_count] = nil
+    formatted_empty_post[:replies_count] = nil
+    formatted_empty_post[:liked_by_current_user] = nil
+    formatted_empty_post[:created_at] = nil
+    case status
+    when Settings.constants.status_of_post[:not_follower_post]
+      formatted_empty_post[:status] = 'exist'
+      formatted_empty_post[:posted_by] = 'not_follower'
+    when 'not_refracted_follower_post'
+      formatted_empty_post[:status] = 'exist'
+      formatted_empty_post[:posted_by] = 'not_refracted_follower'
+    when Settings.constants.status_of_post[:deleted]
+      formatted_empty_post[:status] = 'deleted'
+      formatted_empty_post[:posted_by] = nil
+    when Settings.constants.status_of_post[:not_exist]
+      formatted_empty_post[:status] = 'not_exist'
+      formatted_empty_post[:posted_by] = nil
+    else
+      raise RuntimeError
+    end
+    formatted_empty_post
+  end
+
+  # ステータスは本来6種類あるが、いいねした投稿をリフラクトした場合、
   # あり得るステータスは以下3種類のみなので、それらに関してのみ扱う。
   # - 削除済み:             deleted
   # - 非相互フォロワーの投稿: not_follower_post
@@ -364,24 +409,26 @@ class Post < ApplicationRecord
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
-        posts: [deleted: nil],
+        refracted_at: Post.format_to_rfc3339(refracted_at),
+        posts: [Post.create_empty_formatted_post_according_to_status(status)],
       }
     when Settings.constants.status_of_post[:not_follower_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
-        posts: [not_follower_post: nil],
+        refracted_at: Post.format_to_rfc3339(refracted_at),
+        posts: [Post.create_empty_formatted_post_according_to_status(status)],
       }
     when Settings.constants.status_of_post[:follower_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [liked_post.format_follower_refracted_post(current_user, refracted_at)],
       }
+    else
+      raise RuntimeError
     end
     formatted_refracted_post
   end
 
-  # ステータスは本来5種類あるが、いいねした投稿をリフラクトした場合、
+  # ステータスは本来6種類あるが、いいねした投稿をリフラクトした場合、
   # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
   # - 削除済み:             deleted
   # - 非相互フォロワーの投稿: not_follower_post
@@ -397,10 +444,10 @@ class Post < ApplicationRecord
 
       case status
       when Settings.constants.status_of_post[:deleted]
-        array_of_formatted_refracted_posts.push({ deleted: nil })
+        array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
 
       when Settings.constants.status_of_post[:not_follower_post]
-        array_of_formatted_refracted_posts.push({ not_follower_post: nil })
+        array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
 
       when Settings.constants.status_of_post[:current_user_post]
         formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
@@ -409,14 +456,20 @@ class Post < ApplicationRecord
       when Settings.constants.status_of_post[:follower_post]
         formatted_follower_post = post.format_follower_refracted_post(current_user, refracted_at)
         array_of_formatted_refracted_posts.push(formatted_follower_post)
+
+      else
+        raise RuntimeError
       end
     end
 
-    formatted_refracted_posts = { refracted_at: I18n.l(refracted_at), posts: array_of_formatted_refracted_posts }
+    formatted_refracted_posts = {
+      refracted_at: Post.format_to_rfc3339(refracted_at),
+      posts: array_of_formatted_refracted_posts,
+    }
     formatted_refracted_posts
   end
 
-  # ステータスは本来5種類あるが、いいねした投稿をリフラクトされた場合、
+  # ステータスは本来6種類あるが、いいねした投稿をリフラクトされた場合、
   # あり得るステータスは以下2種類のみなので、それらに関してのみ扱う。
   # - 削除済み:           deleted
   # - カレントユーザの投稿: current_user_post
@@ -427,23 +480,26 @@ class Post < ApplicationRecord
     case status
     when Settings.constants.status_of_post[:deleted]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
-        posts: [deleted: nil],
+        refracted_at: Post.format_to_rfc3339(refracted_at),
+        posts: [Post.create_empty_formatted_post_according_to_status(status)],
         refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
       }
 
     when Settings.constants.status_of_post[:current_user_post]
       formatted_refracted_post = {
-        refracted_at: I18n.l(refracted_at),
+        refracted_at: Post.format_to_rfc3339(refracted_at),
         posts: [liked_post.format_current_user_refracted_post(current_user, refracted_at)],
         refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
       }
+
+    else
+      raise RuntimeError
     end
 
     formatted_refracted_post
   end
 
-  # ステータスは本来5種類あるが、リプライをリフラクトされた場合、
+  # ステータスは本来6種類あるが、リプライをリフラクトされた場合、
   # あり得るステータスは以下4種類のみなので、それらに関してのみ扱う。
   # - 削除済み:             deleted
   # - 非相互フォロワーの投稿: not_follower_post
@@ -459,10 +515,10 @@ class Post < ApplicationRecord
 
       case status
       when Settings.constants.status_of_post[:deleted]
-        array_of_formatted_refracted_posts.push({ deleted: nil })
+        array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
 
       when Settings.constants.status_of_post[:not_follower_post]
-        array_of_formatted_refracted_posts.push({ other_users_post: nil })
+        array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
 
       when Settings.constants.status_of_post[:current_user_post]
         formatted_current_user_post = post.format_current_user_refracted_post(current_user, refracted_at)
@@ -474,13 +530,17 @@ class Post < ApplicationRecord
           array_of_formatted_refracted_posts.push(formatted_follower_post)
 
         else
-          array_of_formatted_refracted_posts.push({ other_users_post: nil })
+          status = 'not_refracted_follower_post'
+          array_of_formatted_refracted_posts.push(Post.create_empty_formatted_post_according_to_status(status))
         end
+
+      else
+        raise RuntimeError
       end
     end
 
     formatted_refracted_posts = {
-      refracted_at: I18n.l(refracted_at),
+      refracted_at: Post.format_to_rfc3339(refracted_at),
       posts: array_of_formatted_refracted_posts,
       refracted_by: Post.create_hash_of_refracted_by_to_format_refract(refracted_by),
     }
@@ -490,7 +550,7 @@ class Post < ApplicationRecord
   # リフラクトした or リフラクトされた投稿をクライアントに返す時に設定する、
   # refracted_byキーに紐づくハッシュデータの作成
   def self.create_hash_of_refracted_by_to_format_refract(refracted_by)
-    { userid: refracted_by.userid, username: refracted_by.username }
+    { user_id: refracted_by.userid, user_name: refracted_by.username }
   end
 
   # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
@@ -505,69 +565,83 @@ class Post < ApplicationRecord
 
   # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
   def format_current_user_post(current_user)
-    hashed_current_user_post = attributes.symbolize_keys
-    hashed_current_user_post.delete(:user_id)
-    hashed_current_user_post.delete(:icon_id)
-    hashed_current_user_post[:created_at]               = I18n.l(created_at)
-    hashed_current_user_post[:image]                    = image.url
-    hashed_current_user_post[:icon_url]                 = current_user.image.url
-    hashed_current_user_post[:userid]                   = current_user.userid
-    hashed_current_user_post[:username]                 = current_user.username
-    hashed_current_user_post[:likes]                    = likes.length
-    hashed_current_user_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
-    hashed_current_user_post[:is_reply]                 = is_reply?
-    hashed_current_user_post[:replies]                  = count_replies_of_current_user_post(current_user)
-    formatted_current_user_post                         = { current_user_post: hashed_current_user_post }
+    formatted_current_user_post                         = {}
+    formatted_current_user_post[:status]                = 'exist'
+    formatted_current_user_post[:posted_by]             = 'me'
+    formatted_current_user_post[:user_id]               = current_user.userid
+    formatted_current_user_post[:user_name]             = current_user.username
+    formatted_current_user_post[:icon_url]              = current_user.image.url
+    formatted_current_user_post[:id]                    = id
+    formatted_current_user_post[:content]               = content
+    formatted_current_user_post[:image_url]             = image.url
+    formatted_current_user_post[:locked]                = is_locked
+    formatted_current_user_post[:is_reply]              = is_reply?
+    formatted_current_user_post[:likes_count]           = likes.length
+    formatted_current_user_post[:replies_count]         = count_replies_of_current_user_post(current_user)
+    formatted_current_user_post[:liked_by_current_user] = is_liked_by_current_user?(current_user)
+    formatted_current_user_post[:created_at]            = Post.format_to_rfc3339(created_at)
     formatted_current_user_post
   end
 
   # リフラクトした or リフラクトされた投稿"以外"をクライアントに返す際に使用するフォーマッタ
   def format_follower_post(current_user)
-    hashed_follower_post = attributes.symbolize_keys
-    hashed_follower_post.delete(:user_id)
-    hashed_follower_post.delete(:icon_id)
-    hashed_follower_post[:created_at]               = I18n.l(created_at)
-    hashed_follower_post[:image]                    = image.url
-    hashed_follower_post[:icon_url]                 = icon.image.url
-    hashed_follower_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
-    hashed_follower_post[:is_reply]                 = is_reply?
-    hashed_follower_post[:replies] = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
-    formatted_follower_post = { follower_post: hashed_follower_post }
+    formatted_follower_post                         = {}
+    formatted_follower_post[:status]                = 'exist'
+    formatted_follower_post[:posted_by]             = 'follower'
+    formatted_follower_post[:user_id]               = nil
+    formatted_follower_post[:user_name]             = nil
+    formatted_follower_post[:icon_url]              = icon.image.url
+    formatted_follower_post[:id]                    = id
+    formatted_follower_post[:content]               = content
+    formatted_follower_post[:image_url]             = image.url
+    formatted_follower_post[:locked]                = nil
+    formatted_follower_post[:is_reply]              = is_reply?
+    formatted_follower_post[:likes_count]           = nil
+    formatted_follower_post[:liked_by_current_user] = is_liked_by_current_user?(current_user)
+    formatted_follower_post[:created_at]            = Post.format_to_rfc3339(created_at)
+    formatted_follower_post[:replies_count] = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
     formatted_follower_post
   end
 
   # リフラクトした or リフラクトされた投稿をクライアントに返す際に使用するフォーマッタ
   def format_follower_refracted_post(current_user, refracted_at)
-    follower    = user
-    hashed_post = attributes.symbolize_keys
-    hashed_post.delete(:icon_id)
-    hashed_post[:created_at]               = I18n.l(created_at)
-    hashed_post[:image]                    = image.url
-    hashed_post[:icon_url]                 = follower.image.url
-    hashed_post[:userid]                   = follower.userid
-    hashed_post[:username]                 = follower.username
-    hashed_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
-    hashed_post[:is_reply]                 = is_reply?
-    hashed_post[:replies]                  = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
-    refracted_follower_post                = { follower_post: hashed_post }
-    refracted_follower_post
+    follower                                        = user
+    formatted_follower_post                         = {}
+    formatted_follower_post[:status]                = 'exist'
+    formatted_follower_post[:posted_by]             = 'follower'
+    formatted_follower_post[:user_id]               = follower.userid
+    formatted_follower_post[:user_name]             = follower.username
+    formatted_follower_post[:icon_url]              = follower.image.url
+    formatted_follower_post[:id]                    = id
+    formatted_follower_post[:content]               = content
+    formatted_follower_post[:image_url]             = image.url
+    formatted_follower_post[:locked]                = nil
+    formatted_follower_post[:is_reply]              = is_reply?
+    formatted_follower_post[:likes_count]           = nil
+    formatted_follower_post[:liked_by_current_user] = is_liked_by_current_user?(current_user)
+    formatted_follower_post[:created_at]            = Post.format_to_rfc3339(created_at)
+    formatted_follower_post[:replies_count] = count_replies_of_follower_post_replied_by_current_user_or_followers(current_user)
+    formatted_follower_post
   end
 
   # リフラクトした or リフラクトされた投稿をクライアントに返す際に使用するフォーマッタ
   def format_current_user_refracted_post(current_user, refracted_at)
-    hashed_post = attributes.symbolize_keys
-    hashed_post.delete(:icon_id)
-    hashed_post[:created_at]               = I18n.l(created_at)
-    hashed_post[:image]                    = image.url
-    hashed_post[:icon_url]                 = current_user.image.url
-    hashed_post[:userid]                   = current_user.userid
-    hashed_post[:username]                 = current_user.username
-    hashed_post[:is_liked_by_current_user] = is_liked_by_current_user?(current_user)
-    hashed_post[:is_reply]                 = is_reply?
-    hashed_post[:likes]                    = likes.length
-    hashed_post[:replies]                  = count_replies_of_current_user_post(current_user)
-    refracted_current_user_post            = { current_user_post: hashed_post }
-    refracted_current_user_post
+    formatted_current_user_post                         = {}
+    formatted_current_user_post[:status]                = 'exist'
+    formatted_current_user_post[:posted_by]             = 'me'
+    formatted_current_user_post[:user_id]               = current_user.userid
+    formatted_current_user_post[:user_name]             = current_user.username
+    formatted_current_user_post[:icon_url]              = current_user.image.url
+    formatted_current_user_post[:id]                    = id
+    formatted_current_user_post[:content]               = content
+    formatted_current_user_post[:image_url]             = image.url
+    formatted_current_user_post[:locked]                = is_locked
+    formatted_current_user_post[:is_reply]              = is_reply?
+    formatted_current_user_post[:likes_count]           = likes.length
+    formatted_current_user_post[:replies_count]         = count_replies_of_current_user_post(current_user)
+    formatted_current_user_post[:liked_by_current_user] = is_liked_by_current_user?(current_user)
+    formatted_current_user_post[:created_at]            = Post.format_to_rfc3339(created_at)
+    formatted_current_user_post
   end
 
   def count_replies_of_current_user_post(current_user)

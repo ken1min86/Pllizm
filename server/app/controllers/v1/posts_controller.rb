@@ -96,7 +96,7 @@ module V1
           return_posts.push(formatted_follower_post)
         end
       end
-      render json: return_posts, status: :ok
+      render json: { posts: return_posts }, status: :ok
     end
 
     def index_me_and_followers_posts
@@ -125,7 +125,7 @@ module V1
           return_posts.push(formatted_follower_post)
         end
       end
-      render json: return_posts, status: :ok
+      render json: { posts: return_posts }, status: :ok
     end
 
     def index_current_user_posts
@@ -135,14 +135,14 @@ module V1
         formatted_current_user_post = current_user_post.format_current_user_post(current_v1_user)
         return_posts.push(formatted_current_user_post)
       end
-      render json: return_posts, status: :ok
+      render json: { posts: return_posts }, status: :ok
     end
 
     def index_threads
       thread = {}
       status_of_current_post = Post.check_status_of_post(current_v1_user, params[:id])
-      if status_of_current_post == Settings.constants.status_of_post[:current_user_post] \
-        || status_of_current_post == Settings.constants.status_of_post[:follower_post]
+      case status_of_current_post
+      when Settings.constants.status_of_post[:current_user_post], Settings.constants.status_of_post[:follower_post]
         parent = Post.get_parent_of_current_post(current_v1_user, params[:id])
         thread.merge!(parent: parent)
 
@@ -152,11 +152,16 @@ module V1
         children = Post.get_children_of_current_post(current_v1_user, params[:id])
         thread.merge!(children: children)
 
-      elsif status_of_current_post == Settings.constants.status_of_post[:not_follower_post] \
-        || status_of_current_post == Settings.constants.status_of_post[:deleted] \
-        || status_of_current_post == Settings.constants.status_of_post[:not_exist]
+      when Settings.constants.status_of_post[:not_follower_post],
+        Settings.constants.status_of_post[:deleted],
+        Settings.constants.status_of_post[:not_exist]
         current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:id], status_of_current_post)
+        thread.merge!(parent: nil)
         thread.merge!(current: current)
+        thread.merge!(children: [nil])
+
+      else
+        raise RuntimeError
       end
       render json: thread, status: :ok
     end
@@ -171,7 +176,7 @@ module V1
           replies.push(formatted_reply)
         end
       end
-      render json: replies, status: :ok
+      render json: { posts: replies }, status: :ok
     end
 
     def index_locks
@@ -194,13 +199,16 @@ module V1
       hashed_refract_candidates.each do |hashed_refract_candidate|
         refract_candidate = Post.find(hashed_refract_candidate[:id])
         if hashed_refract_candidate[:created_at] == hashed_refract_candidate[:datetime_for_sort]
-          formatted_refract_candidates.push({ reply: refract_candidate.format_post(current_v1_user) })
+          formatted_refract_candidate            = refract_candidate.format_post(current_v1_user)
+          formatted_refract_candidate[:category] = 'reply'
+          formatted_refract_candidates.push(formatted_refract_candidate)
         else
-          formatted_refract_candidates.push({ like: refract_candidate.format_post(current_v1_user) })
+          formatted_refract_candidate            = refract_candidate.format_post(current_v1_user)
+          formatted_refract_candidate[:category] = 'like'
+          formatted_refract_candidates.push(formatted_refract_candidate)
         end
       end
-
-      render json: formatted_refract_candidates, status: :ok
+      render json: { posts: formatted_refract_candidates }, status: :ok
     end
 
     def thread_above_candidate
@@ -218,7 +226,7 @@ module V1
           formatted_post = Post.get_current_according_to_status_of_current_post(current_v1_user, post_above_candidate.id, status)
           thread_above_candidate.push(formatted_post)
         end
-        render json: thread_above_candidate, status: :ok
+        render json: { posts: thread_above_candidate }, status: :ok
       end
     end
 
@@ -243,9 +251,11 @@ module V1
             performed_current_user_refract.updated_at
           )
           formatted_refracted_posts.push(formatted_replied_posts)
+        else
+          raise RuntimeError
         end
       end
-      render json: formatted_refracted_posts, status: :ok
+      render json: { refracts: formatted_refracted_posts }, status: :ok
     end
 
     # 【2021/09/07 メモ】
@@ -275,9 +285,11 @@ module V1
             refracted_at: follower_refract.created_at
           )
           formatted_refracted_posts.push(formatted_replied_posts)
+        else
+          raise RuntimeError
         end
       end
-      render json: formatted_refracted_posts, status: :ok
+      render json: { refracts: formatted_refracted_posts }, status: :ok
     end
 
     private
