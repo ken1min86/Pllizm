@@ -1,16 +1,112 @@
-import { SigninModal, SignupModal } from 'components/organisms';
+import { ContainedWhiteRoundedCornerButton } from 'components/atoms';
+import { HeaderWithLogo } from 'components/molecules';
+import { Footer, SigninModal, SignupModal } from 'components/organisms';
+import { push } from 'connected-react-router';
+import { VFC } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Box } from '@mui/material';
+import { Box, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-const Top = () => (
-  <>
-    <Box mb={2}>
-      <SignupModal type="button" />
-    </Box>
-    <Box>
-      <SigninModal type="button" />
-    </Box>
-  </>
+import TopLarge from '../../assets/TopLarge.jpg';
+import TopSmall from '../../assets/TopSmall.jpg';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    main: {
+      [theme.breakpoints.down('sm')]: {
+        backgroundImage: `url(${TopSmall})`,
+        background: 'center',
+        backgroundSize: 'cover',
+        width: '100%',
+        minHeight: '546px',
+      },
+      [theme.breakpoints.up('sm')]: {
+        backgroundImage: `url(${TopLarge})`,
+        background: 'center',
+        backgroundSize: 'cover',
+        width: '100%',
+        minHeight: '819px',
+      },
+    },
+    h1: {
+      color: theme.palette.primary.light,
+      fontWeight: 'bold',
+      marginBottom: 14,
+      position: 'absolute',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 24,
+        top: 130,
+        left: 122,
+      },
+      [theme.breakpoints.up('sm')]: {
+        fontSize: 30,
+        top: 193,
+      },
+    },
+    detail: {
+      position: 'absolute',
+      [theme.breakpoints.down('sm')]: {
+        top: 179,
+        left: 122,
+      },
+      [theme.breakpoints.up('sm')]: {
+        top: 261,
+      },
+    },
+    signup: {
+      position: 'absolute',
+      [theme.breakpoints.down('sm')]: {
+        top: 419,
+        left: 122,
+      },
+      [theme.breakpoints.up('sm')]: {
+        top: 670,
+      },
+    },
+    signin: {
+      position: 'absolute',
+      [theme.breakpoints.down('sm')]: {
+        top: 468,
+        left: 122,
+      },
+      [theme.breakpoints.up('sm')]: {
+        top: 721,
+      },
+    },
+  }),
 )
+
+const Top: VFC = () => {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const onClickHandler = () => {
+    dispatch(push('/about'))
+  }
+
+  return (
+    <>
+      <HeaderWithLogo />
+      <main className={classes.main}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <h1 className={classes.h1} data-testid="header-title">
+            こっちも現実。
+          </h1>
+          <Box sx={{ width: 217 }} className={classes.detail}>
+            <ContainedWhiteRoundedCornerButton label="更に詳しく" onClick={onClickHandler} />
+          </Box>
+          <Box className={classes.signup}>
+            <SignupModal type="button" />
+          </Box>
+          <Box className={classes.signin}>
+            <SigninModal type="button" />
+          </Box>
+        </Box>
+      </main>
+      <Footer />
+    </>
+  )
+}
 
 export default Top

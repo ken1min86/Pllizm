@@ -1,13 +1,11 @@
-import { VFC } from 'react'
+import { VFC } from 'react';
 
-import TwitterIcon from '@mui/icons-material/Twitter'
-// お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
-// import { useDispatch } from 'react-redux';
-import { Box, Link } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import TwitterIcon from '@mui/icons-material/Twitter';
+import { Box, Link, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footer: {
       paddingTop: '24px',
@@ -111,8 +109,6 @@ const useStyles = makeStyles((theme) =>
 )
 const Footer: VFC = () => {
   const classes = useStyles()
-  // お問い合わせ, 利用規約, プライバシーポリシー, TwitterのURLが確定し次第リンクを設定する
-  // const dispatch = useDispatch();
 
   return (
     <Box display="flex" alignItems="center" className={classes.footer}>
@@ -133,12 +129,16 @@ const Footer: VFC = () => {
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderBottomWhenMobile}`}
         >
-          利用規約
+          <Link href="/help/terms_of_use" underline="none" data-testid="terms-of-use-link">
+            利用規約
+          </Link>
         </li>
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderRightWhenMobile} ${classes.borderBottomWhenMobile}`}
         >
-          プライバシーポリシー
+          <Link href="/help/privacy_policy" underline="none" data-testid="privacy-policy-link">
+            プライバシーポリシー
+          </Link>
         </li>
         <li className={`${classes.link} ${classes.snsContainer}`}>
           <Link className={classes.snsIcon} href="https://twitter.com/plizm_jp">

@@ -1,5 +1,6 @@
 {
   "env": {
     "baseUrl": "http://localhost:4020"
-  }
+  },
+  "video": false
 }
