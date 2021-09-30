@@ -70,10 +70,16 @@ export const signUp =
         dispatch(push('/home'))
       })
       .catch((error) => {
-        const errorsMessages: Array<string> = error.response.data.errors.full_messages
-        if (errorsMessages.some((message) => message === 'Email has already been taken')) {
+        const errorsMessages: Array<string> = error?.response?.data?.errors?.full_messages
+        if (errorsMessages?.some((message) => message === 'Email has already been taken')) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           setError('すでに登録済みのメールアドレスです。\n別のメールアドレスで登録してください。')
+
+          return false
+        }
+        if (errorsMessages?.some((message) => message === 'Email is not an email')) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          setError('不正なメールアドレスです。\nメールアドレスに間違えがないか確認して下さい。')
 
           return false
         }

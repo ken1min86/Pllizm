@@ -1,14 +1,16 @@
-import { BlueRoundedCornerButton, ErrorMessages, TitleWithUnderline } from 'components/atoms';
+import {
+    ContainedBlueRoundedCornerButton, ErrorMessages, TitleWithUnderline
+} from 'components/atoms';
 import { HeaderWithLogo } from 'components/molecules';
 import { useCallback, useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { sendMailOfPasswordReset } from 'reducks/users/operations';
 
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
       backgroundColor: theme.palette.primary.main,
@@ -66,7 +68,7 @@ const BeginPasswordReset: VFC = () => {
             <ErrorMessages errors={[error]} />
           </Box>
           <Box className={classes.buttonContainer}>
-            <BlueRoundedCornerButton
+            <ContainedBlueRoundedCornerButton
               label="送信"
               onClick={() => {
                 dispatch(sendMailOfPasswordReset(email, setError))

@@ -1,11 +1,12 @@
-import { VFC } from 'react';
+import { VFC } from 'react'
 
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Theme } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import Logo from '../../../assets/HeaderLogo.png';
+import Logo from '../../../assets/HeaderLogo.png'
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     header: {
       backgroundColor: theme.palette.secondary.main,
