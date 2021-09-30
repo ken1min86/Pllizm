@@ -1,7 +1,7 @@
-import { VFC } from 'react'
+import { VFC } from 'react';
 
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -29,7 +29,9 @@ const TitleWithUnderline: VFC<Props> = ({ title }) => {
 
   return (
     <>
-      <h1 className={classes.h1}>{title}</h1>
+      <h1 className={classes.h1} data-testid="title">
+        {title}
+      </h1>
     </>
   )
 }

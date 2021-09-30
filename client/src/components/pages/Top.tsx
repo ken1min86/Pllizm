@@ -1,16 +1,16 @@
-import { ContainedWhiteRoundedCornerButton } from 'components/atoms'
-import { HeaderWithLogo } from 'components/molecules'
-import { Footer, SigninModal, SignupModal } from 'components/organisms'
-import { push } from 'connected-react-router'
-import { VFC } from 'react'
-import { useDispatch } from 'react-redux'
+import { ContainedWhiteRoundedCornerButton } from 'components/atoms';
+import { HeaderWithLogo } from 'components/molecules';
+import { Footer, SigninModal, SignupModal } from 'components/organisms';
+import { push } from 'connected-react-router';
+import { VFC } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Box, Theme } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import { Box, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import TopLarge from '../../assets/TopLarge.jpg'
-import TopSmall from '../../assets/TopSmall.jpg'
+import TopLarge from '../../assets/TopLarge.jpg';
+import TopSmall from '../../assets/TopSmall.jpg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
-        minHeight: 'calc(100vh - 49px - 222px)',
+        minHeight: '546px',
       },
       [theme.breakpoints.up('sm')]: {
         backgroundImage: `url(${TopLarge})`,
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
-        minHeight: 'calc(100vh - 49px - 78px)',
+        minHeight: '819px',
       },
     },
     h1: {
@@ -90,7 +90,9 @@ const Top: VFC = () => {
       <HeaderWithLogo />
       <main className={classes.main}>
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <h1 className={classes.h1}>こっちも現実。</h1>
+          <h1 className={classes.h1} data-testid="header-title">
+            こっちも現実。
+          </h1>
           <Box sx={{ width: 217 }} className={classes.detail}>
             <ContainedWhiteRoundedCornerButton label="更に詳しく" onClick={onClickHandler} />
           </Box>

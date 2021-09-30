@@ -129,14 +129,14 @@ const Footer: VFC = () => {
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderBottomWhenMobile}`}
         >
-          <Link href="/help/terms_of_use" underline="none">
+          <Link href="/help/terms_of_use" underline="none" data-testid="terms-of-use-link">
             利用規約
           </Link>
         </li>
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderRightWhenMobile} ${classes.borderBottomWhenMobile}`}
         >
-          <Link href="/help/privacy_policy" underline="none">
+          <Link href="/help/privacy_policy" underline="none" data-testid="privacy-policy-link">
             プライバシーポリシー
           </Link>
         </li>

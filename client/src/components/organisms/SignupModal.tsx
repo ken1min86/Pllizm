@@ -1,18 +1,20 @@
-import { BasicTextField, BlueSquareButton, ContainedBlueRoundedCornerButton, ErrorMessages } from 'components/atoms'
-import { useCallback, useState, VFC } from 'react'
-import Modal from 'react-modal'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { signUp } from 'reducks/users/operations'
+import {
+    BasicTextField, BlueSquareButton, ContainedBlueRoundedCornerButton, ErrorMessages
+} from 'components/atoms';
+import { useCallback, useState, VFC } from 'react';
+import Modal from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { signUp } from 'reducks/users/operations';
 
-import CancelIcon from '@mui/icons-material/Cancel'
-import { Box, IconButton, Theme } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import CancelIcon from '@mui/icons-material/Cancel';
+import { Box, IconButton, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../assets/PopupHeaderLogo.png'
+import Logo from '../../assets/PopupHeaderLogo.png';
 // eslint-disable-next-line import/no-useless-path-segments
-import { SigninModal } from './'
+import { SigninModal } from './';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -127,25 +129,37 @@ const SignupModal: VFC<Props> = ({ type }) => {
             width: 217,
           }}
         >
-          <ContainedBlueRoundedCornerButton label="アカウント作成" onClick={openModal} />
+          <ContainedBlueRoundedCornerButton
+            label="アカウント作成"
+            onClick={openModal}
+            data-testid="signup-link-in-button"
+          />
         </Box>
       )}
       {type === 'text' && (
-        <button type="button" className={classes.signUpLink} onClick={openModal}>
+        <button type="button" className={classes.signUpLink} onClick={openModal} data-testid="signup-link-in-text">
           アカウント作成
         </button>
       )}
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className={classes.content} contentLabel="SignUp Modal">
         <Box className={classes.main}>
           <Box className={classes.popupContainer}>
-            <IconButton aria-label="close" className={classes.closeButton} size="large" onClick={closeModal}>
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              size="large"
+              onClick={closeModal}
+              data-testid="close-button"
+            >
               <CancelIcon />
             </IconButton>
             <Box mb={2} textAlign="center">
               <img src={Logo} alt="ロゴ" />
             </Box>
             <Box mb={3} textAlign="center">
-              <p className={classes.popupTitle}>アカウント作成</p>
+              <p className={classes.popupTitle} data-testid="title">
+                アカウント作成
+              </p>
             </Box>
             <Box mb={1}>
               <BasicTextField
@@ -194,11 +208,11 @@ const SignupModal: VFC<Props> = ({ type }) => {
             </Box>
             <Box className={classes.agreementText}>
               ※利用開始をもって
-              <Link to="/help/terms_of_use" className={classes.link}>
+              <Link to="/help/terms_of_use" className={classes.link} data-testid="terms-of-use-link-in-modal">
                 利用規約
               </Link>
               と
-              <Link to="/help/privacy_policy" className={classes.link}>
+              <Link to="/help/privacy_policy" className={classes.link} data-testid="privacy-policy-link-in-modal">
                 プライバシーポリシー
               </Link>
               に同意したものとみなします。
