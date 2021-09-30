@@ -4,6 +4,7 @@ export type SignUpAction = (userState: {
   client: string
   userId: string
   userName: string
+  icon: string
 }) => {
   type: string
   payload: {
@@ -13,6 +14,7 @@ export type SignUpAction = (userState: {
     client: string
     userId: string
     userName: string
+    icon: string
   }
 }
 
@@ -22,6 +24,7 @@ export type SignInAction = (userState: {
   client: string
   userId: string
   userName: string
+  icon: string
 }) => {
   type: string
   payload: {
@@ -31,6 +34,7 @@ export type SignInAction = (userState: {
     client: string
     userId: string
     userName: string
+    icon: string
   }
 }
 
@@ -70,6 +74,7 @@ export type Users = {
   client: string
   userId: string
   userName: string
+  icon: string
 }
 
 export type SignUpRequest = {
@@ -85,6 +90,7 @@ export type SignUpResponse = {
     uid: string
     username: string
     userid: string
+    image: string
   }
 }
 

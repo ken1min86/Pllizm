@@ -64,6 +64,7 @@ export const signUp =
             client,
             userId: userData.userid,
             userName: userData.username,
+            icon: userData.image,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -134,6 +135,7 @@ export const signIn = (email: string, password: string, setError: any) => async 
           client,
           userId: userData.userid,
           userName: userData.username,
+          icon: userData.image,
         }),
       )
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -174,6 +176,7 @@ export const listenAuthState = () => async (dispatch: any) => {
 
       const userData = response.data.data
       const { userId, userName } = userData
+      const icon = userData.image
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         signUpAction({
@@ -182,6 +185,7 @@ export const listenAuthState = () => async (dispatch: any) => {
           client,
           userId,
           userName,
+          icon,
         }),
       )
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -295,6 +299,7 @@ export const resetPassword =
             client: headers.client,
             userId: userData.userid,
             userName: userData.username,
+            icon: userData.icon,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call

@@ -1,4 +1,4 @@
-import { Users } from '../users/types'
+import { Users } from '../users/types';
 
 const initialState: { users: Users } = {
   users: {
@@ -8,6 +8,7 @@ const initialState: { users: Users } = {
     client: '',
     userId: '',
     userName: '',
+    icon: '',
   },
 }
 
