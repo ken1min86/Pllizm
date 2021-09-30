@@ -6,6 +6,7 @@ import { isValidEmailFormat } from 'function/common';
 import Cookies from 'js-cookie';
 
 import axiosBase from '../../api';
+import Icon from '../../assets/HeaderLogo.png';
 import { signInAction, signUpAction } from './actions';
 import {
     ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
@@ -56,6 +57,7 @@ export const signUp =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
+        const icon = userData.image.url == null ? Icon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signUpAction({
@@ -64,7 +66,7 @@ export const signUp =
             client,
             userId: userData.userid,
             userName: userData.username,
-            icon: userData.image,
+            icon,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -127,6 +129,7 @@ export const signIn = (email: string, password: string, setError: any) => async 
       Cookies.set('uid', headers.uid)
 
       const userData = response.data.data
+      const icon = userData.image.url == null ? Icon : userData.image.url
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         signInAction({
@@ -135,7 +138,7 @@ export const signIn = (email: string, password: string, setError: any) => async 
           client,
           userId: userData.userid,
           userName: userData.username,
-          icon: userData.image,
+          icon,
         }),
       )
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -176,7 +179,7 @@ export const listenAuthState = () => async (dispatch: any) => {
 
       const userData = response.data.data
       const { userId, userName } = userData
-      const icon = userData.image
+      const icon = userData.image.url == null ? Icon : userData.image.url
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         signUpAction({

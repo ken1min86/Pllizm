@@ -90,7 +90,7 @@ export type SignUpResponse = {
     uid: string
     username: string
     userid: string
-    image: string
+    image: { url: string }
   }
 }
 
