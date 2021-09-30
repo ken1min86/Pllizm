@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { push } from 'connected-react-router'
-import { isValidEmailFormat } from 'function/common'
-import Cookies from 'js-cookie'
+import { push } from 'connected-react-router';
+import { isValidEmailFormat } from 'function/common';
+import Cookies from 'js-cookie';
 
-import axiosBase from '../../api'
-import { signInAction, signUpAction } from './actions'
+import axiosBase from '../../api';
+import { signInAction, signUpAction } from './actions';
 import {
-  ListenAuthStateRequest,
-  RequestHeadersForAuthentication,
-  SignInRequest,
-  SignUpRequest,
-  SignUpResponse,
-} from './types'
+    ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
+    SignUpResponse
+} from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const signUp =
@@ -73,10 +70,16 @@ export const signUp =
         dispatch(push('/home'))
       })
       .catch((error) => {
-        const errorsMessages: Array<string> = error.response.data.errors.full_messages
-        if (errorsMessages.some((message) => message === 'Email has already been taken')) {
+        const errorsMessages: Array<string> = error?.response?.data?.errors?.full_messages
+        if (errorsMessages?.some((message) => message === 'Email has already been taken')) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           setError('すでに登録済みのメールアドレスです。\n別のメールアドレスで登録してください。')
+
+          return false
+        }
+        if (errorsMessages?.some((message) => message === 'Email is not an email')) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          setError('不正なメールアドレスです。\nメールアドレスに間違えがないか確認して下さい。')
 
           return false
         }
