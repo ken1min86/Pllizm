@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
-        minHeight: '546px',
+        minHeight: 'calc( 100vh - 49px - 222px )',
       },
       [theme.breakpoints.up('sm')]: {
         backgroundImage: `url(${TopLarge})`,
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
-        minHeight: '819px',
+        minHeight: 'calc( 100vh - 49px - 78px )',
       },
     },
     h1: {

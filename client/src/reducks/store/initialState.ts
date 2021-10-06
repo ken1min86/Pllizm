@@ -1,6 +1,8 @@
+import { Posts } from 'reducks/posts/types';
+
 import { Users } from '../users/types';
 
-const initialState: { users: Users } = {
+const initialState: { users: Users; posts: Array<Posts> } = {
   users: {
     isSignedIn: false,
     uid: '',
@@ -10,6 +12,7 @@ const initialState: { users: Users } = {
     userName: '',
     icon: '',
   },
+  posts: [],
 }
 
 export default initialState

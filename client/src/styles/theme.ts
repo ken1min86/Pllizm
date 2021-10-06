@@ -1,4 +1,4 @@
-import createTheme from '@mui/material/styles/createTheme'
+import createTheme from '@mui/material/styles/createTheme';
 
 const theme = createTheme({
   palette: {
@@ -29,7 +29,7 @@ const theme = createTheme({
       xs: 0, // スマホ用
       sm: 600, // タブレット用
       md: 1025, // PC用
-      lg: 1280,
+      lg: 1200,
       xl: 1920,
     },
   },

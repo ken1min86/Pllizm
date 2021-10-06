@@ -105,6 +105,9 @@ const useStyles = makeStyles((theme: Theme) =>
         marginBottom: '21px',
       },
     },
+    ul: {
+      display: 'inline',
+    },
   }),
 )
 const Footer: VFC = () => {

@@ -1,12 +1,12 @@
-import { BlueSquareButton } from 'components/atoms'
-import { HeaderWithLogo } from 'components/molecules'
-import { push } from 'connected-react-router'
-import { VFC } from 'react'
-import { useDispatch } from 'react-redux'
+import { BlueSquareButton } from 'components/atoms';
+import { HeaderWithLogo } from 'components/molecules';
+import { push } from 'connected-react-router';
+import { VFC } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Box, Theme } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import { Box, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
+
 const EndPasswordReset: VFC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()

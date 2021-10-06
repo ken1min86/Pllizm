@@ -1,20 +1,47 @@
-import { useSelector } from 'react-redux';
-import { getIcon } from 'reducks/users/selectors';
+import { PostBox } from 'components/molecules';
+import { DefaultTemplate } from 'components/templates';
+import { useEffect, VFC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPostsOfMeAndFollower } from 'reducks/posts/operations';
+import { getPosts } from 'reducks/posts/selectors';
 
-import { Users } from '../../reducks/users/types';
+import { Box } from '@mui/material';
 
-const Home = () => {
-  // eslint-disable-next-line no-shadow
-  const selector = useSelector((state: { users: Users }) => state)
-  const icon = getIcon(selector)
+import { PostsOfMeAndFollower } from '../../reducks/posts/types';
 
-  console.log(icon)
+const Home: VFC = () => {
+  const dispatch = useDispatch()
+  const selector = useSelector((state: { posts: Array<PostsOfMeAndFollower> }) => state)
+
+  const posts = getPosts(selector)
+
+  useEffect(() => {
+    dispatch(getPostsOfMeAndFollower())
+  }, [dispatch])
 
   return (
-    <div>
-      仮のコンポーネント
-      <img src={icon} alt="" />
-    </div>
+    <DefaultTemplate title="ホーム" activeNavTitle="home">
+      {posts.length > 0 &&
+        posts.map((post) => (
+          <PostBox
+            type={post.postedBy}
+            icon={post.iconUrl}
+            userId={post.userId}
+            userName={post.userName}
+            postId={post.id}
+            content={post.content}
+            repliesCount={post.repliesCount}
+            likesCount={post.likesCount}
+            likedByMe={post.likedByCurrentUser}
+            postedAt={post.createdAt}
+            locked={post.locked}
+            image={post.imageUrl}
+          />
+        ))}
+      <Box sx={{ padding: '64px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
+        投稿は以上ですべてです。
+      </Box>
+    </DefaultTemplate>
   )
 }
 export default Home

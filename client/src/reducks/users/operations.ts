@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { push } from 'connected-react-router';
 import { isValidEmailFormat } from 'function/common';
 import Cookies from 'js-cookie';
 
 import axiosBase from '../../api';
-import Icon from '../../assets/HeaderLogo.png';
-import { signInAction, signUpAction } from './actions';
+import DefaultIcon from '../../assets/DefaultIcon.jpg';
+import { signInAction, signOutAction, signUpAction } from './actions';
 import {
     ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
-    SignUpResponse
+    SignUpResponse, UsersOfGetState
 } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,7 +56,7 @@ export const signUp =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
-        const icon = userData.image.url == null ? Icon : userData.image.url
+        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signUpAction({
@@ -96,7 +95,7 @@ export const signUp =
   }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const signIn = (email: string, password: string, setError: any) => async (dispatch: any, getState: any) => {
+export const signIn = (email: string, password: string, setError: any) => async (dispatch: any) => {
   if (email === '' || password === '') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setError('メールアドレスとパスワードを入力してください。')
@@ -112,24 +111,20 @@ export const signIn = (email: string, password: string, setError: any) => async 
   }
 
   const requestData: SignInRequest = { email, password }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const { uid, accessToken, client } = getState().users
-  const requestHeaders: RequestHeadersForAuthentication = {
-    'access-token': accessToken,
-    client,
-    uid,
-  }
 
   await axiosBase
-    .post('/v1/auth/sign_in', requestData, { headers: requestHeaders })
+    .post('/v1/auth/sign_in', requestData)
     .then((response) => {
       const { headers } = response
+      const accessToken = headers['access-token']
+      const { client, uid } = headers
+
       Cookies.set('access-token', headers['access-token'])
       Cookies.set('client', headers.client)
       Cookies.set('uid', headers.uid)
 
       const userData = response.data.data
-      const icon = userData.image.url == null ? Icon : userData.image.url
+      const icon = userData.image.url == null ? DefaultIcon : userData.image.url
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         signInAction({
@@ -153,6 +148,32 @@ export const signIn = (email: string, password: string, setError: any) => async 
 
   return false
 }
+
+export const signOut =
+  (setError: React.Dispatch<React.SetStateAction<string>>) => async (dispatch: any, getState: UsersOfGetState) => {
+    const { uid, accessToken, client } = getState().users
+    const requestHeaders: RequestHeadersForAuthentication = {
+      'access-token': accessToken,
+      client,
+      uid,
+    }
+
+    await axiosBase
+      .delete('v1/auth/sign_out', { headers: requestHeaders })
+      .then(() => {
+        Cookies.remove('access-token')
+        Cookies.remove('client')
+        Cookies.remove('uid')
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(signOutAction())
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/'))
+      })
+      .catch(() => {
+        setError('オフラインでないことを確認して、もう一度ログアウトして下さい。')
+      })
+  }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const listenAuthState = () => async (dispatch: any) => {
@@ -178,16 +199,16 @@ export const listenAuthState = () => async (dispatch: any) => {
       Cookies.set('uid', uid)
 
       const userData = response.data.data
-      const { userId, userName } = userData
-      const icon = userData.image.url == null ? Icon : userData.image.url
+      const { userid, username } = userData
+      const icon = userData.image.url == null ? DefaultIcon : userData.image.url
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         signUpAction({
           uid,
           accessToken,
           client,
-          userId,
-          userName,
+          userId: userid,
+          userName: username,
           icon,
         }),
       )
@@ -294,6 +315,7 @@ export const resetPassword =
         Cookies.set('uid', headers.uid)
 
         const userData = response.data.data
+        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
@@ -302,7 +324,7 @@ export const resetPassword =
             client: headers.client,
             userId: userData.userid,
             userName: userData.username,
-            icon: userData.icon,
+            icon,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call

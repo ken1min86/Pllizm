@@ -1,3 +1,5 @@
+export { default as AccountDrawer } from './AccountDrawer'
+export { default as AccountLogoutPopover } from './AccountLogoutPopover'
 export { default as Footer } from './common/Footer'
 export { default as HeaderWithTitleAndReturnArrow } from './common/HeaderWithTitleAndReturnArrow'
 // eslint-disable-next-line import/no-cycle

@@ -38,6 +38,19 @@ export type SignInAction = (userState: {
   }
 }
 
+export type SignOutAction = () => {
+  type: string
+  payload: {
+    isSignedIn: false
+    uid: null
+    accessToken: null
+    client: null
+    userId: null
+    userName: null
+    icon: null
+  }
+}
+
 export type Reducer = (
   state: {
     isSignedIn: boolean
@@ -46,6 +59,7 @@ export type Reducer = (
     client: string
     userId: string
     userName: string
+    icon: string
   },
   action: {
     type: string
@@ -56,6 +70,7 @@ export type Reducer = (
       client?: string
       userId?: string
       userName?: string
+      icon?: string
     }
   },
 ) => {
@@ -65,6 +80,7 @@ export type Reducer = (
   client: string
   userId: string
   userName: string
+  icon: string
 }
 
 export type Users = {
@@ -75,6 +91,10 @@ export type Users = {
   userId: string
   userName: string
   icon: string
+}
+
+export type UsersOfGetState = () => {
+  users: Users
 }
 
 export type SignUpRequest = {
