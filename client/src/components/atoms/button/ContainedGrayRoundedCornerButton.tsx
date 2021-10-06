@@ -8,12 +8,16 @@ import makeStyles from '@mui/styles/makeStyles';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     button: {
-      backgroundColor: theme.palette.info.main,
+      fontSize: '14px',
+      paddingTop: '8px',
+      paddingBottom: '8px',
       width: '100%',
+      borderRadius: '24px',
       color: theme.palette.primary.light,
+      backgroundColor: theme.palette.text.disabled,
       fontWeight: 'bold',
       '&:hover': {
-        backgroundColor: theme.palette.info.main,
+        backgroundColor: theme.palette.text.disabled,
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
       },
@@ -22,19 +26,18 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClick: ((event: React.MouseEvent<HTMLButtonElement>) => void) | (() => void)
   label: string
-  size: 'small' | 'medium' | 'large'
 }
 
-const BlueSquareButton: VFC<Props> = ({ onClick, label, size }) => {
+const ContainedGrayRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
   const classes = useStyles({})
 
   return (
-    <Button variant="contained" size={size} className={classes.button} onClick={onClick}>
+    <Button className={classes.button} variant="contained" onClick={onClick}>
       {label}
     </Button>
   )
 }
 
-export default BlueSquareButton
+export default ContainedGrayRoundedCornerButton
