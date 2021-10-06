@@ -1,4 +1,4 @@
-import { SignInAction, SignUpAction } from './types'
+import { SignInAction, SignOutAction, SignUpAction } from './types';
 
 export const SIGN_UP = 'SIGN_UP'
 export const signUpAction: SignUpAction = (userState) => ({
@@ -10,6 +10,7 @@ export const signUpAction: SignUpAction = (userState) => ({
     client: userState.client,
     userId: userState.userId,
     userName: userState.userName,
+    icon: userState.icon,
   },
 })
 
@@ -23,5 +24,20 @@ export const signInAction: SignInAction = (userState) => ({
     client: userState.client,
     userId: userState.userId,
     userName: userState.userName,
+    icon: userState.icon,
+  },
+})
+
+export const SIGN_OUT = 'SIGN_OUT'
+export const signOutAction: SignOutAction = () => ({
+  type: 'SIGN_OUT',
+  payload: {
+    isSignedIn: false,
+    uid: null,
+    accessToken: null,
+    client: null,
+    userId: null,
+    userName: null,
+    icon: null,
   },
 })

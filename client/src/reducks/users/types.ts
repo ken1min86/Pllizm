@@ -4,6 +4,7 @@ export type SignUpAction = (userState: {
   client: string
   userId: string
   userName: string
+  icon: string
 }) => {
   type: string
   payload: {
@@ -13,6 +14,7 @@ export type SignUpAction = (userState: {
     client: string
     userId: string
     userName: string
+    icon: string
   }
 }
 
@@ -22,6 +24,7 @@ export type SignInAction = (userState: {
   client: string
   userId: string
   userName: string
+  icon: string
 }) => {
   type: string
   payload: {
@@ -31,6 +34,20 @@ export type SignInAction = (userState: {
     client: string
     userId: string
     userName: string
+    icon: string
+  }
+}
+
+export type SignOutAction = () => {
+  type: string
+  payload: {
+    isSignedIn: false
+    uid: null
+    accessToken: null
+    client: null
+    userId: null
+    userName: null
+    icon: null
   }
 }
 
@@ -42,6 +59,7 @@ export type Reducer = (
     client: string
     userId: string
     userName: string
+    icon: string
   },
   action: {
     type: string
@@ -52,6 +70,7 @@ export type Reducer = (
       client?: string
       userId?: string
       userName?: string
+      icon?: string
     }
   },
 ) => {
@@ -61,6 +80,7 @@ export type Reducer = (
   client: string
   userId: string
   userName: string
+  icon: string
 }
 
 export type Users = {
@@ -70,6 +90,11 @@ export type Users = {
   client: string
   userId: string
   userName: string
+  icon: string
+}
+
+export type UsersOfGetState = () => {
+  users: Users
 }
 
 export type SignUpRequest = {
@@ -85,6 +110,7 @@ export type SignUpResponse = {
     uid: string
     username: string
     userid: string
+    image: { url: string }
   }
 }
 
