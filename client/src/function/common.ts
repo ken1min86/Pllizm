@@ -20,11 +20,11 @@ export const createTimeToDisplay = (postedAt: string): string => {
     const year = postedAtInJapan.getFullYear()
     const month = postedAtInJapan.getMonth() + 1
     const date = postedAtInJapan.getDate()
-    timeToDisplay = `${year}/${month}/${date}`
+    timeToDisplay = `${year}年${month}月${date}日`
   } else {
     const month = postedAtInJapan.getMonth() + 1
     const date = postedAtInJapan.getDate()
-    timeToDisplay = `${month}/${date}`
+    timeToDisplay = `${month}月${date}日`
   }
 
   return timeToDisplay
