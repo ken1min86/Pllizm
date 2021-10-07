@@ -11,7 +11,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {
     Avatar, Box, Button, Divider, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer, Theme
 } from '@mui/material';
-// import { Theme, Button } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -46,15 +45,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-type Anchor = 'left'
-
 const AccountDrawer: VFC = () => {
+  const classes = useStyles()
+  const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
+
   const userName = getUserName(selector)
   const userId = getUserId(selector)
   const icon = getIcon(selector)
-  const classes = useStyles()
-  const dispatch = useDispatch()
 
   const [state, setState] = useState({ left: false })
   const [error, setError] = useState('')
@@ -63,7 +61,7 @@ const AccountDrawer: VFC = () => {
     dispatch(signOut(setError))
   }
 
-  const toggleDrawer = (anchor: Anchor, open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
       event &&
       event.type === 'keydown' &&
@@ -72,25 +70,20 @@ const AccountDrawer: VFC = () => {
       return
     }
 
-    setState({ ...state, [anchor]: open })
+    setState({ ...state, left: open })
   }
 
   return (
     <>
-      <Button onClick={toggleDrawer('left', true)}>
+      <Button onClick={toggleDrawer(true)}>
         <img src={icon} alt="アイコン" className={classes.accountIcon} />
       </Button>
-      <SwipeableDrawer
-        anchor="left"
-        open={state.left}
-        onClose={toggleDrawer('left', false)}
-        onOpen={toggleDrawer('left', true)}
-      >
+      <SwipeableDrawer anchor="left" open={state.left} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
         <Box
           className={classes.drawerContainer}
           role="presentation"
-          onClick={toggleDrawer('left', false)}
-          onKeyDown={toggleDrawer('left', false)}
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
         >
           <Box className={classes.accountInfoContainer}>
             <Avatar

@@ -1,5 +1,5 @@
 import { LogoLink } from 'components/atoms';
-import { IconWithTextLink } from 'components/molecules';
+import { BottomNavigationBar, IconWithTextLink } from 'components/molecules';
 import { AccountDrawer, AccountLogoutPopover } from 'components/organisms';
 import { push } from 'connected-react-router';
 import { FC } from 'react';
@@ -18,8 +18,8 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
 import Logo from '../../assets/HeaderLogo.png';
-import LogoIconInactive from '../../assets/LogoIcon.png';
-import LogoIconActive from '../../assets/LogoIconActive.png';
+import LogoIconActive from '../../assets/LogoIconActive1.png';
+import LogoIconInactive from '../../assets/LogoIconInactive1.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,16 +35,14 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '600px',
       },
       [theme.breakpoints.down('sm')]: {
-        width: '100%',
+        width: '100vw',
       },
     },
     img: {
-      display: 'block',
       width: 28,
-      margin: '0 auto',
-    },
-    button: {
       position: 'absolute',
+      display: 'block',
+      left: 'calc( 50% - 14px )',
     },
     nav: {
       position: 'fixed',
@@ -108,12 +106,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     mainContainer: {
       order: 2,
-      borderRight: '1px solid #EEEEEE',
-      borderLeft: '1px solid #EEEEEE',
       [theme.breakpoints.up('sm')]: {
+        borderRight: '1px solid #EEEEEE',
+        borderLeft: '1px solid #EEEEEE',
         width: '600px',
       },
       [theme.breakpoints.down('sm')]: {
+        minWidth: '100vw',
         width: '100%',
       },
     },
@@ -127,6 +126,11 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold',
       marginLeft: 16,
       color: theme.palette.primary.light,
+    },
+    buttomNavContainer: {
+      position: 'fixed',
+      bottom: 0,
+      width: '100%',
     },
   }),
 )
@@ -168,6 +172,11 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
             </Hidden>
           </header>
           <main className={classes.main}>{children}</main>
+          <Hidden smUp>
+            <Box className={classes.buttomNavContainer}>
+              <BottomNavigationBar activeNav={activeNavTitle} />
+            </Box>
+          </Hidden>
         </Box>
         <Hidden smDown>
           <Box className={classes.navContainer}>

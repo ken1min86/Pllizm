@@ -38,7 +38,7 @@ const Home: VFC = () => {
             image={post.imageUrl}
           />
         ))}
-      <Box sx={{ padding: '64px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
+      <Box sx={{ padding: '64px 0 120px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
         投稿は以上ですべてです。
       </Box>
     </DefaultTemplate>
