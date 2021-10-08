@@ -27,16 +27,23 @@ type Props = {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
   label: string
   disabled?: boolean
+  backgroundColor: string
 }
 
-const ContainedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label, disabled = false }) => {
+const ContainedRoundedCornerButton: VFC<Props> = ({ onClick, label, disabled = false, backgroundColor }) => {
   const classes = useStyles({})
 
   return (
-    <Button color="info" className={classes.button} variant="contained" disabled={disabled} onClick={onClick}>
+    <Button
+      className={classes.button}
+      variant="contained"
+      disabled={disabled}
+      onClick={onClick}
+      sx={{ backgroundColor: `${backgroundColor}`, '&:hover': { backgroundColor: `${backgroundColor}` } }}
+    >
       {label}
     </Button>
   )
 }
 
-export default ContainedBlueRoundedCornerButton
+export default ContainedRoundedCornerButton

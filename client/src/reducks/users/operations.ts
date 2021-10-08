@@ -18,7 +18,7 @@ export const signUp =
     passwordConfirmation: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<any> => {
+  async (dispatch: any): Promise<boolean> => {
     if (email === '' || password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
@@ -93,7 +93,7 @@ export const signUp =
 
 export const signIn =
   (email: string, password: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<any> => {
+  async (dispatch: any): Promise<boolean> => {
     if (email === '' || password === '') {
       setError('メールアドレスとパスワードを入力してください。')
 
@@ -269,7 +269,7 @@ export const resetPassword =
     uid: string | null,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<any> => {
+  async (dispatch: any): Promise<boolean> => {
     if (password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 

@@ -1,6 +1,5 @@
 export { default as BasicTextField } from './textField/BasicTextField'
-export { default as ContainedBlueRoundedCornerButton } from './button/ContainedBlueRoundedCornerButton'
-export { default as ContainedGrayRoundedCornerButton } from './button/ContainedGrayRoundedCornerButton'
+export { default as ContainedRoundedCornerButton } from './button/ContainedRoundedCornerButton'
 export { default as ContainedWhiteRoundedCornerButton } from './button/ContainedWhiteRoundedCornerButton'
 export { default as BlueSquareButton } from './button/BlueSquareButton'
 export { default as ErrorMessages } from './text/ErrorMessages'

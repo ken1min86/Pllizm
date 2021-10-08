@@ -1,4 +1,4 @@
-import { ContainedBlueRoundedCornerButton } from 'components/atoms';
+import { ContainedRoundedCornerButton } from 'components/atoms';
 import { DisplayUploadedImgModal } from 'components/organisms';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -199,7 +199,12 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
               {textCounter}/140
             </span>
             <Box sx={{ width: 112 }}>
-              <ContainedBlueRoundedCornerButton label="投稿する" onClick={handleOnClickToPost} disabled={disabled} />
+              <ContainedRoundedCornerButton
+              label="投稿する"
+              onClick={handleOnClickToPost}
+              disabled={disabled}
+              backgroundColor="#2699fb"
+            />
             </Box>
           </Box>
         </Box>

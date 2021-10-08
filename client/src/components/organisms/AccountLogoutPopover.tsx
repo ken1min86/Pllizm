@@ -98,9 +98,10 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
         {/* <button type="button" className={classes.popover}> */}
         <DefaultModalOnlyWithTitle
           title="ログアウトしますか？"
-          actionLabel="ログアウト"
-          closeLabel="キャンセル"
+          actionButtonLabel="ログアウト"
+          closeButtonLabel="キャンセル"
           handleOnClick={handleOnClickToSignOut}
+          backgroundColorOfActionButton="#2699fb"
         >
           <span>@{userName}からログアウト</span>
         </DefaultModalOnlyWithTitle>

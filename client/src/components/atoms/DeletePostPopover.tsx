@@ -1,4 +1,7 @@
+import { DefaultModalOnlyWithTitle } from 'components/molecules';
 import { useState, VFC } from 'react';
+import { useDispatch } from 'react-redux';
+import { deletePost } from 'reducks/posts/operations';
 
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -8,45 +11,49 @@ import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    deleteButton: {
+    deleteButtonContainer: {
+      display: 'flex',
+      alignItems: 'center',
       color: theme.palette.primary.light,
       backgroundColor: '#333333',
       fontWeight: 'bold',
       fontSize: 14,
+      padding: '0 16px 0 8px',
+      '&:hover': {
+        backgroundColor: '#333333',
+        opacity: '0.7',
+        transition: 'all 0.3s ease 0s',
+      },
     },
   }),
 )
 
-type Proos = {
+type Props = {
   postId: string
 }
 
-const DeletePostPopover: VFC<Proos> = ({ postId }) => {
+const DeletePostPopover: VFC<Props> = ({ postId }) => {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const dispatch = useDispatch()
 
-  const handleClick = (event: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const [anchorEl, setAnchorEl] = useState<EventTarget & HTMLElement>()
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
-    setAnchorEl(null)
+    setAnchorEl(undefined)
   }
 
   const handleDelete = () => {
-    console.log(postId)
-    console.log('投稿削除機能実装時に修正。削除確認モーダルを表示させる。')
+    dispatch(deletePost(postId))
   }
-
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
 
   return (
     <>
-      {/* <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        Open Popover
-      </Button> */}
       <IconButton aria-describedby={id} onClick={handleClick}>
         <MoreHorizIcon />
       </IconButton>
@@ -64,14 +71,18 @@ const DeletePostPopover: VFC<Proos> = ({ postId }) => {
           horizontal: 'right',
         }}
       >
-        <Box
-          onClick={handleDelete}
-          className={classes.deleteButton}
-          sx={{ padding: '16px 72px 16px 16px', backgroundColor: '#f9f4ef', display: 'flex', alignItems: 'center' }}
+        <DefaultModalOnlyWithTitle
+          title="投稿を削除しますか？"
+          actionButtonLabel="削除"
+          closeButtonLabel="キャンセル"
+          handleOnClick={handleDelete}
+          backgroundColorOfActionButton="#e0245e"
         >
-          <DeleteOutlinedIcon sx={{ color: '#e0245e', marginRight: 1 }} />
-          <span>削除</span>
-        </Box>
+          <Box className={classes.deleteButtonContainer}>
+            <DeleteOutlinedIcon sx={{ color: '#e0245e', marginRight: 1 }} />
+            <span>削除</span>
+          </Box>
+        </DefaultModalOnlyWithTitle>
       </Popover>
     </>
   )
