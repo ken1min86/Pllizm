@@ -1,4 +1,5 @@
-// eslint-disable-next-line import/prefer-default-export
+import { RequestHeadersForAuthentication, UsersOfGetState } from 'reducks/users/types';
+
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
@@ -28,4 +29,15 @@ export const createTimeToDisplay = (postedAt: string): string => {
   }
 
   return timeToDisplay
+}
+
+export const createRequestHeader = (getState: UsersOfGetState) => {
+  const { uid, accessToken, client } = getState().users
+  const requestHeaders: RequestHeadersForAuthentication = {
+    'access-token': accessToken,
+    client,
+    uid,
+  }
+
+  return requestHeaders
 }

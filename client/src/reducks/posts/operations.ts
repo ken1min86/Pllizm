@@ -1,5 +1,6 @@
 import camelcaseKeys from 'camelcase-keys';
-import { RequestHeadersForAuthentication, UsersOfGetState } from 'reducks/users/types';
+import { createRequestHeader } from 'function/common';
+import { UsersOfGetState } from 'reducks/users/types';
 
 import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
@@ -11,12 +12,7 @@ import {
 export const getPostsOfMeAndFollower =
   () =>
   async (dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void, getState: UsersOfGetState) => {
-    const { uid, accessToken, client } = getState().users
-    const requestHeaders: RequestHeadersForAuthentication = {
-      'access-token': accessToken,
-      client,
-      uid,
-    }
+    const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
       .get<PostsArrayOfMeAndFollowerResponse>('/v1/posts/me_and_followers', { headers: requestHeaders })
@@ -36,12 +32,7 @@ export const getPostsOfMeAndFollower =
 
 export const submitNewPost: SubmitPostOperation =
   (content, locked, image) => async (_: any, getState: UsersOfGetState) => {
-    const { uid, accessToken, client } = getState().users
-    const requestHeaders: RequestHeadersForAuthentication = {
-      'access-token': accessToken,
-      client,
-      uid,
-    }
+    const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
     requestData.append('content', content)
