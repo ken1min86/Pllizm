@@ -1,4 +1,5 @@
 import { PostPopover, UsersIcon } from 'components/atoms';
+import { DisplayUploadedImgModal } from 'components/organisms';
 import { createTimeToDisplay } from 'function/common';
 import { VFC } from 'react';
 
@@ -19,10 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       borderBottom: 'solid 1px #EEEEEE',
     },
-    img: {
+    imgContainer: {
       width: '100%',
       height: 250,
-      objectFit: 'cover',
     },
     content: {
       fontSize: 15,
@@ -106,7 +106,11 @@ const PostBox: VFC<Props> = ({
               </>
             )}
             <span className={classes.content}>{content}</span>
-            {image != null && <img src={image} alt="投稿画像" className={classes.img} />}
+            {image && (
+              <Box className={classes.imgContainer}>
+                <DisplayUploadedImgModal uploadedImgSrc={image} />
+              </Box>
+            )}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: -1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
