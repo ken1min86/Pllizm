@@ -26,13 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
   label: string
+  disabled?: boolean
 }
 
-const ContainedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
+const ContainedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label, disabled = false }) => {
   const classes = useStyles({})
 
   return (
-    <Button color="info" className={classes.button} variant="contained" onClick={onClick}>
+    <Button color="info" className={classes.button} variant="contained" disabled={disabled} onClick={onClick}>
       {label}
     </Button>
   )

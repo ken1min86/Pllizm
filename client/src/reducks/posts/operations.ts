@@ -1,12 +1,13 @@
 import camelcaseKeys from 'camelcase-keys';
 import { RequestHeadersForAuthentication, UsersOfGetState } from 'reducks/users/types';
 
-import axiosBase from '../../api';
+import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
 import { getPostsOfMeAndFollowerAction } from './actions';
-import { PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower } from './types';
+import {
+    PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation
+} from './types';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getPostsOfMeAndFollower =
   () =>
   async (dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void, getState: UsersOfGetState) => {
@@ -30,5 +31,31 @@ export const getPostsOfMeAndFollower =
         })
 
         dispatch(getPostsOfMeAndFollowerAction(postsWithIcon))
+      })
+  }
+
+export const submitNewPost: SubmitPostOperation =
+  (content, locked, image) => async (_: any, getState: UsersOfGetState) => {
+    const { uid, accessToken, client } = getState().users
+    const requestHeaders: RequestHeadersForAuthentication = {
+      'access-token': accessToken,
+      client,
+      uid,
+    }
+
+    const requestData = new FormData()
+    requestData.append('content', content)
+    requestData.append('is_locked', locked.toString())
+    if (image) {
+      requestData.append('image', image)
+    }
+
+    await axiosBase
+      .post('/v1/posts', requestData, { headers: requestHeaders })
+      .then(() => {
+        window.location.href = '/home'
+      })
+      .catch((errors) => {
+        console.log(errors)
       })
   }

@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 import { isValidEmailFormat } from 'function/common';
 import Cookies from 'js-cookie';
 
-import axiosBase from '../../api';
+import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
 import { signInAction, signOutAction, signUpAction } from './actions';
 import {

@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottom: 'solid 1px #EEEEEE',
     },
     img: {
-      maxWidth: '100%',
-      maxHeight: 300,
-      display: 'block',
+      width: '100%',
+      height: 250,
+      objectFit: 'cover',
     },
     content: {
       fontSize: 15,
