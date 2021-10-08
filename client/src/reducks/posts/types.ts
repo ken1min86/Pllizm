@@ -75,3 +75,5 @@ export type Reducer = (
     payload: Array<Posts>
   },
 ) => Array<Posts>
+
+export type SubmitPostOperation = (content: string, locked: boolean, image?: File) => void
