@@ -1,4 +1,4 @@
-import { ContainedBlueRoundedCornerButton } from 'components/atoms';
+import { ContainedRoundedCornerButton } from 'components/atoms';
 import { CreatePost } from 'components/molecules';
 import { useState, VFC } from 'react';
 
@@ -49,7 +49,11 @@ const CreatePostModal: VFC = () => {
     <Box>
       <Button onClick={handleOpen} sx={{ width: '100%', p: 0 }}>
         <Hidden lgDown>
-          <ContainedBlueRoundedCornerButton label="投稿する" onClick={handleOpen} />
+          <ContainedRoundedCornerButton
+              label="投稿する"
+              onClick={handleOpen}
+              backgroundColor="#2699fb"
+            />
         </Hidden>
         <Hidden lgUp>
           <Fab className={classes.telegramContainer} onClick={handleOpen}>

@@ -1,11 +1,9 @@
-import { ContainedGrayRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
 import { FC, useState } from 'react';
 
 import { Box, Button, Modal, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-
-import ContainedBlueRoundedCornerButton from '../atoms/button/ContainedBlueRoundedCornerButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,12 +51,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   title: string
-  actionLabel: string
-  closeLabel: string
+  actionButtonLabel: string
+  closeButtonLabel: string
   handleOnClick: (setError: React.Dispatch<React.SetStateAction<string>>) => void
+  backgroundColorOfActionButton: string
 }
 
-const DefaultModalOnlyWithTitle: FC<Props> = ({ children, title, actionLabel, closeLabel, handleOnClick }) => {
+const DefaultModalOnlyWithTitle: FC<Props> = ({
+  children,
+  title,
+  actionButtonLabel,
+  closeButtonLabel,
+  handleOnClick,
+  backgroundColorOfActionButton,
+}) => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -82,9 +88,13 @@ const DefaultModalOnlyWithTitle: FC<Props> = ({ children, title, actionLabel, cl
             <ErrorMessages errors={[error]} />
           </p>
           <Box className={classes.buttonContainer}>
-            <ContainedBlueRoundedCornerButton label={actionLabel} onClick={() => handleOnClick(setError)} />
+            <ContainedRoundedCornerButton
+              label={actionButtonLabel}
+              onClick={() => handleOnClick(setError)}
+              backgroundColor={`${backgroundColorOfActionButton}`}
+            />
             <span className={classes.spacer} />
-            <ContainedGrayRoundedCornerButton label={closeLabel} onClick={handleClose} />
+            <ContainedRoundedCornerButton label={closeButtonLabel} onClick={handleClose} backgroundColor="#86868b" />
           </Box>
         </Box>
       </Modal>

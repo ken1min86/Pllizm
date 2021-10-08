@@ -1,4 +1,4 @@
-import { PostPopover, UsersIcon } from 'components/atoms';
+import { DeletePostPopover, UsersIcon } from 'components/atoms';
 import { DisplayUploadedImgModal } from 'components/organisms';
 import { createTimeToDisplay } from 'function/common';
 import { VFC } from 'react';
@@ -131,7 +131,7 @@ const PostBox: VFC<Props> = ({
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <span className={classes.time}>{timeToDisplay}</span>
-              <Box className={classes.settingButton}>{type === 'me' && <PostPopover postId={postId} />}</Box>
+              <Box className={classes.settingButton}>{type === 'me' && <DeletePostPopover postId={postId} />}</Box>
             </Box>
           </Box>
         </Box>

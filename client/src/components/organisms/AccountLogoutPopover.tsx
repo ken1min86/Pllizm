@@ -16,9 +16,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     iconContainer: {
       marginRight: 8,
+      width: 44,
+      height: 'auto',
     },
     icon: {
       width: '100%',
+      borderRadius: 9999,
     },
     userContainer: {
       display: 'flex',
@@ -95,16 +98,15 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
           horizontal: 'left',
         }}
       >
-        {/* <button type="button" className={classes.popover}> */}
         <DefaultModalOnlyWithTitle
           title="ログアウトしますか？"
-          actionLabel="ログアウト"
-          closeLabel="キャンセル"
+          actionButtonLabel="ログアウト"
+          closeButtonLabel="キャンセル"
           handleOnClick={handleOnClickToSignOut}
+          backgroundColorOfActionButton="#2699fb"
         >
           <span>@{userName}からログアウト</span>
         </DefaultModalOnlyWithTitle>
-        {/* </button> */}
       </Popover>
       <Box className={classes.container}>
         <IconButton className={classes.iconButton} onClick={handleClick}>

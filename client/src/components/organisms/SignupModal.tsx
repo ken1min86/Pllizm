@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ContainedBlueRoundedCornerButton, ErrorMessages
+    BasicTextField, BlueSquareButton, ContainedRoundedCornerButton, ErrorMessages
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -129,9 +129,10 @@ const SignupModal: VFC<Props> = ({ type }) => {
             width: 217,
           }}
         >
-          <ContainedBlueRoundedCornerButton
+          <ContainedRoundedCornerButton
             label="アカウント作成"
             onClick={openModal}
+            backgroundColor="#2699fb"
             data-testid="signup-link-in-button"
           />
         </Box>

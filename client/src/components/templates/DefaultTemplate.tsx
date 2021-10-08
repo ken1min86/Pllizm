@@ -20,6 +20,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import Logo from '../../assets/HeaderLogo.png';
 import LogoIconActive from '../../assets/LogoIconActive1.png';
 import LogoIconInactive from '../../assets/LogoIconInactive1.png';
+import { getIcon } from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -160,6 +161,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
   const selector = useSelector((state: { users: Users }) => state)
 
   const userId = getUserId(selector)
+  const userIcon = getIcon(selector)
 
   const isActiveOfHome = activeNavTitle === 'home'
   const isActiveOfSearch = activeNavTitle === 'search'
@@ -239,7 +241,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
               </Box>
               <Hidden lgUp>
                 <Box className={classes.bottom}>
-                  <AccountLogoutPopover userName="testName" userId="testId" icon={Logo} />
+                  <AccountLogoutPopover userName="testName" userId="testId" icon={userIcon} />
                 </Box>
               </Hidden>
             </nav>
@@ -248,7 +250,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
         <Box className={classes.asideContainer}>
           <Hidden lgDown>
             <Box className={classes.bottom}>
-              <AccountLogoutPopover userName="testName" userId="testId" icon={Logo} />
+              <AccountLogoutPopover userName="testName" userId="testId" icon={userIcon} />
               <footer>
                 <Box component="ul" display="flex" flexWrap="wrap" mt={3}>
                   <li className={classes.footerText}>お問い合わせ</li>
