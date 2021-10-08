@@ -1,6 +1,4 @@
-import {
-    ContainedBlueRoundedCornerButton, ErrorMessages, TitleWithUnderline
-} from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessages, TitleWithUnderline } from 'components/atoms';
 import { HeaderWithLogo } from 'components/molecules';
 import { useCallback, useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
@@ -68,11 +66,12 @@ const BeginPasswordReset: VFC = () => {
             <ErrorMessages errors={[error]} />
           </Box>
           <Box className={classes.buttonContainer}>
-            <ContainedBlueRoundedCornerButton
+            <ContainedRoundedCornerButton
               label="送信"
               onClick={() => {
                 dispatch(sendMailOfPasswordReset(email, setError))
               }}
+              backgroundColor="#2699fb"
             />
           </Box>
         </Box>

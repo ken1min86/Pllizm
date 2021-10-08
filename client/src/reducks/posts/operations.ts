@@ -11,7 +11,10 @@ import {
 
 export const getPostsOfMeAndFollower =
   () =>
-  async (dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void, getState: UsersOfGetState) => {
+  async (
+    dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void,
+    getState: UsersOfGetState,
+  ): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -31,7 +34,7 @@ export const getPostsOfMeAndFollower =
   }
 
 export const submitNewPost: SubmitPostOperation =
-  (content, locked, image) => async (_: any, getState: UsersOfGetState) => {
+  (content, locked, image) => async (_: unknown, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
@@ -43,6 +46,21 @@ export const submitNewPost: SubmitPostOperation =
 
     await axiosBase
       .post('/v1/posts', requestData, { headers: requestHeaders })
+      .then(() => {
+        window.location.href = '/home'
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+  }
+
+export const deletePost =
+  (postId: string) =>
+  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .delete(`/v1/posts/${postId}`, { headers: requestHeaders })
       .then(() => {
         window.location.href = '/home'
       })

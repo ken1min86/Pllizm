@@ -112,6 +112,7 @@ export type SignUpResponse = {
     userid: string
     image: { url: string }
   }
+  headers: RequestHeadersForAuthentication
 }
 
 export type ListenAuthStateRequest = {
