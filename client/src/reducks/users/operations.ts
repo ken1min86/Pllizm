@@ -18,7 +18,7 @@ export const signUp =
     passwordConfirmation: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any) => {
+  async (dispatch: any): Promise<any> => {
     if (email === '' || password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
@@ -93,7 +93,7 @@ export const signUp =
 
 export const signIn =
   (email: string, password: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any) => {
+  async (dispatch: any): Promise<any> => {
     if (email === '' || password === '') {
       setError('メールアドレスとパスワードを入力してください。')
 
@@ -115,9 +115,9 @@ export const signIn =
         const accessToken = headers['access-token']
         const { client, uid } = headers
 
-        Cookies.set('access-token', headers['access-token'])
-        Cookies.set('client', headers.client)
-        Cookies.set('uid', headers.uid)
+        Cookies.set('access-token', accessToken)
+        Cookies.set('client', client)
+        Cookies.set('uid', uid)
 
         const userData = response.data.data
         const icon = userData.image.url == null ? DefaultIcon : userData.image.url
@@ -145,7 +145,8 @@ export const signIn =
   }
 
 export const signOut =
-  (setError: React.Dispatch<React.SetStateAction<string>>) => async (dispatch: any, getState: UsersOfGetState) => {
+  (setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<any> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -165,54 +166,56 @@ export const signOut =
       })
   }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const listenAuthState = () => async (dispatch: any) => {
-  const accessTokenInCookie = Cookies.get('access-token')
-  const clientInCookie = Cookies.get('client')
-  const uidInCookie = Cookies.get('uid')
+export const listenAuthState =
+  () =>
+  async (dispatch: any): Promise<any> => {
+    const accessTokenInCookie = Cookies.get('access-token')
+    const clientInCookie = Cookies.get('client')
+    const uidInCookie = Cookies.get('uid')
 
-  const requestData: ListenAuthStateRequest = {
-    'access-token': accessTokenInCookie,
-    client: clientInCookie,
-    uid: uidInCookie,
+    const requestData: ListenAuthStateRequest = {
+      'access-token': accessTokenInCookie,
+      client: clientInCookie,
+      uid: uidInCookie,
+    }
+
+    await axiosBase
+      .get('/v1/auth/validate_token', { params: requestData })
+      .then((response) => {
+        const { headers } = response
+        const accessToken: string = headers['access-token']
+        const { client, uid } = headers
+
+        Cookies.set('access-token', accessToken)
+        Cookies.set('client', client)
+        Cookies.set('uid', uid)
+
+        const userData = response.data.data
+        const { userid, username } = userData
+        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(
+          signUpAction({
+            uid,
+            accessToken,
+            client,
+            userId: userid,
+            userName: username,
+            icon,
+          }),
+        )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/home'))
+      })
+      .catch(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/'))
+      })
   }
 
-  await axiosBase
-    .get('/v1/auth/validate_token', { params: requestData })
-    .then((response) => {
-      const { headers } = response
-      const accessToken: string = headers['access-token']
-      const { client, uid } = headers
-
-      Cookies.set('access-token', accessToken)
-      Cookies.set('client', client)
-      Cookies.set('uid', uid)
-
-      const userData = response.data.data
-      const { userid, username } = userData
-      const icon = userData.image.url == null ? DefaultIcon : userData.image.url
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      dispatch(
-        signUpAction({
-          uid,
-          accessToken,
-          client,
-          userId: userid,
-          userName: username,
-          icon,
-        }),
-      )
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      dispatch(push('/home'))
-    })
-    .catch(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      dispatch(push('/'))
-    })
-}
-
 export const sendMailOfPasswordReset =
-  (email: string, setError: React.Dispatch<React.SetStateAction<string>>) => async (dispatch: any) => {
+  (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any): Promise<any> => {
     if (email === '') {
       setError('メールアドレスが未入力です。')
 
@@ -266,7 +269,7 @@ export const resetPassword =
     uid: string | null,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any) => {
+  async (dispatch: any): Promise<any> => {
     if (password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
@@ -295,18 +298,22 @@ export const resetPassword =
       .put('/v1/auth/password', { password, password_confirmation: passwordConfirmation }, { headers: requestHeaders })
       .then((response) => {
         const { headers } = response
-        Cookies.set('access-token', headers['access-token'])
-        Cookies.set('client', headers.client)
-        Cookies.set('uid', headers.uid)
+        const accessTokenInHeader = headers['access-token']
+        const clientInHeader = headers.client
+        const uidInHeader = headers.uid
+
+        Cookies.set('access-token', accessTokenInHeader)
+        Cookies.set('client', clientInHeader)
+        Cookies.set('uid', uidInHeader)
 
         const userData = response.data.data
         const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
-            uid: headers.uid,
-            accessToken: headers.accessToken,
-            client: headers.client,
+            uid: uidInHeader,
+            accessToken: accessTokenInHeader,
+            client: clientInHeader,
             userId: userData.userid,
             userName: userData.username,
             icon,

@@ -21,7 +21,7 @@ type Proos = {
   postId: string
 }
 
-const PostPopover: VFC<Proos> = ({ postId }) => {
+const DeletePostPopover: VFC<Proos> = ({ postId }) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
 
@@ -77,4 +77,4 @@ const PostPopover: VFC<Proos> = ({ postId }) => {
   )
 }
 
-export default PostPopover
+export default DeletePostPopover

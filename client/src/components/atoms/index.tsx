@@ -9,6 +9,6 @@ export { default as HelpContentPremiseDescription } from './text/HelpContentPrem
 export { default as HelpContentTitle } from './text/HelpContentTitle'
 export { default as LogoLink } from './LogoLink'
 export { default as OutlinedBlueRoundedCornerButton } from './button/OutlinedBlueRoundedCornerButton'
-export { default as PostPopover } from './PostPopover'
+export { default as DeletePostPopover } from './DeletePostPopover'
 export { default as TitleWithUnderline } from './text/TitleWithUnderline'
 export { default as UsersIcon } from './UsersIcon'

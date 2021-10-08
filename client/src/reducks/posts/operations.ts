@@ -11,7 +11,10 @@ import {
 
 export const getPostsOfMeAndFollower =
   () =>
-  async (dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void, getState: UsersOfGetState) => {
+  async (
+    dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void,
+    getState: UsersOfGetState,
+  ): Promise<any> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
