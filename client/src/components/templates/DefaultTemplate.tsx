@@ -1,6 +1,6 @@
 import { LogoLink } from 'components/atoms';
 import { BottomNavigationBar, IconWithTextLink } from 'components/molecules';
-import { AccountDrawer, AccountLogoutPopover } from 'components/organisms';
+import { AccountDrawer, AccountLogoutPopover, CreatePostModal } from 'components/organisms';
 import { push } from 'connected-react-router';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -132,6 +132,20 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       width: '100%',
     },
+    createPostModalContainer: {
+      [theme.breakpoints.up('lg')]: {
+        width: '120%',
+        marginLeft: -16,
+      },
+      [theme.breakpoints.down('lg')]: {
+        marginLeft: -10,
+      },
+    },
+    createPostModalContainerOfMobile: {
+      position: 'fixed',
+      right: 24,
+      bottom: 95,
+    },
   }),
 )
 
@@ -177,6 +191,11 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
               <BottomNavigationBar activeNav={activeNavTitle} />
             </Box>
           </Hidden>
+          <Hidden smUp>
+            <Box className={classes.createPostModalContainerOfMobile}>
+              <CreatePostModal />
+            </Box>
+          </Hidden>
         </Box>
         <Hidden smDown>
           <Box className={classes.navContainer}>
@@ -210,10 +229,13 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
                   <PersonIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
               </Box>
-              <Box mb={1}>
+              <Box mb={2}>
                 <IconWithTextLink title="設定" path="/settings/account" isActive={isActiveOfSettings}>
                   <SettingsIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
+              </Box>
+              <Box className={classes.createPostModalContainer}>
+                <CreatePostModal />
               </Box>
               <Hidden lgUp>
                 <Box className={classes.bottom}>

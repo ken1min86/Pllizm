@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { push } from 'connected-react-router';
-import { isValidEmailFormat } from 'function/common';
+import { createRequestHeader, isValidEmailFormat } from 'function/common';
 import Cookies from 'js-cookie';
 
-import axiosBase from '../../api';
+import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
 import { signInAction, signOutAction, signUpAction } from './actions';
 import {
-    ListenAuthStateRequest, RequestHeadersForAuthentication, SignInRequest, SignUpRequest,
-    SignUpResponse, UsersOfGetState
+    ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
 } from './types';
 
 export const signUp =
@@ -147,12 +146,7 @@ export const signIn =
 
 export const signOut =
   (setError: React.Dispatch<React.SetStateAction<string>>) => async (dispatch: any, getState: UsersOfGetState) => {
-    const { uid, accessToken, client } = getState().users
-    const requestHeaders: RequestHeadersForAuthentication = {
-      'access-token': accessToken,
-      client,
-      uid,
-    }
+    const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
       .delete('v1/auth/sign_out', { headers: requestHeaders })
