@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
+        height: 546,
         minHeight: 'calc( 100vh - 49px - 222px )',
       },
       [theme.breakpoints.up('sm')]: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
         background: 'center',
         backgroundSize: 'cover',
         width: '100%',
+        height: 687,
         minHeight: 'calc( 100vh - 49px - 78px )',
       },
     },
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       [theme.breakpoints.down('sm')]: {
         fontSize: 24,
-        top: 130,
+        top: 90,
         left: 122,
       },
       [theme.breakpoints.up('sm')]: {
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
     detail: {
       position: 'absolute',
       [theme.breakpoints.down('sm')]: {
-        top: 179,
+        top: 139,
         left: 122,
       },
       [theme.breakpoints.up('sm')]: {
@@ -58,21 +60,21 @@ const useStyles = makeStyles((theme: Theme) =>
     signup: {
       position: 'absolute',
       [theme.breakpoints.down('sm')]: {
-        top: 419,
+        bottom: 133,
         left: 122,
       },
       [theme.breakpoints.up('sm')]: {
-        top: 670,
+        bottom: 120,
       },
     },
     signin: {
       position: 'absolute',
       [theme.breakpoints.down('sm')]: {
-        top: 468,
+        bottom: 84,
         left: 122,
       },
       [theme.breakpoints.up('sm')]: {
-        top: 721,
+        bottom: 64,
       },
     },
   }),
@@ -89,7 +91,7 @@ const Top: VFC = () => {
     <>
       <HeaderWithLogo />
       <main className={classes.main}>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%', position: 'relative' }}>
           <h1 className={classes.h1} data-testid="header-title">
             こっちも現実。
           </h1>
