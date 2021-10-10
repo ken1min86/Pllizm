@@ -142,8 +142,9 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
     setLocked(!locked)
   }
 
-  const handleOnClickToPost = () => {
+  const handleOnClickToPost = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     dispatch(submitNewPost(inputtedText, locked, uploadedImage))
+    handleClose(event)
   }
 
   return (
@@ -200,11 +201,11 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
             </span>
             <Box sx={{ width: 112 }}>
               <ContainedRoundedCornerButton
-              label="投稿する"
-              onClick={handleOnClickToPost}
-              disabled={disabled}
-              backgroundColor="#2699fb"
-            />
+                label="投稿する"
+                onClick={handleOnClickToPost}
+                disabled={disabled}
+                backgroundColor="#2699fb"
+              />
             </Box>
           </Box>
         </Box>
