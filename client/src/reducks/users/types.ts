@@ -5,6 +5,7 @@ export type SignUpAction = (userState: {
   userId: string
   userName: string
   icon: string
+  needDescriptionAboutLock: boolean
 }) => {
   type: string
   payload: {
@@ -15,6 +16,7 @@ export type SignUpAction = (userState: {
     userId: string
     userName: string
     icon: string
+    needDescriptionAboutLock: boolean
   }
 }
 
@@ -25,6 +27,7 @@ export type SignInAction = (userState: {
   userId: string
   userName: string
   icon: string
+  needDescriptionAboutLock: boolean
 }) => {
   type: string
   payload: {
@@ -35,6 +38,7 @@ export type SignInAction = (userState: {
     userId: string
     userName: string
     icon: string
+    needDescriptionAboutLock: boolean
   }
 }
 
@@ -91,6 +95,7 @@ export type Users = {
   userId: string
   userName: string
   icon: string
+  needDescriptionAboutLock: boolean
 }
 
 export type UsersOfGetState = () => {
@@ -111,6 +116,8 @@ export type SignUpResponse = {
     username: string
     userid: string
     image: { url: string }
+    // eslint-disable-next-line camelcase
+    need_description_about_lock: boolean
   }
   headers: RequestHeadersForAuthentication
 }

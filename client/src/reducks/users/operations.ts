@@ -66,6 +66,7 @@ export const signUp =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -130,6 +131,7 @@ export const signIn =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -195,13 +197,14 @@ export const listenAuthState =
         const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
-          signUpAction({
+          signInAction({
             uid,
             accessToken,
             client,
             userId: userid,
             userName: username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -317,6 +320,7 @@ export const resetPassword =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call

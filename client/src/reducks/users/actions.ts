@@ -11,6 +11,7 @@ export const signUpAction: SignUpAction = (userState) => ({
     userId: userState.userId,
     userName: userState.userName,
     icon: userState.icon,
+    needDescriptionAboutLock: userState.needDescriptionAboutLock,
   },
 })
 
@@ -25,6 +26,7 @@ export const signInAction: SignInAction = (userState) => ({
     userId: userState.userId,
     userName: userState.userName,
     icon: userState.icon,
+    needDescriptionAboutLock: userState.needDescriptionAboutLock,
   },
 })
 
