@@ -1,4 +1,5 @@
 import { PostBox } from 'components/molecules';
+import { RefractFuncDescriptionModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +39,7 @@ const Home: VFC = () => {
             image={post.imageUrl}
           />
         ))}
+      <RefractFuncDescriptionModal type="text" />
       <Box sx={{ padding: '64px 0 120px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
         投稿は以上ですべてです。
       </Box>
