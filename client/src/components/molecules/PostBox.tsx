@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       marginBottom: 8,
       wordBreak: 'break-all',
+      whiteSpace: 'pre-wrap',
     },
     icon: {
       width: 18,
