@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_10_093013) do
+ActiveRecord::Schema.define(version: 2021_10_11_022757) do
 
   create_table "current_user_refracts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 2021_09_10_093013) do
 
   create_table "posts", id: :string, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
-    t.string "content", limit: 140, null: false
+    t.string "content", limit: 140
     t.string "image"
     t.bigint "icon_id"
     t.boolean "is_locked", default: false, null: false
