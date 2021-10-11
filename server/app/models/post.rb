@@ -22,8 +22,9 @@ class Post < ApplicationRecord
   has_many :reverse_of_tree_paths, class_name: 'TreePath',             foreign_key: 'descendant'
   has_many :ancestor_posts,        through:    :reverse_of_tree_paths, source:      'ancestor_post'
 
-  validates :content, length: { maximum: 140 }, presence: true
+  validates :content, length: { maximum: 140 }
   validates :user_id, presence: true
+  validates :content_or_image, presence: true
 
   before_validation :set_icon_id, on: :create
   before_create     :set_id
@@ -831,5 +832,9 @@ class Post < ApplicationRecord
 
   def create_self_referential_tree_paths
     TreePath.create(ancestor: id, descendant: id, depth: 0)
+  end
+
+  def content_or_image
+    content.presence || image.presence
   end
 end

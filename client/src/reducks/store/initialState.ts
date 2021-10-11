@@ -11,6 +11,7 @@ const initialState: { users: Users; posts: Array<Posts> } = {
     userId: '',
     userName: '',
     icon: '',
+    needDescriptionAboutLock: true,
   },
   posts: [],
 }

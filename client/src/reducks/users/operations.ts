@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
-import { signInAction, signOutAction, signUpAction } from './actions';
+import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
 import {
     ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
 } from './types';
@@ -66,6 +66,7 @@ export const signUp =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -130,6 +131,7 @@ export const signIn =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -195,13 +197,14 @@ export const listenAuthState =
         const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
-          signUpAction({
+          signInAction({
             uid,
             accessToken,
             client,
             userId: userid,
             userName: username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -317,6 +320,7 @@ export const resetPassword =
             userId: userData.userid,
             userName: userData.username,
             icon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -331,4 +335,26 @@ export const resetPassword =
       })
 
     return false
+  }
+
+export const disableLockDescription =
+  () =>
+  async (
+    dispatch: (arg0: { type: string; payload: { needDescriptionAboutLock: false } }) => void,
+    getState: UsersOfGetState,
+  ): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put(`/v1/disable_lock_description`, { data: undefined }, { headers: requestHeaders })
+      .then(() => {
+        dispatch(
+          disableLockDescriptionAction({
+            needDescriptionAboutLock: false,
+          }),
+        )
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
   }

@@ -74,18 +74,40 @@ RSpec.describe "V1::PostsApi", type: :request do
         expect(response.message).to include('Bad Request')
       end
 
-      it "returns 400 when content is blank" do
+      it "returns 200 when content is exist and image is nil" do
         params = {
-          content: '',
+          content: 'Hello!',
+          image: nil,
+        }
+        post v1_posts_path, params: params, headers: headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it "returns 200 when content is nil and image is exist" do
+        params = {
+          content: nil,
+          image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+        }
+        post v1_posts_path, params: params, headers: headers
+        expect(response).to have_http_status(200)
+        expect(response.message).to include('OK')
+      end
+
+      it "returns 400 when content and image are nil" do
+        params = {
+          content: nil,
+          image: nil,
         }
         post v1_posts_path, params: params, headers: headers
         expect(response).to have_http_status(400)
         expect(response.message).to include('Bad Request')
       end
 
-      it "returns 400 when content is nil" do
+      it "returns 400 when content is blank and image is nil" do
         params = {
-          content: nil,
+          content: '',
+          image: nil,
         }
         post v1_posts_path, params: params, headers: headers
         expect(response).to have_http_status(400)
@@ -288,7 +310,7 @@ RSpec.describe "V1::PostsApi", type: :request do
         it "returns 400 and doesn't create post and tree_path" do
           params = {
             content: '',
-            image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
+            image: nil,
             is_locked: true,
           }
           replied_post = create(:post, user_id: client_user.id)
@@ -296,7 +318,6 @@ RSpec.describe "V1::PostsApi", type: :request do
             post v1_post_replies_path(replied_post.id), params: params, headers: headers
           end.to change(Post, :count).by(0).and change(TreePath, :count).by(0)
           expect(response).to have_http_status(400)
-          expect(JSON.parse(response.body)["content"]).to include("can't be blank")
         end
       end
 

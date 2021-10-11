@@ -8,33 +8,33 @@ import makeStyles from '@mui/styles/makeStyles';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     footer: {
-      paddingTop: '24px',
-      paddingBottom: '24px',
+      paddingTop: 24,
+      paddingBottom: 24,
       backgroundColor: theme.palette.secondary.main,
-      paddingLeft: '24px',
+      paddingLeft: 24,
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         padding: 0,
-        paddingTop: '21px',
+        paddingTop: 21,
         width: '100%',
       },
     },
     copyright: {
-      fontSize: '11px',
+      fontSize: 11,
       color: theme.palette.primary.main,
-      marginRight: '56px',
+      marginRight: 56,
       whiteSpace: 'nowrap',
       [theme.breakpoints.down('sm')]: {
         order: 3,
-        marginBottom: '21px',
+        marginBottom: 21,
       },
     },
     link: {
-      fontSize: '12px',
+      fontSize: 12,
       color: theme.palette.primary.main,
-      paddingLeft: '16px',
-      paddingRight: '16px',
-      lineHeight: '1',
+      paddingLeft: 16,
+      paddingRight: 16,
+      lineHeight: 1,
       textAlign: 'center',
       [theme.breakpoints.down('sm')]: {
         order: 2,
@@ -52,14 +52,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      marginLeft: '20px',
+      marginLeft: 20,
       backgroundColor: theme.palette.primary.main,
       borderRadius: '50%',
-      width: '30px',
-      height: '30px',
+      width: 30,
+      height: 30,
       textAlign: 'center',
       verticalAlign: 'middle',
-      fontSize: '18px',
+      fontSize: 18,
       position: 'relative',
       color: theme.palette.secondary.main,
       [theme.breakpoints.down('sm')]: {
@@ -73,15 +73,15 @@ const useStyles = makeStyles((theme: Theme) =>
         order: 1,
         width: '100%',
         textAlign: 'center',
-        marginBottom: '21px',
+        marginBottom: 21,
       },
     },
     separatorWhenMobile: {
       [theme.breakpoints.down('sm')]: {
         width: '50%',
         textAlign: 'center',
-        paddingTop: '16px',
-        paddingBottom: '16px',
+        paddingTop: 16,
+        paddingBottom: 16,
       },
     },
     borderTopWhenMobile: {
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) =>
     borderBottomWhenMobile: {
       [theme.breakpoints.down('sm')]: {
         borderBottom: '1px solid #4C524C',
-        marginBottom: '-1px',
+        marginBottom: -1,
       },
     },
     borderRightWhenMobile: {
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     marginBotomWhenMobile: {
       [theme.breakpoints.down('sm')]: {
-        marginBottom: '21px',
+        marginBottom: 21,
       },
     },
     ul: {
@@ -114,7 +114,7 @@ const Footer: VFC = () => {
   const classes = useStyles()
 
   return (
-    <Box display="flex" alignItems="center" className={classes.footer}>
+    <Box display="flex" alignItems="center" component="footer" className={classes.footer}>
       <small className={classes.copyright}>&copy; 2021 Plizm</small>
       <Box
         component="ul"

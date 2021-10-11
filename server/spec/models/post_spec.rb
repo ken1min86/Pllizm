@@ -46,6 +46,17 @@ RSpec.describe Post, type: :model do
     expect(post).to be_invalid
   end
 
+  it 'is valid with content and without image' do
+    post = build(:post, user_id: user.id, content: 'Hello!', image: nil)
+    expect(post).to be_valid
+  end
+
+  it 'is valid without content and with image' do
+    image_path = Rails.root.join("db/icons/Account-icon1.jpeg")
+    post = build(:post, user_id: user.id, content: nil, image: Rack::Test::UploadedFile.new(image_path, "image/jpeg"))
+    expect(post).to be_valid
+  end
+
   it 'is valid when content has 140 characters' do
     post = build(:post, user_id: user.id, content: 'a' * 140)
     expect(post).to be_valid
@@ -53,16 +64,6 @@ RSpec.describe Post, type: :model do
 
   it 'is invalid when content has 141 characters' do
     post = build(:post, user_id: user.id, content: 'a' * 141)
-    expect(post).to be_invalid
-  end
-
-  it 'is invalid when content is blank' do
-    post = build(:post, user_id: user.id, content: '')
-    expect(post).to be_invalid
-  end
-
-  it 'is invalid when content is nil' do
-    post = build(:post, user_id: user.id, content: nil)
     expect(post).to be_invalid
   end
 
