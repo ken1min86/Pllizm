@@ -1,3 +1,5 @@
+// ***************************************
+// Actions
 export type SignUpAction = (userState: {
   uid: string
   accessToken: string
@@ -62,6 +64,8 @@ export type DisableLockDescriptionAction = (userState: { needDescriptionAboutLoc
   }
 }
 
+// ***************************************
+// Reducers
 export type Reducer = (
   state: {
     isSignedIn: boolean
@@ -94,6 +98,8 @@ export type Reducer = (
   icon: string
 }
 
+// ***************************************
+// Operatons & Selectors
 export type Users = {
   isSignedIn: boolean
   uid: string

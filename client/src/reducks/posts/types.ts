@@ -1,7 +1,25 @@
+// ***************************************
+// Actions
+export type GetPostsOfMeAndFollowerAction = (posts: Array<PostsOfMeAndFollower>) => {
+  type: string
+  payload: Array<PostsOfMeAndFollower>
+}
+
+// ***************************************
+// Reducers
+export type Reducer = (
+  state: Array<Posts>,
+  action: {
+    type: string
+    payload: Array<Posts>
+  },
+) => Array<Posts>
 export type PostsArrayOfMeAndFollowerResponse = {
   posts: Array<PostsOfMeAndFollowerRespose>
 }
 
+// ***************************************
+// Operatons & Selectors
 export type PostsOfMeAndFollowerRespose = {
   id: string
   locked?: boolean
@@ -62,18 +80,5 @@ export type Posts = {
   likedByCurrentUser: boolean
   createdAt: string
 }
-
-export type GetPostsOfMeAndFollowerAction = (posts: Array<PostsOfMeAndFollower>) => {
-  type: string
-  payload: Array<PostsOfMeAndFollower>
-}
-
-export type Reducer = (
-  state: Array<Posts>,
-  action: {
-    type: string
-    payload: Array<Posts>
-  },
-) => Array<Posts>
 
 export type SubmitPostOperation = (content: string, locked: boolean, image?: File) => void
