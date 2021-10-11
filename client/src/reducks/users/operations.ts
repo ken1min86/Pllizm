@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
-import { signInAction, signOutAction, signUpAction } from './actions';
+import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
 import {
     ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
 } from './types';
@@ -335,4 +335,26 @@ export const resetPassword =
       })
 
     return false
+  }
+
+export const disableLockDescription =
+  () =>
+  async (
+    dispatch: (arg0: { type: string; payload: { needDescriptionAboutLock: false } }) => void,
+    getState: UsersOfGetState,
+  ): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put(`/v1/disable_lock_description`, { data: undefined }, { headers: requestHeaders })
+      .then(() => {
+        dispatch(
+          disableLockDescriptionAction({
+            needDescriptionAboutLock: false,
+          }),
+        )
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
   }

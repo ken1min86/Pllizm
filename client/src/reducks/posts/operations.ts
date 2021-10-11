@@ -1,5 +1,6 @@
 import camelcaseKeys from 'camelcase-keys';
 import { createRequestHeader } from 'function/common';
+import { SetStateAction } from 'react';
 import { UsersOfGetState } from 'reducks/users/types';
 
 import { axiosBase } from '../../api';
@@ -63,6 +64,27 @@ export const deletePost =
       .delete(`/v1/posts/${postId}`, { headers: requestHeaders })
       .then(() => {
         window.location.href = '/home'
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+  }
+
+export const changeLockStateOfPost =
+  (
+    postId: string,
+    isLocked: boolean,
+    setIsLocked: {
+      (value: SetStateAction<boolean>): void
+    },
+  ) =>
+  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put(`/v1/posts/${postId}/change_lock`, { data: undefined }, { headers: requestHeaders })
+      .then(() => {
+        setIsLocked(!isLocked)
       })
       .catch((errors) => {
         console.log(errors)

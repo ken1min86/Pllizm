@@ -55,6 +55,13 @@ export type SignOutAction = () => {
   }
 }
 
+export type DisableLockDescriptionAction = (userState: { needDescriptionAboutLock: false }) => {
+  type: string
+  payload: {
+    needDescriptionAboutLock: false
+  }
+}
+
 export type Reducer = (
   state: {
     isSignedIn: boolean

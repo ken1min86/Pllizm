@@ -19,6 +19,11 @@ const UsersReducer: Reducer = (state = initialState.users, action) => {
         ...state,
         ...action.payload,
       }
+    case Actions.DISABLE_LOCK_DESCRIPTION:
+      return {
+        ...state,
+        ...action.payload,
+      }
     default:
       return state
   }

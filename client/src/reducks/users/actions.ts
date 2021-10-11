@@ -1,4 +1,4 @@
-import { SignInAction, SignOutAction, SignUpAction } from './types';
+import { DisableLockDescriptionAction, SignInAction, SignOutAction, SignUpAction } from './types';
 
 export const SIGN_UP = 'SIGN_UP'
 export const signUpAction: SignUpAction = (userState) => ({
@@ -41,5 +41,14 @@ export const signOutAction: SignOutAction = () => ({
     userId: null,
     userName: null,
     icon: null,
+    needDescriptionAboutLock: null,
+  },
+})
+
+export const DISABLE_LOCK_DESCRIPTION = 'DISABLE_LOCK_DESCRIPTION'
+export const disableLockDescriptionAction: DisableLockDescriptionAction = (userState) => ({
+  type: 'DISABLE_LOCK_DESCRIPTION',
+  payload: {
+    needDescriptionAboutLock: userState.needDescriptionAboutLock,
   },
 })

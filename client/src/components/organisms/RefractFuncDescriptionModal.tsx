@@ -67,14 +67,16 @@ const RefractFuncDescriptionModal: VFC<Props> = ({ type, questionButtonSize }) =
   return (
     <div>
       <Button onClick={handleOpen}>
-        {type === 'text' && <p className={classes.textButton}>※リフラクトとは</p>}
+        {type === 'text' && (
+          <p className={classes.textButton}>
+            <small>※</small>リフラクトとは
+          </p>
+        )}
         {type === 'questionButton' && <HelpIcon className={classes.iconButton} fontSize={questionButtonSize} />}
       </Button>
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
         sx={{ paddingRight: 3, paddingLeft: 3, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         <Box className={classes.modalContainer}>
