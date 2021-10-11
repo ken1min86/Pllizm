@@ -24,6 +24,7 @@ const Home: VFC = () => {
       {posts.length > 0 &&
         posts.map((post) => (
           <PostBox
+            key={post.id}
             type={post.postedBy}
             icon={post.iconUrl}
             userId={post.userId}
