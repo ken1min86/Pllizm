@@ -1,7 +1,9 @@
 import { DeletePostPopover, UsersIcon } from 'components/atoms';
 import { DisplayUploadedImgModal, LockPostModal } from 'components/organisms';
 import { createTimeToDisplay } from 'function/common';
-import { VFC } from 'react';
+import { useState, VFC } from 'react';
+import { useDispatch } from 'react-redux';
+import { likePost, unlikePost } from 'reducks/posts/operations';
 
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -30,9 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: 'pre-wrap',
     },
     icon: {
-      width: 18,
-      height: 18,
-      marginRight: 8,
+      fontSize: 18,
     },
     count: {
       display: 'block',
@@ -89,7 +89,20 @@ const PostBox: VFC<Props> = ({
   image,
 }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+
   const timeToDisplay = createTimeToDisplay(postedAt)
+
+  const [isLikedByMe, setIsLikedByMe] = useState(likedByMe)
+  const [countOfLikes, setCountOfLikes] = useState(likesCount)
+
+  const handleClickToUnlike = () => {
+    dispatch(unlikePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
+  }
+
+  const handleClickToLike = () => {
+    dispatch(likePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
+  }
 
   return (
     <Box className={classes.container}>
@@ -113,16 +126,24 @@ const PostBox: VFC<Props> = ({
             )}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: -1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <IconButton>
                 <ChatBubbleOutlineRoundedIcon className={classes.icon} />
                 {repliesCount !== 0 && <span className={classes.count}>{repliesCount}</span>}
               </IconButton>
-              <IconButton>
-                {likedByMe && <FavoriteIcon sx={{ color: '#e0245e' }} className={classes.icon} />}
-                {!likedByMe && <FavoriteBorderOutlinedIcon className={classes.icon} />}
-                {likesCount !== 0 && <span className={classes.count}>{likesCount}</span>}
-              </IconButton>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {isLikedByMe && (
+                  <IconButton onClick={handleClickToUnlike}>
+                    <FavoriteIcon sx={{ color: '#e0245e' }} className={classes.icon} />
+                  </IconButton>
+                )}
+                {!isLikedByMe && (
+                  <IconButton onClick={handleClickToLike}>
+                    <FavoriteBorderOutlinedIcon className={classes.icon} />
+                  </IconButton>
+                )}
+                {countOfLikes !== 0 && <span className={classes.count}>{countOfLikes}</span>}
+              </Box>
               {locked != null && <LockPostModal locked={locked} postId={postId} />}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>

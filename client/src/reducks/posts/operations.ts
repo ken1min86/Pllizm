@@ -90,3 +90,45 @@ export const changeLockStateOfPost =
         console.log(errors)
       })
   }
+
+export const unlikePost =
+  (
+    postId: string,
+    setIsLikedByMe: (isLikedByMe: boolean) => void,
+    setCountOfLikes: (countOfLikes: number) => void,
+    likesCount?: number,
+  ) =>
+  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .delete(`/v1/posts/${postId}/likes`, { headers: requestHeaders })
+      .then(() => {
+        setIsLikedByMe(false)
+        if (likesCount != null) setCountOfLikes(likesCount - 1)
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+  }
+
+export const likePost =
+  (
+    postId: string,
+    setIsLikedByMe: (isLikedByMe: boolean) => void,
+    setCountOfLikes: (countOfLikes: number) => void,
+    likesCount?: number,
+  ) =>
+  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .post(`/v1/posts/${postId}/likes`, { data: undefined }, { headers: requestHeaders })
+      .then(() => {
+        setIsLikedByMe(true)
+        if (likesCount != null) setCountOfLikes(likesCount + 1)
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+  }
