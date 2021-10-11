@@ -1,13 +1,11 @@
 import { DeletePostPopover, UsersIcon } from 'components/atoms';
-import { DisplayUploadedImgModal } from 'components/organisms';
+import { DisplayUploadedImgModal, LockPostModal } from 'components/organisms';
 import { createTimeToDisplay } from 'function/common';
 import { VFC } from 'react';
 
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import LockIcon from '@mui/icons-material/Lock';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import { Box, IconButton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -29,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'block',
       marginBottom: 8,
       wordBreak: 'break-all',
+      whiteSpace: 'pre-wrap',
     },
     icon: {
       width: 18,
@@ -124,10 +123,7 @@ const PostBox: VFC<Props> = ({
                 {!likedByMe && <FavoriteBorderOutlinedIcon className={classes.icon} />}
                 {likesCount !== 0 && <span className={classes.count}>{likesCount}</span>}
               </IconButton>
-              <IconButton>
-                {locked && <LockIcon className={classes.icon} sx={{ color: '#E59500' }} />}
-                {locked != null && !locked && <LockOpenOutlinedIcon className={classes.icon} />}
-              </IconButton>
+              {locked != null && <LockPostModal locked={locked} postId={postId} />}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <span className={classes.time}>{timeToDisplay}</span>

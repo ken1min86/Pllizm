@@ -64,10 +64,9 @@ type Props = {
 const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-  const handleClick = (event: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 

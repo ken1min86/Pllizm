@@ -161,7 +161,7 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
             minRows={3}
             maxRows={7}
             placeholder="投稿内容を入力。"
-            style={{ width: '100%', marginBottom: 32 }}
+            style={{ width: '100%', marginBottom: 32, resize: 'none' }}
             onChange={handleOnchangeTextInput}
           />
           {uploadedImageSrc && (
