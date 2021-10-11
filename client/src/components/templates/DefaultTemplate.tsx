@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getUserId } from 'reducks/users/selectors';
+import { getUserId, getUserName } from 'reducks/users/selectors';
 import { Users } from 'reducks/users/types';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -161,6 +161,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
   const selector = useSelector((state: { users: Users }) => state)
 
   const userId = getUserId(selector)
+  const userName = getUserName(selector)
   const userIcon = getIcon(selector)
 
   const isActiveOfHome = activeNavTitle === 'home'
@@ -241,7 +242,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
               </Box>
               <Hidden lgUp>
                 <Box className={classes.bottom}>
-                  <AccountLogoutPopover userName="testName" userId="testId" icon={userIcon} />
+                  <AccountLogoutPopover userName={userName} userId={userId} icon={userIcon} />
                 </Box>
               </Hidden>
             </nav>
@@ -250,7 +251,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
         <Box className={classes.asideContainer}>
           <Hidden lgDown>
             <Box className={classes.bottom}>
-              <AccountLogoutPopover userName="testName" userId="testId" icon={userIcon} />
+              <AccountLogoutPopover userName={userName} userId={userId} icon={userIcon} />
               <footer>
                 <Box component="ul" display="flex" flexWrap="wrap" mt={3}>
                   <li className={classes.footerText}>お問い合わせ</li>
