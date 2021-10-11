@@ -10,10 +10,6 @@ import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    container: {
-      display: 'flex',
-      alignItems: 'center',
-    },
     iconContainer: {
       marginRight: 8,
       width: 44,
@@ -26,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     userContainer: {
       display: 'flex',
       flexDirection: 'column',
+      textAlign: 'left',
     },
     userName: {
       fontSize: 15,
@@ -33,17 +30,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     userId: {
       fontSize: 15,
-      marginLeft: -16,
       color: theme.palette.text.disabled,
     },
     moreIcon: {
-      marginLeft: 64,
+      marginLeft: 32,
     },
     iconButton: {
       borderRadius: 9999,
+      display: 'flex',
       '&:hover': {
         borderRadius: 9999,
       },
+    },
+    iconButtonWithoutIconContainer: {
+      display: 'flex',
+      alignItems: 'center',
     },
     popover: {
       padding: 16,
@@ -104,15 +105,15 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
           handleOnClick={handleOnClickToSignOut}
           backgroundColorOfActionButton="#2699fb"
         >
-          <span>@{userName}からログアウト</span>
+          <span>@{userId}からログアウト</span>
         </DefaultModalOnlyWithTitle>
       </Popover>
-      <Box className={classes.container}>
-        <IconButton className={classes.iconButton} onClick={handleClick}>
-          <Box className={classes.iconContainer}>
-            <img className={classes.icon} src={icon} alt="アイコン" />
-          </Box>
-          <Hidden lgDown>
+      <IconButton className={classes.iconButton} onClick={handleClick}>
+        <Box className={classes.iconContainer}>
+          <img className={classes.icon} src={icon} alt="アイコン" />
+        </Box>
+        <Hidden lgDown>
+          <Box className={classes.iconButtonWithoutIconContainer}>
             <Box className={classes.userContainer}>
               <Box className={classes.userName} component="span">
                 {userName}
@@ -122,9 +123,9 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
               </Box>
             </Box>
             <MoreHorizIcon className={classes.moreIcon} />
-          </Hidden>
-        </IconButton>
-      </Box>
+          </Box>
+        </Hidden>
+      </IconButton>
     </>
   )
 }
