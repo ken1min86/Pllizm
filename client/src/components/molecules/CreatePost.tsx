@@ -1,8 +1,8 @@
 import { ContainedRoundedCornerButton } from 'components/atoms';
 import { DisplayUploadedImgModal } from 'components/organisms';
-import { useState, VFC } from 'react';
+import { FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { submitNewPost } from 'reducks/posts/operations';
+import { submitNewPost, submitReply } from 'reducks/posts/operations';
 import { Users } from 'reducks/users/types';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -42,6 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       borderRadius: '0 0 16px 16px',
       display: 'flex',
+      flexDirection: 'column',
+    },
+    repliedPostContainer: {
+      marginBottom: 16,
     },
     divider: {
       color: theme.palette.text.secondary,
@@ -79,9 +83,10 @@ const useStylesOfLockIcon = makeStyles((theme: Theme) =>
 
 type Props = {
   handleClose: React.MouseEventHandler<HTMLButtonElement>
+  repliedPostId?: string
 }
 
-const CreatePost: VFC<Props> = ({ handleClose }) => {
+const CreatePost: FC<Props> = ({ children, handleClose, repliedPostId }) => {
   const classes = useStyles()
   const classesOfLockIcon = useStylesOfLockIcon()
 
@@ -143,7 +148,11 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
   }
 
   const handleOnClickToPost = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    dispatch(submitNewPost(inputtedText, locked, uploadedImage))
+    if (repliedPostId != null) {
+      dispatch(submitReply(repliedPostId, inputtedText, locked, uploadedImage))
+    } else {
+      dispatch(submitNewPost(inputtedText, locked, uploadedImage))
+    }
     handleClose(event)
   }
 
@@ -155,63 +164,70 @@ const CreatePost: VFC<Props> = ({ handleClose }) => {
         </IconButton>
       </Box>
       <Box className={classes.main}>
-        <Avatar alt="User icon" src={userIcon} sx={{ width: 48, height: 48, marginRight: 2 }} />
-        <Box sx={{ width: '100%' }}>
-          <TextareaAutosize
-            minRows={3}
-            maxRows={7}
-            placeholder="投稿内容を入力。"
-            style={{ width: '100%', marginBottom: 32, resize: 'none' }}
-            onChange={handleOnchangeTextInput}
-          />
-          {uploadedImageSrc && (
-            <Box className={classes.displayUploadedImgContainer}>
-              <IconButton
-                aria-label="close"
-                onClick={clearUploadedImg}
-                sx={{ color: '#86868b', position: 'absolute', zIndex: 1, padding: 0.5 }}
-              >
-                <CancelIcon fontSize="large" />
-              </IconButton>
-              <DisplayUploadedImgModal uploadedImgSrc={uploadedImageSrc} />
-            </Box>
-          )}
-          <Divider className={classes.divider} />
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <label htmlFor="icon-button-file">
-              <input
-                className={classes.input}
-                accept="image/*"
-                id="icon-button-file"
-                type="file"
-                onChange={handleOnChangeFileInput}
-              />
-              <IconButton aria-label="upload picture" component="span">
-                <AddPhotoAlternateIcon />
-              </IconButton>
-            </label>
-            <Checkbox
-              classes={classesOfLockIcon}
-              icon={<LockOpenOutlinedIcon />}
-              checkedIcon={<LockIcon />}
-              onChange={handleOnChangeLockButton}
+        <Box className={classes.repliedPostContainer}>{children}</Box>
+        <Box sx={{ display: 'flex' }}>
+          <Avatar alt="User icon" src={userIcon} sx={{ width: 48, height: 48, marginRight: 2 }} />
+          <Box sx={{ width: '100%' }}>
+            <TextareaAutosize
+              minRows={3}
+              maxRows={7}
+              placeholder="投稿内容を入力。"
+              style={{ width: '100%', marginBottom: 32, resize: 'none' }}
+              onChange={handleOnchangeTextInput}
             />
-            <span className={classes.textCounter} style={{ color: `${textCounterColor}` }}>
-              {textCounter}/140
-            </span>
-            <Box sx={{ width: 112 }}>
-              <ContainedRoundedCornerButton
-                label="投稿する"
-                onClick={handleOnClickToPost}
-                disabled={disabled}
-                backgroundColor="#2699fb"
+            {uploadedImageSrc && (
+              <Box className={classes.displayUploadedImgContainer}>
+                <IconButton
+                  aria-label="close"
+                  onClick={clearUploadedImg}
+                  sx={{ color: '#86868b', position: 'absolute', zIndex: 1, padding: 0.5 }}
+                >
+                  <CancelIcon fontSize="large" />
+                </IconButton>
+                <DisplayUploadedImgModal uploadedImgSrc={uploadedImageSrc} />
+              </Box>
+            )}
+            <Divider className={classes.divider} />
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <label htmlFor="icon-button-file">
+                <input
+                  className={classes.input}
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={handleOnChangeFileInput}
+                />
+                <IconButton aria-label="upload picture" component="span">
+                  <AddPhotoAlternateIcon />
+                </IconButton>
+              </label>
+              <Checkbox
+                classes={classesOfLockIcon}
+                icon={<LockOpenOutlinedIcon />}
+                checkedIcon={<LockIcon />}
+                onChange={handleOnChangeLockButton}
               />
+              <span className={classes.textCounter} style={{ color: `${textCounterColor}` }}>
+                {textCounter}/140
+              </span>
+              <Box sx={{ width: 112 }}>
+                <ContainedRoundedCornerButton
+                  label="投稿する"
+                  onClick={handleOnClickToPost}
+                  disabled={disabled}
+                  backgroundColor="#2699fb"
+                />
+              </Box>
             </Box>
           </Box>
         </Box>
       </Box>
     </Box>
   )
+}
+
+CreatePost.defaultProps = {
+  repliedPostId: undefined,
 }
 
 export default CreatePost
