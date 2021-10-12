@@ -36,7 +36,7 @@ export const getPostsOfMeAndFollower =
   }
 
 export const submitNewPost: SubmitPostOperation =
-  (content, locked, image) => async (_: unknown, getState: UsersOfGetState) => {
+  (content, locked, image) => async (dispatch: any, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
@@ -49,7 +49,8 @@ export const submitNewPost: SubmitPostOperation =
     await axiosBase
       .post('/v1/posts', requestData, { headers: requestHeaders })
       .then(() => {
-        window.location.href = '/home'
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(getPostsOfMeAndFollower())
       })
       .catch((errors) => {
         console.log(errors)
@@ -57,7 +58,7 @@ export const submitNewPost: SubmitPostOperation =
   }
 
 export const submitReply: SubmitReplyOperation =
-  (repliedPostId, content, locked, image) => async (_: unknown, getState: UsersOfGetState) => {
+  (repliedPostId, content, locked, image) => async (dispatch: any, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
@@ -70,7 +71,8 @@ export const submitReply: SubmitReplyOperation =
     await axiosBase
       .post(`/v1/posts/${repliedPostId}/replies`, requestData, { headers: requestHeaders })
       .then(() => {
-        window.location.href = '/home'
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(getPostsOfMeAndFollower())
       })
       .catch((errors) => {
         console.log(errors)
@@ -79,13 +81,14 @@ export const submitReply: SubmitReplyOperation =
 
 export const deletePost =
   (postId: string) =>
-  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
       .delete(`/v1/posts/${postId}`, { headers: requestHeaders })
       .then(() => {
-        window.location.href = '/home'
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(getPostsOfMeAndFollower())
       })
       .catch((errors) => {
         console.log(errors)

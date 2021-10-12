@@ -1,6 +1,6 @@
 import { PostBox } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
-import { useEffect, VFC } from 'react';
+import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPostsOfMeAndFollower } from 'reducks/posts/operations';
 import { getPosts } from 'reducks/posts/selectors';
@@ -13,11 +13,15 @@ const Home: VFC = () => {
   const dispatch = useDispatch()
   const selector = useSelector((state: { posts: Array<PostsOfMeAndFollower> }) => state)
 
-  const posts = getPosts(selector)
+  const [posts, setPosts] = useState(getPosts(selector))
 
   useEffect(() => {
     dispatch(getPostsOfMeAndFollower())
   }, [dispatch])
+
+  useEffect(() => {
+    setPosts(getPosts(selector))
+  }, [selector])
 
   return (
     <DefaultTemplate title="ホーム" activeNavTitle="home">
