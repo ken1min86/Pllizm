@@ -7,7 +7,8 @@ import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
 import { getPostsOfMeAndFollowerAction } from './actions';
 import {
-    PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation
+    PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation,
+    SubmitReplyOperation
 } from './types';
 
 export const getPostsOfMeAndFollower =
@@ -47,6 +48,27 @@ export const submitNewPost: SubmitPostOperation =
 
     await axiosBase
       .post('/v1/posts', requestData, { headers: requestHeaders })
+      .then(() => {
+        window.location.href = '/home'
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+  }
+
+export const submitReply: SubmitReplyOperation =
+  (repliedPostId, content, locked, image) => async (_: unknown, getState: UsersOfGetState) => {
+    const requestHeaders = createRequestHeader(getState)
+
+    const requestData = new FormData()
+    requestData.append('content', content)
+    requestData.append('is_locked', locked.toString())
+    if (image) {
+      requestData.append('image', image)
+    }
+
+    await axiosBase
+      .post(`/v1/posts/${repliedPostId}/replies`, requestData, { headers: requestHeaders })
       .then(() => {
         window.location.href = '/home'
       })

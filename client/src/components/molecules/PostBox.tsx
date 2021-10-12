@@ -1,11 +1,10 @@
 import { DeletePostPopover, UsersIcon } from 'components/atoms';
-import { DisplayUploadedImgModal, LockPostModal } from 'components/organisms';
+import { CreateReplyModal, DisplayUploadedImgModal, LockPostModal } from 'components/organisms';
 import { createTimeToDisplay } from 'function/common';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { likePost, unlikePost } from 'reducks/posts/operations';
 
-import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import { Box, IconButton, Theme } from '@mui/material';
@@ -127,10 +126,15 @@ const PostBox: VFC<Props> = ({
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: -1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <IconButton>
-                <ChatBubbleOutlineRoundedIcon className={classes.icon} />
-                {repliesCount !== 0 && <span className={classes.count}>{repliesCount}</span>}
-              </IconButton>
+              <CreateReplyModal
+                repliesCount={repliesCount}
+                repliedPostId={postId}
+                repliedPostContent={content}
+                repliedPostImage={image}
+                repliedUserIcon={icon}
+                repliedUserId={userId}
+                repliedUserName={userName}
+              />
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {isLikedByMe && (
                   <IconButton onClick={handleClickToUnlike}>
