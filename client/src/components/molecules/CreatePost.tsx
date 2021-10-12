@@ -149,9 +149,9 @@ const CreatePost: FC<Props> = ({ children, handleClose, repliedPostId }) => {
 
   const handleOnClickToPost = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (repliedPostId != null) {
-      dispatch(submitReply(repliedPostId, inputtedText, locked, uploadedImage))
+      dispatch(submitReply(repliedPostId, locked, inputtedText, uploadedImage))
     } else {
-      dispatch(submitNewPost(inputtedText, locked, uploadedImage))
+      dispatch(submitNewPost(locked, inputtedText, uploadedImage))
     }
     handleClose(event)
   }

@@ -90,8 +90,12 @@ const LockPostModal: VFC<Props> = ({ locked, postId }) => {
     handleClose()
   }
 
+  const handleClickToStopPropagation = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+  }
+
   return (
-    <>
+    <Box onClick={handleClickToStopPropagation}>
       <IconButton aria-label="change lock state" onClick={handleClickIconToLock}>
         {isLocked && <LockIcon fontSize="small" sx={{ color: '#E59500' }} />}
         {!isLocked && <LockOpenOutlinedIcon fontSize="small" />}
@@ -144,7 +148,7 @@ const LockPostModal: VFC<Props> = ({ locked, postId }) => {
           </Box>
         </Box>
       </Modal>
-    </>
+    </Box>
   )
 }
 

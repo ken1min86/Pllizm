@@ -29,7 +29,7 @@ const Home: VFC = () => {
         posts.map((post) => (
           <PostBox
             key={post.id}
-            type={post.postedBy}
+            postedBy={post.postedBy}
             icon={post.iconUrl}
             userId={post.userId}
             userName={post.userName}
@@ -41,6 +41,7 @@ const Home: VFC = () => {
             postedAt={post.createdAt}
             locked={post.locked}
             image={post.imageUrl}
+            status="exist"
           />
         ))}
       <Box sx={{ padding: '64px 0 120px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>

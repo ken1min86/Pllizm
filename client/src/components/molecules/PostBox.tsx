@@ -1,9 +1,10 @@
 import { DeletePostPopover, UsersIcon } from 'components/atoms';
 import { CreateReplyModal, DisplayUploadedImgModal, LockPostModal } from 'components/organisms';
-import { createTimeToDisplay } from 'function/common';
+import { push } from 'connected-react-router';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { likePost, unlikePost } from 'reducks/posts/operations';
+import { createTimeToDisplay } from 'Util/common';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
@@ -18,6 +19,15 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '16px 32px 24px 16px',
       width: '100%',
       borderBottom: 'solid 1px #EEEEEE',
+    },
+    buttonToShowDetail: {
+      width: '100%',
+    },
+    divider: {
+      backgroundColor: theme.palette.text.disabled,
+      width: 1,
+      minHeight: 30,
+      height: '100%',
     },
     imgContainer: {
       width: '100%',
@@ -59,22 +69,24 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  type: 'me' | 'follower' | 'not-follower' | undefined
+  postedBy: 'me' | 'follower' | 'not_follower' | undefined
   icon: string
   userId?: string
   userName?: string
   postId: string
-  content: string
+  content?: string
   repliesCount: number
   likesCount?: number
   likedByMe: boolean
   postedAt: string
   locked?: boolean
   image?: string
+  needDividerOnDisplay?: boolean
+  status: 'exist' | 'deleted'
 }
 
 const PostBox: VFC<Props> = ({
-  type,
+  postedBy,
   icon,
   userId,
   userName,
@@ -86,6 +98,8 @@ const PostBox: VFC<Props> = ({
   postedAt,
   locked,
   image,
+  needDividerOnDisplay = false,
+  status,
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -95,6 +109,10 @@ const PostBox: VFC<Props> = ({
   const [isLikedByMe, setIsLikedByMe] = useState(likedByMe)
   const [countOfLikes, setCountOfLikes] = useState(likesCount)
 
+  const handleClickToShowDetail = () => {
+    dispatch(push(`/posts/${postId}`))
+  }
+
   const handleClickToUnlike = () => {
     dispatch(unlikePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
   }
@@ -103,60 +121,75 @@ const PostBox: VFC<Props> = ({
     dispatch(likePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
   }
 
+  const handleClickToStopPropagation = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+  }
+
   return (
     <Box className={classes.container}>
-      <Box sx={{ display: 'flex', width: '100%' }}>
-        <Box mr={2}>
-          <UsersIcon userId={userId} icon={icon} />
-        </Box>
-        <Box sx={{ width: '100%' }}>
-          <Box mb={3}>
-            {userName != null && (
-              <>
-                <span className={classes.userName}>{userName}</span>
-                <span className={classes.userId}>@{userId}</span>
-              </>
-            )}
-            <span className={classes.content}>{content}</span>
-            {image && (
-              <Box className={classes.imgContainer}>
-                <DisplayUploadedImgModal uploadedImgSrc={image} />
-              </Box>
-            )}
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: -1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <CreateReplyModal
-                repliesCount={repliesCount}
-                repliedPostId={postId}
-                repliedPostContent={content}
-                repliedPostImage={image}
-                repliedUserIcon={icon}
-                repliedUserId={userId}
-                repliedUserName={userName}
-              />
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                {isLikedByMe && (
-                  <IconButton onClick={handleClickToUnlike}>
-                    <FavoriteIcon sx={{ color: '#e0245e' }} className={classes.icon} />
-                  </IconButton>
-                )}
-                {!isLikedByMe && (
-                  <IconButton onClick={handleClickToLike}>
-                    <FavoriteBorderOutlinedIcon className={classes.icon} />
-                  </IconButton>
-                )}
-                {countOfLikes !== 0 && <span className={classes.count}>{countOfLikes}</span>}
-              </Box>
-              {locked != null && <LockPostModal locked={locked} postId={postId} />}
+      {status === 'deleted' && <Box sx={{ textAlign: 'center', padding: 4 }}>この投稿は削除されました。</Box>}
+      {status === 'exist' && (
+        <button type="button" className={classes.buttonToShowDetail} onClick={handleClickToShowDetail}>
+          <Box sx={{ display: 'flex', width: '100%' }}>
+            <Box
+              onClick={handleClickToStopPropagation}
+              sx={{ display: 'flex', flexDirection: 'column', marginRight: 2, alignItems: 'center', gap: 0.5 }}
+            >
+              <UsersIcon userId={userId} icon={icon} />
+              {needDividerOnDisplay && <div className={classes.divider} />}
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <span className={classes.time}>{timeToDisplay}</span>
-              <Box className={classes.settingButton}>{type === 'me' && <DeletePostPopover postId={postId} />}</Box>
+            <Box sx={{ width: '100%' }}>
+              <Box mb={3}>
+                {userName != null && (
+                  <>
+                    <span className={classes.userName}>{userName}</span>
+                    <span className={classes.userId}>@{userId}</span>
+                  </>
+                )}
+                <span className={classes.content}>{content}</span>
+                {image && (
+                  <Box className={classes.imgContainer} onClick={handleClickToStopPropagation}>
+                    <DisplayUploadedImgModal uploadedImgSrc={image} />
+                  </Box>
+                )}
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: -1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <CreateReplyModal
+                    repliesCount={repliesCount}
+                    repliedPostId={postId}
+                    repliedPostContent={content}
+                    repliedPostImage={image}
+                    repliedUserIcon={icon}
+                    repliedUserId={userId}
+                    repliedUserName={userName}
+                  />
+                  <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={handleClickToStopPropagation}>
+                    {isLikedByMe && (
+                      <IconButton onClick={handleClickToUnlike}>
+                        <FavoriteIcon sx={{ color: '#e0245e' }} className={classes.icon} />
+                      </IconButton>
+                    )}
+                    {!isLikedByMe && (
+                      <IconButton onClick={handleClickToLike}>
+                        <FavoriteBorderOutlinedIcon className={classes.icon} />
+                      </IconButton>
+                    )}
+                    {countOfLikes !== 0 && <span className={classes.count}>{countOfLikes}</span>}
+                  </Box>
+                  {locked != null && <LockPostModal locked={locked} postId={postId} />}
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <span className={classes.time}>{timeToDisplay}</span>
+                  <Box className={classes.settingButton} onClick={handleClickToStopPropagation}>
+                    {postedBy === 'me' && <DeletePostPopover postId={postId} />}
+                  </Box>
+                </Box>
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </Box>
+        </button>
+      )}
     </Box>
   )
 }

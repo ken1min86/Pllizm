@@ -96,6 +96,7 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
   },
   overrides: [
     {

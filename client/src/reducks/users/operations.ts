@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { push } from 'connected-react-router';
-import { createRequestHeader, isValidEmailFormat } from 'function/common';
 import Cookies from 'js-cookie';
+import { createRequestHeader, isValidEmailFormat } from 'Util/common';
 
 import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';

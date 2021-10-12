@@ -38,7 +38,7 @@ const useStylesToOverrideColor = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  activeNav: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings'
+  activeNav: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
 }
 
 const BottomNavigationBar: VFC<Props> = ({ activeNav }) => {

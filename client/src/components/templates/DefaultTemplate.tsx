@@ -152,7 +152,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   title: string
-  activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings'
+  activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
 }
 
 const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {

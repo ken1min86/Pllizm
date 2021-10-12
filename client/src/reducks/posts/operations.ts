@@ -1,7 +1,8 @@
 import camelcaseKeys from 'camelcase-keys';
-import { createRequestHeader } from 'function/common';
 import { SetStateAction } from 'react';
+import { getThread } from 'reducks/threads/operations';
 import { UsersOfGetState } from 'reducks/users/types';
+import { createRequestHeader } from 'Util/common';
 
 import { axiosBase } from '../../api';
 import DefaultIcon from '../../assets/DefaultIcon.jpg';
@@ -33,18 +34,19 @@ export const getPostsOfMeAndFollower =
 
         dispatch(getPostsOfMeAndFollowerAction(postsWithIcon))
       })
+      .catch((errors) => {
+        console.log(errors)
+      })
   }
 
 export const submitNewPost: SubmitPostOperation =
-  (content, locked, image) => async (dispatch: any, getState: UsersOfGetState) => {
+  (locked, content, image) => async (dispatch: any, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
-    requestData.append('content', content)
+    if (content) requestData.append('content', content)
     requestData.append('is_locked', locked.toString())
-    if (image) {
-      requestData.append('image', image)
-    }
+    if (image) requestData.append('image', image)
 
     await axiosBase
       .post('/v1/posts', requestData, { headers: requestHeaders })
@@ -58,21 +60,21 @@ export const submitNewPost: SubmitPostOperation =
   }
 
 export const submitReply: SubmitReplyOperation =
-  (repliedPostId, content, locked, image) => async (dispatch: any, getState: UsersOfGetState) => {
+  (repliedPostId, locked, content, image) => async (dispatch: any, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
-    requestData.append('content', content)
+    if (content) requestData.append('content', content)
     requestData.append('is_locked', locked.toString())
-    if (image) {
-      requestData.append('image', image)
-    }
+    if (image) requestData.append('image', image)
 
     await axiosBase
       .post(`/v1/posts/${repliedPostId}/replies`, requestData, { headers: requestHeaders })
       .then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(getPostsOfMeAndFollower())
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(getThread(repliedPostId))
       })
       .catch((errors) => {
         console.log(errors)
@@ -87,8 +89,8 @@ export const deletePost =
     await axiosBase
       .delete(`/v1/posts/${postId}`, { headers: requestHeaders })
       .then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(getPostsOfMeAndFollower())
+        // eslint-disable-next-line no-restricted-globals
+        history.go(0)
       })
       .catch((errors) => {
         console.log(errors)
