@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   repliesCount: number
   repliedPostId: string
-  repliedPostContent: string
+  repliedPostContent?: string
   repliedUserIcon: string
   repliedPostImage?: string
   repliedUserId?: string
@@ -50,15 +50,26 @@ const CreateReplyModal: VFC<Props> = ({
   repliedUserName,
 }) => {
   const classes = useStyles()
+
   const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleClickToStopPropagation = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+  }
 
   return (
-    <Box>
+    <Box onClick={handleClickToStopPropagation}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <IconButton onClick={handleOpen}>
-          <ChatBubbleOutlineRoundedIcon onClick={handleOpen} sx={{ fontSize: 18 }} />
+          <ChatBubbleOutlineRoundedIcon sx={{ fontSize: 18 }} />
         </IconButton>
         {repliesCount !== 0 && <span className={classes.count}>{repliesCount}</span>}
       </Box>

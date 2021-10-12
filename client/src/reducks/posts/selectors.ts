@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect';
 
-import { Posts } from './types';
+import { PostsOfMeAndFollower } from './types';
 
-const postsSelector = (state: { posts: Array<Posts> }) => state.posts
+const postsSelector = (state: { posts: Array<PostsOfMeAndFollower> }) => state.posts
 
-// eslint-disable-next-line import/prefer-default-export
 export const getPosts = createSelector([postsSelector], (state) => state)
