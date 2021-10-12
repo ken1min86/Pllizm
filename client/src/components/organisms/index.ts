@@ -1,6 +1,7 @@
 export { default as AccountDrawer } from './AccountDrawer'
 export { default as AccountLogoutPopover } from './AccountLogoutPopover'
 export { default as CreatePostModal } from './CreatePostModal'
+export { default as CreateReplyModal } from './CreateReplyModal'
 export { default as DisplayUploadedImgModal } from './DisplayUploadedImgModal'
 export { default as Footer } from './common/Footer'
 export { default as HeaderWithTitleAndReturnArrow } from './common/HeaderWithTitleAndReturnArrow'
