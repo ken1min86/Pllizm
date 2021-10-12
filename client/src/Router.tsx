@@ -2,7 +2,7 @@ import { Route, Switch } from 'react-router';
 
 import Auth from './Auth';
 import {
-    BeginPasswordReset, EndPasswordReset, Home, PasswordReset, PrivacyPolicy,
+    BeginPasswordReset, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy,
     SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
@@ -17,6 +17,7 @@ const Router: React.VFC = () => (
     <Route exact path="/help/terms_of_use" component={TermsOfUse} />
     <Auth>
       <Route exact path="/home" component={Home} />
+      <Route exact path="/posts/:id" component={PostDetail} />
     </Auth>
   </Switch>
 )

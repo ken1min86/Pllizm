@@ -8,23 +8,24 @@ export type GetPostsOfMeAndFollowerAction = (posts: Array<PostsOfMeAndFollower>)
 // ***************************************
 // Reducers
 export type Reducer = (
-  state: Array<Posts>,
+  state: Array<PostsOfMeAndFollower>,
   action: {
     type: string
-    payload: Array<Posts>
+    payload: Array<PostsOfMeAndFollower>
   },
-) => Array<Posts>
+) => Array<PostsOfMeAndFollower>
+
 export type PostsArrayOfMeAndFollowerResponse = {
   posts: Array<PostsOfMeAndFollowerRespose>
 }
 
 // ***************************************
 // Operatons & Selectors
-export type PostsOfMeAndFollowerRespose = {
+export interface PostsOfMeAndFollowerRespose {
   id: string
   locked?: boolean
-  status: string
-  content: string
+  status: 'exist' | 'deleted' | 'not_exist'
+  content?: string
   // eslint-disable-next-line camelcase
   posted_by: 'me' | 'follower'
   // eslint-disable-next-line camelcase
@@ -48,13 +49,13 @@ export type PostsOfMeAndFollowerRespose = {
 }
 
 export type PostsOfMeAndFollower = {
-  status: string
+  status: 'exist' | 'deleted' | 'not_exist'
   postedBy: 'me' | 'follower'
   userId?: string
   userName?: string
   iconUrl: string
   id: string
-  content: string
+  content?: string
   imageUrl?: string
   locked?: boolean
   isReply: boolean
@@ -64,23 +65,6 @@ export type PostsOfMeAndFollower = {
   createdAt: string
 }
 
-export type Posts = {
-  status: string
-  postedBy: 'me' | 'follower'
-  userId?: string
-  userName?: string
-  iconUrl: string
-  id: string
-  content: string
-  imageUrl?: string
-  locked?: boolean
-  isReply: boolean
-  likesCount?: number
-  repliesCount: number
-  likedByCurrentUser: boolean
-  createdAt: string
-}
+export type SubmitPostOperation = (locked: boolean, content?: string, image?: File) => void
 
-export type SubmitPostOperation = (content: string, locked: boolean, image?: File) => void
-
-export type SubmitReplyOperation = (repliedPostId: string, content: string, locked: boolean, image?: File) => void
+export type SubmitReplyOperation = (repliedPostId: string, locked: boolean, content?: string, image?: File) => void
