@@ -207,8 +207,6 @@ export const listenAuthState =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push('/home'))
       })
       .catch(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
