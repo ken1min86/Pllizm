@@ -207,8 +207,6 @@ export const listenAuthState =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push('/home'))
       })
       .catch(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -218,7 +216,7 @@ export const listenAuthState =
 
 export const sendMailOfPasswordReset =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<any> => {
+  async (dispatch: any): Promise<unknown> => {
     if (email === '') {
       setError('メールアドレスが未入力です。')
 
