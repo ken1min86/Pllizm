@@ -1,6 +1,6 @@
 import { LogoLink } from 'components/atoms';
 import { BottomNavigationBar, IconWithTextLink } from 'components/molecules';
-import { AccountDrawer, AccountLogoutPopover, CreatePostModal } from 'components/organisms';
+import { AccountLogoutPopover, CreatePostModal } from 'components/organisms';
 import { push } from 'connected-react-router';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +17,6 @@ import { Box, Hidden, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../assets/HeaderLogo.png';
 import LogoIconActive from '../../assets/LogoIconActive1.png';
 import LogoIconInactive from '../../assets/LogoIconInactive1.png';
 import { getIcon } from '../../reducks/users/selectors';
@@ -38,12 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         width: '100vw',
       },
-    },
-    img: {
-      width: 28,
-      position: 'absolute',
-      display: 'block',
-      left: 'calc( 50% - 14px )',
     },
     nav: {
       position: 'fixed',
@@ -122,12 +115,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.disabled,
       marginRight: 16,
     },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginLeft: 16,
-      color: theme.palette.primary.light,
-    },
     buttomNavContainer: {
       position: 'fixed',
       bottom: 0,
@@ -151,11 +138,11 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  title: string
   activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
+  returnHeaderFunc: (arg0: void) => React.ReactNode
 }
 
-const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
+const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
@@ -179,15 +166,7 @@ const DefaultTemplate: FC<Props> = ({ children, title, activeNavTitle }) => {
     <Box sx={{ backgroundColor: '#f9f4ef', minHeight: '100vh' }}>
       <Box className={classes.container}>
         <Box className={classes.mainContainer}>
-          <header className={classes.header}>
-            <Hidden smDown>
-              <h1 className={classes.title}>{title}</h1>
-            </Hidden>
-            <Hidden smUp>
-              <AccountDrawer />
-              <img className={classes.img} src={Logo} alt="ロゴ" />
-            </Hidden>
-          </header>
+          <header className={classes.header}>{returnHeaderFunc()}</header>
           <main className={classes.main}>{children}</main>
           <Hidden smUp>
             <Box className={classes.buttomNavContainer}>
