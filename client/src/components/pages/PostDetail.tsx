@@ -1,4 +1,5 @@
 import { PostBox } from 'components/molecules';
+import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,8 +31,10 @@ const PostDetail: VFC = () => {
     setThread(getThreadPosts(selector))
   }, [selector])
 
+  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="投稿" />
+
   return (
-    <DefaultTemplate title="投稿" activeNavTitle="none">
+    <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>
       {hasAnyDisplayablePost && thread.parent.status !== 'not_exist' && (
         <PostBox
           key={thread.parent.id}

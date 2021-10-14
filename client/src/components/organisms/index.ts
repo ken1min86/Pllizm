@@ -4,6 +4,7 @@ export { default as CreatePostModal } from './CreatePostModal'
 export { default as CreateReplyModal } from './CreateReplyModal'
 export { default as DisplayUploadedImgModal } from './DisplayUploadedImgModal'
 export { default as Footer } from './common/Footer'
+export { default as HeaderWithTitleAndDrawer } from './common/HeaderWithTitleAndDrawer'
 export { default as HeaderWithTitleAndReturnArrow } from './common/HeaderWithTitleAndReturnArrow'
 // eslint-disable-next-line import/no-cycle
 export { default as LockPostModal } from './LockPostModal'

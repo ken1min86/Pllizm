@@ -216,7 +216,7 @@ export const listenAuthState =
 
 export const sendMailOfPasswordReset =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<any> => {
+  async (dispatch: any): Promise<unknown> => {
     if (email === '') {
       setError('メールアドレスが未入力です。')
 

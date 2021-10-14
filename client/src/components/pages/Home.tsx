@@ -1,4 +1,5 @@
 import { PostBox } from 'components/molecules';
+import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,8 +24,10 @@ const Home: VFC = () => {
     setPosts(getPosts(selector))
   }, [selector])
 
+  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="ホーム" />
+
   return (
-    <DefaultTemplate title="ホーム" activeNavTitle="home">
+    <DefaultTemplate activeNavTitle="home" returnHeaderFunc={returnHeaderFunc}>
       {posts.length > 0 &&
         posts.map((post) => (
           <PostBox
