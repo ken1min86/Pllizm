@@ -18,29 +18,29 @@ export const signUp =
     passwordConfirmation: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<boolean> => {
+  async (dispatch: any): Promise<void> => {
     if (email === '' || password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
-      return false
+      return
     }
 
     if (!isValidEmailFormat(email)) {
       setError('メールアドレスの形式が不正です。')
 
-      return false
+      return
     }
 
     if (password.length < 8) {
       setError('パスワードは8文字以上で設定してください。')
 
-      return false
+      return
     }
 
     if (password !== passwordConfirmation) {
       setError('パスワードが一致しません。')
 
-      return false
+      return
     }
 
     const requestData: SignUpRequest = { email, password, password_confirmation: passwordConfirmation }
@@ -77,34 +77,30 @@ export const signUp =
         if (errorsMessages?.some((message) => message === 'Email has already been taken')) {
           setError('すでに登録済みのメールアドレスです。\n別のメールアドレスで登録してください。')
 
-          return false
+          return
         }
         if (errorsMessages?.some((message) => message === 'Email is not an email')) {
           setError('不正なメールアドレスです。\nメールアドレスに間違えがないか確認して下さい。')
 
-          return false
+          return
         }
         setError('不正なリクエストです。')
-
-        return false
       })
-
-    return false
   }
 
 export const signIn =
   (email: string, password: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<boolean> => {
+  async (dispatch: any): Promise<void> => {
     if (email === '' || password === '') {
       setError('メールアドレスとパスワードを入力してください。')
 
-      return false
+      return
     }
 
     if (!isValidEmailFormat(email)) {
       setError('メールアドレスの形式が不正です。')
 
-      return false
+      return
     }
 
     const requestData: SignInRequest = { email, password }
@@ -139,11 +135,7 @@ export const signIn =
       })
       .catch(() => {
         setError('オフラインか、メールアドレスまたはパスワードが間違っています。')
-
-        return false
       })
-
-    return false
   }
 
 export const signOut =
@@ -220,13 +212,13 @@ export const sendMailOfPasswordReset =
     if (email === '') {
       setError('メールアドレスが未入力です。')
 
-      return false
+      return
     }
 
     if (!isValidEmailFormat(email)) {
       setError('メールアドレスの形式が不正です。')
 
-      return false
+      return
     }
 
     let redirectUrl
@@ -256,8 +248,6 @@ export const sendMailOfPasswordReset =
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/sent_mail_of_password_reset'))
       })
-
-    return false
   }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -270,23 +260,23 @@ export const resetPassword =
     uid: string | null,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<boolean> => {
+  async (dispatch: any): Promise<void> => {
     if (password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
-      return false
+      return
     }
 
     if (password.length < 8) {
       setError('パスワードは8文字以上で設定してください。')
 
-      return false
+      return
     }
 
     if (password !== passwordConfirmation) {
       setError('パスワードが一致しません。')
 
-      return false
+      return
     }
 
     const requestHeaders = {
@@ -328,11 +318,7 @@ export const resetPassword =
         setError(
           '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
         )
-
-        return false
       })
-
-    return false
   }
 
 export const disableLockDescription =
