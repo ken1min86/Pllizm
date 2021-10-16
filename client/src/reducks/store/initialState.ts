@@ -1,7 +1,7 @@
-import { PostsOfMeAndFollower } from 'reducks/posts/types';
-import { Threads } from 'reducks/threads/types';
+import { PostsOfMeAndFollower } from 'util/types/redux/posts';
+import { Threads } from 'util/types/redux/threads';
 
-import { Users } from '../users/types';
+import { Users } from '../../util/types/redux/users';
 
 const initialState: { users: Users; posts: Array<PostsOfMeAndFollower>; threads: Threads } = {
   users: {

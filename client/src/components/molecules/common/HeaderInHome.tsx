@@ -2,7 +2,7 @@ import { push } from 'connected-react-router';
 import { VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIcon } from 'reducks/users/selectors';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { Box, IconButton, Theme } from '@mui/material';
@@ -11,7 +11,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 // eslint-disable-next-line import/no-useless-path-segments
 import { IconWithTextLink } from '../';
-import Logo from '../../../assets/HeaderLogo.png';
+import Logo from '../../../assets/img/HeaderLogo.png';
 import { LogoLink } from '../../atoms';
 
 const useStyles = makeStyles((theme: Theme) =>

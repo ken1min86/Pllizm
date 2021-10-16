@@ -1,16 +1,16 @@
 import camelcaseKeys from 'camelcase-keys';
 import { SetStateAction } from 'react';
 import { getThread } from 'reducks/threads/operations';
-import { UsersOfGetState } from 'reducks/users/types';
-import { createRequestHeader } from 'Util/common';
+import { createRequestHeader } from 'util/functions/common';
+import { UsersOfGetState } from 'util/types/redux/users';
 
-import { axiosBase } from '../../api';
-import DefaultIcon from '../../assets/DefaultIcon.jpg';
-import { getPostsOfMeAndFollowerAction } from './actions';
+import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
+import { axiosBase } from '../../util/api';
 import {
     PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation,
     SubmitReplyOperation
-} from './types';
+} from '../../util/types/redux/posts';
+import { getPostsOfMeAndFollowerAction } from './actions';
 
 export const getPostsOfMeAndFollower =
   () =>

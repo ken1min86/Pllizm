@@ -1,7 +1,7 @@
 import { push } from 'connected-react-router';
 import { VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
@@ -10,8 +10,8 @@ import { BottomNavigation, BottomNavigationAction, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import LogoIconActive from '../../../assets/LogoIconActive2.png';
-import LogoIconInactive from '../../../assets/LogoIconInactive2.png';
+import LogoIconActive from '../../../assets/img/LogoIconActive2.png';
+import LogoIconInactive from '../../../assets/img/LogoIconInactive2.png';
 import { getUserId } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles(() =>

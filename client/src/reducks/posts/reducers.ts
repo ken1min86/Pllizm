@@ -1,6 +1,6 @@
+import { Reducer } from '../../util/types/redux/posts';
 import initialState from '../store/initialState';
 import * as Actions from './actions';
-import { Reducer } from './types';
 
 const PostsReducer: Reducer = (state = initialState.posts, action) => {
   switch (action.type) {

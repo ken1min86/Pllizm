@@ -1,4 +1,6 @@
-import { DisableLockDescriptionAction, SignInAction, SignOutAction, SignUpAction } from './types';
+import {
+    DisableLockDescriptionAction, SignInAction, SignOutAction, SignUpAction
+} from '../../util/types/redux/users';
 
 export const SIGN_UP = 'SIGN_UP'
 export const signUpAction: SignUpAction = (userState) => ({

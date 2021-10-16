@@ -6,7 +6,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 // eslint-disable-next-line import/no-useless-path-segments
 import { AccountDrawer } from '../';
-import Logo from '../../../assets/HeaderLogo.png';
+import Logo from '../../../assets/img/HeaderLogo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

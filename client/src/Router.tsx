@@ -2,8 +2,8 @@ import { Route, Switch } from 'react-router';
 
 import Auth from './Auth';
 import {
-    BeginPasswordReset, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy, Search,
-    SentMailOfPasswordReset, TermsOfUse, Top
+    BeginPasswordReset, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy, Profile,
+    Search, SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -17,9 +17,12 @@ const Router: React.VFC = () => (
     <Route exact path="/help/terms_of_use" component={TermsOfUse} />
 
     <Auth>
-      <Route exact path="/home" component={Home} />
-      <Route exact path="/posts/:id" component={PostDetail} />
-      <Route exact path="/search" component={Search} />
+      <Switch>
+        <Route exact path="/home" component={Home} />
+        <Route exact path="/posts/:id" component={PostDetail} />
+        <Route exact path="/search" component={Search} />
+        <Route exact path="/:id" component={Profile} />
+      </Switch>
     </Auth>
   </Switch>
 )

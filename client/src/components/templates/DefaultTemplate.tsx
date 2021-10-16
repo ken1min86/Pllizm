@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getUserId, getUserName } from 'reducks/users/selectors';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
@@ -17,8 +17,8 @@ import { Box, Hidden, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import LogoIconActive from '../../assets/LogoIconActive1.png';
-import LogoIconInactive from '../../assets/LogoIconInactive1.png';
+import LogoIconActive from '../../assets/img/LogoIconActive1.png';
+import LogoIconInactive from '../../assets/img/LogoIconInactive1.png';
 import { getIcon } from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>

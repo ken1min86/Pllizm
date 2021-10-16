@@ -1,9 +1,11 @@
-import { axiosBase } from 'api';
-import { UsersOfGetState } from 'reducks/users/types';
-import { createRequestHeader, formatPostInThread, formatPostsInThread } from 'Util/common';
+import { axiosBase } from 'util/api';
+import {
+    createRequestHeader, formatPostInThread, formatPostsInThread
+} from 'util/functions/common';
+import { UsersOfGetState } from 'util/types/redux/users';
 
+import { Threads } from '../../util/types/redux/threads';
 import { getThreadAction } from './actions';
-import { Threads } from './types';
 
 export const getThread =
   (postId: string) =>
