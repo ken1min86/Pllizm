@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeLockStateOfPost } from 'reducks/posts/operations';
 import { disableLockDescription } from 'reducks/users/operations';
 import { getNeedDescriptionAboutLock } from 'reducks/users/selectors';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';

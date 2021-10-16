@@ -1,6 +1,6 @@
-import { Weaken } from 'Util/types';
+import { Weaken } from 'util/types/common';
 
-import { PostsOfMeAndFollower } from '../posts/types';
+import { PostsOfMeAndFollower } from './posts';
 
 // ***************************************
 // Actions

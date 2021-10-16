@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { PostsOfMeAndFollower } from './types';
+import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
 
 const postsSelector = (state: { posts: Array<PostsOfMeAndFollower> }) => state.posts
 

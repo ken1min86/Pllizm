@@ -1,8 +1,9 @@
 import camelcaseKeys from 'camelcase-keys';
-import { PostInThread, Threads } from 'reducks/threads/types';
-import { RequestHeadersForAuthentication, UsersOfGetState } from 'reducks/users/types';
+import { ExistentPosts } from 'util/types/hooks/posts';
+import { PostInThread, Threads } from 'util/types/redux/threads';
+import { RequestHeadersForAuthentication, UsersOfGetState } from 'util/types/redux/users';
 
-import DefaultIcon from '../assets/DefaultIcon.jpg';
+import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -48,7 +49,7 @@ export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersFo
 
 export const formatPostInThread = (post: PostInThread): PostInThread => {
   const postWithCamelcaseKeys = camelcaseKeys(post)
-  const iconUrl = post.iconUrl == null ? DefaultIcon : post.iconUrl
+  const iconUrl = postWithCamelcaseKeys.iconUrl == null ? DefaultIcon : postWithCamelcaseKeys.iconUrl
   const postWithIcon = { ...postWithCamelcaseKeys, iconUrl }
 
   return postWithIcon
@@ -59,6 +60,17 @@ export const formatPostsInThread = (posts: Array<PostInThread>): Array<PostInThr
   const postsWithIcon: Array<PostInThread> = postsWithCamelcaseKeys.map((post) => {
     const iconUrl = post.iconUrl == null ? DefaultIcon : post.iconUrl
     const postWithIcon = { ...post, iconUrl }
+
+    return postWithIcon
+  })
+
+  return postsWithIcon
+}
+
+export const formatPostsOfMeAndFollower = (posts: Array<ExistentPosts>): Array<ExistentPosts> => {
+  const postsWithIcon: Array<ExistentPosts> = posts.map((post) => {
+    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
+    const postWithIcon = { ...post, icon_url: iconUrl }
 
     return postWithIcon
   })
