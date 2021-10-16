@@ -125,7 +125,7 @@ const Search: VFC = () => {
               searchedUsers.map((searchedUser) => (
                 <div key={searchedUser.user_id}>
                   <Box
-                    sx={{ display: 'flex', padding: 1, width: '100%' }}
+                    sx={{ display: 'flex', padding: 1, width: '100%', alignItems: 'center' }}
                     onClick={() => {
                       dispatch(push(`/${searchedUser.user_id}`))
                     }}
