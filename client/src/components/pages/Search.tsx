@@ -8,7 +8,9 @@ import { axiosBase } from 'util/api';
 import { RequestHeaders, User } from 'util/types/hooks/users';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { Avatar, Box, Divider, Hidden, InputAdornment, TextField, Theme } from '@mui/material';
+import {
+    Avatar, Box, Divider, Hidden, InputAdornment, LinearProgress, TextField, Theme
+} from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -41,36 +43,40 @@ const Search: VFC = () => {
 
   const [query, setQuery] = useState('')
   const [searchedUsers, setSearchedUsers] = useState<Array<User>>([])
+  const [loading, setLoading] = useState(false)
 
   const handleChangeOfInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
   }
 
   useEffect(() => {
-    const searchUser = async (): Promise<void> => {
-      if (!query) {
-        setSearchedUsers([])
+    setLoading(true)
 
-        return
-      }
+    if (!query) {
+      setSearchedUsers([])
+      setLoading(false)
 
-      const user = getUser(selector)
-      const requestHeaders: RequestHeaders = {
-        'access-token': user.accessToken,
-        client: user.client,
-        uid: user.uid,
-      }
-
-      await axiosBase
-        .get<Reponse>(`/v1/search/users?q=${query}`, { headers: requestHeaders })
-        .then((response) => {
-          setSearchedUsers(response.data.users)
-        })
-        .catch((errors) => {
-          console.log(errors)
-        })
+      return
     }
-    void searchUser()
+
+    const user = getUser(selector)
+    const requestHeaders: RequestHeaders = {
+      'access-token': user.accessToken,
+      client: user.client,
+      uid: user.uid,
+    }
+
+    axiosBase
+      .get<Reponse>(`/v1/search/users?q=${query}`, { headers: requestHeaders })
+      .then((response) => {
+        setSearchedUsers(response.data.users)
+      })
+      .catch((errors) => {
+        console.log(errors)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [query, selector])
 
   const returnHeaderFunc = () => (
@@ -106,6 +112,7 @@ const Search: VFC = () => {
   return (
     <DefaultTemplate activeNavTitle="search" returnHeaderFunc={returnHeaderFunc}>
       <Box sx={{ width: '100%' }}>
+        {loading && <LinearProgress color="info" />}
         {searchedUsers.length > 0 &&
           searchedUsers.map((searchedUser) => (
             <div key={searchedUser.user_id}>
