@@ -49,7 +49,7 @@ export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersFo
 
 export const formatPostInThread = (post: PostInThread): PostInThread => {
   const postWithCamelcaseKeys = camelcaseKeys(post)
-  const iconUrl = post.iconUrl == null ? DefaultIcon : post.iconUrl
+  const iconUrl = postWithCamelcaseKeys.iconUrl == null ? DefaultIcon : postWithCamelcaseKeys.iconUrl
   const postWithIcon = { ...postWithCamelcaseKeys, iconUrl }
 
   return postWithIcon
