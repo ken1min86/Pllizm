@@ -3,7 +3,7 @@ import { push } from 'connected-react-router';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOut } from 'reducks/users/operations';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';

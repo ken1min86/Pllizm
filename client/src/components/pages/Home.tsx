@@ -8,7 +8,7 @@ import { getPosts } from 'reducks/posts/selectors';
 
 import { Box } from '@mui/material';
 
-import { PostsOfMeAndFollower } from '../../reducks/posts/types';
+import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
 
 const Home: VFC = () => {
   const dispatch = useDispatch()

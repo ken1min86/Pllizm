@@ -9,8 +9,8 @@ import { Box, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import TopLarge from '../../assets/TopLarge.jpg';
-import TopSmall from '../../assets/TopSmall.jpg';
+import TopLarge from '../../assets/img/TopLarge.jpg';
+import TopSmall from '../../assets/img/TopSmall.jpg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

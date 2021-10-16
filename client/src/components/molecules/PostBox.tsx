@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { likePost, unlikePost } from 'reducks/posts/operations';
-import { createTimeToDisplay } from 'Util/common';
+import { createTimeToDisplay } from 'util/functions/common';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';

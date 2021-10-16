@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { Threads } from './types';
+import { Threads } from '../../util/types/redux/threads';
 
 const threadsSelector = (state: { threads: Threads }) => state.threads
 

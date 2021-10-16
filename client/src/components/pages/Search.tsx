@@ -1,18 +1,18 @@
-import { axiosBase } from 'api';
 import { AccountDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
-import { RequestHeadersForAuthentication } from 'reducks/users/types';
+import { axiosBase } from 'util/api';
+import { RequestHeaders, User } from 'util/types/hooks/users';
 
 import SearchIcon from '@mui/icons-material/Search';
 import { Avatar, Box, Divider, Hidden, InputAdornment, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { Users } from '../../reducks/users/types';
+import { Users } from '../../util/types/redux/users';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,16 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
-
-type User = {
-  // eslint-disable-next-line camelcase
-  user_id: string
-  // eslint-disable-next-line camelcase
-  user_name: string
-  // eslint-disable-next-line camelcase
-  image_url: string
-  bio: string
-}
 
 type Reponse = {
   users: Array<User>
@@ -65,7 +55,7 @@ const Search: VFC = () => {
       }
 
       const user = getUser(selector)
-      const requestHeaders: RequestHeadersForAuthentication = {
+      const requestHeaders: RequestHeaders = {
         'access-token': user.accessToken,
         client: user.client,
         uid: user.uid,

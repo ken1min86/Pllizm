@@ -3,7 +3,7 @@ import { DisplayUploadedImgModal } from 'components/organisms';
 import { FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { submitNewPost, submitReply } from 'reducks/posts/operations';
-import { Users } from 'reducks/users/types';
+import { Users } from 'util/types/redux/users';
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CancelIcon from '@mui/icons-material/Cancel';

@@ -2,7 +2,7 @@ import { VFC } from 'react';
 
 import { IconButton } from '@mui/material';
 
-import Logo from '../../assets/LogoWithBorder.png';
+import Logo from '../../assets/img/LogoWithBorder.png';
 
 type Proos = {
   width: number

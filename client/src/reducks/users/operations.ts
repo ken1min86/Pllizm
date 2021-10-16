@@ -2,14 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { push } from 'connected-react-router';
 import Cookies from 'js-cookie';
-import { createRequestHeader, isValidEmailFormat } from 'Util/common';
+import { createRequestHeader, isValidEmailFormat } from 'util/functions/common';
 
-import { axiosBase } from '../../api';
-import DefaultIcon from '../../assets/DefaultIcon.jpg';
-import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
+import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
+import { axiosBase } from '../../util/api';
 import {
     ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
-} from './types';
+} from '../../util/types/redux/users';
+import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
 
 export const signUp =
   (

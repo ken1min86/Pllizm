@@ -1,5 +1,5 @@
 import { ConnectedRouter } from 'connected-react-router';
-import * as History from 'history';
+import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -7,16 +7,16 @@ import { Provider } from 'react-redux';
 import { StyledEngineProvider, Theme, ThemeProvider } from '@mui/material/styles';
 
 import App from './App';
+import theme from './assets/css/theme';
 import createStore from './reducks/store/store';
 import reportWebVitals from './reportWebVitals';
-import theme from './styles/theme';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
 
-const history = History.createBrowserHistory()
+const history = createBrowserHistory()
 export const store = createStore(history)
 
 ReactDOM.render(

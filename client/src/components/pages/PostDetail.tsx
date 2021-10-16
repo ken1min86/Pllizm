@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { getThread } from 'reducks/threads/operations';
 import { getThreadPosts } from 'reducks/threads/selectors';
-import { Threads } from 'reducks/threads/types';
-import { containDisplayableChild, containDisplayablePosts } from 'Util/common';
+import { containDisplayableChild, containDisplayablePosts } from 'util/functions/common';
+import { Threads } from 'util/types/redux/threads';
 
 import { Box } from '@mui/material';
 

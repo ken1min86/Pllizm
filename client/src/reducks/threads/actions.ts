@@ -1,4 +1,4 @@
-import { GetThreadAction } from './types';
+import { GetThreadAction } from '../../util/types/redux/threads';
 
 export const GET_THREAD = 'GET_THREAD'
 export const getThreadAction: GetThreadAction = (thread) => ({

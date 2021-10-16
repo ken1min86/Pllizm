@@ -1,13 +1,13 @@
-import { goBack } from 'connected-react-router'
-import { VFC } from 'react'
-import { useDispatch } from 'react-redux'
+import { goBack } from 'connected-react-router';
+import { VFC } from 'react';
+import { useDispatch } from 'react-redux';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { Box, Hidden, Theme } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, Hidden, Theme } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../../assets/HeaderLogo.png'
+import Logo from '../../../assets/img/HeaderLogo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

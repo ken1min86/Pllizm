@@ -1,6 +1,6 @@
+import { Reducer } from '../../util/types/redux/threads';
 import initialState from '../store/initialState';
 import * as Actions from './actions';
-import { Reducer } from './types';
 
 const ThreadsReducer: Reducer = (state = initialState.threads, action) => {
   switch (action.type) {
