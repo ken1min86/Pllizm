@@ -33,4 +33,8 @@ export type UserProfile = {
   follow_requet_sent_by_me: boolean
 }
 
+export type ReponseOfUsers = {
+  users: Array<User>
+}
+
 export type RequestHeaders = RequestHeadersForAuthentication

@@ -1,11 +1,9 @@
 import { AccountDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
+import useSearchUsers from 'hooks/useSearchUsers';
 import { useEffect, useState, VFC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUser } from 'reducks/users/selectors';
-import { axiosBase } from 'util/api';
-import { RequestHeaders, User } from 'util/types/hooks/users';
+import { useDispatch } from 'react-redux';
 
 import SearchIcon from '@mui/icons-material/Search';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -14,8 +12,6 @@ import {
 } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-
-import { Users } from '../../util/types/redux/users';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,22 +57,17 @@ const useTabListStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-type Reponse = {
-  users: Array<User>
-}
-
 const Search: VFC = () => {
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
 
   const dispatch = useDispatch()
-  const selector = useSelector((state: { users: Users }) => state)
 
   const [query, setQuery] = useState('')
-  const [searchedUsers, setSearchedUsers] = useState<Array<User>>([])
-  const [loading, setLoading] = useState(false)
   const [tabValue, setTabValue] = useState<'アカウント'>('アカウント')
+
+  const { getSearchedUsers, loading, searchedUsers } = useSearchUsers(query)
 
   const handleChangeOfInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
@@ -87,31 +78,9 @@ const Search: VFC = () => {
   }
 
   useEffect(() => {
-    setLoading(true)
-    if (!query) {
-      setSearchedUsers([])
-      setLoading(false)
-
-      return
-    }
-    const user = getUser(selector)
-    const requestHeaders: RequestHeaders = {
-      'access-token': user.accessToken,
-      client: user.client,
-      uid: user.uid,
-    }
-    axiosBase
-      .get<Reponse>(`/v1/search/users?q=${query}`, { headers: requestHeaders })
-      .then((response) => {
-        setSearchedUsers(response.data.users)
-      })
-      .catch((errors) => {
-        console.log(errors)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [query, selector])
+    getSearchedUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   const returnHeaderFunc = () => (
     <>
