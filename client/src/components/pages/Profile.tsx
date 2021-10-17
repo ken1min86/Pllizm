@@ -37,9 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     userId: {
       color: theme.palette.text.disabled,
-      marginBottom: 14,
     },
     bio: {
+      whiteSpace: 'pre-wrap',
       [theme.breakpoints.down('sm')]: {
         fontSize: 15,
       },
@@ -142,7 +142,7 @@ const Profile: VFC = () => {
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (
         <Box sx={{ padding: 3 }}>
-          <Box mb={1} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Box mb={2} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <Avatar alt="User icon" src={userProfile.icon_url} className={classes.userIcon} />
             {userProfile.is_current_user && (
               <Box>
@@ -160,7 +160,7 @@ const Profile: VFC = () => {
               </Box>
             )}
           </Box>
-          <Box mb={1} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box mb={2} sx={{ display: 'flex', flexDirection: 'column' }}>
             <span className={classes.userName}>{userProfile.user_name}</span>
             <span className={classes.userId}>@{userProfile.user_id}</span>
             <span className={classes.bio}>{userProfile.bio}</span>
