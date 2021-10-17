@@ -2,6 +2,7 @@ import { push } from 'connected-react-router';
 import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { Avatar } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -9,6 +10,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     img: {
       width: 44,
+      height: 44,
       display: 'block',
       borderRadius: '50%',
     },
@@ -35,10 +37,10 @@ const UsersIcon: VFC<Proos> = ({ userId, icon }) => {
     <>
       {isOnymousUser && (
         <button type="button" onClick={handleOnClick}>
-          <img className={classes.img} src={icon} alt="アイコン" />
+          <Avatar className={classes.img} src={icon} alt="アイコン" />
         </button>
       )}
-      {!isOnymousUser && <img className={classes.img} src={icon} alt="アイコン" />}
+      {!isOnymousUser && <Avatar className={classes.img} src={icon} alt="アイコン" />}
     </>
   )
 }

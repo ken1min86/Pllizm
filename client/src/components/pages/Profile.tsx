@@ -2,9 +2,11 @@ import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components
 import { PostBox } from 'components/molecules';
 import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
+import { push } from 'connected-react-router';
 import usePostsInProfile from 'hooks/usePostsInProfile';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 
 import { TabContext, TabList } from '@mui/lab';
@@ -35,9 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     userId: {
       color: theme.palette.text.disabled,
-      marginBottom: 14,
     },
     bio: {
+      whiteSpace: 'pre-wrap',
       [theme.breakpoints.down('sm')]: {
         fontSize: 15,
       },
@@ -106,6 +108,7 @@ const Profile: VFC = () => {
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
+  const dispatch = useDispatch()
 
   const params: { id: string } = useParams()
   const paramsId = params.id
@@ -139,14 +142,14 @@ const Profile: VFC = () => {
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (
         <Box sx={{ padding: 3 }}>
-          <Box mb={1} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <Box mb={2} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <Avatar alt="User icon" src={userProfile.icon_url} className={classes.userIcon} />
             {userProfile.is_current_user && (
               <Box>
                 <OutlinedBlueRoundedCornerButton
                   label="プロフィールを編集"
                   onClick={() => {
-                    console.log('仮作成')
+                    dispatch(push('/settings/account'))
                   }}
                 />
               </Box>
@@ -157,7 +160,7 @@ const Profile: VFC = () => {
               </Box>
             )}
           </Box>
-          <Box mb={1} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box mb={2} sx={{ display: 'flex', flexDirection: 'column' }}>
             <span className={classes.userName}>{userProfile.user_name}</span>
             <span className={classes.userId}>@{userProfile.user_id}</span>
             <span className={classes.bio}>{userProfile.bio}</span>

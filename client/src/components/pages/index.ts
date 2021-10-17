@@ -1,4 +1,5 @@
 export { default as BeginPasswordReset } from './BeginPasswordReset'
+export { default as EditProfile } from './EditProfile'
 export { default as EndPasswordReset } from './EndPasswordReset'
 export { default as Home } from './Home'
 export { default as PasswordReset } from './PasswordReset'

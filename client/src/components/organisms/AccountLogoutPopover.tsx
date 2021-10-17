@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { signOut } from 'reducks/users/operations';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Box, Hidden, IconButton, Popover, Theme } from '@mui/material';
+import { Avatar, Box, Hidden, IconButton, Popover, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 'auto',
     },
     icon: {
-      width: '100%',
+      width: 44,
+      height: 44,
       borderRadius: 9999,
     },
     userContainer: {
@@ -110,7 +111,7 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
       </Popover>
       <IconButton className={classes.iconButton} onClick={handleClick}>
         <Box className={classes.iconContainer}>
-          <img className={classes.icon} src={icon} alt="アイコン" />
+          <Avatar className={classes.icon} src={icon} alt="アイコン" />
         </Box>
         <Hidden lgDown>
           <Box className={classes.iconButtonWithoutIconContainer}>
