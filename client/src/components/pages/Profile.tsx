@@ -2,9 +2,11 @@ import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components
 import { PostBox } from 'components/molecules';
 import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
+import { push } from 'connected-react-router';
 import usePostsInProfile from 'hooks/usePostsInProfile';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 
 import { TabContext, TabList } from '@mui/lab';
@@ -106,6 +108,7 @@ const Profile: VFC = () => {
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
+  const dispatch = useDispatch()
 
   const params: { id: string } = useParams()
   const paramsId = params.id
@@ -146,7 +149,7 @@ const Profile: VFC = () => {
                 <OutlinedBlueRoundedCornerButton
                   label="プロフィールを編集"
                   onClick={() => {
-                    console.log('仮作成')
+                    dispatch(push('/settings/account'))
                   }}
                 />
               </Box>
