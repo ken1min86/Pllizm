@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 300,
       backgroundColor: theme.palette.primary.main,
       borderRadius: 4,
-      padding: '32px 56px',
+      padding: 32,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -35,11 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
     buttonContainer: {
       width: '100%',
       display: 'flex',
-      flexDirection: 'column',
-    },
-    spacer: {
-      display: 'block',
-      height: 8,
+      flexDirection: 'row',
+      gap: 8,
     },
     errorsContainer: {
       marginBottom: 16,
@@ -91,7 +88,6 @@ const DefaultModalOnlyWithTitle: FC<Props> = ({
               onClick={() => handleOnClick(setError)}
               backgroundColor={`${backgroundColorOfActionButton}`}
             />
-            <span className={classes.spacer} />
             <ContainedRoundedCornerButton label={closeButtonLabel} onClick={handleClose} backgroundColor="#86868b" />
           </Box>
         </Box>
