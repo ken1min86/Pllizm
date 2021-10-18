@@ -418,3 +418,52 @@ export const EditUserId =
         }
       })
   }
+
+export const EditEmail =
+  (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+    if (!isValidEmailFormat(email)) {
+      setError('メールアドレスの形式が不正です。')
+
+      return
+    }
+
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put<SignUpResponse>('/v1/auth', { email }, { headers: requestHeaders })
+      .then((response) => {
+        const { headers } = response
+        const accessToken: string = headers['access-token']
+        const { client, uid } = headers
+        const userData = response.data.data
+        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+
+        Cookies.set('access-token', accessToken)
+        Cookies.set('client', client)
+        Cookies.set('uid', uid)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(
+          signInAction({
+            uid,
+            accessToken,
+            client,
+            userId: userData.userid,
+            userName: userData.username,
+            icon: userIcon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
+          }),
+        )
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push(`/${userData.userid}`))
+      })
+      .catch((errors: ErrorStatus) => {
+        if (errors.response.status === 422) {
+          setError('すでに登録済みのメールアドレスです。他のメールアドレスを設定して下さい。')
+        } else {
+          setError('不明なエラーが発生しました。システム管理者にお問い合わせ下さい。')
+        }
+      })
+  }
