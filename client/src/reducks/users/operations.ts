@@ -3,7 +3,7 @@
 import { push } from 'connected-react-router';
 import Cookies from 'js-cookie';
 import { createRequestHeader, isValidEmailFormat } from 'util/functions/common';
-import { ErrorResponse } from 'util/types/redux/common';
+import { ErrorStatus } from 'util/types/common';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
@@ -412,7 +412,7 @@ export const EditUserId =
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push(`/${userData.userid}`))
       })
-      .catch((errors: ErrorResponse) => {
+      .catch((errors: ErrorStatus) => {
         if (errors.response.status === 422) {
           setError('すでに登録済みのIDです。他のIDをお試し下さい。')
         }

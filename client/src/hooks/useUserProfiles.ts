@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser, getUserId } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/hooks/errors';
+import { ErrorStatus } from 'util/types/common';
 import { RequestHeaders, UserProfile } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 

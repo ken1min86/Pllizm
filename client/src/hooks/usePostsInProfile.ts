@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
 import { formatPostsOfMeAndFollower } from 'util/functions/common';
-import { ErrorStatus } from 'util/types/hooks/errors';
+import { ErrorStatus } from 'util/types/common';
 import { ExistentPosts, ResponstOfExistentPosts } from 'util/types/hooks/posts';
 import { RequestHeaders } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
