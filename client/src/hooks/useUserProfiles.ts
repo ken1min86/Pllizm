@@ -58,7 +58,9 @@ const useUserProfiles = (paramsId: string) => {
         } else if (String(status).indexOf('5') === 0) {
           setErrorMessageInProfile('接続が失われました。確認してからやりなおしてください。')
         } else {
-          setErrorMessageInProfile('不明なエラーが発生しました。')
+          setErrorMessageInProfile(
+            '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+          )
         }
       })
   }

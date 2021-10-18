@@ -39,7 +39,9 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
             if (String(status).indexOf('5') === 0) {
               setErrorMessageInPosts('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessageInPosts('不明なエラーが発生しました。')
+              setErrorMessageInPosts(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -60,7 +62,9 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
             if (String(status).indexOf('5') === 0) {
               setErrorMessageInPosts('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessageInPosts('不明なエラーが発生しました。')
+              setErrorMessageInPosts(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -80,7 +84,9 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
             if (String(status).indexOf('5') === 0) {
               setErrorMessageInPosts('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessageInPosts('不明なエラーが発生しました。')
+              setErrorMessageInPosts(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -100,7 +106,9 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
             if (String(status).indexOf('5') === 0) {
               setErrorMessageInPosts('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessageInPosts('不明なエラーが発生しました。')
+              setErrorMessageInPosts(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -109,7 +117,9 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         break
 
       default:
-        setErrorMessageInPosts('不明なエラーが発生しました。')
+        setErrorMessageInPosts(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
         setLoading(false)
 
         break
