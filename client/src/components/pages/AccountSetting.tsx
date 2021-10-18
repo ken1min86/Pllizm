@@ -1,23 +1,19 @@
+import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
-import { goBack } from 'connected-react-router';
+import { push } from 'connected-react-router';
+import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
-import { Box, IconButton, List, ListItem, ListItemText, Theme } from '@mui/material';
+import { List, ListItemButton, ListItemText } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    title: {
-      color: theme.palette.primary.main,
-      fontSize: 22,
-      fontWeight: 'bold',
-    },
     listItem: {
       padding: 12,
     },
@@ -29,42 +25,55 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const AccountSetting = () => {
+const AccountSetting: VFC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const handleClickToBack = () => {
-    dispatch(goBack())
-  }
-
-  const returnHeaderFunc = () => (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <IconButton aria-label="Back" sx={{ marginLeft: 0.5, marginRight: 1 }} onClick={handleClickToBack}>
-        <ArrowBackIcon sx={{ color: '#2699fb' }} />
-      </IconButton>
-      <h1 className={classes.title}>設定</h1>
-    </Box>
-  )
+  const returnHeaderFunc = () => <HeaderWithBackAndTitle title="設定" />
 
   return (
     <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
       <List component="nav" aria-label="Account settings">
-        <ListItem button className={classes.listItem} divider>
+        <ListItemButton
+          className={classes.listItem}
+          divider
+          onClick={() => {
+            dispatch(push('/settings/user_id'))
+          }}
+        >
           <PersonOutlineOutlinedIcon className={classes.icon} />
           <ListItemText primary="ユーザーID変更" />
-        </ListItem>
-        <ListItem button className={classes.listItem} divider>
+        </ListItemButton>
+        <ListItemButton
+          className={classes.listItem}
+          divider
+          onClick={() => {
+            dispatch(push('/settings/email'))
+          }}
+        >
           <EmailOutlinedIcon className={classes.icon} />
           <ListItemText primary="メールアドレス変更" />
-        </ListItem>
-        <ListItem button className={classes.listItem} divider>
+        </ListItemButton>
+        <ListItemButton
+          className={classes.listItem}
+          divider
+          onClick={() => {
+            dispatch(push('/settings/password'))
+          }}
+        >
           <VpnKeyOutlinedIcon className={classes.icon} />
           <ListItemText primary="パスワード変更" />
-        </ListItem>
-        <ListItem button className={classes.listItem} divider>
+        </ListItemButton>
+        <ListItemButton
+          className={classes.listItem}
+          divider
+          onClick={() => {
+            dispatch(push('/settings/deactivate'))
+          }}
+        >
           <DeleteOutlineOutlinedIcon className={classes.icon} sx={{ color: '#e0245e' }} />
           <ListItemText primary="アカウント削除" sx={{ color: '#e0245e' }} />
-        </ListItem>
+        </ListItemButton>
       </List>
     </DefaultTemplate>
   )

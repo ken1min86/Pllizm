@@ -1,6 +1,6 @@
 import { ContainedRoundedCornerButton } from 'components/atoms';
+import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
-import { goBack } from 'connected-react-router';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,6 @@ import { ChangeProfile } from 'reducks/users/operations';
 import { Users } from 'util/types/redux/users';
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Avatar, Box, IconButton, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
@@ -17,11 +16,6 @@ import { getUserId } from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
-      color: theme.palette.primary.main,
-      fontSize: 22,
-      fontWeight: 'bold',
-    },
     icon: {
       [theme.breakpoints.down('sm')]: {
         width: 88,
@@ -106,16 +100,9 @@ const EditProfile: VFC = () => {
     dispatch(ChangeProfile(userName, bio, uploadedUserIcon))
   }
 
-  const handleClickToBack = () => {
-    dispatch(goBack())
-  }
-
   const returnHeaderFunc = () => (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-      <IconButton aria-label="Back" sx={{ marginLeft: 0.5, marginRight: 1 }} onClick={handleClickToBack}>
-        <ArrowBackIcon sx={{ color: '#2699fb' }} />
-      </IconButton>
-      <h1 className={classes.title}>変更</h1>
+      <HeaderWithBackAndTitle title="変更" />
       <Box sx={{ marginLeft: 'auto', marginRight: 1, width: 104 }}>
         <ContainedRoundedCornerButton
           onClick={handleClickToEdit}
