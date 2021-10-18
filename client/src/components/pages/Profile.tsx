@@ -133,6 +133,33 @@ const Profile: VFC = () => {
     setTabValue(newValue)
   }
 
+  const handleClickToFollowers = () => {
+    dispatch(
+      push({
+        pathname: '/relevant_users',
+        state: { who: 'followers' },
+      }),
+    )
+  }
+
+  const handleClickToRelevantUsersRequestFollowToMe = () => {
+    dispatch(
+      push({
+        pathname: '/relevant_users',
+        state: { who: 'usersRequestFollowingToMe' },
+      }),
+    )
+  }
+
+  const handleClickToUsersRequestedFollowByMe = () => {
+    dispatch(
+      push({
+        pathname: '/relevant_users',
+        state: { who: 'usersRequestedFollowingByMe' },
+      }),
+    )
+  }
+
   const returnHeaderFunc = () => (
     <HeaderWithTitleAndDrawer title={userProfile?.user_name ? userProfile.user_name : ''} />
   )
@@ -168,16 +195,22 @@ const Profile: VFC = () => {
           {userProfile.is_current_user && (
             <ul className={classes.countContainer}>
               <li className={classes.countList}>
-                <span className={classes.countNumber}>{userProfile.followers_count}</span>
-                相互フォロー
+                <button type="button" onClick={handleClickToFollowers}>
+                  <span className={classes.countNumber}>{userProfile.followers_count}</span>
+                  相互フォロー
+                </button>
               </li>
               <li className={classes.countList}>
-                <span className={classes.countNumber}>{userProfile.follow_requests_to_me_count}</span>
-                ユーザーからのフォロリク
+                <button type="button" onClick={handleClickToRelevantUsersRequestFollowToMe}>
+                  <span className={classes.countNumber}>{userProfile.follow_requests_to_me_count}</span>
+                  ユーザーからのフォロリク
+                </button>
               </li>
               <li className={classes.countList}>
-                <span className={classes.countNumber}>{userProfile.follow_requests_by_me_count}</span>
-                あなたからのフォロリク
+                <button type="button" onClick={handleClickToUsersRequestedFollowByMe}>
+                  <span className={classes.countNumber}>{userProfile.follow_requests_by_me_count}</span>
+                  あなたからのフォロリク
+                </button>
               </li>
             </ul>
           )}
