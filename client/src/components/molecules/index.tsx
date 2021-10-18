@@ -1,6 +1,7 @@
 export { default as BottomNavigationBar } from './common/BottomNavigationBar'
 export { default as CreatePost } from './CreatePost'
 export { default as DefaultModalOnlyWithTitle } from './DefaultModalOnlyWithTitle'
+export { default as HeaderWithBackAndTitle } from './common/HeaderWithBackAndTitle'
 export { default as HeaderWithLogo } from './common/HeaderWithLogo'
 // eslint-disable-next-line import/no-cycle
 export { default as HeaderInHome } from './common/HeaderInHome'

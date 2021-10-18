@@ -1,15 +1,13 @@
 import { FollowRelatedButton } from 'components/atoms';
+import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
-import { goBack, push } from 'connected-react-router';
+import { push } from 'connected-react-router';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Users } from 'util/types/redux/users';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TabContext, TabList } from '@mui/lab';
-import {
-    Avatar, Box, CircularProgress, Divider, Hidden, IconButton, Tab, Theme
-} from '@mui/material';
+import { Avatar, Box, CircularProgress, Divider, Hidden, Tab, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -18,11 +16,6 @@ import { getUserName } from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
-      color: theme.palette.primary.main,
-      fontSize: 22,
-      fontWeight: 'bold',
-    },
     userIcon: {
       [theme.breakpoints.down('sm')]: {
         width: 44,
@@ -61,6 +54,7 @@ const useTabStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.disabled,
       fontSize: 15,
       width: '30%',
+      padding: 0,
       '&:hover': {
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
@@ -114,10 +108,6 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue])
 
-  const handleClickToBack = () => {
-    dispatch(goBack())
-  }
-
   const handleChangeTab = (
     event: React.SyntheticEvent,
     newValue: 'followers' | 'usersRequestFollowingToMe' | 'usersRequestedFollowingByMe',
@@ -125,14 +115,7 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
     setTabValue(newValue)
   }
 
-  const returnHeaderFunc = () => (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <IconButton aria-label="Back" sx={{ marginLeft: 0.5, marginRight: 1 }} onClick={handleClickToBack}>
-        <ArrowBackIcon sx={{ color: '#2699fb' }} />
-      </IconButton>
-      <h1 className={classes.title}>{userName}</h1>
-    </Box>
-  )
+  const returnHeaderFunc = () => <HeaderWithBackAndTitle title={userName} />
 
   return (
     <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>

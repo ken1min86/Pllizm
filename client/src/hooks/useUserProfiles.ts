@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser, getUserId } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/hooks/errors';
+import { ErrorStatus } from 'util/types/common';
 import { RequestHeaders, UserProfile } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
@@ -58,7 +58,9 @@ const useUserProfiles = (paramsId: string) => {
         } else if (String(status).indexOf('5') === 0) {
           setErrorMessageInProfile('接続が失われました。確認してからやりなおしてください。')
         } else {
-          setErrorMessageInProfile('不明なエラーが発生しました。')
+          setErrorMessageInProfile(
+            '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+          )
         }
       })
   }

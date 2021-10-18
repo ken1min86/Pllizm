@@ -54,6 +54,11 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold',
       fontSize: 14,
     },
+    logoutText: {
+      display: 'block',
+      padding: 16,
+      backgroundColor: '#333333',
+    },
   }),
 )
 
@@ -106,7 +111,7 @@ const AccountLogoutPopover: VFC<Props> = ({ userName, userId, icon }) => {
           handleOnClick={handleOnClickToSignOut}
           backgroundColorOfActionButton="#2699fb"
         >
-          <span>@{userId}からログアウト</span>
+          <span className={classes.logoutText}>@{userId}からログアウト</span>
         </DefaultModalOnlyWithTitle>
       </Popover>
       <IconButton className={classes.iconButton} onClick={handleClick}>

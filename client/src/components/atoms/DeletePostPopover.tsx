@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: '#333333',
       fontWeight: 'bold',
       fontSize: 14,
-      padding: '0 16px 0 8px',
+      padding: '16px 24px 16px 22px',
       '&:hover': {
         backgroundColor: '#333333',
         opacity: '0.7',
