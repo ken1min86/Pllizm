@@ -3,8 +3,8 @@ import { Route, Switch } from 'react-router';
 import Auth from './Auth';
 import {
     AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId, DeleteAccount,
-    EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy, Profile,
-    RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
+    DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy,
+    Profile, RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -16,6 +16,7 @@ const Router: React.VFC = () => (
     <Route exact path="/users/end_password_reset" component={EndPasswordReset} />
     <Route exact path="/help/privacy_policy" component={PrivacyPolicy} />
     <Route exact path="/help/terms_of_use" component={TermsOfUse} />
+    <Route exact path="/settings/deactivated" component={DeletedAccount} />
 
     <Auth>
       <Switch>

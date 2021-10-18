@@ -536,9 +536,9 @@ export const DestroyAccount =
         Cookies.remove('client')
         Cookies.remove('uid')
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(signOutAction())
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/settings/deactivated'))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(signOutAction())
       })
       .catch(() => {
         setError(
