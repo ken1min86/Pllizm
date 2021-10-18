@@ -155,7 +155,6 @@ const EditProfile: VFC = () => {
           fullWidth
           sx={{ marginBottom: 3 }}
           onChange={handleChangeBio}
-          helperText="文字数"
         />
       </Box>
     </DefaultTemplate>
