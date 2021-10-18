@@ -524,3 +524,25 @@ export const EditPassword =
         )
       })
   }
+
+export const DestroyAccount =
+  (setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+    await axiosBase
+      .delete('/v1/auth', { headers: requestHeaders })
+      .then(() => {
+        Cookies.remove('access-token')
+        Cookies.remove('client')
+        Cookies.remove('uid')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(signOutAction())
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/settings/deactivated'))
+      })
+      .catch(() => {
+        setError(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
+      })
+  }

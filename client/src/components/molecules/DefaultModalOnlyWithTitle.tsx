@@ -21,10 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     button: {
-      padding: 16,
-      backgroundColor: '#333333',
+      padding: 0,
       '&:hover': {
-        backgroundColor: '#333333',
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
       },

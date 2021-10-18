@@ -2,9 +2,9 @@ import { Route, Switch } from 'react-router';
 
 import Auth from './Auth';
 import {
-    AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId, EditProfile,
-    EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy, Profile, RelevantUsers,
-    Search, SentMailOfPasswordReset, TermsOfUse, Top
+    AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId, DeleteAccount,
+    EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy, Profile,
+    RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -23,6 +23,7 @@ const Router: React.VFC = () => (
         <Route exact path="/posts/:id" component={PostDetail} />
         <Route exact path="/search" component={Search} />
         <Route exact path="/settings/account" component={AccountSetting} />
+        <Route exact path="/settings/deactivate" component={DeleteAccount} />
         <Route exact path="/settings/email" component={ChangeEmail} />
         <Route exact path="/settings/password" component={ChangePassword} />
         <Route exact path="/settings/profile" component={EditProfile} />
