@@ -467,3 +467,60 @@ export const EditEmail =
         }
       })
   }
+
+export const EditPassword =
+  (password: string, passwordConfirmation: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+    if (password.length < 8) {
+      setError('パスワードは8文字以上で設定してください。')
+
+      return
+    }
+
+    if (password !== passwordConfirmation) {
+      setError('パスワードが一致しません。')
+
+      return
+    }
+
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put<SignUpResponse>(
+        '/v1/auth/password',
+        { password, password_confirmation: passwordConfirmation },
+        { headers: requestHeaders },
+      )
+      .then((response) => {
+        const { headers } = response
+        const accessToken: string = headers['access-token']
+        const { client, uid } = headers
+        const userData = response.data.data
+        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+
+        Cookies.set('access-token', accessToken)
+        Cookies.set('client', client)
+        Cookies.set('uid', uid)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(
+          signInAction({
+            uid,
+            accessToken,
+            client,
+            userId: userData.userid,
+            userName: userData.username,
+            icon: userIcon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
+          }),
+        )
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push(`/${userData.userid}`))
+      })
+      .catch(() => {
+        setError(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
+      })
+  }
