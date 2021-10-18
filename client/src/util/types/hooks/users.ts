@@ -38,3 +38,17 @@ export type ReponseOfUsers = {
 }
 
 export type RequestHeaders = RequestHeadersForAuthentication
+
+export type RelevantUser = {
+  // eslint-disable-next-line camelcase
+  user_id: string
+  // eslint-disable-next-line camelcase
+  user_name: string
+  // eslint-disable-next-line camelcase
+  icon_url?: string
+  bio?: string
+}
+
+export type ResponseRelevantUsers = {
+  users: Array<RelevantUser>
+}

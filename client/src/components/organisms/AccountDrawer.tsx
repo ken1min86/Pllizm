@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     accountIcon: {
       position: 'relative',
-      marginLeft: 8,
       width: 28,
+      height: 28,
       borderRadius: '50%',
     },
     drawerContainer: {
@@ -76,7 +76,7 @@ const AccountDrawer: VFC = () => {
   return (
     <>
       <Button onClick={toggleDrawer(true)}>
-        <img src={icon} alt="アイコン" className={classes.accountIcon} />
+        <Avatar src={icon} alt="アイコン" className={classes.accountIcon} />
       </Button>
       <SwipeableDrawer anchor="left" open={state.left} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
         <Box
