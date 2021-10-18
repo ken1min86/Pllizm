@@ -3,6 +3,7 @@
 import { push } from 'connected-react-router';
 import Cookies from 'js-cookie';
 import { createRequestHeader, isValidEmailFormat } from 'util/functions/common';
+import { ErrorResponse } from 'util/types/redux/common';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
@@ -379,5 +380,41 @@ export const ChangeProfile =
       })
       .catch((errors) => {
         console.log(errors)
+      })
+  }
+
+export const EditUserId =
+  (userId: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+
+    await axiosBase
+      .put<SignUpResponse>('/v1/auth', { userid: userId }, { headers: requestHeaders })
+      .then((response) => {
+        const { headers } = response
+        const accessToken: string = headers['access-token']
+        const { client, uid } = headers
+        const userData = response.data.data
+        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(
+          signInAction({
+            uid,
+            accessToken,
+            client,
+            userId: userData.userid,
+            userName: userData.username,
+            icon: userIcon,
+            needDescriptionAboutLock: userData.need_description_about_lock,
+          }),
+        )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push(`/${userData.userid}`))
+      })
+      .catch((errors: ErrorResponse) => {
+        if (errors.response.status === 422) {
+          setError('すでに登録済みのIDです。他のIDをお試し下さい。')
+        }
       })
   }
