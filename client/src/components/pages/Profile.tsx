@@ -177,7 +177,7 @@ const Profile: VFC = () => {
                 <OutlinedBlueRoundedCornerButton
                   label="プロフィールを編集"
                   onClick={() => {
-                    dispatch(push('/settings/account'))
+                    dispatch(push('/settings/profile'))
                   }}
                 />
               </Box>
