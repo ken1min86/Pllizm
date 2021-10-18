@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     bio: {
       whiteSpace: 'pre-wrap',
+      wordBreak: 'break-word',
       [theme.breakpoints.down('sm')]: {
         fontSize: 15,
       },
