@@ -54,6 +54,7 @@ const useTabStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.disabled,
       fontSize: 15,
       width: '30%',
+      padding: 0,
       '&:hover': {
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
