@@ -1,3 +1,4 @@
+export { default as AccountSetting } from './AccountSetting'
 export { default as BeginPasswordReset } from './BeginPasswordReset'
 export { default as EditProfile } from './EditProfile'
 export { default as EndPasswordReset } from './EndPasswordReset'
