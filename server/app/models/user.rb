@@ -10,11 +10,6 @@ class User < ActiveRecord::Base
 
   has_many :posts, dependent: :destroy
 
-  # *********************************************************
-  # [フォロリク関連でエラーが出た特に以下を確認]
-  # has_many :follow_requestsの
-  # 名称をfollow_requests以外に変更しないとエラーが発生する可能性あり
-  # *********************************************************
   has_many :follow_requests, class_name: 'FollowRequest', foreign_key: 'requested_by', dependent: :destroy
   has_many :follow_requesting_users, through: :follow_requests, source: 'relate_to_request_to_user'
 
@@ -44,7 +39,7 @@ class User < ActiveRecord::Base
   validates :username, length: { maximum: 50 }, presence: true
   validates :bio,      length: { maximum: 160 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.freeze
-  validates :email, format: { with: VALID_EMAIL_REGEX }, presence: true
+  validates :email, format: { with: VALID_EMAIL_REGEX }, uniqueness: true, presence: true
 
   def self.extract_disclosable_culumns_from_users_array(users_array)
     extracted_users = []
@@ -59,7 +54,6 @@ class User < ActiveRecord::Base
     extracted_users
   end
 
-  # 検索されたユーザのフォーマッタ
   def self.format_searched_user(not_formatted_searched_user_id)
     not_formatted_serached_user         = User.find(not_formatted_searched_user_id)
     formatted_searched_user             = {}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/hooks/errors';
+import { ErrorStatus } from 'util/types/common';
 import { RelevantUser, RequestHeaders, ResponseRelevantUsers } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
@@ -64,7 +64,9 @@ const useRelevantUsers = (
             if (String(status).indexOf('5') === 0) {
               setErrorMessage('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessage('不明なエラーが発生しました。')
+              setErrorMessage(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -84,7 +86,9 @@ const useRelevantUsers = (
             if (String(status).indexOf('5') === 0) {
               setErrorMessage('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessage('不明なエラーが発生しました。')
+              setErrorMessage(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -104,7 +108,9 @@ const useRelevantUsers = (
             if (String(status).indexOf('5') === 0) {
               setErrorMessage('接続が失われました。確認してからやりなおしてください。')
             } else {
-              setErrorMessage('不明なエラーが発生しました。')
+              setErrorMessage(
+                '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+              )
             }
           })
           .finally(() => {
@@ -113,7 +119,9 @@ const useRelevantUsers = (
         break
 
       default:
-        setErrorMessage('不明なエラーが発生しました。')
+        setErrorMessage(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
         setLoading(false)
         break
     }
