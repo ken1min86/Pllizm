@@ -12,7 +12,7 @@ import { Avatar, Box, IconButton, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getUserId } from '../../reducks/users/selectors';
+import { getUserId } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

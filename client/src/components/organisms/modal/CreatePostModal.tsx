@@ -49,11 +49,7 @@ const CreatePostModal: VFC = () => {
     <Box>
       <Button onClick={handleOpen} sx={{ width: '100%', p: 0 }}>
         <Hidden lgDown>
-          <ContainedRoundedCornerButton
-              label="投稿する"
-              onClick={handleOpen}
-              backgroundColor="#2699fb"
-            />
+          <ContainedRoundedCornerButton label="投稿する" onClick={handleOpen} backgroundColor="#2699fb" />
         </Hidden>
         <Hidden lgUp>
           <Fab className={classes.telegramContainer} onClick={handleOpen}>

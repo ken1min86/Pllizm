@@ -12,9 +12,9 @@ import { Box, IconButton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../assets/img/PopupHeaderLogo.png';
 // eslint-disable-next-line import/no-useless-path-segments
-import { SigninModal } from './';
+import { SigninModal } from '../';
+import Logo from '../../../assets/img/PopupHeaderLogo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
