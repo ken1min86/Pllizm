@@ -80,5 +80,9 @@ module V1
         render json: user_info, status: :ok
       end
     end
+
+    def right_to_use_app
+      render json: { right_to_use_app: current_v1_user.has_right_to_use_app }, status: :ok
+    end
   end
 end

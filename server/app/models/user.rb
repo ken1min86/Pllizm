@@ -175,4 +175,8 @@ class User < ActiveRecord::Base
   def get_num_of_follow_requests_by_me
     follow_requesting_users.count
   end
+
+  def has_right_to_use_app
+    followers.count >= 2
+  end
 end

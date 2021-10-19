@@ -530,4 +530,69 @@ RSpec.describe "V1::UsersApi", type: :request do
       end
     end
   end
+
+  describe "GET /v1/right_to_use_app - v1/users#right_to_use_app - Get whether user has right to use app" do
+    context "when client doesn't have token" do
+      let(:client_user) { create(:user) }
+
+      it "returns 401" do
+        get v1_right_to_use_app_path, headers: headers
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      let(:client_user) { create(:user) }
+      let(:headers)     { client_user.create_new_auth_token }
+
+      context "when client has 0 follower" do
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(0)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            right_to_use_app: false
+          )
+        end
+      end
+
+      context "when client has 1 follower" do
+        before do
+          create_follower(client_user)
+        end
+
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(1)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            right_to_use_app: false
+          )
+        end
+      end
+
+      context "when client has 2 followers" do
+        before do
+          create_follower(client_user)
+          create_follower(client_user)
+        end
+
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(2)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            right_to_use_app: true
+          )
+        end
+      end
+    end
+  end
 end
