@@ -1,11 +1,15 @@
 import { ContainedRoundedCornerButton } from 'components/atoms';
 import { CreatePost } from 'components/molecules';
 import { useState, VFC } from 'react';
+import { useSelector } from 'react-redux';
+import { Users } from 'util/types/redux/users';
 
 import TelegramIcon from '@mui/icons-material/Telegram';
 import { Box, Button, Fab, Hidden, Modal, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
+
+import { getHasRightToUsePlizm } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,27 +45,35 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const CreatePostModal: VFC = () => {
   const classes = useStyles()
+
+  const selector = useSelector((state: { users: Users }) => state)
+  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
   const [open, setOpen] = useState(false)
+
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
   return (
     <Box>
-      <Button onClick={handleOpen} sx={{ width: '100%', p: 0 }}>
-        <Hidden lgDown>
-          <ContainedRoundedCornerButton label="投稿する" onClick={handleOpen} backgroundColor="#2699fb" />
-        </Hidden>
-        <Hidden lgUp>
-          <Fab className={classes.telegramContainer} onClick={handleOpen}>
-            <TelegramIcon fontSize="large" />
-          </Fab>
-        </Hidden>
-      </Button>
-      <Modal open={open} onClose={handleClose}>
-        <Box className={classes.modalContainer}>
-          <CreatePost handleClose={handleClose} />
-        </Box>
-      </Modal>
+      {hasRightToUsePlizm && (
+        <>
+          <Button onClick={handleOpen} sx={{ width: '100%', p: 0 }}>
+            <Hidden lgDown>
+              <ContainedRoundedCornerButton label="投稿する" onClick={handleOpen} backgroundColor="#2699fb" />
+            </Hidden>
+            <Hidden lgUp>
+              <Fab className={classes.telegramContainer} onClick={handleOpen}>
+                <TelegramIcon fontSize="large" />
+              </Fab>
+            </Hidden>
+          </Button>
+          <Modal open={open} onClose={handleClose}>
+            <Box className={classes.modalContainer}>
+              <CreatePost handleClose={handleClose} />
+            </Box>
+          </Modal>
+        </>
+      )}{' '}
     </Box>
   )
 }
