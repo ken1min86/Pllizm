@@ -15,13 +15,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  errors: string[]
+  error: string
 }
 
-const ErrorMessages: VFC<Props> = ({ errors }) => {
+const ErrorMessage: VFC<Props> = ({ error }) => {
   const classes = useStyles()
 
-  return <>{errors.length > 0 && errors.map((error) => <p className={classes.p}>{error}</p>)}</>
+  return <p className={classes.p}>{error}</p>
 }
 
-export default ErrorMessages
+export default ErrorMessage

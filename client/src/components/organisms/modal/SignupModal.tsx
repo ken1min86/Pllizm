@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ContainedRoundedCornerButton, ErrorMessages
+    BasicTextField, BlueSquareButton, ContainedRoundedCornerButton, ErrorMessage
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -192,7 +192,7 @@ const SignupModal: VFC<Props> = ({ type }) => {
               />
             </Box>
             <Box mb={2}>
-              <ErrorMessages errors={[error]} />
+              <ErrorMessage error={error} />
             </Box>
             <Box mb={2}>
               <BlueSquareButton

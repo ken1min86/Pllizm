@@ -1,4 +1,4 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
@@ -80,7 +80,7 @@ const ChangePassword: VFC = () => {
           onChange={handleChangePasswordConfirmation}
           sx={{ marginBottom: 1.5 }}
         />
-        <ErrorMessages errors={[error]} />
+        <ErrorMessage error={error} />
       </Box>
     </DefaultTemplate>
   )

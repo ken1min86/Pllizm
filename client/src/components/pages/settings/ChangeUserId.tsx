@@ -1,4 +1,4 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
@@ -62,7 +62,7 @@ const ChangeUserId: VFC = () => {
           onChange={handleChangeUserId}
           sx={{ marginBottom: 1 }}
         />
-        <ErrorMessages errors={[error]} />
+        <ErrorMessage error={error} />
       </Box>
     </DefaultTemplate>
   )

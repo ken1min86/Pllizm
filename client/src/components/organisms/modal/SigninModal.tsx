@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ErrorMessages, OutlinedBlueRoundedCornerButton
+    BasicTextField, BlueSquareButton, ErrorMessage, OutlinedBlueRoundedCornerButton
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -177,7 +177,7 @@ const SigninModal: VFC<Props> = ({ type }) => {
               パスワードをお忘れの方はこちら
             </Link>
             <Box mb={2}>
-              <ErrorMessages errors={[error]} />
+              <ErrorMessage error={error} />
             </Box>
             <Box mb={2}>
               <BlueSquareButton

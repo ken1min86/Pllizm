@@ -1,4 +1,4 @@
-import { ErrorMessages } from 'components/atoms';
+import { ErrorMessage } from 'components/atoms';
 import { push } from 'connected-react-router';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -131,7 +131,7 @@ const AccountDrawer: VFC = () => {
               <ListItemText primary="ログアウト" />
             </ListItem>
             <ListItem>
-              <ErrorMessages errors={[error]} />
+              <ErrorMessage error={error} />
             </ListItem>
           </List>
         </Box>
