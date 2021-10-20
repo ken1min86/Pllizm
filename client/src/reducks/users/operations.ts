@@ -562,7 +562,7 @@ export const GetStatusOfRightToUsePlizm =
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
-        const hasRightToUsePlizm = response.data.data.right_to_use_app
+        const hasRightToUsePlizm = response.data.data.has_right_to_use_app
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call

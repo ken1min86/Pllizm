@@ -83,7 +83,7 @@ module V1
     end
 
     def right_to_use_app
-      render json: { right_to_use_app: current_v1_user.has_right_to_use_plizm }, status: :ok
+      render json: { has_right_to_use_app: current_v1_user.has_right_to_use_plizm }, status: :ok
     end
   end
 end

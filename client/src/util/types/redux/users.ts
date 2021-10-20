@@ -171,8 +171,7 @@ export type RequestHeadersForAuthentication = {
 
 export type GetStatusOfRightToUsePlizmResponse = {
   data: {
-    // 備忘: API修正後に、has_right_to_use_appに修正する
     // eslint-disable-next-line camelcase
-    right_to_use_app: boolean
+    has_right_to_use_app: boolean
   }
 }
