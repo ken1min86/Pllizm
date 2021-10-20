@@ -92,7 +92,7 @@ const AccountDrawer: VFC = () => {
               sx={{ width: 36, height: 36, marginBottom: 1 }}
               component="button"
               onClick={() => {
-                dispatch(push(`/${userId}`))
+                dispatch(push(`/users/${userId}`))
               }}
             />
             <span className={classes.userName}>{userName}</span>
@@ -102,7 +102,7 @@ const AccountDrawer: VFC = () => {
             <ListItem
               button
               onClick={() => {
-                dispatch(push(`/${userId}`))
+                dispatch(push(`/users/${userId}`))
               }}
             >
               <ListItemIcon>

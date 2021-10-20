@@ -382,7 +382,7 @@ export const ChangeProfile =
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors) => {
         console.log(errors)
@@ -416,7 +416,7 @@ export const EditUserId =
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
         if (errors.response.status === 422) {
@@ -463,7 +463,7 @@ export const EditEmail =
         )
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
         if (errors.response.status === 422) {
@@ -524,7 +524,7 @@ export const EditPassword =
         )
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch(() => {
         setError(

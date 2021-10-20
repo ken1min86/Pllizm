@@ -127,7 +127,7 @@ const Search: VFC = () => {
                   <Box
                     sx={{ display: 'flex', padding: 1, width: '100%', alignItems: 'center' }}
                     onClick={() => {
-                      dispatch(push(`/${searchedUser.user_id}`))
+                      dispatch(push(`/users/${searchedUser.user_id}`))
                     }}
                     component="button"
                   >

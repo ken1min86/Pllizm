@@ -29,7 +29,7 @@ const Router: React.VFC = () => (
         <Route exact path="/settings/password" component={ChangePassword} />
         <Route exact path="/settings/profile" component={EditProfile} />
         <Route exact path="/settings/user_id" component={ChangeUserId} />
-        <Route exact path="/:id" component={Profile} />
+        <Route exact path="/users/:id" component={Profile} />
         <Restrict>
           <Route exact path="/home" component={Home} />
           <Route exact path="/posts/:id" component={PostDetail} />
