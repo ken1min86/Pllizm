@@ -54,6 +54,7 @@ export type SignOutAction = () => {
     userId: null
     userName: null
     icon: null
+    hasRightToUsePlizm: false
   }
 }
 
@@ -75,6 +76,8 @@ export type Reducer = (
     userId: string
     userName: string
     icon: string
+    needDescriptionAboutLock: boolean
+    hasRightToUsePlizm: boolean
   },
   action: {
     type: string
@@ -86,6 +89,8 @@ export type Reducer = (
       userId?: string
       userName?: string
       icon?: string
+      needDescriptionAboutLock: boolean
+      hasRightToUsePlizm?: boolean
     }
   },
 ) => {
@@ -96,6 +101,8 @@ export type Reducer = (
   userId: string
   userName: string
   icon: string
+  needDescriptionAboutLock: boolean
+  hasRightToUsePlizm: boolean
 }
 
 // ***************************************
@@ -109,6 +116,7 @@ export type Users = {
   userName: string
   icon: string
   needDescriptionAboutLock: boolean
+  hasRightToUsePlizm: boolean
 }
 
 export type UsersOfGetState = () => {
