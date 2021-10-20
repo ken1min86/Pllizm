@@ -1,6 +1,7 @@
 module V1
   class LikesController < ApplicationController
     before_action :authenticate_v1_user!
+    before_action :restrict_depending_on_whether_user_have_right
 
     def create
       liked_post = Post.find_by(id: params[:id])

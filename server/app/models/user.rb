@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
     follow_requesting_users.count
   end
 
-  def has_right_to_use_app
+  def has_right_to_use_plizm
     followers.count >= 2
   end
 end

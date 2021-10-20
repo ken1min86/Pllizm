@@ -251,31 +251,44 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      before do
-        sign_up(Faker::Name.first_name)
-        @request_headers = create_header_from_response(response)
-        @current_user    = get_current_user_by_response(response)
+      let(:client)  { create(:user) }
+      let(:headers) { client.create_new_auth_token }
+
+      context "when client doesn't have right to use plizm" do
+        it 'returns 403' do
+          expect(client.has_right_to_use_plizm).to eq(false)
+          put v1_disable_lock_description_path, headers: headers
+          expect(response).to have_http_status(403)
+          expect(response.message).to include('Forbidden')
+          expect(JSON.parse(response.body)['errors']['title']).to include('この機能は利用できません。')
+        end
       end
 
-      it 'returns 200 and change false when need_description_about_lock is true' do
-        expect(@current_user.need_description_about_lock).to eq(true)
+      context 'when client has right to use plizm' do
+        before do
+          get_right_to_use_plizm(client)
+        end
 
-        put v1_disable_lock_description_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to         have_http_status(200)
-        expect(response.message).to include('OK')
-      end
+        it 'returns 200 and change false when need_description_about_lock is true' do
+          expect(client.need_description_about_lock).to eq(true)
 
-      it 'returns 200 and keep false when need_description_about_lock is false' do
-        @current_user.update(need_description_about_lock: false)
-        expect(@current_user.need_description_about_lock).to eq(false)
+          put v1_disable_lock_description_path, headers: headers
+          client.reload
+          expect(client.need_description_about_lock).to eq(false)
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+        end
 
-        put v1_disable_lock_description_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to have_http_status(200)
-        expect(response.message).to include('OK')
+        it 'returns 200 and keep false when need_description_about_lock is false' do
+          client.update(need_description_about_lock: false)
+          expect(client.need_description_about_lock).to eq(false)
+
+          put v1_disable_lock_description_path, headers: headers
+          client.reload
+          expect(client.need_description_about_lock).to eq(false)
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+        end
       end
     end
   end

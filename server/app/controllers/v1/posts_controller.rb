@@ -5,8 +5,9 @@ module V1
     # ログインユーザ以外のidは絶対に返さないこと。
     # ※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
 
-    # 順番を入れ替えないこと(authenticate→verify_refractable)
+    # 順番を入れ替えないこと(authenticate→restrict→verify_refractable)
     before_action :authenticate_v1_user!
+    before_action :restrict_depending_on_whether_user_have_right
     before_action :verify_refractable_after_authenticate, only: [:index_refract_candidates, :thread_above_candidate]
 
     def create

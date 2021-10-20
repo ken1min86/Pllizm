@@ -1,6 +1,7 @@
 module V1
   class UsersController < ApplicationController
     before_action :authenticate_v1_user!
+    before_action :restrict_depending_on_whether_user_have_right, only: :disable_lock_description
 
     def disable_lock_description
       current_v1_user.update(need_description_about_lock: false)
@@ -82,7 +83,7 @@ module V1
     end
 
     def right_to_use_app
-      render json: { right_to_use_app: current_v1_user.has_right_to_use_app }, status: :ok
+      render json: { right_to_use_app: current_v1_user.has_right_to_use_plizm }, status: :ok
     end
   end
 end
