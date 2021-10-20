@@ -170,8 +170,6 @@ export type RequestHeadersForAuthentication = {
 }
 
 export type GetStatusOfRightToUsePlizmResponse = {
-  data: {
-    // eslint-disable-next-line camelcase
-    has_right_to_use_app: boolean
-  }
+  // eslint-disable-next-line camelcase
+  has_right_to_use_plizm: boolean
 }

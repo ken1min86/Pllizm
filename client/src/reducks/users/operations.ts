@@ -555,22 +555,20 @@ export const DestroyAccount =
       })
   }
 
-export const GetStatusOfRightToUsePlizm =
-  (setError: React.Dispatch<React.SetStateAction<string>>) =>
+export const getStatusOfRightToUsePlizm =
+  () =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
-        const hasRightToUsePlizm = response.data.data.has_right_to_use_app
+        const hasRightToUsePlizm = response.data.has_right_to_use_plizm
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (!hasRightToUsePlizm) dispatch(push('/search'))
       })
-      .catch(() => {
-        setError(
-          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
-        )
+      .catch((error) => {
+        console.log(error)
       })
   }

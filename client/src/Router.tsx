@@ -20,21 +20,21 @@ const Router: React.VFC = () => (
     <Route exact path="/settings/deactivated" component={DeletedAccount} />
 
     <Auth>
-      <Restrict>
-        <Switch>
+      <Switch>
+        <Route exact path="/relevant_users" component={RelevantUsers} />
+        <Route exact path="/search" component={Search} />
+        <Route exact path="/settings/account" component={AccountSetting} />
+        <Route exact path="/settings/deactivate" component={DeleteAccount} />
+        <Route exact path="/settings/email" component={ChangeEmail} />
+        <Route exact path="/settings/password" component={ChangePassword} />
+        <Route exact path="/settings/profile" component={EditProfile} />
+        <Route exact path="/settings/user_id" component={ChangeUserId} />
+        <Route exact path="/:id" component={Profile} />
+        <Restrict>
           <Route exact path="/home" component={Home} />
           <Route exact path="/posts/:id" component={PostDetail} />
-          <Route exact path="/search" component={Search} />
-          <Route exact path="/settings/account" component={AccountSetting} />
-          <Route exact path="/settings/deactivate" component={DeleteAccount} />
-          <Route exact path="/settings/email" component={ChangeEmail} />
-          <Route exact path="/settings/password" component={ChangePassword} />
-          <Route exact path="/settings/profile" component={EditProfile} />
-          <Route exact path="/settings/user_id" component={ChangeUserId} />
-          <Route exact path="/relevant_users" component={RelevantUsers} />
-          <Route exact path="/:id" component={Profile} />
-        </Switch>
-      </Restrict>
+        </Restrict>
+      </Switch>
     </Auth>
   </Switch>
 )

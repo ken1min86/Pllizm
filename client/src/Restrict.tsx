@@ -1,23 +1,20 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { listenAuthState } from 'reducks/users/operations';
-import { getIsSignedIn } from 'reducks/users/selectors';
+import { getStatusOfRightToUsePlizm } from 'reducks/users/operations';
+import { getHasRightToUsePlizm } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
-// Authのコピーをしただけなので実装は未完成
 const Restrict: FC = ({ children }) => {
   const dispatch = useDispatch()
-  const selector = useSelector((state: { users: Users }) => state)
 
-  const isSignedIn = getIsSignedIn(selector)
+  const selector = useSelector((state: { users: Users }) => state)
+  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
 
   useEffect(() => {
-    if (!isSignedIn) {
-      dispatch(listenAuthState())
-    }
-  }, [dispatch, isSignedIn])
+    dispatch(getStatusOfRightToUsePlizm())
+  }, [dispatch])
 
-  if (!isSignedIn) {
+  if (!hasRightToUsePlizm) {
     return <></>
   }
 
