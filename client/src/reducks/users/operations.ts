@@ -8,9 +8,13 @@ import { ErrorStatus } from 'util/types/common';
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
-    ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
+    GetStatusOfRightToUsePlizmResponse, ListenAuthStateRequest, SignInRequest, SignUpRequest,
+    SignUpResponse, UsersOfGetState
 } from '../../util/types/redux/users';
-import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
+import {
+    disableLockDescriptionAction, getStatusOfRightToUsePlizmAction, signInAction, signOutAction,
+    signUpAction
+} from './actions';
 
 export const signUp =
   (
@@ -543,6 +547,26 @@ export const DestroyAccount =
         dispatch(push('/settings/deactivated'))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(signOutAction())
+      })
+      .catch(() => {
+        setError(
+          '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
+        )
+      })
+  }
+
+export const GetStatusOfRightToUsePlizm =
+  (setError: React.Dispatch<React.SetStateAction<string>>) =>
+  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+    await axiosBase
+      .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
+      .then((response) => {
+        const hasRightToUsePlizm = response.data.data.right_to_use_app
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        if (!hasRightToUsePlizm) dispatch(push('/search'))
       })
       .catch(() => {
         setError(

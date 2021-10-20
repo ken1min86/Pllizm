@@ -65,6 +65,13 @@ export type DisableLockDescriptionAction = (userState: { needDescriptionAboutLoc
   }
 }
 
+export type GetStatusOfRightToUsePlizmAction = (userState: { hasRightToUsePlizm: boolean }) => {
+  type: string
+  payload: {
+    hasRightToUsePlizm: boolean
+  }
+}
+
 // ***************************************
 // Reducers
 export type Reducer = (
@@ -160,4 +167,12 @@ export type RequestHeadersForAuthentication = {
   'access-token': string
   client: string
   uid: string
+}
+
+export type GetStatusOfRightToUsePlizmResponse = {
+  data: {
+    // 備忘: API修正後に、has_right_to_use_appに修正する
+    // eslint-disable-next-line camelcase
+    right_to_use_app: boolean
+  }
 }
