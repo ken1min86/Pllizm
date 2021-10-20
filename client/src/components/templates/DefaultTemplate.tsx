@@ -207,7 +207,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
                 </IconWithTextLink>
               </Box>
               <Box mb={1}>
-                <IconWithTextLink title="プロフィール" path={`/${userId}`} isActive={isActiveOfProfile}>
+                <IconWithTextLink title="プロフィール" path={`/users/${userId}`} isActive={isActiveOfProfile}>
                   <PersonIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
               </Box>
