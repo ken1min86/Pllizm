@@ -48,6 +48,7 @@ const CreatePostModal: VFC = () => {
 
   const selector = useSelector((state: { users: Users }) => state)
   const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)

@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getUserId, getUserName } from 'reducks/users/selectors';
+import { getHasRightToUsePlizm, getUserId, getUserName } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -146,10 +146,10 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
-
   const userId = getUserId(selector)
   const userName = getUserName(selector)
   const userIcon = getIcon(selector)
+  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
 
   const isActiveOfHome = activeNavTitle === 'home'
   const isActiveOfSearch = activeNavTitle === 'search'
@@ -185,11 +185,13 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
               <Box mb={1}>
                 <LogoLink width={30} onClick={handleOnClickToHome} />
               </Box>
-              <Box mb={1}>
-                <IconWithTextLink title="ホーム" path="/home" isActive={isActiveOfHome}>
-                  <HomeRoundedIcon sx={{ fontSize: 26.25 }} />
-                </IconWithTextLink>
-              </Box>
+              {hasRightToUsePlizm && (
+                <Box mb={1}>
+                  <IconWithTextLink title="ホーム" path="/home" isActive={isActiveOfHome}>
+                    <HomeRoundedIcon sx={{ fontSize: 26.25 }} />
+                  </IconWithTextLink>
+                </Box>
+              )}
               <Box mb={1}>
                 <IconWithTextLink title="検索" path="/search" isActive={isActiveOfSearch}>
                   <SearchIcon sx={{ fontSize: 26.25 }} />
@@ -200,12 +202,16 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
                   <NotificationsNoneRoundedIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
               </Box>
-              <Box mb={1}>
-                <IconWithTextLink title="リフラクト" path={`/${userId}/reflected_posts`} isActive={isActiveOfRefract}>
-                  {isActiveOfRefract && <img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
-                  {!isActiveOfRefract && <img src={LogoIconInactive} alt="ロゴアイコン" className={classes.logoIcon} />}
-                </IconWithTextLink>
-              </Box>
+              {hasRightToUsePlizm && (
+                <Box mb={1}>
+                  <IconWithTextLink title="リフラクト" path={`/${userId}/reflected_posts`} isActive={isActiveOfRefract}>
+                    {isActiveOfRefract && <img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
+                    {!isActiveOfRefract && (
+                      <img src={LogoIconInactive} alt="ロゴアイコン" className={classes.logoIcon} />
+                    )}
+                  </IconWithTextLink>
+                </Box>
+              )}
               <Box mb={1}>
                 <IconWithTextLink title="プロフィール" path={`/users/${userId}`} isActive={isActiveOfProfile}>
                   <PersonIcon sx={{ fontSize: 26.25 }} />
