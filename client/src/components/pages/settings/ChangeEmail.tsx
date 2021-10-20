@@ -3,7 +3,7 @@ import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
-import { EditEmail } from 'reducks/users/operations';
+import { editEmail } from 'reducks/users/operations';
 
 import { Box, TextField } from '@mui/material';
 
@@ -26,7 +26,7 @@ const ChangeEmail: VFC = () => {
   }
 
   const handleClickToChangeEmail = () => {
-    dispatch(EditEmail(email, setError))
+    dispatch(editEmail(email, setError))
   }
 
   const returnHeaderFunc = () => (

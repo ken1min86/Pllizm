@@ -350,7 +350,7 @@ export const disableLockDescription =
       })
   }
 
-export const ChangeProfile =
+export const changeProfile =
   (userName: string, bio?: string, icon?: File) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestData = new FormData()
@@ -389,7 +389,7 @@ export const ChangeProfile =
       })
   }
 
-export const EditUserId =
+export const editUserId =
   (userId: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
@@ -425,7 +425,7 @@ export const EditUserId =
       })
   }
 
-export const EditEmail =
+export const editEmail =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     if (!isValidEmailFormat(email)) {
@@ -476,7 +476,7 @@ export const EditEmail =
       })
   }
 
-export const EditPassword =
+export const editPassword =
   (password: string, passwordConfirmation: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     if (password.length < 8) {
@@ -533,7 +533,7 @@ export const EditPassword =
       })
   }
 
-export const DestroyAccount =
+export const destroyAccount =
   (setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
