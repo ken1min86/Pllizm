@@ -14,9 +14,7 @@ const Restrict: FC = ({ children }) => {
     dispatch(getStatusOfRightToUsePlizm())
   }, [dispatch])
 
-  if (!hasRightToUsePlizm) {
-    return <></>
-  }
+  if (!hasRightToUsePlizm) return <></>
 
   return <>{children}</>
 }

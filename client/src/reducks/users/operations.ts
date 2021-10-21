@@ -557,16 +557,16 @@ export const destroyAccount =
 
 export const getStatusOfRightToUsePlizm =
   () =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (
+    dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void,
+    getState: UsersOfGetState,
+  ): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
         const hasRightToUsePlizm = response.data.has_right_to_use_plizm
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        if (!hasRightToUsePlizm) dispatch(push('/search'))
       })
       .catch((error) => {
         console.log(error)

@@ -13,7 +13,7 @@ const initialState: { users: Users; posts: Array<PostsOfMeAndFollower>; threads:
     userName: '',
     icon: '',
     needDescriptionAboutLock: true,
-    hasRightToUsePlizm: false,
+    hasRightToUsePlizm: true,
   },
   posts: [],
   threads: {

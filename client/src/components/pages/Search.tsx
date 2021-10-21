@@ -1,9 +1,11 @@
-import { AccountDrawer } from 'components/organisms';
+import { AccountDrawer, UsingCriteriaModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import useSearchUsers from 'hooks/useSearchUsers';
 import { useEffect, useState, VFC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getHasRightToUsePlizm } from 'reducks/users/selectors';
+import { Users } from 'util/types/redux/users';
 
 import SearchIcon from '@mui/icons-material/Search';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -64,6 +66,9 @@ const Search: VFC = () => {
 
   const dispatch = useDispatch()
 
+  const selector = useSelector((state: { users: Users }) => state)
+  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+
   const [query, setQuery] = useState('')
   const [tabValue, setTabValue] = useState<'アカウント'>('アカウント')
 
@@ -114,6 +119,7 @@ const Search: VFC = () => {
 
   return (
     <DefaultTemplate activeNavTitle="search" returnHeaderFunc={returnHeaderFunc}>
+      {!hasRightToUsePlizm && <UsingCriteriaModal />}
       <Box sx={{ width: '100%' }}>
         {loading && <LinearProgress color="info" />}
         <TabContext value={tabValue}>
