@@ -1,4 +1,4 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { FC, useState } from 'react';
 
 import { Box, Button, Modal, Theme } from '@mui/material';
@@ -12,10 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      minWidth: 300,
+      minWidth: 320,
       backgroundColor: theme.palette.primary.main,
       borderRadius: 4,
-      padding: 32,
+      padding: '40px 16px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -80,7 +80,7 @@ const DefaultModalOnlyWithTitle: FC<Props> = ({
         <Box className={classes.modalContainer}>
           <h2 className={classes.title}>{title}</h2>
           <p className={classes.errorsContainer}>
-            <ErrorMessages errors={[error]} />
+            <ErrorMessage error={error} />
           </p>
           <Box className={classes.buttonContainer}>
             <ContainedRoundedCornerButton

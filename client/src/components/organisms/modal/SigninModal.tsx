@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ErrorMessages, OutlinedBlueRoundedCornerButton
+    BasicTextField, BlueSquareButton, ErrorMessage, OutlinedBlueRoundedCornerButton
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -12,9 +12,9 @@ import { Box, IconButton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../assets/img/PopupHeaderLogo.png';
 // eslint-disable-next-line import/no-useless-path-segments
-import { SignupModal } from './';
+import { SignupModal } from '../';
+import Logo from '../../../assets/img/PopupHeaderLogo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -177,7 +177,7 @@ const SigninModal: VFC<Props> = ({ type }) => {
               パスワードをお忘れの方はこちら
             </Link>
             <Box mb={2}>
-              <ErrorMessages errors={[error]} />
+              <ErrorMessage error={error} />
             </Box>
             <Box mb={2}>
               <BlueSquareButton

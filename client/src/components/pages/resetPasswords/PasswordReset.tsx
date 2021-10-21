@@ -1,4 +1,4 @@
-import { ContainedRoundedCornerButton, ErrorMessages, TitleWithUnderline } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage, TitleWithUnderline } from 'components/atoms';
 import { HeaderWithLogo } from 'components/molecules';
 import { useCallback, useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
@@ -107,7 +107,7 @@ const PasswordReset: VFC = () => {
             />
           </Box>
           <Box mb={1}>
-            <ErrorMessages errors={[error]} />
+            <ErrorMessage error={error} />
           </Box>
           <Box className={classes.buttonContainer}>
             <ContainedRoundedCornerButton

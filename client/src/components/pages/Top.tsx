@@ -38,11 +38,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 14,
       position: 'absolute',
       [theme.breakpoints.down('sm')]: {
+        marginLeft: 32,
         fontSize: 24,
         top: 90,
         left: 122,
       },
       [theme.breakpoints.up('sm')]: {
+        marginLeft: 20,
         fontSize: 30,
         top: 193,
       },

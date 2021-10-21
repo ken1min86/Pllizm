@@ -1,18 +1,21 @@
 import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components/atoms';
 import { PostBox } from 'components/molecules';
-import { HeaderWithTitleAndDrawer } from 'components/organisms';
+import { HeaderWithTitleAndDrawer, UsingCriteriaModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import usePostsInProfile from 'hooks/usePostsInProfile';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
+import { Users } from 'util/types/redux/users';
 
 import { TabContext, TabList } from '@mui/lab';
 import { Avatar, Box, CircularProgress, Tab, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
+
+import { getHasRightToUsePlizm } from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -109,7 +112,11 @@ const Profile: VFC = () => {
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
+
   const dispatch = useDispatch()
+
+  const selector = useSelector((state: { users: Users }) => state)
+  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
 
   const params: { id: string } = useParams()
   const paramsId = params.id
@@ -167,6 +174,7 @@ const Profile: VFC = () => {
 
   return (
     <DefaultTemplate activeNavTitle={activeNavTitle} returnHeaderFunc={returnHeaderFunc}>
+      {!hasRightToUsePlizm && <UsingCriteriaModal />}
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (
         <Box sx={{ padding: 3 }}>
@@ -217,7 +225,7 @@ const Profile: VFC = () => {
           )}
         </Box>
       )}
-      {userProfile && userProfile.is_current_user && (
+      {hasRightToUsePlizm && userProfile && userProfile.is_current_user && (
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: '#EEEEEE' }}>

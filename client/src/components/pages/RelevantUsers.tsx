@@ -173,7 +173,7 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
                     <button
                       type="button"
                       onClick={() => {
-                        dispatch(push(`/${relevantUser.user_id}`))
+                        dispatch(push(`/users/${relevantUser.user_id}`))
                       }}
                     >
                       <Avatar alt="User icon" src={relevantUser.icon_url} className={classes.userIcon} />

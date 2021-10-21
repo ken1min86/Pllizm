@@ -251,31 +251,44 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      before do
-        sign_up(Faker::Name.first_name)
-        @request_headers = create_header_from_response(response)
-        @current_user    = get_current_user_by_response(response)
+      let(:client)  { create(:user) }
+      let(:headers) { client.create_new_auth_token }
+
+      context "when client doesn't have right to use plizm" do
+        it 'returns 403' do
+          expect(client.has_right_to_use_plizm).to eq(false)
+          put v1_disable_lock_description_path, headers: headers
+          expect(response).to have_http_status(403)
+          expect(response.message).to include('Forbidden')
+          expect(JSON.parse(response.body)['errors']['title']).to include('この機能は利用できません。')
+        end
       end
 
-      it 'returns 200 and change false when need_description_about_lock is true' do
-        expect(@current_user.need_description_about_lock).to eq(true)
+      context 'when client has right to use plizm' do
+        before do
+          get_right_to_use_plizm(client)
+        end
 
-        put v1_disable_lock_description_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to         have_http_status(200)
-        expect(response.message).to include('OK')
-      end
+        it 'returns 200 and change false when need_description_about_lock is true' do
+          expect(client.need_description_about_lock).to eq(true)
 
-      it 'returns 200 and keep false when need_description_about_lock is false' do
-        @current_user.update(need_description_about_lock: false)
-        expect(@current_user.need_description_about_lock).to eq(false)
+          put v1_disable_lock_description_path, headers: headers
+          client.reload
+          expect(client.need_description_about_lock).to eq(false)
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+        end
 
-        put v1_disable_lock_description_path, headers: @request_headers
-        @current_user.reload
-        expect(@current_user.need_description_about_lock).to eq(false)
-        expect(response).to have_http_status(200)
-        expect(response.message).to include('OK')
+        it 'returns 200 and keep false when need_description_about_lock is false' do
+          client.update(need_description_about_lock: false)
+          expect(client.need_description_about_lock).to eq(false)
+
+          put v1_disable_lock_description_path, headers: headers
+          client.reload
+          expect(client.need_description_about_lock).to eq(false)
+          expect(response).to have_http_status(200)
+          expect(response.message).to include('OK')
+        end
       end
     end
   end
@@ -290,7 +303,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user) { create(:user, userid: 'client', username: 'client') }
+      let(:client_user) { create(:user, userid: 'kenichi', username: 'kenichi') }
       let(:headers)     { client_user.create_new_auth_token }
 
       context "when no query parameter is set" do
@@ -318,13 +331,15 @@ RSpec.describe "V1::UsersApi", type: :request do
             user_id: user_including_front_part_match_userid.userid,
             user_name: user_including_front_part_match_userid.username,
             image_url: user_including_front_part_match_userid.image.url,
-            bio: user_including_front_part_match_userid.bio
+            bio: user_including_front_part_match_userid.bio,
+            relationship: 'none'
           )
           expect(response_body[:users][1]).to include(
             user_id: user_including_front_part_match_username.userid,
             user_name: user_including_front_part_match_username.username,
             image_url: user_including_front_part_match_username.image.url,
-            bio: user_including_front_part_match_username.bio
+            bio: user_including_front_part_match_username.bio,
+            relationship: 'none'
           )
         end
       end
@@ -353,6 +368,54 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response_body[:users][3][:user_id]).to eq(user3_including_front_part_match_userid.userid)
           expect(response_body[:users][4][:user_id]).to eq(user2_including_front_part_match_username.userid)
           expect(response_body[:users][5][:user_id]).to eq(user_including_front_part_match_userid_and_username.userid)
+        end
+      end
+
+      context 'when there are 5 searched Users who have different relationship' do
+        let!(:unrelated_user) do
+          create(:user, username: 'kenichi1')
+        end
+        let!(:follower) do
+          create_follower(client_user, follower_username: 'kenichi12')
+        end
+        let!(:requested_follow_by_me_user) do
+          create_follow_requested_user_by_argument_user(client_user, follower_username: 'kenichi123')
+        end
+        let!(:request_follow_to_me_user) do
+          create_user_to_request_follow_to_argument_user(client_user, follower_username: 'kenichi1234')
+        end
+        let(:q) do
+          'kenichi'
+        end
+
+        it 'returns 200 and proper relationship' do
+          get v1_searched_users_path(q: q), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:users].length).to eq(5)
+
+          expect(response_body[:users][0]).to include(
+            user_id: client_user.userid,
+            relationship: 'current_user'
+          )
+          expect(response_body[:users][1]).to include(
+            user_id: unrelated_user.userid,
+            relationship: 'none'
+          )
+          expect(response_body[:users][2]).to include(
+            user_id: follower.userid,
+            relationship: 'following'
+          )
+          expect(response_body[:users][3]).to include(
+            user_id: requested_follow_by_me_user.userid,
+            relationship: 'requested_follow_by_me'
+          )
+          expect(response_body[:users][4]).to include(
+            user_id: request_follow_to_me_user.userid,
+            relationship: 'request_follow_to_me'
+          )
         end
       end
     end
@@ -525,6 +588,71 @@ RSpec.describe "V1::UsersApi", type: :request do
             following: false,
             follow_request_sent_to_me: false,
             follow_requet_sent_by_me: true
+          )
+        end
+      end
+    end
+  end
+
+  describe "GET /v1/right_to_use_app - v1/users#right_to_use_app - Get whether user has right to use app" do
+    context "when client doesn't have token" do
+      let(:client_user) { create(:user) }
+
+      it "returns 401" do
+        get v1_right_to_use_app_path, headers: headers
+        expect(response).to         have_http_status(401)
+        expect(response.message).to include('Unauthorized')
+      end
+    end
+
+    context "when client has token" do
+      let(:client_user) { create(:user) }
+      let(:headers)     { client_user.create_new_auth_token }
+
+      context "when client has 0 follower" do
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(0)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            has_right_to_use_plizm: false
+          )
+        end
+      end
+
+      context "when client has 1 follower" do
+        before do
+          create_follower(client_user)
+        end
+
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(1)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            has_right_to_use_plizm: false
+          )
+        end
+      end
+
+      context "when client has 2 followers" do
+        before do
+          create_follower(client_user)
+          create_follower(client_user)
+        end
+
+        it 'returns 200 and false' do
+          expect(client_user.get_num_of_followers).to eq(2)
+          get v1_right_to_use_app_path, headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body).to include(
+            has_right_to_use_plizm: true
           )
         end
       end

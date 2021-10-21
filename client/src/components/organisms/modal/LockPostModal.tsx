@@ -13,7 +13,7 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
 // eslint-disable-next-line import/no-useless-path-segments
-import { RefractFuncDescriptionModal } from './';
+import { RefractFuncDescriptionModal } from '../';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

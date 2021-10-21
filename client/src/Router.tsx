@@ -1,6 +1,7 @@
+import Auth from 'Auth';
 import { Route, Switch } from 'react-router';
+import Restrict from 'Restrict';
 
-import Auth from './Auth';
 import {
     AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId, DeleteAccount,
     DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy,
@@ -20,8 +21,7 @@ const Router: React.VFC = () => (
 
     <Auth>
       <Switch>
-        <Route exact path="/home" component={Home} />
-        <Route exact path="/posts/:id" component={PostDetail} />
+        <Route exact path="/relevant_users" component={RelevantUsers} />
         <Route exact path="/search" component={Search} />
         <Route exact path="/settings/account" component={AccountSetting} />
         <Route exact path="/settings/deactivate" component={DeleteAccount} />
@@ -29,8 +29,11 @@ const Router: React.VFC = () => (
         <Route exact path="/settings/password" component={ChangePassword} />
         <Route exact path="/settings/profile" component={EditProfile} />
         <Route exact path="/settings/user_id" component={ChangeUserId} />
-        <Route exact path="/relevant_users" component={RelevantUsers} />
-        <Route exact path="/:id" component={Profile} />
+        <Route exact path="/users/:id" component={Profile} />
+        <Restrict>
+          <Route exact path="/home" component={Home} />
+          <Route exact path="/posts/:id" component={PostDetail} />
+        </Restrict>
       </Switch>
     </Auth>
   </Switch>

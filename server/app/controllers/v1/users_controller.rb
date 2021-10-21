@@ -1,6 +1,7 @@
 module V1
   class UsersController < ApplicationController
     before_action :authenticate_v1_user!
+    before_action :restrict_depending_on_whether_user_have_right, only: :disable_lock_description
 
     def disable_lock_description
       current_v1_user.update(need_description_about_lock: false)
@@ -58,7 +59,7 @@ module V1
         # 仕様書通りにフォーマット
         formatted_searched_users = []
         not_formatted_serached_users.each do |not_formatted_serached_user|
-          formatted_searched_user = User.format_searched_user(not_formatted_serached_user[:id])
+          formatted_searched_user = User.format_searched_user(current_v1_user, not_formatted_serached_user[:id])
           formatted_searched_users.push(formatted_searched_user)
         end
         render json: { users: formatted_searched_users }, status: :ok
@@ -79,6 +80,10 @@ module V1
         )
         render json: user_info, status: :ok
       end
+    end
+
+    def right_to_use_app
+      render json: { has_right_to_use_plizm: current_v1_user.has_right_to_use_plizm }, status: :ok
     end
   end
 end

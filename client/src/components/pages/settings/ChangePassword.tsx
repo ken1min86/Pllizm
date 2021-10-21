@@ -1,9 +1,9 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
-import { EditPassword } from 'reducks/users/operations';
+import { editPassword } from 'reducks/users/operations';
 
 import { Box, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
@@ -36,7 +36,7 @@ const ChangePassword: VFC = () => {
   }
 
   const handleClickToChangePassword = () => {
-    dispatch(EditPassword(password, passwordConfirmation, setError))
+    dispatch(editPassword(password, passwordConfirmation, setError))
   }
 
   const returnHeaderFunc = () => (
@@ -80,7 +80,7 @@ const ChangePassword: VFC = () => {
           onChange={handleChangePasswordConfirmation}
           sx={{ marginBottom: 1.5 }}
         />
-        <ErrorMessages errors={[error]} />
+        <ErrorMessage error={error} />
       </Box>
     </DefaultTemplate>
   )

@@ -11,14 +11,14 @@ module V1
         )
         return
       end
-      if current_v1_user.request_following?(user_requested_following_by_me)
+      if current_v1_user.requested_follow_by_me?(user_requested_following_by_me)
         render_json_bad_request_with_custom_errors(
           'すでにフォローリクエスト済みです',
           'すでにフォローリクエストをしています'
         )
         return
       end
-      if user_requested_following_by_me.request_following?(current_v1_user)
+      if user_requested_following_by_me.requested_follow_by_me?(current_v1_user)
         render_json_bad_request_with_custom_errors(
           'フォローリクエストされています',
           'request_toで指定したユーザからすでにフォローリクエストされています'

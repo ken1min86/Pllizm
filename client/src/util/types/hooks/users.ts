@@ -10,6 +10,16 @@ export type User = {
   bio: string
 }
 
+export type SearchedUser = User & {
+  relationship: 'none' | 'following' | 'request_follow_to_me' | 'requested_follow_by_me' | 'current_user'
+}
+
+export type FormattedSearchedUser = User & {
+  relationship: UsersRelationship
+}
+
+export type UsersRelationship = 'following' | 'requestingByMe' | 'requestedToMe' | 'default' | 'currentUser'
+
 export type UserProfile = {
   // eslint-disable-next-line camelcase
   is_current_user: boolean
@@ -35,6 +45,10 @@ export type UserProfile = {
 
 export type ReponseOfUsers = {
   users: Array<User>
+}
+
+export type ReponseOfSearchedUsers = {
+  users: Array<SearchedUser>
 }
 
 export type RequestHeaders = RequestHeadersForAuthentication

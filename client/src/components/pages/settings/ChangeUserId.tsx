@@ -1,9 +1,9 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditUserId } from 'reducks/users/operations';
+import { editUserId } from 'reducks/users/operations';
 import { getUserId } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
@@ -32,7 +32,7 @@ const ChangeUserId: VFC = () => {
   }
 
   const handleClickToChangeUserId = () => {
-    dispatch(EditUserId(userId, setError))
+    dispatch(editUserId(userId, setError))
   }
 
   const returnHeaderFunc = () => (
@@ -62,7 +62,7 @@ const ChangeUserId: VFC = () => {
           onChange={handleChangeUserId}
           sx={{ marginBottom: 1 }}
         />
-        <ErrorMessages errors={[error]} />
+        <ErrorMessage error={error} />
       </Box>
     </DefaultTemplate>
   )
