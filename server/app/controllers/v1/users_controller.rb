@@ -59,7 +59,7 @@ module V1
         # 仕様書通りにフォーマット
         formatted_searched_users = []
         not_formatted_serached_users.each do |not_formatted_serached_user|
-          formatted_searched_user = User.format_searched_user(not_formatted_serached_user[:id])
+          formatted_searched_user = User.format_searched_user(current_v1_user, not_formatted_serached_user[:id])
           formatted_searched_users.push(formatted_searched_user)
         end
         render json: { users: formatted_searched_users }, status: :ok

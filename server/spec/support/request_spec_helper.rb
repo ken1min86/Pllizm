@@ -42,21 +42,21 @@ module RequestSpecHelper
     non_existent_post_id
   end
 
-  def create_follower(user)
-    follower = create(:user, userid: get_non_existent_user_id)
+  def create_follower(user, follower_username: Faker::Name.name)
+    follower = create(:user, userid: get_non_existent_user_id, username: follower_username)
     Follower.create(followed_by: user.id, follow_to: follower.id)
     Follower.create(followed_by: follower.id, follow_to: user.id)
     follower
   end
 
-  def create_follow_requested_user_by_argument_user(user)
-    follow_requested_user = create(:user)
+  def create_follow_requested_user_by_argument_user(user, follower_username: Faker::Name.name)
+    follow_requested_user = create(:user, username: follower_username)
     user.follow_requests.create(request_to: follow_requested_user.id)
     follow_requested_user
   end
 
-  def create_user_to_request_follow_to_argument_user(user)
-    follow_request_user = create(:user)
+  def create_user_to_request_follow_to_argument_user(user, follower_username: Faker::Name.name)
+    follow_request_user = create(:user, username: follower_username)
     follow_request_user.follow_requests.create(request_to: user.id)
     follow_request_user
   end

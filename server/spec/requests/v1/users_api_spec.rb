@@ -303,7 +303,7 @@ RSpec.describe "V1::UsersApi", type: :request do
     end
 
     context "when client has token" do
-      let(:client_user) { create(:user, userid: 'client', username: 'client') }
+      let(:client_user) { create(:user, userid: 'kenichi', username: 'kenichi') }
       let(:headers)     { client_user.create_new_auth_token }
 
       context "when no query parameter is set" do
@@ -331,13 +331,15 @@ RSpec.describe "V1::UsersApi", type: :request do
             user_id: user_including_front_part_match_userid.userid,
             user_name: user_including_front_part_match_userid.username,
             image_url: user_including_front_part_match_userid.image.url,
-            bio: user_including_front_part_match_userid.bio
+            bio: user_including_front_part_match_userid.bio,
+            relationship: 'none'
           )
           expect(response_body[:users][1]).to include(
             user_id: user_including_front_part_match_username.userid,
             user_name: user_including_front_part_match_username.username,
             image_url: user_including_front_part_match_username.image.url,
-            bio: user_including_front_part_match_username.bio
+            bio: user_including_front_part_match_username.bio,
+            relationship: 'none'
           )
         end
       end
@@ -366,6 +368,54 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response_body[:users][3][:user_id]).to eq(user3_including_front_part_match_userid.userid)
           expect(response_body[:users][4][:user_id]).to eq(user2_including_front_part_match_username.userid)
           expect(response_body[:users][5][:user_id]).to eq(user_including_front_part_match_userid_and_username.userid)
+        end
+      end
+
+      context 'when there are 5 searched Users who have different relationship' do
+        let!(:unrelated_user) do
+          create(:user, username: 'kenichi1')
+        end
+        let!(:follower) do
+          create_follower(client_user, follower_username: 'kenichi12')
+        end
+        let!(:requested_follow_by_me_user) do
+          create_follow_requested_user_by_argument_user(client_user, follower_username: 'kenichi123')
+        end
+        let!(:request_follow_to_me_user) do
+          create_user_to_request_follow_to_argument_user(client_user, follower_username: 'kenichi1234')
+        end
+        let(:q) do
+          'kenichi'
+        end
+
+        it 'returns 200 and proper relationship' do
+          get v1_searched_users_path(q: q), headers: headers
+          expect(response).to         have_http_status(200)
+          expect(response.message).to include('OK')
+
+          response_body = JSON.parse(response.body, symbolize_names: true)
+          expect(response_body[:users].length).to eq(5)
+
+          expect(response_body[:users][0]).to include(
+            user_id: client_user.userid,
+            relationship: 'current_user'
+          )
+          expect(response_body[:users][1]).to include(
+            user_id: unrelated_user.userid,
+            relationship: 'none'
+          )
+          expect(response_body[:users][2]).to include(
+            user_id: follower.userid,
+            relationship: 'following'
+          )
+          expect(response_body[:users][3]).to include(
+            user_id: requested_follow_by_me_user.userid,
+            relationship: 'requested_follow_by_me'
+          )
+          expect(response_body[:users][4]).to include(
+            user_id: request_follow_to_me_user.userid,
+            relationship: 'request_follow_to_me'
+          )
         end
       end
     end
@@ -567,7 +617,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            right_to_use_app: false
+            has_right_to_use_plizm: false
           )
         end
       end
@@ -584,7 +634,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            right_to_use_app: false
+            has_right_to_use_plizm: false
           )
         end
       end
@@ -602,7 +652,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            right_to_use_app: true
+            has_right_to_use_plizm: true
           )
         end
       end

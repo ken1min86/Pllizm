@@ -54,13 +54,24 @@ class User < ActiveRecord::Base
     extracted_users
   end
 
-  def self.format_searched_user(not_formatted_searched_user_id)
+  def self.format_searched_user(current_user, not_formatted_searched_user_id)
     not_formatted_serached_user         = User.find(not_formatted_searched_user_id)
     formatted_searched_user             = {}
     formatted_searched_user[:user_id]   = not_formatted_serached_user.userid
     formatted_searched_user[:user_name] = not_formatted_serached_user.username
     formatted_searched_user[:image_url] = not_formatted_serached_user.image.url
     formatted_searched_user[:bio]       = not_formatted_serached_user.bio
+    if not_formatted_serached_user.current_user?(current_user)
+      formatted_searched_user[:relationship] = 'current_user'
+    elsif current_user.following?(not_formatted_serached_user)
+      formatted_searched_user[:relationship] = 'following'
+    elsif current_user.requested_follow_by_me?(not_formatted_serached_user)
+      formatted_searched_user[:relationship] = 'requested_follow_by_me'
+    elsif current_user.request_follow_to_me?(not_formatted_serached_user)
+      formatted_searched_user[:relationship] = 'request_follow_to_me'
+    else
+      formatted_searched_user[:relationship] = 'none'
+    end
     formatted_searched_user
   end
 
@@ -104,8 +115,8 @@ class User < ActiveRecord::Base
     user_info[:follow_requests_to_me_count] = nil
     user_info[:follow_requests_by_me_count] = nil
     user_info[:following]                   = current_user.following?(self)
-    user_info[:follow_request_sent_to_me]   = request_following?(current_user)
-    user_info[:follow_requet_sent_by_me]    = current_user.request_following?(self)
+    user_info[:follow_request_sent_to_me]   = requested_follow_by_me?(current_user)
+    user_info[:follow_requet_sent_by_me]    = current_user.requested_follow_by_me?(self)
     user_info
   end
 
@@ -136,8 +147,13 @@ class User < ActiveRecord::Base
     id == current_user.id
   end
 
-  def request_following?(other_user)
+  # 関数名変更する
+  def requested_follow_by_me?(other_user)
     follow_requesting_users.include?(other_user)
+  end
+
+  def request_follow_to_me?(other_user)
+    follow_requesting_to_me_users.include?(other_user)
   end
 
   def following?(other_user)
