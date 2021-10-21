@@ -83,7 +83,7 @@ export const submitReply: SubmitReplyOperation =
 
 export const deletePost =
   (postId: string) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (_: never, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -105,7 +105,7 @@ export const changeLockStateOfPost =
       (value: SetStateAction<boolean>): void
     },
   ) =>
-  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+  async (_: never, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -125,7 +125,7 @@ export const unlikePost =
     setCountOfLikes: (countOfLikes: number) => void,
     likesCount?: number,
   ) =>
-  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+  async (_: never, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -146,7 +146,7 @@ export const likePost =
     setCountOfLikes: (countOfLikes: number) => void,
     likesCount?: number,
   ) =>
-  async (_: unknown, getState: UsersOfGetState): Promise<void> => {
+  async (_: never, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase

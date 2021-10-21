@@ -3,7 +3,7 @@ import { DefaultModalOnlyWithTitle, HeaderWithBackAndTitle } from 'components/mo
 import { DefaultTemplate } from 'components/templates';
 import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
-import { DestroyAccount } from 'reducks/users/operations';
+import { destroyAccount } from 'reducks/users/operations';
 
 import { Box } from '@mui/material';
 
@@ -11,7 +11,7 @@ const DeleteAccount: VFC = () => {
   const dispatch = useDispatch()
 
   const handleClickToDeleteAccount = (setError: React.Dispatch<React.SetStateAction<string>>) => {
-    dispatch(DestroyAccount(setError))
+    dispatch(destroyAccount(setError))
   }
 
   const dummyFunc = () => false

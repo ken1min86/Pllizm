@@ -4,7 +4,7 @@ import { DefaultTemplate } from 'components/templates';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeProfile } from 'reducks/users/operations';
+import { changeProfile } from 'reducks/users/operations';
 import { Users } from 'util/types/redux/users';
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
@@ -12,7 +12,7 @@ import { Avatar, Box, IconButton, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getUserId } from '../../reducks/users/selectors';
+import { getUserId } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,7 +97,7 @@ const EditProfile: VFC = () => {
   }
 
   const handleClickToEdit = () => {
-    dispatch(ChangeProfile(userName, bio, uploadedUserIcon))
+    dispatch(changeProfile(userName, bio, uploadedUserIcon))
   }
 
   const returnHeaderFunc = () => (

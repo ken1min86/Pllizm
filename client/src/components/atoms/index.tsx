@@ -3,7 +3,7 @@ export { default as BlueSquareButton } from './button/BlueSquareButton'
 export { default as ContainedRoundedCornerButton } from './button/ContainedRoundedCornerButton'
 export { default as ContainedWhiteRoundedCornerButton } from './button/ContainedWhiteRoundedCornerButton'
 export { default as DeletePostPopover } from './DeletePostPopover'
-export { default as ErrorMessages } from './text/ErrorMessages'
+export { default as ErrorMessage } from './text/ErrorMessage'
 // eslint-disable-next-line import/no-cycle
 export { default as FollowRelatedButton } from './button/FollowRelatedButton'
 export { default as HelpContentItemTitle } from './text/HelpContentItemTitle'

@@ -1,7 +1,8 @@
 module V1
   class RefractsController < ApplicationController
-    # 順番を入れ替えないこと(authenticate→verify_refractable)
+    # 順番を入れ替えないこと(authenticate→restrict→verify_refractable)
     before_action :authenticate_v1_user!
+    before_action :restrict_depending_on_whether_user_have_right, only: [:perform_refract, :skip]
     before_action :verify_refractable_after_authenticate, only: [:perform_refract, :skip]
 
     # リフラクト候補取得メソッド(Post.get_not_formatted_refract_candidates)では、

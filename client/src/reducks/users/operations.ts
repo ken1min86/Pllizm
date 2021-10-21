@@ -8,9 +8,13 @@ import { ErrorStatus } from 'util/types/common';
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
-    ListenAuthStateRequest, SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
+    GetStatusOfRightToUsePlizmResponse, ListenAuthStateRequest, SignInRequest, SignUpRequest,
+    SignUpResponse, UsersOfGetState
 } from '../../util/types/redux/users';
-import { disableLockDescriptionAction, signInAction, signOutAction, signUpAction } from './actions';
+import {
+    disableLockDescriptionAction, getStatusOfRightToUsePlizmAction, signInAction, signOutAction,
+    signUpAction
+} from './actions';
 
 export const signUp =
   (
@@ -346,7 +350,7 @@ export const disableLockDescription =
       })
   }
 
-export const ChangeProfile =
+export const changeProfile =
   (userName: string, bio?: string, icon?: File) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestData = new FormData()
@@ -378,14 +382,14 @@ export const ChangeProfile =
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors) => {
         console.log(errors)
       })
   }
 
-export const EditUserId =
+export const editUserId =
   (userId: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
@@ -412,7 +416,7 @@ export const EditUserId =
           }),
         )
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
         if (errors.response.status === 422) {
@@ -421,7 +425,7 @@ export const EditUserId =
       })
   }
 
-export const EditEmail =
+export const editEmail =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     if (!isValidEmailFormat(email)) {
@@ -459,7 +463,7 @@ export const EditEmail =
         )
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
         if (errors.response.status === 422) {
@@ -472,7 +476,7 @@ export const EditEmail =
       })
   }
 
-export const EditPassword =
+export const editPassword =
   (password: string, passwordConfirmation: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     if (password.length < 8) {
@@ -520,7 +524,7 @@ export const EditPassword =
         )
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(push(`/${userData.userid}`))
+        dispatch(push(`/users/${userData.userid}`))
       })
       .catch(() => {
         setError(
@@ -529,7 +533,7 @@ export const EditPassword =
       })
   }
 
-export const DestroyAccount =
+export const destroyAccount =
   (setError: React.Dispatch<React.SetStateAction<string>>) =>
   async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
@@ -548,5 +552,23 @@ export const DestroyAccount =
         setError(
           '予期せぬエラーが発生しました。オフラインでないか確認し、それでもエラーが発生する場合はお問い合わせフォームにて問い合わせ下さい。',
         )
+      })
+  }
+
+export const getStatusOfRightToUsePlizm =
+  () =>
+  async (
+    dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void,
+    getState: UsersOfGetState,
+  ): Promise<void> => {
+    const requestHeaders = createRequestHeader(getState)
+    await axiosBase
+      .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
+      .then((response) => {
+        const hasRightToUsePlizm = response.data.has_right_to_use_plizm
+        dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
+      })
+      .catch((error) => {
+        console.log(error)
       })
   }

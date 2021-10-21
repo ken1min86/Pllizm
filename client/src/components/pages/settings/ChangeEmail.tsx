@@ -1,9 +1,9 @@
-import { ContainedRoundedCornerButton, ErrorMessages } from 'components/atoms';
+import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
 import { HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
-import { EditEmail } from 'reducks/users/operations';
+import { editEmail } from 'reducks/users/operations';
 
 import { Box, TextField } from '@mui/material';
 
@@ -26,7 +26,7 @@ const ChangeEmail: VFC = () => {
   }
 
   const handleClickToChangeEmail = () => {
-    dispatch(EditEmail(email, setError))
+    dispatch(editEmail(email, setError))
   }
 
   const returnHeaderFunc = () => (
@@ -56,7 +56,7 @@ const ChangeEmail: VFC = () => {
           onChange={handleChangeEmail}
           sx={{ marginBottom: 1 }}
         />
-        <ErrorMessages errors={[error]} />
+        <ErrorMessage error={error} />
       </Box>
     </DefaultTemplate>
   )

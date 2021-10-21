@@ -24,6 +24,8 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
 
         @post_of_user1 = create(:post, user_id: @user1.id)
         @post_of_user2 = create(:post, user_id: @user2.id)
+        get_right_to_use_plizm(@follower_of_user1)
+        get_right_to_use_plizm(@follower_of_user2)
         create_reply_to_prams_post(@follower_of_user1, @post_of_user1)
         create_reply_to_prams_post(@follower_of_user2, @post_of_user2)
       end
@@ -33,7 +35,7 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
       travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
         expect  do
           Batch::Cron::RefractBatch.weekly_set_refract
-        end.to change { CurrentUserRefract.without_deleted.all.length }.from(0).to(2)
+        end.to change { CurrentUserRefract.without_deleted.all.length }.from(0).to(4)
         expect(CurrentUserRefract.without_deleted.find_by(user_id: @user1.id).present?).to eq(true)
         expect(CurrentUserRefract.without_deleted.find_by(user_id: @user2.id).present?).to eq(true)
       end
@@ -54,6 +56,7 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
         create_follower(@user)
 
         @post_of_user = create(:post, user_id: @user.id)
+        get_right_to_use_plizm(@follower_of_user)
         create_reply_to_prams_post(@follower_of_user, @post_of_user)
       end
     end
@@ -62,7 +65,7 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
       travel_to Time.zone.local(2021, 8, 28, 5, 30, 0o0) do
         expect  do
           Batch::Cron::RefractBatch.weekly_set_refract
-        end.to change { CurrentUserRefract.without_deleted.all.length }.from(0).to(1)
+        end.to change { CurrentUserRefract.without_deleted.all.length }.from(0).to(2)
         expect(CurrentUserRefract.without_deleted.find_by(user_id: @user.id).present?).to eq(true)
       end
     end
@@ -77,11 +80,11 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
         create(:icon)
 
         @user = create(:user)
-
         @follower_of_user = create_follower(@user)
         create_follower(@user)
 
         @post1_of_user = create(:post, user_id: @user.id)
+        get_right_to_use_plizm(@follower_of_user)
         create_reply_to_prams_post(@follower_of_user, @post1_of_user)
       end
 
@@ -118,6 +121,7 @@ RSpec.describe "Batch::Cron::RefractBatch", type: :request do
         @user = create(:user)
         @follower_of_user = create_follower(@user)
         @post_of_user = create(:post, user_id: @user.id)
+        get_right_to_use_plizm(@follower_of_user)
         create_reply_to_prams_post(@follower_of_user, @post_of_user)
       end
     end

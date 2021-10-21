@@ -22,4 +22,10 @@ class ApplicationController < ActionController::API
       )
     end
   end
+
+  def restrict_depending_on_whether_user_have_right
+    unless current_v1_user.has_right_to_use_plizm
+      render_json_forbitten_with_custom_errors('この機能は利用できません。', 'フォロワーが2人未満であるため、この機能を利用できません。')
+    end
+  end
 end

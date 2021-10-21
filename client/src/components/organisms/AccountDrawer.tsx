@@ -1,4 +1,4 @@
-import { ErrorMessages } from 'components/atoms';
+import { ErrorMessage } from 'components/atoms';
 import { push } from 'connected-react-router';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -92,7 +92,7 @@ const AccountDrawer: VFC = () => {
               sx={{ width: 36, height: 36, marginBottom: 1 }}
               component="button"
               onClick={() => {
-                dispatch(push(`/${userId}`))
+                dispatch(push(`/users/${userId}`))
               }}
             />
             <span className={classes.userName}>{userName}</span>
@@ -102,7 +102,7 @@ const AccountDrawer: VFC = () => {
             <ListItem
               button
               onClick={() => {
-                dispatch(push(`/${userId}`))
+                dispatch(push(`/users/${userId}`))
               }}
             >
               <ListItemIcon>
@@ -131,7 +131,7 @@ const AccountDrawer: VFC = () => {
               <ListItemText primary="ログアウト" />
             </ListItem>
             <ListItem>
-              <ErrorMessages errors={[error]} />
+              <ErrorMessage error={error} />
             </ListItem>
           </List>
         </Box>

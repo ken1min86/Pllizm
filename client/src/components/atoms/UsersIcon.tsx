@@ -30,7 +30,7 @@ const UsersIcon: VFC<Proos> = ({ userId, icon }) => {
 
   const handleOnClick = () => {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    dispatch(push(`/${userId}`))
+    dispatch(push(`/users/${userId}`))
   }
 
   return (
