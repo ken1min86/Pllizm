@@ -1,6 +1,8 @@
 import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components/atoms';
+import { push } from 'connected-react-router';
 import useSearchUsers from 'hooks/useSearchUsers';
 import { useEffect, useState, VFC } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Avatar, Box, Modal, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
@@ -44,12 +46,19 @@ const useStyles = makeStyles((theme: Theme) =>
 const UsingCriteriaModal: VFC = () => {
   const classes = useStyles()
 
+  const dispatch = useDispatch()
+
   const [open, setOpen] = useState(true)
   const handleClose = () => setOpen(false)
 
   const { getSearchedUsers: getSearchedUsers1, searchedUsers: searchedUsers1 } = useSearchUsers('ken10806')
   const { getSearchedUsers: getSearchedUsers2, searchedUsers: searchedUsers2 } = useSearchUsers('jun_okada')
   const searchedUsersToDisplay = [searchedUsers1[0], searchedUsers2[0]]
+
+  const handleClickUserIcon = (userId: string) => {
+    handleClose()
+    dispatch(push(`/users/${userId}`))
+  }
 
   useEffect(() => {
     getSearchedUsers1()
@@ -68,25 +77,30 @@ const UsingCriteriaModal: VFC = () => {
             <span className={classes.description}>即時にフォロー承認いたします。</span>
           </Box>
           {searchedUsersToDisplay.length > 0 &&
-            searchedUsersToDisplay.map((searchedUser) => (
-              <Box sx={{ display: 'flex', alignItems: 'center' }} mb={2}>
-                <Avatar
-                  alt="User to follow"
-                  src={searchedUser?.image_url}
-                  sx={{ width: 44, height: 44, marginRight: 1 }}
-                />
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box sx={{ display: 'flex' }}>
-                    <span className={classes.userName}>{searchedUser?.user_name}</span>
-                    <span className={classes.userId}>@{searchedUser?.user_id}</span>
+            searchedUsersToDisplay.map(
+              (searchedUser) =>
+                searchedUser && (
+                  <Box sx={{ display: 'flex', alignItems: 'center' }} mb={2} key={searchedUser.user_id}>
+                    <button type="button" onClick={() => handleClickUserIcon(searchedUser.user_id)}>
+                      <Avatar
+                        alt="User to follow"
+                        src={searchedUser.image_url}
+                        sx={{ width: 44, height: 44, marginRight: 1 }}
+                      />
+                    </button>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ display: 'flex' }}>
+                        <span className={classes.userName}>{searchedUser.user_name}</span>
+                        <span className={classes.userId}>@{searchedUser.user_id}</span>
+                      </Box>
+                      <span className={classes.bio}>{searchedUser.bio}</span>
+                    </Box>
+                    <Box sx={{ marginLeft: 'auto' }}>
+                      <FollowRelatedButton userId={searchedUser.user_id} initialStatus={searchedUser.relationship} />
+                    </Box>
                   </Box>
-                  <span className={classes.bio}>{searchedUser?.bio}</span>
-                </Box>
-                <Box sx={{ marginLeft: 'auto' }}>
-                  <FollowRelatedButton userId={searchedUser?.user_id} initialStatus={searchedUser?.relationship} />
-                </Box>
-              </Box>
-            ))}
+                ),
+            )}
           <Box sx={{ maxWidth: 131, margin: '40px auto 0 auto' }}>
             <OutlinedBlueRoundedCornerButton onClick={handleClose} label="閉じる" />
           </Box>
