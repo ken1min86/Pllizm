@@ -225,7 +225,7 @@ const Profile: VFC = () => {
           )}
         </Box>
       )}
-      {userProfile && userProfile.is_current_user && (
+      {hasRightToUsePlizm && userProfile && userProfile.is_current_user && (
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: '#EEEEEE' }}>
