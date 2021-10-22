@@ -43,16 +43,6 @@ export type UserProfile = {
   follow_requet_sent_by_me: boolean
 }
 
-export type ReponseOfUsers = {
-  users: Array<User>
-}
-
-export type ReponseOfSearchedUsers = {
-  users: Array<SearchedUser>
-}
-
-export type RequestHeaders = RequestHeadersForAuthentication
-
 export type RelevantUser = {
   // eslint-disable-next-line camelcase
   user_id: string
@@ -62,6 +52,18 @@ export type RelevantUser = {
   icon_url?: string
   bio?: string
 }
+
+// ***************************************
+// Responses
+export type ReponseOfUsers = {
+  users: Array<User>
+}
+
+export type ReponseOfSearchedUsers = {
+  users: Array<SearchedUser>
+}
+
+export type RequestHeaders = RequestHeadersForAuthentication
 
 export type ResponseRelevantUsers = {
   users: Array<RelevantUser>
