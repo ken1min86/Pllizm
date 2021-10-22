@@ -239,7 +239,9 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
               <AccountLogoutPopover userName={userName} userId={userId} icon={userIcon} />
               <footer>
                 <Box component="ul" display="flex" flexWrap="wrap" mt={3}>
-                  <li className={classes.footerText}>お問い合わせ</li>
+                  <li className={classes.footerText}>
+                    <a href="https://form.run/@plizmjp-1634893194">お問い合わせ</a>
+                  </li>
                   <li className={classes.footerText}>
                     <Link to="/help/terms_of_use" data-testid="terms-of-use-link">
                       利用規約
