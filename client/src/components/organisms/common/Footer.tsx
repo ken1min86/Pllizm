@@ -127,7 +127,7 @@ const Footer: VFC = () => {
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderRightWhenMobile}`}
         >
-          お問い合わせ
+          <a href="https://form.run/@plizmjp-1634893194">お問い合わせ</a>
         </li>
         <li
           className={`${classes.link} ${classes.separatorLine} ${classes.separatorWhenMobile} ${classes.borderTopWhenMobile} ${classes.borderBottomWhenMobile}`}
