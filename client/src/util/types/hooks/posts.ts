@@ -25,6 +25,8 @@ export type ExistentPosts = {
   created_at: string
 }
 
+// ***************************************
+// Responses
 export type ResponstOfExistentPosts = {
   posts: Array<ExistentPosts>
 }

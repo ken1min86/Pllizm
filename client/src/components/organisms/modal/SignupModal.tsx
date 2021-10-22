@@ -124,18 +124,12 @@ const SignupModal: VFC<Props> = ({ type }) => {
   return (
     <>
       {type === 'button' && (
-        <Box
-          sx={{
-            width: 217,
-          }}
-        >
-          <ContainedRoundedCornerButton
-            label="アカウント作成"
-            onClick={openModal}
-            backgroundColor="#2699fb"
-            data-testid="signup-link-in-button"
-          />
-        </Box>
+        <ContainedRoundedCornerButton
+          label="アカウント作成"
+          onClick={openModal}
+          backgroundColor="#2699fb"
+          data-testid="signup-link-in-button"
+        />
       )}
       {type === 'text' && (
         <button type="button" className={classes.signUpLink} onClick={openModal} data-testid="signup-link-in-text">
