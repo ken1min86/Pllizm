@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     signup: {
       position: 'absolute',
+      width: 'min(217px, 70vw)',
       [theme.breakpoints.down('sm')]: {
         bottom: 133,
         left: 122,
@@ -71,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     signin: {
       position: 'absolute',
+      width: 'min(217px, 70vw)',
       [theme.breakpoints.down('sm')]: {
         bottom: 84,
         left: 122,
@@ -97,7 +99,7 @@ const Top: VFC = () => {
           <h1 className={classes.h1} data-testid="header-title">
             こっちも現実。
           </h1>
-          <Box sx={{ width: 217 }} className={classes.detail}>
+          <Box sx={{ width: 'min(217px, 70vw)' }} className={classes.detail}>
             <ContainedWhiteRoundedCornerButton label="更に詳しく" onClick={onClickHandler} />
           </Box>
           <Box className={classes.signup}>

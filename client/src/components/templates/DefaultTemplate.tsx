@@ -251,7 +251,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
                     </Link>
                   </li>
                 </Box>
-                <small className={classes.footerText}>@2021 Plizm</small>
+                <small className={classes.footerText}>&copy; 2021 Plizm</small>
               </footer>
             </Box>
           </Hidden>
