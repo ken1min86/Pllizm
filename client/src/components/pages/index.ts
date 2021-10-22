@@ -1,3 +1,4 @@
+export { default as About } from './About'
 export { default as AccountSetting } from './settings/AccountSetting'
 export { default as BeginPasswordReset } from './settings/BeginPasswordReset'
 export { default as ChangeEmail } from './settings/ChangeEmail'

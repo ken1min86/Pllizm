@@ -3,14 +3,15 @@ import { Route, Switch } from 'react-router';
 import Restrict from 'Restrict';
 
 import {
-    AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId, DeleteAccount,
-    DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail, PrivacyPolicy,
-    Profile, RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
+    About, AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId,
+    DeleteAccount, DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail,
+    PrivacyPolicy, Profile, RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
   <Switch>
     <Route exact path="(/)?" component={Top} />
+    <Route exact path="/about" component={About} />
     <Route exact path="/users/begin_password_reset" component={BeginPasswordReset} />
     <Route exact path="/users/sent_mail_of_password_reset" component={SentMailOfPasswordReset} />
     <Route exact path="/users/password_reset" component={PasswordReset} />
