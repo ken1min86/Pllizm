@@ -5,7 +5,8 @@ import Restrict from 'Restrict';
 import {
     About, AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId,
     DeleteAccount, DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail,
-    PrivacyPolicy, Profile, RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
+    PrivacyPolicy, Profile, RefractCandidates, RelevantUsers, Search, SentMailOfPasswordReset,
+    TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -32,6 +33,7 @@ const Router: React.VFC = () => (
         <Route exact path="/settings/user_id" component={ChangeUserId} />
         <Route exact path="/users/:id" component={Profile} />
         <Restrict>
+          <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
           <Route exact path="/home" component={Home} />
           <Route exact path="/posts/:id" component={PostDetail} />
         </Restrict>
