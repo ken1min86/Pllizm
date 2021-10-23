@@ -168,12 +168,10 @@ const Profile: VFC = () => {
     )
   }
 
-  const returnHeaderFunc = () => (
-    <HeaderWithTitleAndDrawer title={userProfile?.user_name ? userProfile.user_name : ''} />
-  )
+  const Header = <HeaderWithTitleAndDrawer title={userProfile?.user_name ? userProfile.user_name : ''} />
 
   return (
-    <DefaultTemplate activeNavTitle={activeNavTitle} returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle={activeNavTitle} Header={Header}>
       {!hasRightToUsePlizm && <UsingCriteriaModal />}
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (

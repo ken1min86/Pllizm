@@ -39,7 +39,7 @@ const ChangePassword: VFC = () => {
     dispatch(editPassword(password, passwordConfirmation, setError))
   }
 
-  const returnHeaderFunc = () => (
+  const Header = (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
       <HeaderWithBackAndTitle title="パスワード変更" />
       <Box sx={{ marginLeft: 'auto', marginRight: 1, width: 104 }}>
@@ -54,7 +54,7 @@ const ChangePassword: VFC = () => {
   )
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <Box p={3}>
         <TextField
           label="パスワード"

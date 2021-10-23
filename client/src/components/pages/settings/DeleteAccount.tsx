@@ -16,10 +16,10 @@ const DeleteAccount: VFC = () => {
 
   const dummyFunc = () => false
 
-  const returnHeaderFunc = () => <HeaderWithBackAndTitle title="アカウント削除" />
+  const Header = <HeaderWithBackAndTitle title="アカウント削除" />
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <Box p={3}>
         <Box component="p">アカウントが削除されます。</Box>
         <Box component="p" mb={1}>

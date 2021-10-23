@@ -115,10 +115,10 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
     setTabValue(newValue)
   }
 
-  const returnHeaderFunc = () => <HeaderWithBackAndTitle title={userName} />
+  const Header = <HeaderWithBackAndTitle title={userName} />
 
   return (
-    <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="none" Header={Header}>
       <Box sx={{ width: '100%' }}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

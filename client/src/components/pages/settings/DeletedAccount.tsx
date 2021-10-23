@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const DeletedAccount: VFC = () => {
   const classes = useStyles()
 
-  const returnHeaderFunc = () => <h1 className={classes.title}>アカウント削除</h1>
+  const Header = <h1 className={classes.title}>アカウント削除</h1>
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <Box p={3}>
         <Box component="p">アカウントが削除されました。</Box>
         <Box component="p">ご利用いただきありがとうございました。</Box>

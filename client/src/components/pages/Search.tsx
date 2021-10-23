@@ -87,7 +87,7 @@ const Search: VFC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
 
-  const returnHeaderFunc = () => (
+  const Header = (
     <>
       <Hidden smUp>
         <AccountDrawer />
@@ -118,7 +118,7 @@ const Search: VFC = () => {
   )
 
   return (
-    <DefaultTemplate activeNavTitle="search" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="search" Header={Header}>
       {!hasRightToUsePlizm && <UsingCriteriaModal />}
       <Box sx={{ width: '100%' }}>
         {loading && <LinearProgress color="info" />}

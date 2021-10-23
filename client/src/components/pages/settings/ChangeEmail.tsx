@@ -29,7 +29,7 @@ const ChangeEmail: VFC = () => {
     dispatch(editEmail(email, setError))
   }
 
-  const returnHeaderFunc = () => (
+  const Header = (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
       <HeaderWithBackAndTitle title="メールアドレス変更" />
       <Box sx={{ marginLeft: 'auto', marginRight: 1, width: 104 }}>
@@ -44,7 +44,7 @@ const ChangeEmail: VFC = () => {
   )
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <Box p={3}>
         <TextField
           label="メールアドレス"

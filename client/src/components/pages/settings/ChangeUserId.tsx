@@ -35,7 +35,7 @@ const ChangeUserId: VFC = () => {
     dispatch(editUserId(userId, setError))
   }
 
-  const returnHeaderFunc = () => (
+  const Header = (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
       <HeaderWithBackAndTitle title="ユーザーID変更" />
       <Box sx={{ marginLeft: 'auto', marginRight: 1, width: 104 }}>
@@ -50,7 +50,7 @@ const ChangeUserId: VFC = () => {
   )
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <Box p={3}>
         <TextField
           label="ユーザーID (4文字以上15文字以内)"

@@ -31,10 +31,10 @@ const PostDetail: VFC = () => {
     setThread(getThreadPosts(selector))
   }, [selector])
 
-  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="投稿" />
+  const Header = <HeaderWithTitleAndDrawer title="投稿" />
 
   return (
-    <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="none" Header={Header}>
       {hasAnyDisplayablePost && thread.parent.status !== 'not_exist' && (
         <PostBox
           key={thread.parent.id}

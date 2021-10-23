@@ -139,10 +139,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
-  returnHeaderFunc: (arg0: void) => React.ReactNode
+  Header: React.ReactNode
 }
 
-const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc }) => {
+const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
@@ -166,7 +166,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
     <Box sx={{ backgroundColor: '#f9f4ef', minHeight: '100vh' }}>
       <Box className={classes.container}>
         <Box className={classes.mainContainer}>
-          <header className={classes.header}>{returnHeaderFunc()}</header>
+          <header className={classes.header}>{Header}</header>
           <main className={classes.main}>{children}</main>
           <Hidden smUp>
             <Box className={classes.buttomNavContainer}>

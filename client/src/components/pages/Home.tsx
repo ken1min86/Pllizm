@@ -24,10 +24,10 @@ const Home: VFC = () => {
     setPosts(getPosts(selector))
   }, [selector])
 
-  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="ホーム" />
+  const Header = <HeaderWithTitleAndDrawer title="ホーム" />
 
   return (
-    <DefaultTemplate activeNavTitle="home" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="home" Header={Header}>
       {posts.length > 0 &&
         posts.map((post) => (
           <PostBox

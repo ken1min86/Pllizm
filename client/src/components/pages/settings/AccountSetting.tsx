@@ -29,10 +29,10 @@ const AccountSetting: VFC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const returnHeaderFunc = () => <HeaderWithBackAndTitle title="設定" />
+  const Header = <HeaderWithBackAndTitle title="設定" />
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header}>
       <List component="nav" aria-label="Account settings">
         <ListItemButton
           className={classes.listItem}

@@ -100,7 +100,7 @@ const EditProfile: VFC = () => {
     dispatch(changeProfile(userName, bio, uploadedUserIcon))
   }
 
-  const returnHeaderFunc = () => (
+  const Header = (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
       <HeaderWithBackAndTitle title="変更" />
       <Box sx={{ marginLeft: 'auto', marginRight: 1, width: 104 }}>
@@ -115,7 +115,7 @@ const EditProfile: VFC = () => {
   )
 
   return (
-    <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="none" Header={Header}>
       <Box p={3} sx={{ width: '100%', position: 'relative' }}>
         <Box sx={{ height: 136 }}>
           <Box sx={{ position: 'absolute' }} mb={3}>
