@@ -1,3 +1,4 @@
+import { BottomNavigationBar } from 'components/molecules';
 import { AccountDrawer, UsingCriteriaModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
@@ -117,8 +118,10 @@ const Search: VFC = () => {
     </>
   )
 
+  const Bottom = <BottomNavigationBar activeNav="search" />
+
   return (
-    <DefaultTemplate activeNavTitle="search" Header={Header}>
+    <DefaultTemplate activeNavTitle="search" Header={Header} Bottom={Bottom}>
       {!hasRightToUsePlizm && <UsingCriteriaModal />}
       <Box sx={{ width: '100%' }}>
         {loading && <LinearProgress color="info" />}

@@ -1,5 +1,5 @@
 import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components/atoms';
-import { PostBox } from 'components/molecules';
+import { BottomNavigationBar, PostBox } from 'components/molecules';
 import { HeaderWithTitleAndDrawer, UsingCriteriaModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
@@ -169,9 +169,10 @@ const Profile: VFC = () => {
   }
 
   const Header = <HeaderWithTitleAndDrawer title={userProfile?.user_name ? userProfile.user_name : ''} />
+  const Bottom = <BottomNavigationBar activeNav={activeNavTitle} />
 
   return (
-    <DefaultTemplate activeNavTitle={activeNavTitle} Header={Header}>
+    <DefaultTemplate activeNavTitle={activeNavTitle} Header={Header} Bottom={Bottom}>
       {!hasRightToUsePlizm && <UsingCriteriaModal />}
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (

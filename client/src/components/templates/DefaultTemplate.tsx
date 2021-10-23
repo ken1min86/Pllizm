@@ -1,5 +1,5 @@
 import { LogoLink } from 'components/atoms';
-import { BottomNavigationBar, IconWithTextLink } from 'components/molecules';
+import { IconWithTextLink } from 'components/molecules';
 import { AccountLogoutPopover, CreatePostModal } from 'components/organisms';
 import { push } from 'connected-react-router';
 import { FC } from 'react';
@@ -140,9 +140,10 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
   Header: React.ReactNode
+  Bottom: React.ReactNode
 }
 
-const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header }) => {
+const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
@@ -170,7 +171,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header }) => {
           <main className={classes.main}>{children}</main>
           <Hidden smUp>
             <Box className={classes.buttomNavContainer}>
-              <BottomNavigationBar activeNav={activeNavTitle} />
+              {Bottom}
             </Box>
           </Hidden>
           <Hidden smUp>

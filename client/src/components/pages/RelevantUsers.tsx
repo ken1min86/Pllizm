@@ -1,5 +1,5 @@
 import { FollowRelatedButton } from 'components/atoms';
-import { HeaderWithBackAndTitle } from 'components/molecules';
+import { BottomNavigationBar, HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import { useEffect, useState, VFC } from 'react';
@@ -116,9 +116,10 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
   }
 
   const Header = <HeaderWithBackAndTitle title={userName} />
+  const Bottom = <BottomNavigationBar activeNav="none" />
 
   return (
-    <DefaultTemplate activeNavTitle="none" Header={Header}>
+    <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>
       <Box sx={{ width: '100%' }}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

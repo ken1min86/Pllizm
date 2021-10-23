@@ -1,5 +1,7 @@
 import { ContainedRoundedCornerButton } from 'components/atoms';
-import { DefaultModalOnlyWithTitle, HeaderWithBackAndTitle } from 'components/molecules';
+import {
+    BottomNavigationBar, DefaultModalOnlyWithTitle, HeaderWithBackAndTitle
+} from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,9 +19,10 @@ const DeleteAccount: VFC = () => {
   const dummyFunc = () => false
 
   const Header = <HeaderWithBackAndTitle title="アカウント削除" />
+  const Bottom = <BottomNavigationBar activeNav="settings" />
 
   return (
-    <DefaultTemplate activeNavTitle="settings" Header={Header}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>
       <Box p={3}>
         <Box component="p">アカウントが削除されます。</Box>
         <Box component="p" mb={1}>

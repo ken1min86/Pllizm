@@ -1,5 +1,5 @@
 import { ContainedRoundedCornerButton } from 'components/atoms';
-import { HeaderWithBackAndTitle } from 'components/molecules';
+import { BottomNavigationBar, HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import useUserProfiles from 'hooks/useUserProfiles';
 import { useEffect, useState, VFC } from 'react';
@@ -114,8 +114,10 @@ const EditProfile: VFC = () => {
     </Box>
   )
 
+  const Bottom = <BottomNavigationBar activeNav="none" />
+
   return (
-    <DefaultTemplate activeNavTitle="none" Header={Header}>
+    <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>
       <Box p={3} sx={{ width: '100%', position: 'relative' }}>
         <Box sx={{ height: 136 }}>
           <Box sx={{ position: 'absolute' }} mb={3}>

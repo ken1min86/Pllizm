@@ -1,5 +1,5 @@
 import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
-import { HeaderWithBackAndTitle } from 'components/molecules';
+import { BottomNavigationBar, HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
@@ -53,8 +53,10 @@ const ChangePassword: VFC = () => {
     </Box>
   )
 
+  const Bottom = <BottomNavigationBar activeNav="settings" />
+
   return (
-    <DefaultTemplate activeNavTitle="settings" Header={Header}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>
       <Box p={3}>
         <TextField
           label="パスワード"

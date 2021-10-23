@@ -1,5 +1,5 @@
 import { ContainedRoundedCornerButton, ErrorMessage } from 'components/atoms';
-import { HeaderWithBackAndTitle } from 'components/molecules';
+import { BottomNavigationBar, HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,8 +49,10 @@ const ChangeUserId: VFC = () => {
     </Box>
   )
 
+  const Bottom = <BottomNavigationBar activeNav="settings" />
+
   return (
-    <DefaultTemplate activeNavTitle="settings" Header={Header}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>
       <Box p={3}>
         <TextField
           label="ユーザーID (4文字以上15文字以内)"
