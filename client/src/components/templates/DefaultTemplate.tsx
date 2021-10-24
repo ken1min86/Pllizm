@@ -1,11 +1,13 @@
 import { LogoLink } from 'components/atoms';
-import { BottomNavigationBar, IconWithTextLink } from 'components/molecules';
+import { IconWithTextLink } from 'components/molecules';
 import { AccountLogoutPopover, CreatePostModal } from 'components/organisms';
 import { push } from 'connected-react-router';
 import { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getHasRightToUsePlizm, getUserId, getUserName } from 'reducks/users/selectors';
+import {
+    getHasRightToUsePlizm, getPerformedRefract, getUserId, getUserName
+} from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -139,10 +141,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   activeNavTitle: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
-  returnHeaderFunc: (arg0: void) => React.ReactNode
+  Header: React.ReactNode
+  Bottom: React.ReactNode
 }
 
-const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc }) => {
+const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
@@ -150,6 +153,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
   const userName = getUserName(selector)
   const userIcon = getIcon(selector)
   const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const performedRefract = getPerformedRefract(selector)
 
   const isActiveOfHome = activeNavTitle === 'home'
   const isActiveOfSearch = activeNavTitle === 'search'
@@ -166,18 +170,18 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
     <Box sx={{ backgroundColor: '#f9f4ef', minHeight: '100vh' }}>
       <Box className={classes.container}>
         <Box className={classes.mainContainer}>
-          <header className={classes.header}>{returnHeaderFunc()}</header>
+          <header className={classes.header}>{Header}</header>
           <main className={classes.main}>{children}</main>
           <Hidden smUp>
-            <Box className={classes.buttomNavContainer}>
-              <BottomNavigationBar activeNav={activeNavTitle} />
-            </Box>
+            <Box className={classes.buttomNavContainer}>{Bottom}</Box>
           </Hidden>
-          <Hidden smUp>
-            <Box className={classes.createPostModalContainerOfMobile}>
-              <CreatePostModal />
-            </Box>
-          </Hidden>
+          {hasRightToUsePlizm && performedRefract && (
+            <Hidden smUp>
+              <Box className={classes.createPostModalContainerOfMobile}>
+                <CreatePostModal />
+              </Box>
+            </Hidden>
+          )}
         </Box>
         <Hidden smDown>
           <Box className={classes.navContainer}>
@@ -185,24 +189,28 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
               <Box mb={1}>
                 <LogoLink width={30} onClick={handleOnClickToHome} />
               </Box>
-              {hasRightToUsePlizm && (
+              {hasRightToUsePlizm && performedRefract && (
                 <Box mb={1}>
                   <IconWithTextLink title="ホーム" path="/home" isActive={isActiveOfHome}>
                     <HomeRoundedIcon sx={{ fontSize: 26.25 }} />
                   </IconWithTextLink>
                 </Box>
               )}
-              <Box mb={1}>
-                <IconWithTextLink title="検索" path="/search" isActive={isActiveOfSearch}>
-                  <SearchIcon sx={{ fontSize: 26.25 }} />
-                </IconWithTextLink>
-              </Box>
-              <Box mb={1}>
-                <IconWithTextLink title="通知" path="/notifications" isActive={isActiveOfNotification}>
-                  <NotificationsNoneRoundedIcon sx={{ fontSize: 26.25 }} />
-                </IconWithTextLink>
-              </Box>
-              {hasRightToUsePlizm && (
+              {performedRefract && (
+                <Box mb={1}>
+                  <IconWithTextLink title="検索" path="/search" isActive={isActiveOfSearch}>
+                    <SearchIcon sx={{ fontSize: 26.25 }} />
+                  </IconWithTextLink>
+                </Box>
+              )}
+              {performedRefract && (
+                <Box mb={1}>
+                  <IconWithTextLink title="通知" path="/notifications" isActive={isActiveOfNotification}>
+                    <NotificationsNoneRoundedIcon sx={{ fontSize: 26.25 }} />
+                  </IconWithTextLink>
+                </Box>
+              )}
+              {hasRightToUsePlizm && performedRefract && (
                 <Box mb={1}>
                   <IconWithTextLink title="リフラクト" path={`/${userId}/reflected_posts`} isActive={isActiveOfRefract}>
                     {isActiveOfRefract && <img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
@@ -212,19 +220,23 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, returnHeaderFunc
                   </IconWithTextLink>
                 </Box>
               )}
-              <Box mb={1}>
-                <IconWithTextLink title="プロフィール" path={`/users/${userId}`} isActive={isActiveOfProfile}>
-                  <PersonIcon sx={{ fontSize: 26.25 }} />
-                </IconWithTextLink>
-              </Box>
+              {performedRefract && (
+                <Box mb={1}>
+                  <IconWithTextLink title="プロフィール" path={`/users/${userId}`} isActive={isActiveOfProfile}>
+                    <PersonIcon sx={{ fontSize: 26.25 }} />
+                  </IconWithTextLink>
+                </Box>
+              )}
               <Box mb={2}>
                 <IconWithTextLink title="設定" path="/settings/account" isActive={isActiveOfSettings}>
                   <SettingsIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
               </Box>
-              <Box className={classes.createPostModalContainer}>
-                <CreatePostModal />
-              </Box>
+              {hasRightToUsePlizm && performedRefract && (
+                <Box className={classes.createPostModalContainer}>
+                  <CreatePostModal />
+                </Box>
+              )}
               <Hidden lgUp>
                 <Box className={classes.bottom}>
                   <AccountLogoutPopover userName={userName} userId={userId} icon={userIcon} />

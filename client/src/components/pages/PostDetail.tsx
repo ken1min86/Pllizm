@@ -1,4 +1,4 @@
-import { PostBox } from 'components/molecules';
+import { BottomNavigationBar, PostBox } from 'components/molecules';
 import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
@@ -31,10 +31,11 @@ const PostDetail: VFC = () => {
     setThread(getThreadPosts(selector))
   }, [selector])
 
-  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="投稿" />
+  const Header = <HeaderWithTitleAndDrawer title="投稿" />
+  const Bottom = <BottomNavigationBar activeNav="none" />
 
   return (
-    <DefaultTemplate activeNavTitle="none" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>
       {hasAnyDisplayablePost && thread.parent.status !== 'not_exist' && (
         <PostBox
           key={thread.parent.id}

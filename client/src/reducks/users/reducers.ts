@@ -29,6 +29,11 @@ const UsersReducer: Reducer = (state = initialState.users, action) => {
         ...state,
         ...action.payload,
       }
+    case Actions.GET_PERFORMED_REFRACT:
+      return {
+        ...state,
+        ...action.payload,
+      }
     default:
       return state
   }

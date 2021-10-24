@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
-import { ExistentPosts } from 'util/types/hooks/posts';
+import { ExistentPosts, RefractCandidate } from 'util/types/hooks/posts';
 import { PostInThread, Threads } from 'util/types/redux/threads';
 import { RequestHeadersForAuthentication, UsersOfGetState } from 'util/types/redux/users';
 
@@ -69,6 +69,17 @@ export const formatPostsInThread = (posts: Array<PostInThread>): Array<PostInThr
 
 export const formatPostsOfMeAndFollower = (posts: Array<ExistentPosts>): Array<ExistentPosts> => {
   const postsWithIcon: Array<ExistentPosts> = posts.map((post) => {
+    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
+    const postWithIcon = { ...post, icon_url: iconUrl }
+
+    return postWithIcon
+  })
+
+  return postsWithIcon
+}
+
+export const formatPostsOfRefractCandidate = (posts: Array<RefractCandidate>): Array<RefractCandidate> => {
+  const postsWithIcon: Array<RefractCandidate> = posts.map((post) => {
     const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
     const postWithIcon = { ...post, icon_url: iconUrl }
 
