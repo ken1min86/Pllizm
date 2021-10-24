@@ -1,8 +1,9 @@
+import { AccountDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Avatar, Box, Divider, LinearProgress, Radio, Theme } from '@mui/material';
+import { Avatar, Box, Divider, Hidden, LinearProgress, Radio, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -14,6 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       color: theme.palette.primary.main,
       fontSize: 22,
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: 16,
+      },
     },
     postIcon: {
       marginRight: 12,
@@ -101,9 +105,14 @@ const RefractCandidates: VFC = () => {
   }
 
   const Header = (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} pl={3} pr={2}>
+    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+      <Hidden smUp>
+        <AccountDrawer />
+      </Hidden>
       <h1 className={classes.title}>refract</h1>
-      <RefractFuncDescriptionModal type="questionButton" />
+      <Box mr={2} sx={{ marginLeft: 'auto' }}>
+        <RefractFuncDescriptionModal type="questionButton" />
+      </Box>
     </Box>
   )
 
