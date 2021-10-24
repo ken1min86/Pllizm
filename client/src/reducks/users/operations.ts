@@ -557,11 +557,16 @@ export const destroyAccount =
 
 export const getStatusOfRightToUsePlizm =
   () =>
-  async (
-    dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void,
-    getState: UsersOfGetState,
-  ): Promise<void> => {
-    const requestHeaders = createRequestHeader(getState)
+  async (dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void): Promise<void> => {
+    const accessTokenInCookie = Cookies.get('access-token')
+    const clientInCookie = Cookies.get('client')
+    const uidInCookie = Cookies.get('uid')
+
+    const requestHeaders: ListenAuthStateRequest = {
+      'access-token': accessTokenInCookie,
+      client: clientInCookie,
+      uid: uidInCookie,
+    }
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {

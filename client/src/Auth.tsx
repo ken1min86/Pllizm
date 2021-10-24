@@ -13,9 +13,8 @@ const Auth: FC = ({ children }) => {
   useEffect(() => {
     if (!isSignedIn) {
       dispatch(listenAuthState())
-    } else {
-      dispatch(getStatusOfRightToUsePlizm())
     }
+    dispatch(getStatusOfRightToUsePlizm())
   }, [dispatch, isSignedIn])
 
   if (!isSignedIn) return <></>

@@ -1,7 +1,13 @@
+import { DefaultTemplate } from 'components/templates';
+
 const RefractCandidates = () => {
   console.log(2)
 
-  return <div />
+  return (
+    <DefaultTemplate activeNavTitle="refract" Header={undefined} Bottom={undefined}>
+      dd
+    </DefaultTemplate>
+  )
 }
 
 export default RefractCandidates
