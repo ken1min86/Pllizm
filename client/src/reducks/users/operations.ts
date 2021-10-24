@@ -595,7 +595,6 @@ export const getPerformedRefract =
       .then((response) => {
         const performedRefract = response.data.performed
         dispatch(getPerformedRefractAction({ performedRefract }))
-        console.log(response)
       })
       .catch((error) => {
         console.log(error)
