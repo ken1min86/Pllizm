@@ -1,5 +1,6 @@
 import Auth from 'Auth';
 import { Route, Switch } from 'react-router';
+import Refract from 'Refract';
 import Restrict from 'Restrict';
 
 import {
@@ -23,20 +24,24 @@ const Router: React.VFC = () => (
 
     <Auth>
       <Switch>
-        <Route exact path="/relevant_users" component={RelevantUsers} />
-        <Route exact path="/search" component={Search} />
         <Route exact path="/settings/account" component={AccountSetting} />
         <Route exact path="/settings/deactivate" component={DeleteAccount} />
         <Route exact path="/settings/email" component={ChangeEmail} />
         <Route exact path="/settings/password" component={ChangePassword} />
         <Route exact path="/settings/profile" component={EditProfile} />
         <Route exact path="/settings/user_id" component={ChangeUserId} />
-        <Route exact path="/users/:id" component={Profile} />
-        <Restrict>
-          <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/posts/:id" component={PostDetail} />
-        </Restrict>
+        <Refract>
+          <Switch>
+            <Route exact path="/relevant_users" component={RelevantUsers} />
+            <Route exact path="/search" component={Search} />
+            <Route exact path="/users/:id" component={Profile} />
+            <Restrict>
+              <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
+              <Route exact path="/home" component={Home} />
+              <Route exact path="/posts/:id" component={PostDetail} />
+            </Restrict>
+          </Switch>
+        </Refract>
       </Switch>
     </Auth>
   </Switch>

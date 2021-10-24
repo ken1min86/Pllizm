@@ -14,7 +14,7 @@ const initialState: { users: Users; posts: Array<PostsOfMeAndFollower>; threads:
     icon: '',
     needDescriptionAboutLock: true,
     hasRightToUsePlizm: true,
-    performedRefract: false,
+    performedRefract: true,
   },
   posts: [],
   threads: {
