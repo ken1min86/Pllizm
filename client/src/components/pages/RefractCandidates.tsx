@@ -1,6 +1,7 @@
 import { DefaultTemplate } from 'components/templates';
+import { VFC } from 'react';
 
-const RefractCandidates = () => {
+const RefractCandidates: VFC = () => {
   console.log(2)
 
   return (

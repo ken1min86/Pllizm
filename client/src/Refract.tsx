@@ -10,10 +10,8 @@ const Refract: FC = ({ children }) => {
   const performedRefract = getPerformedRefract(selector)
 
   useEffect(() => {
-    if (!performedRefract) dispatch(push('/refract_candidates'))
+    if (!performedRefract) dispatch(push('/saturday/refracts/candidates'))
   }, [dispatch, performedRefract])
-
-  if (!performedRefract) return <></>
 
   return <>{children}</>
 }

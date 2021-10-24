@@ -36,9 +36,11 @@ const Router: React.VFC = () => (
             <Route exact path="/search" component={Search} />
             <Route exact path="/users/:id" component={Profile} />
             <Restrict>
-              <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
-              <Route exact path="/home" component={Home} />
-              <Route exact path="/posts/:id" component={PostDetail} />
+              <Switch>
+                <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
+                <Route exact path="/home" component={Home} />
+                <Route exact path="/posts/:id" component={PostDetail} />
+              </Switch>
             </Restrict>
           </Switch>
         </Refract>
