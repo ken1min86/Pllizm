@@ -8,12 +8,12 @@ import { ErrorStatus } from 'util/types/common';
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
-    GetStatusOfRightToUsePlizmResponse, ListenAuthStateRequest, SignInRequest, SignUpRequest,
-    SignUpResponse, UsersOfGetState
+    GetPerformedRefractResponse, GetStatusOfRightToUsePlizmResponse, ListenAuthStateRequest,
+    SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
 } from '../../util/types/redux/users';
 import {
-    disableLockDescriptionAction, getStatusOfRightToUsePlizmAction, signInAction, signOutAction,
-    signUpAction
+    disableLockDescriptionAction, getPerformedRefractAction, getStatusOfRightToUsePlizmAction,
+    signInAction, signOutAction, signUpAction
 } from './actions';
 
 export const signUp =
@@ -572,6 +572,29 @@ export const getStatusOfRightToUsePlizm =
       .then((response) => {
         const hasRightToUsePlizm = response.data.has_right_to_use_plizm
         dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+export const getPerformedRefract =
+  () =>
+  async (dispatch: (arg0: { type: string; payload: { performedRefract: boolean } }) => void): Promise<void> => {
+    const accessTokenInCookie = Cookies.get('access-token')
+    const clientInCookie = Cookies.get('client')
+    const uidInCookie = Cookies.get('uid')
+
+    const requestHeaders: ListenAuthStateRequest = {
+      'access-token': accessTokenInCookie,
+      client: clientInCookie,
+      uid: uidInCookie,
+    }
+    await axiosBase
+      .get<GetPerformedRefractResponse>('v1/statuses/refracts', { headers: requestHeaders })
+      .then((response) => {
+        const performedRefract = response.data.performed
+        dispatch(getPerformedRefractAction({ performedRefract }))
       })
       .catch((error) => {
         console.log(error)
