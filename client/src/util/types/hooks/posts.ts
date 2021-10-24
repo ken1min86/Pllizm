@@ -25,8 +25,16 @@ export type ExistentPosts = {
   created_at: string
 }
 
+export type RefractCandidate = ExistentPosts & {
+  category: 'reply' | 'like'
+}
+
 // ***************************************
 // Responses
 export type ResponstOfExistentPosts = {
   posts: Array<ExistentPosts>
+}
+
+export type ResponstOfRefractCandidates = {
+  posts: Array<RefractCandidate>
 }
