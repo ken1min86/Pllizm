@@ -9,6 +9,7 @@ import { getPosts } from 'reducks/posts/selectors';
 import { Box } from '@mui/material';
 
 import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
+import { BottomNavigationBar } from '../molecules';
 
 const Home: VFC = () => {
   const dispatch = useDispatch()
@@ -24,10 +25,11 @@ const Home: VFC = () => {
     setPosts(getPosts(selector))
   }, [selector])
 
-  const returnHeaderFunc = () => <HeaderWithTitleAndDrawer title="ホーム" />
+  const Header = <HeaderWithTitleAndDrawer title="ホーム" />
+  const Bottom = <BottomNavigationBar activeNav="home" />
 
   return (
-    <DefaultTemplate activeNavTitle="home" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="home" Header={Header} Bottom={Bottom}>
       {posts.length > 0 &&
         posts.map((post) => (
           <PostBox

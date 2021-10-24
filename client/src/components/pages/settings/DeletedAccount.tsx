@@ -1,3 +1,4 @@
+import { BottomNavigationBar } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { VFC } from 'react';
 
@@ -19,10 +20,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const DeletedAccount: VFC = () => {
   const classes = useStyles()
 
-  const returnHeaderFunc = () => <h1 className={classes.title}>アカウント削除</h1>
+  const Header = <h1 className={classes.title}>アカウント削除</h1>
+  const Bottom = <BottomNavigationBar activeNav="settings" />
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>
       <Box p={3}>
         <Box component="p">アカウントが削除されました。</Box>
         <Box component="p">ご利用いただきありがとうございました。</Box>

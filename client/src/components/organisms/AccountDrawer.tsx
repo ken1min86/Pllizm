@@ -14,7 +14,9 @@ import {
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getIcon, getUserId, getUserName } from '../../reducks/users/selectors';
+import {
+    getIcon, getPerformedRefract, getUserId, getUserName
+} from '../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +55,7 @@ const AccountDrawer: VFC = () => {
   const userName = getUserName(selector)
   const userId = getUserId(selector)
   const icon = getIcon(selector)
+  const performedRefract = getPerformedRefract(selector)
 
   const [state, setState] = useState({ left: false })
   const [error, setError] = useState('')
@@ -99,17 +102,19 @@ const AccountDrawer: VFC = () => {
             <span className={classes.userId}>@{userId}</span>
           </Box>
           <List>
-            <ListItem
-              button
-              onClick={() => {
-                dispatch(push(`/users/${userId}`))
-              }}
-            >
-              <ListItemIcon>
-                <PersonOutlineOutlinedIcon fontSize="large" />
-              </ListItemIcon>
-              <ListItemText primary="プロフィール" />
-            </ListItem>
+            {performedRefract && (
+              <ListItem
+                button
+                onClick={() => {
+                  dispatch(push(`/users/${userId}`))
+                }}
+              >
+                <ListItemIcon>
+                  <PersonOutlineOutlinedIcon fontSize="large" />
+                </ListItemIcon>
+                <ListItemText primary="プロフィール" />
+              </ListItem>
+            )}
             <ListItem
               button
               onClick={() => {

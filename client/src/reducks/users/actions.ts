@@ -1,6 +1,6 @@
 import {
-    DisableLockDescriptionAction, GetStatusOfRightToUsePlizmAction, SignInAction, SignOutAction,
-    SignUpAction
+    DisableLockDescriptionAction, GetPerformedRefractAction, GetStatusOfRightToUsePlizmAction,
+    SignInAction, SignOutAction, SignUpAction
 } from '../../util/types/redux/users';
 
 export const SIGN_UP = 'SIGN_UP'
@@ -62,5 +62,13 @@ export const getStatusOfRightToUsePlizmAction: GetStatusOfRightToUsePlizmAction 
   type: 'GET_STATUS_OF_RIGHT_TO_USE_PLIZM',
   payload: {
     hasRightToUsePlizm: userState.hasRightToUsePlizm,
+  },
+})
+
+export const GET_PERFORMED_REFRACT = 'GET_PERFORMED_REFRACT'
+export const getPerformedRefractAction: GetPerformedRefractAction = (userState) => ({
+  type: 'GET_PERFORMED_REFRACT',
+  payload: {
+    performedRefract: userState.performedRefract,
   },
 })

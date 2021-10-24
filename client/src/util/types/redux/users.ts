@@ -72,6 +72,13 @@ export type GetStatusOfRightToUsePlizmAction = (userState: { hasRightToUsePlizm:
   }
 }
 
+export type GetPerformedRefractAction = (userState: { performedRefract: boolean }) => {
+  type: string
+  payload: {
+    performedRefract: boolean
+  }
+}
+
 // ***************************************
 // Reducers
 export type Reducer = (
@@ -85,11 +92,12 @@ export type Reducer = (
     icon: string
     needDescriptionAboutLock: boolean
     hasRightToUsePlizm: boolean
+    performedRefract: boolean
   },
   action: {
     type: string
     payload: {
-      isSignedIn?: boolean
+      isSignedIn: boolean
       uid?: string
       accessToken?: string
       client?: string
@@ -97,7 +105,8 @@ export type Reducer = (
       userName?: string
       icon?: string
       needDescriptionAboutLock: boolean
-      hasRightToUsePlizm?: boolean
+      hasRightToUsePlizm: boolean
+      performedRefract: boolean
     }
   },
 ) => {
@@ -124,6 +133,7 @@ export type Users = {
   icon: string
   needDescriptionAboutLock: boolean
   hasRightToUsePlizm: boolean
+  performedRefract: boolean
 }
 
 export type UsersOfGetState = () => {
@@ -172,4 +182,8 @@ export type RequestHeadersForAuthentication = {
 export type GetStatusOfRightToUsePlizmResponse = {
   // eslint-disable-next-line camelcase
   has_right_to_use_plizm: boolean
+}
+
+export type GetPerformedRefractResponse = {
+  performed: boolean
 }

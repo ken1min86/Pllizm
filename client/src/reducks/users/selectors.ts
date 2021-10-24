@@ -11,3 +11,4 @@ export const getUserId = createSelector([usersSelector], (state) => state.userId
 export const getUserName = createSelector([usersSelector], (state) => state.userName)
 export const getNeedDescriptionAboutLock = createSelector([usersSelector], (state) => state.needDescriptionAboutLock)
 export const getHasRightToUsePlizm = createSelector([usersSelector], (state) => state.hasRightToUsePlizm)
+export const getPerformedRefract = createSelector([usersSelector], (state) => state.performedRefract)

@@ -1,4 +1,4 @@
-import { HeaderWithBackAndTitle } from 'components/molecules';
+import { BottomNavigationBar, HeaderWithBackAndTitle } from 'components/molecules';
 import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import { VFC } from 'react';
@@ -29,10 +29,11 @@ const AccountSetting: VFC = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const returnHeaderFunc = () => <HeaderWithBackAndTitle title="設定" />
+  const Header = <HeaderWithBackAndTitle title="設定" />
+  const Bottom = <BottomNavigationBar activeNav="settings" />
 
   return (
-    <DefaultTemplate activeNavTitle="settings" returnHeaderFunc={returnHeaderFunc}>
+    <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>
       <List component="nav" aria-label="Account settings">
         <ListItemButton
           className={classes.listItem}

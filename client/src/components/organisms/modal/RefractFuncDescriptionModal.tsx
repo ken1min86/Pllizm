@@ -2,7 +2,7 @@ import { ContainedRoundedCornerButton } from 'components/atoms';
 import { useState, VFC } from 'react';
 
 import HelpIcon from '@mui/icons-material/Help';
-import { Box, Button, Modal, Theme } from '@mui/material';
+import { Box, Modal, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
       maxWidth: 388,
+    },
+    buttonWrapper: {
+      display: 'flex',
     },
     textButton: {
       fontSize: 12,
@@ -58,7 +61,7 @@ type Props = {
   questionButtonSize?: 'inherit' | 'large' | 'medium' | 'small'
 }
 
-const RefractFuncDescriptionModal: VFC<Props> = ({ type, questionButtonSize }) => {
+const RefractFuncDescriptionModal: VFC<Props> = ({ type, questionButtonSize = 'medium' }) => {
   const classes = useStyles()
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -66,14 +69,14 @@ const RefractFuncDescriptionModal: VFC<Props> = ({ type, questionButtonSize }) =
 
   return (
     <div>
-      <Button onClick={handleOpen}>
+      <button type="button" onClick={handleOpen} className={classes.buttonWrapper}>
         {type === 'text' && (
           <p className={classes.textButton}>
             <small>※</small>リフラクトとは
           </p>
         )}
         {type === 'questionButton' && <HelpIcon className={classes.iconButton} fontSize={questionButtonSize} />}
-      </Button>
+      </button>
       <Modal
         open={open}
         onClose={handleClose}
