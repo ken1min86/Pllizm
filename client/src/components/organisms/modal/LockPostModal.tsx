@@ -45,9 +45,10 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   locked: boolean
   postId: string
+  disableAllOnClick?: boolean
 }
 
-const LockPostModal: VFC<Props> = ({ locked, postId }) => {
+const LockPostModal: VFC<Props> = ({ locked, postId, disableAllOnClick = false }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
@@ -64,6 +65,7 @@ const LockPostModal: VFC<Props> = ({ locked, postId }) => {
   }
 
   const handleClickIconToLock = () => {
+    if (disableAllOnClick) return
     if (needDescriptionAboutLock) {
       setOpen(true)
     } else {

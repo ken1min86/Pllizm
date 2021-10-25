@@ -118,7 +118,11 @@ const Search: VFC = () => {
     </>
   )
 
-  const Bottom = <BottomNavigationBar activeNav="search" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="search" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="search" Header={Header} Bottom={Bottom}>
