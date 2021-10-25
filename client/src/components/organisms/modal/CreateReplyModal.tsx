@@ -38,6 +38,7 @@ type Props = {
   repliedPostImage?: string
   repliedUserId?: string
   repliedUserName?: string
+  disableAllOnClick?: boolean
 }
 
 const CreateReplyModal: VFC<Props> = ({
@@ -48,13 +49,14 @@ const CreateReplyModal: VFC<Props> = ({
   repliedUserIcon,
   repliedUserId,
   repliedUserName,
+  disableAllOnClick = false,
 }) => {
   const classes = useStyles()
 
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => {
-    setOpen(true)
+    if (!disableAllOnClick) setOpen(true)
   }
 
   const handleClose = () => {

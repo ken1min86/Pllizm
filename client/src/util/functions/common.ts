@@ -7,6 +7,7 @@ import {
 } from 'util/types/redux/users';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
+import { RefractCandidateInThread } from '../types/hooks/posts';
 
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -97,6 +98,19 @@ export const formatPostsOfMeAndFollower = (posts: Array<ExistentPosts>): Array<E
 
 export const formatPostsOfRefractCandidate = (posts: Array<RefractCandidate>): Array<RefractCandidate> => {
   const postsWithIcon: Array<RefractCandidate> = posts.map((post) => {
+    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
+    const postWithIcon = { ...post, icon_url: iconUrl }
+
+    return postWithIcon
+  })
+
+  return postsWithIcon
+}
+
+export const formatPostsOfRefractCandidateInThread = (
+  posts: Array<RefractCandidateInThread>,
+): Array<RefractCandidateInThread> => {
+  const postsWithIcon: Array<RefractCandidateInThread> = posts.map((post) => {
     const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
     const postWithIcon = { ...post, icon_url: iconUrl }
 

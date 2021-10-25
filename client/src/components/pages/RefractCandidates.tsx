@@ -147,7 +147,7 @@ const RefractCandidates: VFC = () => {
               </Box>
               <Divider />
               <Box sx={{ height: 40, display: 'flex', alignItems: 'center' }}>
-                <Link className={classes.detailLink} to={`/saturday/reflects/candidates/${post.id}`}>
+                <Link className={classes.detailLink} to={`/saturday/refracts/candidates/${post.id}`}>
                   詳細を表示
                 </Link>
               </Box>

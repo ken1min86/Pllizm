@@ -29,6 +29,12 @@ export type RefractCandidate = ExistentPosts & {
   category: 'reply' | 'like'
 }
 
+export type RefractCandidateInThread = ExistentPosts & {
+  status: 'exist' | 'deleted' | 'not_exist'
+  // eslint-disable-next-line camelcase
+  posted_by?: 'me' | 'follower' | 'not_follower'
+}
+
 // ***************************************
 // Responses
 export type ResponstOfExistentPosts = {
@@ -37,4 +43,8 @@ export type ResponstOfExistentPosts = {
 
 export type ResponstOfRefractCandidates = {
   posts: Array<RefractCandidate>
+}
+
+export type ResponstOfRefractCandidatesInThread = {
+  posts: Array<RefractCandidateInThread>
 }

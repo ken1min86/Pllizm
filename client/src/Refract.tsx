@@ -14,7 +14,7 @@ const Refract: FC = ({ children }) => {
   const location = useLocation().pathname
 
   useEffect(() => {
-    if (!performedRefract) dispatch(push('/saturday/refracts/candidates'))
+    if (!performedRefract && location.indexOf('/saturday')) dispatch(push('/saturday/refracts/candidates'))
     if (performedRefract && !location.indexOf('/saturday')) dispatch(push('/home'))
   }, [dispatch, location, performedRefract])
 
