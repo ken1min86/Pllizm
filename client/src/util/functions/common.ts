@@ -1,7 +1,10 @@
 import camelcaseKeys from 'camelcase-keys';
+import Cookies from 'js-cookie';
 import { ExistentPosts, RefractCandidate } from 'util/types/hooks/posts';
 import { PostInThread, Threads } from 'util/types/redux/threads';
-import { RequestHeadersForAuthentication, UsersOfGetState } from 'util/types/redux/users';
+import {
+    ListenAuthStateRequest, RequestHeadersForAuthentication, UsersOfGetState
+} from 'util/types/redux/users';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 
@@ -9,6 +12,20 @@ export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
   return regex.test(email)
+}
+
+export const createRequestHeaderUsingCookie = (): ListenAuthStateRequest => {
+  const accessTokenInCookie = Cookies.get('access-token')
+  const clientInCookie = Cookies.get('client')
+  const uidInCookie = Cookies.get('uid')
+
+  const requestHeaders: ListenAuthStateRequest = {
+    'access-token': accessTokenInCookie,
+    client: clientInCookie,
+    uid: uidInCookie,
+  }
+
+  return requestHeaders
 }
 
 export const createTimeToDisplay = (postedAt: string): string => {
