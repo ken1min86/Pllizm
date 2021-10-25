@@ -1,4 +1,4 @@
-import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components/atoms';
+import { FollowRelatedButton, OutlinedRoundedCornerButton } from 'components/atoms';
 import { push } from 'connected-react-router';
 import useSearchUsers from 'hooks/useSearchUsers';
 import { useEffect, useState, VFC } from 'react';
@@ -102,7 +102,7 @@ const UsingCriteriaModal: VFC = () => {
                 ),
             )}
           <Box sx={{ maxWidth: 131, margin: '40px auto 0 auto' }}>
-            <OutlinedBlueRoundedCornerButton onClick={handleClose} label="閉じる" color="#2699fb" />
+            <OutlinedRoundedCornerButton onClick={handleClose} label="閉じる" color="#2699fb" />
           </Box>
         </Box>
       </Modal>

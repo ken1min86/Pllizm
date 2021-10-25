@@ -1,4 +1,4 @@
-import { FollowRelatedButton, OutlinedBlueRoundedCornerButton } from 'components/atoms';
+import { FollowRelatedButton, OutlinedRoundedCornerButton } from 'components/atoms';
 import { BottomNavigationBar, PostBox } from 'components/molecules';
 import { HeaderWithTitleAndDrawer, UsingCriteriaModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
@@ -185,7 +185,7 @@ const Profile: VFC = () => {
             <Avatar alt="User icon" src={userProfile.icon_url} className={classes.userIcon} />
             {userProfile.is_current_user && (
               <Box>
-                <OutlinedBlueRoundedCornerButton
+                <OutlinedRoundedCornerButton
                   label="プロフィールを編集"
                   onClick={() => {
                     dispatch(push('/settings/profile'))

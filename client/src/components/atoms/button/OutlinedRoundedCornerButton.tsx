@@ -27,7 +27,7 @@ type Props = {
   color: string
 }
 
-const OutlinedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label, color }) => {
+const OutlinedRoundedCornerButton: VFC<Props> = ({ onClick, label, color }) => {
   const classes = useStyles({})
 
   return (
@@ -42,4 +42,4 @@ const OutlinedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label, color }) 
   )
 }
 
-export default OutlinedBlueRoundedCornerButton
+export default OutlinedRoundedCornerButton
