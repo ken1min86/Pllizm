@@ -1,3 +1,4 @@
+import { OutlinedRoundedCornerButton } from 'components/atoms';
 import { useState } from 'react';
 
 import { Box, Modal } from '@mui/material';
@@ -9,7 +10,9 @@ const SkipRefractModal = () => {
 
   return (
     <>
-      <Box onClick={handleOpen}>Open modal</Box>
+      <Box onClick={handleOpen}>
+        <OutlinedRoundedCornerButton onClick={handleOpen} label="スキップ" color="#f9f4ef" />
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}
