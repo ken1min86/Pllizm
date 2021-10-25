@@ -1,9 +1,8 @@
 import { LogoLink } from 'components/atoms';
 import { IconWithTextLink } from 'components/molecules';
 import { AccountLogoutPopover, CreatePostModal } from 'components/organisms';
-import { push } from 'connected-react-router';
 import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
     getHasRightToUsePlizm, getPerformedRefract, getUserId, getUserName
@@ -153,7 +152,6 @@ type Props = {
 
 const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }) => {
   const classes = useStyles()
-  const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
   const userId = getUserId(selector)
   const userName = getUserName(selector)
@@ -169,7 +167,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
   const isActiveOfSettings = activeNavTitle === 'settings'
 
   const handleOnClickToHome = () => {
-    dispatch(push('/home'))
+    window.location.href = '/home'
   }
 
   return (
