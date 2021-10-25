@@ -1,4 +1,4 @@
-import { AccountDrawer } from 'components/organisms';
+import { AccountDrawer, SkipRefractModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
 import { Link } from 'react-router-dom';
@@ -63,11 +63,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     bottomContainer: {
       backgroundColor: '#333333',
+      padding: 16,
+      display: 'flex',
+      gap: 16,
+      justifyContent: 'space-evenly',
+      width: '100%',
       [theme.breakpoints.up('sm')]: {
-        height: 64,
+        height: 80,
       },
       [theme.breakpoints.down('sm')]: {
         height: 100,
+      },
+    },
+    modalButton: {
+      [theme.breakpoints.up('sm')]: {
+        width: '30%',
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: '45%',
       },
     },
   }),
@@ -116,7 +129,16 @@ const RefractCandidates: VFC = () => {
     </Box>
   )
 
-  const Bottom = <Box className={classes.bottomContainer} />
+  const Bottom = (
+    <Box className={classes.bottomContainer}>
+      <Box className={classes.modalButton}>
+        <SkipRefractModal />
+      </Box>
+      <Box className={classes.modalButton}>
+        <SkipRefractModal />
+      </Box>
+    </Box>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="refract" Header={Header} Bottom={Bottom}>
