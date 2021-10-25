@@ -190,6 +190,7 @@ const Profile: VFC = () => {
                   onClick={() => {
                     dispatch(push('/settings/profile'))
                   }}
+                  color="#2699fb"
                 />
               </Box>
             )}

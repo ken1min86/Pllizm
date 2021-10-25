@@ -1,8 +1,8 @@
-import { VFC } from 'react'
+import { VFC } from 'react';
 
-import Button from '@mui/material/Button'
-import createStyles from '@mui/styles/createStyles'
-import makeStyles from '@mui/styles/makeStyles'
+import Button from '@mui/material/Button';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -13,11 +13,9 @@ const useStyles = makeStyles(() =>
       width: '100%',
       borderRadius: '24px',
       fontWeight: 'bold',
-      border: '2px solid #2699fb',
       '&:hover': {
         opacity: '0.7',
         transition: 'all 0.3s ease 0s',
-        border: '2px solid #2699fb',
       },
     },
   }),
@@ -26,13 +24,19 @@ const useStyles = makeStyles(() =>
 type Props = {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
   label: string
+  color: string
 }
 
-const OutlinedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label }) => {
+const OutlinedBlueRoundedCornerButton: VFC<Props> = ({ onClick, label, color }) => {
   const classes = useStyles({})
 
   return (
-    <Button color="info" className={classes.button} variant="outlined" onClick={onClick}>
+    <Button
+      className={classes.button}
+      variant="outlined"
+      onClick={onClick}
+      sx={{ color: `${color}`, border: `2px solid ${color}`, '&:hover': { border: `2px solid ${color}` } }}
+    >
       {label}
     </Button>
   )

@@ -122,7 +122,12 @@ const SigninModal: VFC<Props> = ({ type }) => {
   return (
     <>
       {type === 'button' && (
-        <OutlinedBlueRoundedCornerButton label="ログイン" onClick={openModal} data-testid="signin-link-in-button" />
+        <OutlinedBlueRoundedCornerButton
+          label="ログイン"
+          onClick={openModal}
+          color="#2699fb"
+          data-testid="signin-link-in-button"
+        />
       )}
       {type === 'text' && (
         <button type="button" className={classes.signInLink} onClick={openModal} data-testid="signin-link-in-text">

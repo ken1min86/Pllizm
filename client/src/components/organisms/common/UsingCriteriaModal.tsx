@@ -102,7 +102,7 @@ const UsingCriteriaModal: VFC = () => {
                 ),
             )}
           <Box sx={{ maxWidth: 131, margin: '40px auto 0 auto' }}>
-            <OutlinedBlueRoundedCornerButton onClick={handleClose} label="閉じる" />
+            <OutlinedBlueRoundedCornerButton onClick={handleClose} label="閉じる" color="#2699fb" />
           </Box>
         </Box>
       </Modal>
