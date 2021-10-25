@@ -116,7 +116,11 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
   }
 
   const Header = <HeaderWithBackAndTitle title={userName} />
-  const Bottom = <BottomNavigationBar activeNav="none" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="none" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>

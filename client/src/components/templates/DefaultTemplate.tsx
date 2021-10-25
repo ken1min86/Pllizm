@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         borderRight: '1px solid #EEEEEE',
         borderLeft: '1px solid #EEEEEE',
-        width: '600px',
+        width: '602px',
       },
       [theme.breakpoints.down('sm')]: {
         minWidth: '100vw',
@@ -117,10 +117,16 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.disabled,
       marginRight: 16,
     },
-    buttomNavContainer: {
+    bottomNavContainer: {
       position: 'fixed',
       bottom: 0,
-      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: '600px',
+      },
+      [theme.breakpoints.down('sm')]: {
+        minWidth: '100vw',
+        width: '100%',
+      },
     },
     createPostModalContainer: {
       [theme.breakpoints.up('lg')]: {
@@ -172,9 +178,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
         <Box className={classes.mainContainer}>
           <header className={classes.header}>{Header}</header>
           <main className={classes.main}>{children}</main>
-          <Hidden smUp>
-            <Box className={classes.buttomNavContainer}>{Bottom}</Box>
-          </Hidden>
+          <Box className={classes.bottomNavContainer}>{Bottom}</Box>
           {hasRightToUsePlizm && performedRefract && (
             <Hidden smUp>
               <Box className={classes.createPostModalContainerOfMobile}>

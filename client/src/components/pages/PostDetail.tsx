@@ -9,7 +9,7 @@ import { getThreadPosts } from 'reducks/threads/selectors';
 import { containDisplayableChild, containDisplayablePosts } from 'util/functions/common';
 import { Threads } from 'util/types/redux/threads';
 
-import { Box } from '@mui/material';
+import { Box, Hidden } from '@mui/material';
 
 const PostDetail: VFC = () => {
   const dispatch = useDispatch()
@@ -32,7 +32,11 @@ const PostDetail: VFC = () => {
   }, [selector])
 
   const Header = <HeaderWithTitleAndDrawer title="投稿" />
-  const Bottom = <BottomNavigationBar activeNav="none" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="none" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>

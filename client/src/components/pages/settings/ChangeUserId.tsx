@@ -7,7 +7,7 @@ import { editUserId } from 'reducks/users/operations';
 import { getUserId } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
-import { Box, TextField } from '@mui/material';
+import { Box, Hidden, TextField } from '@mui/material';
 
 const ChangeUserId: VFC = () => {
   const dispatch = useDispatch()
@@ -49,7 +49,11 @@ const ChangeUserId: VFC = () => {
     </Box>
   )
 
-  const Bottom = <BottomNavigationBar activeNav="settings" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="settings" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>

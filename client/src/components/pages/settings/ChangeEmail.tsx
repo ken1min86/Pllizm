@@ -5,7 +5,7 @@ import { useState, VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { editEmail } from 'reducks/users/operations';
 
-import { Box, TextField } from '@mui/material';
+import { Box, Hidden, TextField } from '@mui/material';
 
 const ChangeEmail: VFC = () => {
   const dispatch = useDispatch()
@@ -43,7 +43,11 @@ const ChangeEmail: VFC = () => {
     </Box>
   )
 
-  const Bottom = <BottomNavigationBar activeNav="settings" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="settings" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>

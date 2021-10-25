@@ -11,7 +11,7 @@ import { useParams } from 'react-router';
 import { Users } from 'util/types/redux/users';
 
 import { TabContext, TabList } from '@mui/lab';
-import { Avatar, Box, CircularProgress, Tab, Theme } from '@mui/material';
+import { Avatar, Box, CircularProgress, Hidden, Tab, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -169,7 +169,11 @@ const Profile: VFC = () => {
   }
 
   const Header = <HeaderWithTitleAndDrawer title={userProfile?.user_name ? userProfile.user_name : ''} />
-  const Bottom = <BottomNavigationBar activeNav={activeNavTitle} />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav={activeNavTitle} />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle={activeNavTitle} Header={Header} Bottom={Bottom}>
