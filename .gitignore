@@ -40,6 +40,9 @@
 # Ignore env
 /server/.env
 /client/.env
+/client/.env.test
+/client/.env.development
+/client/.env.production
 
 # Ignore seeds
 /server/db/seeds.rb

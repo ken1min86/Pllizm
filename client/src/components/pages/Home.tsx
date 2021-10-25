@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPostsOfMeAndFollower } from 'reducks/posts/operations';
 import { getPosts } from 'reducks/posts/selectors';
 
-import { Box } from '@mui/material';
+import { Box, Hidden } from '@mui/material';
 
 import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
 import { BottomNavigationBar } from '../molecules';
@@ -26,7 +26,11 @@ const Home: VFC = () => {
   }, [selector])
 
   const Header = <HeaderWithTitleAndDrawer title="ホーム" />
-  const Bottom = <BottomNavigationBar activeNav="home" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="home" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="home" Header={Header} Bottom={Bottom}>

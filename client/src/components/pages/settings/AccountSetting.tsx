@@ -8,7 +8,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
-import { List, ListItemButton, ListItemText } from '@mui/material';
+import { Hidden, List, ListItemButton, ListItemText } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -30,7 +30,11 @@ const AccountSetting: VFC = () => {
   const dispatch = useDispatch()
 
   const Header = <HeaderWithBackAndTitle title="設定" />
-  const Bottom = <BottomNavigationBar activeNav="settings" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="settings" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>

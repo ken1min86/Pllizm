@@ -83,6 +83,7 @@ type Props = {
   image?: string
   needDividerOnDisplay?: boolean
   status: 'exist' | 'deleted'
+  disableAllOnClick?: boolean
 }
 
 const PostBox: VFC<Props> = ({
@@ -100,6 +101,7 @@ const PostBox: VFC<Props> = ({
   image,
   needDividerOnDisplay = false,
   status,
+  disableAllOnClick = false,
 }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -110,15 +112,15 @@ const PostBox: VFC<Props> = ({
   const [countOfLikes, setCountOfLikes] = useState(likesCount)
 
   const handleClickToShowDetail = () => {
-    dispatch(push(`/posts/${postId}`))
+    if (!disableAllOnClick) dispatch(push(`/posts/${postId}`))
   }
 
   const handleClickToUnlike = () => {
-    dispatch(unlikePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
+    if (!disableAllOnClick) dispatch(unlikePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
   }
 
   const handleClickToLike = () => {
-    dispatch(likePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
+    if (!disableAllOnClick) dispatch(likePost(postId, setIsLikedByMe, setCountOfLikes, countOfLikes))
   }
 
   const handleClickToStopPropagation = (event: React.MouseEvent<HTMLElement>) => {
@@ -135,7 +137,7 @@ const PostBox: VFC<Props> = ({
               onClick={handleClickToStopPropagation}
               sx={{ display: 'flex', flexDirection: 'column', marginRight: 2, alignItems: 'center', gap: 0.5 }}
             >
-              <UsersIcon userId={userId} icon={icon} />
+              <UsersIcon userId={userId} icon={icon} disableAllOnClick={disableAllOnClick} />
               {needDividerOnDisplay && <div className={classes.divider} />}
             </Box>
             <Box sx={{ width: '100%' }}>
@@ -163,6 +165,7 @@ const PostBox: VFC<Props> = ({
                     repliedUserIcon={icon}
                     repliedUserId={userId}
                     repliedUserName={userName}
+                    disableAllOnClick={disableAllOnClick}
                   />
                   <Box sx={{ display: 'flex', alignItems: 'center' }} onClick={handleClickToStopPropagation}>
                     {isLikedByMe && (
@@ -177,12 +180,14 @@ const PostBox: VFC<Props> = ({
                     )}
                     {countOfLikes !== 0 && <span className={classes.count}>{countOfLikes}</span>}
                   </Box>
-                  {locked != null && <LockPostModal locked={locked} postId={postId} />}
+                  {locked != null && (
+                    <LockPostModal locked={locked} postId={postId} disableAllOnClick={disableAllOnClick} />
+                  )}
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <span className={classes.time}>{timeToDisplay}</span>
                   <Box className={classes.settingButton} onClick={handleClickToStopPropagation}>
-                    {postedBy === 'me' && <DeletePostPopover postId={postId} />}
+                    {postedBy === 'me' && <DeletePostPopover postId={postId} disableAllOnClick={disableAllOnClick} />}
                   </Box>
                 </Box>
               </Box>

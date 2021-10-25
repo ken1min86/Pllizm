@@ -8,7 +8,7 @@ import { changeProfile } from 'reducks/users/operations';
 import { Users } from 'util/types/redux/users';
 
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { Avatar, Box, IconButton, TextField, Theme } from '@mui/material';
+import { Avatar, Box, Hidden, IconButton, TextField, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -114,7 +114,11 @@ const EditProfile: VFC = () => {
     </Box>
   )
 
-  const Bottom = <BottomNavigationBar activeNav="none" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="none" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>

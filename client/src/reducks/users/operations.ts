@@ -2,14 +2,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { push } from 'connected-react-router';
 import Cookies from 'js-cookie';
-import { createRequestHeader, isValidEmailFormat } from 'util/functions/common';
+import {
+    createRequestHeader, createRequestHeaderUsingCookie, isValidEmailFormat
+} from 'util/functions/common';
 import { ErrorStatus } from 'util/types/common';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
-    GetPerformedRefractResponse, GetStatusOfRightToUsePlizmResponse, ListenAuthStateRequest,
-    SignInRequest, SignUpRequest, SignUpResponse, UsersOfGetState
+    GetPerformedRefractResponse, GetStatusOfRightToUsePlizmResponse, SignInRequest, SignUpRequest,
+    SignUpResponse, UsersOfGetState
 } from '../../util/types/redux/users';
 import {
     disableLockDescriptionAction, getPerformedRefractAction, getStatusOfRightToUsePlizmAction,
@@ -170,16 +172,7 @@ export const signOut =
 export const listenAuthState =
   () =>
   async (dispatch: any): Promise<void> => {
-    const accessTokenInCookie = Cookies.get('access-token')
-    const clientInCookie = Cookies.get('client')
-    const uidInCookie = Cookies.get('uid')
-
-    const requestData: ListenAuthStateRequest = {
-      'access-token': accessTokenInCookie,
-      client: clientInCookie,
-      uid: uidInCookie,
-    }
-
+    const requestData = createRequestHeaderUsingCookie()
     await axiosBase
       .get('/v1/auth/validate_token', { params: requestData })
       .then((response) => {
@@ -558,15 +551,7 @@ export const destroyAccount =
 export const getStatusOfRightToUsePlizm =
   () =>
   async (dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void): Promise<void> => {
-    const accessTokenInCookie = Cookies.get('access-token')
-    const clientInCookie = Cookies.get('client')
-    const uidInCookie = Cookies.get('uid')
-
-    const requestHeaders: ListenAuthStateRequest = {
-      'access-token': accessTokenInCookie,
-      client: clientInCookie,
-      uid: uidInCookie,
-    }
+    const requestHeaders = createRequestHeaderUsingCookie()
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
@@ -581,15 +566,7 @@ export const getStatusOfRightToUsePlizm =
 export const getPerformedRefract =
   () =>
   async (dispatch: (arg0: { type: string; payload: { performedRefract: boolean } }) => void): Promise<void> => {
-    const accessTokenInCookie = Cookies.get('access-token')
-    const clientInCookie = Cookies.get('client')
-    const uidInCookie = Cookies.get('uid')
-
-    const requestHeaders: ListenAuthStateRequest = {
-      'access-token': accessTokenInCookie,
-      client: clientInCookie,
-      uid: uidInCookie,
-    }
+    const requestHeaders = createRequestHeaderUsingCookie()
     await axiosBase
       .get<GetPerformedRefractResponse>('v1/statuses/refracts', { headers: requestHeaders })
       .then((response) => {

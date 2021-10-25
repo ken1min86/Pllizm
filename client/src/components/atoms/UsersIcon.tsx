@@ -20,9 +20,10 @@ const useStyles = makeStyles(() =>
 type Proos = {
   icon: string
   userId?: string
+  disableAllOnClick?: boolean
 }
 
-const UsersIcon: VFC<Proos> = ({ userId, icon }) => {
+const UsersIcon: VFC<Proos> = ({ userId, icon, disableAllOnClick = false }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -30,7 +31,7 @@ const UsersIcon: VFC<Proos> = ({ userId, icon }) => {
 
   const handleOnClick = () => {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    dispatch(push(`/users/${userId}`))
+    if (!disableAllOnClick) dispatch(push(`/users/${userId}`))
   }
 
   return (

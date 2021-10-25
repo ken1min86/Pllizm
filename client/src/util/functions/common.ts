@@ -1,14 +1,32 @@
 import camelcaseKeys from 'camelcase-keys';
+import Cookies from 'js-cookie';
 import { ExistentPosts, RefractCandidate } from 'util/types/hooks/posts';
 import { PostInThread, Threads } from 'util/types/redux/threads';
-import { RequestHeadersForAuthentication, UsersOfGetState } from 'util/types/redux/users';
+import {
+    ListenAuthStateRequest, RequestHeadersForAuthentication, UsersOfGetState
+} from 'util/types/redux/users';
 
 import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
+import { RefractCandidateInThread } from '../types/hooks/posts';
 
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
   return regex.test(email)
+}
+
+export const createRequestHeaderUsingCookie = (): ListenAuthStateRequest => {
+  const accessTokenInCookie = Cookies.get('access-token')
+  const clientInCookie = Cookies.get('client')
+  const uidInCookie = Cookies.get('uid')
+
+  const requestHeaders: ListenAuthStateRequest = {
+    'access-token': accessTokenInCookie,
+    client: clientInCookie,
+    uid: uidInCookie,
+  }
+
+  return requestHeaders
 }
 
 export const createTimeToDisplay = (postedAt: string): string => {
@@ -80,6 +98,19 @@ export const formatPostsOfMeAndFollower = (posts: Array<ExistentPosts>): Array<E
 
 export const formatPostsOfRefractCandidate = (posts: Array<RefractCandidate>): Array<RefractCandidate> => {
   const postsWithIcon: Array<RefractCandidate> = posts.map((post) => {
+    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
+    const postWithIcon = { ...post, icon_url: iconUrl }
+
+    return postWithIcon
+  })
+
+  return postsWithIcon
+}
+
+export const formatPostsOfRefractCandidateInThread = (
+  posts: Array<RefractCandidateInThread>,
+): Array<RefractCandidateInThread> => {
+  const postsWithIcon: Array<RefractCandidateInThread> = posts.map((post) => {
     const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
     const postWithIcon = { ...post, icon_url: iconUrl }
 

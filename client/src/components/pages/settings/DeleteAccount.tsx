@@ -7,7 +7,7 @@ import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
 import { destroyAccount } from 'reducks/users/operations';
 
-import { Box } from '@mui/material';
+import { Box, Hidden } from '@mui/material';
 
 const DeleteAccount: VFC = () => {
   const dispatch = useDispatch()
@@ -19,7 +19,11 @@ const DeleteAccount: VFC = () => {
   const dummyFunc = () => false
 
   const Header = <HeaderWithBackAndTitle title="アカウント削除" />
-  const Bottom = <BottomNavigationBar activeNav="settings" />
+  const Bottom = (
+    <Hidden smUp>
+      <BottomNavigationBar activeNav="settings" />
+    </Hidden>
+  )
 
   return (
     <DefaultTemplate activeNavTitle="settings" Header={Header} Bottom={Bottom}>

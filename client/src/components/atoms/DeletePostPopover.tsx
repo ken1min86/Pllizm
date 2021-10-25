@@ -30,9 +30,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   postId: string
+  disableAllOnClick?: boolean
 }
 
-const DeletePostPopover: VFC<Props> = ({ postId }) => {
+const DeletePostPopover: VFC<Props> = ({ postId, disableAllOnClick = false }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -41,7 +42,7 @@ const DeletePostPopover: VFC<Props> = ({ postId }) => {
   const id = open ? 'simple-popover' : undefined
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
+    if (!disableAllOnClick) setAnchorEl(event.currentTarget)
   }
 
   const handleClose = () => {
