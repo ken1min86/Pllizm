@@ -14,4 +14,5 @@ export { default as RefractFuncDescriptionModal } from './modal/RefractFuncDescr
 export { default as SignupModal } from './modal/SignupModal'
 // eslint-disable-next-line import/no-cycle
 export { default as SigninModal } from './modal/SigninModal'
+export { default as SkipRefractModal } from './modal/SkipRefractModal'
 export { default as UsingCriteriaModal } from './common/UsingCriteriaModal'

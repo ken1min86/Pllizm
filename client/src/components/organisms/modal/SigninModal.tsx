@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ErrorMessage, OutlinedBlueRoundedCornerButton
+    BasicTextField, BlueSquareButton, ErrorMessage, OutlinedRoundedCornerButton
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -122,7 +122,12 @@ const SigninModal: VFC<Props> = ({ type }) => {
   return (
     <>
       {type === 'button' && (
-        <OutlinedBlueRoundedCornerButton label="ログイン" onClick={openModal} data-testid="signin-link-in-button" />
+        <OutlinedRoundedCornerButton
+          label="ログイン"
+          onClick={openModal}
+          color="#2699fb"
+          data-testid="signin-link-in-button"
+        />
       )}
       {type === 'text' && (
         <button type="button" className={classes.signInLink} onClick={openModal} data-testid="signin-link-in-text">
