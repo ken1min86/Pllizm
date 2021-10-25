@@ -6,8 +6,8 @@ import Right from 'Right';
 import {
     About, AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId,
     DeleteAccount, DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail,
-    PrivacyPolicy, Profile, RefractCandidates, RelevantUsers, Search, SentMailOfPasswordReset,
-    TermsOfUse, Top
+    PrivacyPolicy, Profile, RefractCandidateDetail, RefractCandidates, RelevantUsers, Search,
+    SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -38,6 +38,7 @@ const Router: React.VFC = () => (
             <Right>
               <Switch>
                 <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
+                <Route exact path="/saturday/refracts/candidates/:id" component={RefractCandidateDetail} />
                 <Route exact path="/home" component={Home} />
                 <Route exact path="/posts/:id" component={PostDetail} />
               </Switch>
