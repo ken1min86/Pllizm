@@ -1,7 +1,7 @@
 import Auth from 'Auth';
 import { Route, Switch } from 'react-router';
 import Refract from 'Refract';
-import Restrict from 'Restrict';
+import Right from 'Right';
 
 import {
     About, AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId,
@@ -35,13 +35,13 @@ const Router: React.VFC = () => (
             <Route exact path="/relevant_users" component={RelevantUsers} />
             <Route exact path="/search" component={Search} />
             <Route exact path="/users/:id" component={Profile} />
-            <Restrict>
+            <Right>
               <Switch>
                 <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
                 <Route exact path="/home" component={Home} />
                 <Route exact path="/posts/:id" component={PostDetail} />
               </Switch>
-            </Restrict>
+            </Right>
           </Switch>
         </Refract>
       </Switch>
