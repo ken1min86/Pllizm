@@ -53,7 +53,7 @@ export type PostsOfMeAndFollower = {
   postedBy: 'me' | 'follower'
   userId?: string
   userName?: string
-  iconUrl: string
+  iconUrl?: string
   id: string
   content?: string
   imageUrl?: string

@@ -1,7 +1,6 @@
+import camelcaseKeys from 'camelcase-keys';
 import { axiosBase } from 'util/api';
-import {
-    createRequestHeader, formatPostInThread, formatPostsInThread
-} from 'util/functions/common';
+import { createRequestHeader } from 'util/functions/common';
 import { UsersOfGetState } from 'util/types/redux/users';
 
 import { Threads } from '../../util/types/redux/threads';
@@ -16,9 +15,9 @@ export const getThread =
       .get<Threads>(`/v1/posts/${postId}/threads`, { headers: requestHeaders })
       .then((response) => {
         const { parent, current, children } = response.data
-        const formattedParent = formatPostInThread(parent)
-        const formattedCurrent = formatPostInThread(current)
-        const formattedChildren = formatPostsInThread(children)
+        const formattedParent = camelcaseKeys(parent)
+        const formattedCurrent = camelcaseKeys(current)
+        const formattedChildren = children.map((child) => camelcaseKeys(child))
         const thread = { parent: formattedParent, current: formattedCurrent, children: formattedChildren }
         dispatch(getThreadAction(thread))
       })

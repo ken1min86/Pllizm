@@ -214,7 +214,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
               )}
               {hasRightToUsePlizm && performedRefract && (
                 <Box mb={1}>
-                  <IconWithTextLink title="リフラクト" path={`/${userId}/reflected_posts`} isActive={isActiveOfRefract}>
+                  <IconWithTextLink title="リフラクト" path="/reflected_posts" isActive={isActiveOfRefract}>
                     {isActiveOfRefract && <img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
                     {!isActiveOfRefract && (
                       <img src={LogoIconInactive} alt="ロゴアイコン" className={classes.logoIcon} />

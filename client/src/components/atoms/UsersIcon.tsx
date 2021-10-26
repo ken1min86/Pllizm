@@ -3,28 +3,14 @@ import { VFC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Avatar } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    img: {
-      width: 44,
-      height: 44,
-      display: 'block',
-      borderRadius: '50%',
-    },
-  }),
-)
 
 type Proos = {
-  icon: string
+  icon?: string
   userId?: string
   disableAllOnClick?: boolean
 }
 
 const UsersIcon: VFC<Proos> = ({ userId, icon, disableAllOnClick = false }) => {
-  const classes = useStyles()
   const dispatch = useDispatch()
 
   const isOnymousUser = userId != null
@@ -38,10 +24,10 @@ const UsersIcon: VFC<Proos> = ({ userId, icon, disableAllOnClick = false }) => {
     <>
       {isOnymousUser && (
         <button type="button" onClick={handleOnClick}>
-          <Avatar className={classes.img} src={icon} alt="アイコン" />
+          <Avatar src={icon} alt="アイコン" sx={{ width: 44, height: 44 }} />
         </button>
       )}
-      {!isOnymousUser && <Avatar className={classes.img} src={icon} alt="アイコン" />}
+      {!isOnymousUser && <Avatar src={icon} alt="アイコン" sx={{ width: 44, height: 44 }} />}
     </>
   )
 }

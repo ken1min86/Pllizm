@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { formatPostsOfRefractCandidateInThread } from 'util/functions/common';
 import { ErrorStatus } from 'util/types/common';
 import {
     RefractCandidateInThread, ResponstOfRefractCandidatesInThread
@@ -34,9 +33,7 @@ const useRefractCandidatesThread = (postId: string) => {
         headers: requestHeaders,
       })
       .then((response) => {
-        const postsData = response.data.posts
-        const formattedPostsData = formatPostsOfRefractCandidateInThread(postsData)
-        setPosts(formattedPostsData)
+        setPosts(response.data.posts)
       })
       .catch((error: ErrorStatus) => {
         const { status } = error.response
