@@ -4,7 +4,6 @@ import { getThread } from 'reducks/threads/operations';
 import { createRequestHeader } from 'util/functions/common';
 import { UsersOfGetState } from 'util/types/redux/users';
 
-import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
     PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation,
@@ -25,14 +24,8 @@ export const getPostsOfMeAndFollower =
       .then((response) => {
         const { posts } = response.data
         const postsWithCamelcaseKeys = posts.map((post) => camelcaseKeys(post))
-        const postsWithIcon: Array<PostsOfMeAndFollower> = postsWithCamelcaseKeys.map((post) => {
-          const iconUrl = post.iconUrl == null ? DefaultIcon : post.iconUrl
-          const postWithIcon = { ...post, iconUrl }
 
-          return postWithIcon
-        })
-
-        dispatch(getPostsOfMeAndFollowerAction(postsWithIcon))
+        dispatch(getPostsOfMeAndFollowerAction(postsWithCamelcaseKeys))
       })
       .catch((errors) => {
         console.log(errors)

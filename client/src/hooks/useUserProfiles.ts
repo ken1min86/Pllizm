@@ -6,8 +6,6 @@ import { ErrorStatus } from 'util/types/common';
 import { RequestHeaders, UserProfile } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
-import DefaultIcon from '../assets/img/DefaultIcon.jpg';
-
 const useUserProfiles = (paramsId: string) => {
   const selector = useSelector((state: { users: Users }) => state)
   const loginUserId = getUserId(selector)
@@ -38,7 +36,6 @@ const useUserProfiles = (paramsId: string) => {
       .get<UserProfile>(`/v1/users/${paramsId}`, { headers: requestHeaders })
       .then((response) => {
         const userData = response.data
-        userData.icon_url = userData.icon_url == null ? DefaultIcon : userData.icon_url
         setUserProfile(userData)
 
         if (userData.following) {

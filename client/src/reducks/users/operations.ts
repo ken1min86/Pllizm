@@ -7,7 +7,6 @@ import {
 } from 'util/functions/common';
 import { ErrorStatus } from 'util/types/common';
 
-import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
 import { axiosBase } from '../../util/api';
 import {
     GetPerformedRefractResponse, GetStatusOfRightToUsePlizmResponse, SignInRequest, SignUpRequest,
@@ -63,7 +62,6 @@ export const signUp =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
-        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signUpAction({
@@ -72,7 +70,7 @@ export const signUp =
             client,
             userId: userData.userid,
             userName: userData.username,
-            icon,
+            icon: userData.image.url,
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
@@ -126,7 +124,6 @@ export const signIn =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
-        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
@@ -135,7 +132,7 @@ export const signIn =
             client,
             userId: userData.userid,
             userName: userData.username,
-            icon,
+            icon: userData.image.url,
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
@@ -186,7 +183,7 @@ export const listenAuthState =
 
         const userData = response.data.data
         const { userid, username } = userData
-        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
+        const icon = userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
@@ -298,7 +295,7 @@ export const resetPassword =
         Cookies.set('uid', uidInHeader)
 
         const userData = response.data.data
-        const icon = userData.image.url == null ? DefaultIcon : userData.image.url
+        const icon = userData.image.url
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
@@ -360,7 +357,7 @@ export const changeProfile =
         const accessToken: string = headers['access-token']
         const { client, uid } = headers
         const userData = response.data.data
-        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+        const userIcon = userData.image.url
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
@@ -394,7 +391,7 @@ export const editUserId =
         const accessToken: string = headers['access-token']
         const { client, uid } = headers
         const userData = response.data.data
-        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+        const userIcon = userData.image.url
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
@@ -436,7 +433,6 @@ export const editEmail =
         const accessToken: string = headers['access-token']
         const { client, uid } = headers
         const userData = response.data.data
-        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
 
         Cookies.set('access-token', accessToken)
         Cookies.set('client', client)
@@ -450,7 +446,7 @@ export const editEmail =
             client,
             userId: userData.userid,
             userName: userData.username,
-            icon: userIcon,
+            icon: userData.image.url,
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
@@ -497,7 +493,7 @@ export const editPassword =
         const accessToken: string = headers['access-token']
         const { client, uid } = headers
         const userData = response.data.data
-        const userIcon = userData.image.url == null ? DefaultIcon : userData.image.url
+        const userIcon = userData.image.url
 
         Cookies.set('access-token', accessToken)
         Cookies.set('client', client)

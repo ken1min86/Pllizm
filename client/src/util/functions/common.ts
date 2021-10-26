@@ -1,13 +1,8 @@
-import camelcaseKeys from 'camelcase-keys';
 import Cookies from 'js-cookie';
-import { ExistentPosts, RefractCandidate } from 'util/types/hooks/posts';
 import { PostInThread, Threads } from 'util/types/redux/threads';
 import {
     ListenAuthStateRequest, RequestHeadersForAuthentication, UsersOfGetState
 } from 'util/types/redux/users';
-
-import DefaultIcon from '../../assets/img/DefaultIcon.jpg';
-import { RefractCandidateInThread } from '../types/hooks/posts';
 
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -54,6 +49,15 @@ export const createTimeToDisplay = (postedAt: string): string => {
   return timeToDisplay
 }
 
+export const formatTimeOfRfc3339ToDate = (timeOfRfc3339: string): string => {
+  const timeInJapan = new Date(Date.parse(timeOfRfc3339))
+  const year = timeInJapan.getFullYear()
+  const month = timeInJapan.getMonth() + 1
+  const date = timeInJapan.getDate()
+
+  return `${year}年${month}月${date}日`
+}
+
 export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersForAuthentication => {
   const { uid, accessToken, client } = getState().users
   const requestHeaders: RequestHeadersForAuthentication = {
@@ -63,61 +67,6 @@ export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersFo
   }
 
   return requestHeaders
-}
-
-export const formatPostInThread = (post: PostInThread): PostInThread => {
-  const postWithCamelcaseKeys = camelcaseKeys(post)
-  const iconUrl = postWithCamelcaseKeys.iconUrl == null ? DefaultIcon : postWithCamelcaseKeys.iconUrl
-  const postWithIcon = { ...postWithCamelcaseKeys, iconUrl }
-
-  return postWithIcon
-}
-
-export const formatPostsInThread = (posts: Array<PostInThread>): Array<PostInThread> => {
-  const postsWithCamelcaseKeys = posts.map((post) => camelcaseKeys(post))
-  const postsWithIcon: Array<PostInThread> = postsWithCamelcaseKeys.map((post) => {
-    const iconUrl = post.iconUrl == null ? DefaultIcon : post.iconUrl
-    const postWithIcon = { ...post, iconUrl }
-
-    return postWithIcon
-  })
-
-  return postsWithIcon
-}
-
-export const formatPostsOfMeAndFollower = (posts: Array<ExistentPosts>): Array<ExistentPosts> => {
-  const postsWithIcon: Array<ExistentPosts> = posts.map((post) => {
-    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
-    const postWithIcon = { ...post, icon_url: iconUrl }
-
-    return postWithIcon
-  })
-
-  return postsWithIcon
-}
-
-export const formatPostsOfRefractCandidate = (posts: Array<RefractCandidate>): Array<RefractCandidate> => {
-  const postsWithIcon: Array<RefractCandidate> = posts.map((post) => {
-    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
-    const postWithIcon = { ...post, icon_url: iconUrl }
-
-    return postWithIcon
-  })
-
-  return postsWithIcon
-}
-
-export const formatPostsOfRefractCandidateInThread = (
-  posts: Array<RefractCandidateInThread>,
-): Array<RefractCandidateInThread> => {
-  const postsWithIcon: Array<RefractCandidateInThread> = posts.map((post) => {
-    const iconUrl = post.icon_url == null ? DefaultIcon : post.icon_url
-    const postWithIcon = { ...post, icon_url: iconUrl }
-
-    return postWithIcon
-  })
-
-  return postsWithIcon
 }
 
 export const containDisplayablePosts = (thread: Threads): boolean => {

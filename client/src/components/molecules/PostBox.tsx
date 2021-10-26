@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type Props = {
   postedBy: 'me' | 'follower' | 'not_follower' | undefined
-  icon: string
+  icon?: string
   userId?: string
   userName?: string
   postId: string

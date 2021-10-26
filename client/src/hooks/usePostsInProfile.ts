@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { formatPostsOfMeAndFollower } from 'util/functions/common';
 import { ErrorStatus } from 'util/types/common';
 import { ExistentPosts, ResponstOfExistentPosts } from 'util/types/hooks/posts';
 import { RequestHeaders } from 'util/types/hooks/users';
@@ -30,9 +29,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         axiosBase
           .get<ResponstOfExistentPosts>('v1/posts/me', { headers: requestHeaders })
           .then((response) => {
-            const postsData = response.data.posts
-            const formattedPostsData = formatPostsOfMeAndFollower(postsData)
-            setPosts(formattedPostsData)
+            setPosts(response.data.posts)
           })
           .catch((error: ErrorStatus) => {
             const { status } = error.response
@@ -53,9 +50,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         axiosBase
           .get<ResponstOfExistentPosts>('v1/replies', { headers: requestHeaders })
           .then((response) => {
-            const postsData = response.data.posts
-            const formattedPostsData = formatPostsOfMeAndFollower(postsData)
-            setPosts(formattedPostsData)
+            setPosts(response.data.posts)
           })
           .catch((error: ErrorStatus) => {
             const { status } = error.response
@@ -75,9 +70,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         axiosBase
           .get<ResponstOfExistentPosts>('v1/locks', { headers: requestHeaders })
           .then((response) => {
-            const postsData = response.data.posts
-            const formattedPostsData = formatPostsOfMeAndFollower(postsData)
-            setPosts(formattedPostsData)
+            setPosts(response.data.posts)
           })
           .catch((error: ErrorStatus) => {
             const { status } = error.response
@@ -97,9 +90,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         axiosBase
           .get<ResponstOfExistentPosts>('v1/likes', { headers: requestHeaders })
           .then((response) => {
-            const postsData = response.data.posts
-            const formattedPostsData = formatPostsOfMeAndFollower(postsData)
-            setPosts(formattedPostsData)
+            setPosts(response.data.posts)
           })
           .catch((error: ErrorStatus) => {
             const { status } = error.response

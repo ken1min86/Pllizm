@@ -35,6 +35,29 @@ export type RefractCandidateInThread = ExistentPosts & {
   posted_by?: 'me' | 'follower' | 'not_follower'
 }
 
+export type PostRefractedByMe = RefractCandidateInThread
+
+export type PostRefractedByFollower = RefractCandidateInThread
+
+export type RefractPerformedByMe = {
+  // eslint-disable-next-line camelcase
+  refracted_at: string
+  posts: Array<PostRefractedByMe>
+}
+
+export type RefractPerformedByFollower = {
+  // eslint-disable-next-line camelcase
+  refracted_at: string
+  posts: Array<PostRefractedByFollower>
+  // eslint-disable-next-line camelcase
+  refracted_by: {
+    // eslint-disable-next-line camelcase
+    user_id: string
+    // eslint-disable-next-line camelcase
+    user_name: string
+  }
+}
+
 // ***************************************
 // Responses
 export type ResponstOfExistentPosts = {
@@ -47,4 +70,12 @@ export type ResponstOfRefractCandidates = {
 
 export type ResponstOfRefractCandidatesInThread = {
   posts: Array<RefractCandidateInThread>
+}
+
+export type ResponstOfRefractsPerformedByMe = {
+  refracts: Array<RefractPerformedByMe>
+}
+
+export type ResponstOfRefractsPerformedByFollower = {
+  refracts: Array<RefractPerformedByFollower>
 }
