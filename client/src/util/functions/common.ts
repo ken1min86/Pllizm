@@ -54,6 +54,15 @@ export const createTimeToDisplay = (postedAt: string): string => {
   return timeToDisplay
 }
 
+export const formatTimeOfRfc3339ToDate = (timeOfRfc3339: string): string => {
+  const timeInJapan = new Date(Date.parse(timeOfRfc3339))
+  const year = timeInJapan.getFullYear()
+  const month = timeInJapan.getMonth() + 1
+  const date = timeInJapan.getDate()
+
+  return `${year}年${month}月${date}日`
+}
+
 export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersForAuthentication => {
   const { uid, accessToken, client } = getState().users
   const requestHeaders: RequestHeadersForAuthentication = {

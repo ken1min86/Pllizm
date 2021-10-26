@@ -74,7 +74,7 @@ const BottomNavigationBar: VFC<Props> = ({ activeNav }) => {
       {activeNav !== 'refract' && (
         <BottomNavigationAction
           classes={classesToOverrideColor}
-          value={`/${userId}/reflected_posts`}
+          value="/reflected_posts"
           icon={<img src={LogoIconInactive} alt="ロゴアイコン" className={classes.logoIcon} />}
         />
       )}
