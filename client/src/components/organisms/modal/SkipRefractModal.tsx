@@ -17,9 +17,7 @@ const SkipRefractModal: VFC = () => {
 
   return (
     <>
-      <Box onClick={handleOpen}>
-        <OutlinedRoundedCornerButton onClick={handleOpen} label="スキップ" color="#f9f4ef" />
-      </Box>
+      <OutlinedRoundedCornerButton onClick={handleOpen} label="スキップ" color="#f9f4ef" />
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-title">
         <ModalForRefract
           title="リフラクトをスキップしますか？"

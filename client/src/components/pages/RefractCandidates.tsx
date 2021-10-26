@@ -1,4 +1,4 @@
-import { AccountDrawer, SkipRefractModal } from 'components/organisms';
+import { AccountDrawer, PerformRefractModal, SkipRefractModal } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import { useEffect, useState, VFC } from 'react';
 import { Link } from 'react-router-dom';
@@ -135,7 +135,7 @@ const RefractCandidates: VFC = () => {
         <SkipRefractModal />
       </Box>
       <Box className={classes.modalButton}>
-        <SkipRefractModal />
+        <PerformRefractModal refractCandidateId={selectedValue} />
       </Box>
     </Box>
   )
