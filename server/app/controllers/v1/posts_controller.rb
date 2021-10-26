@@ -253,7 +253,7 @@ module V1
           )
           formatted_refracted_posts.push(formatted_replied_posts)
         else
-          raise RuntimeError
+          # categoryがlike or replyでない場合は、リフラクトをスキップした時なので無視する。
         end
       end
       render json: { refracts: formatted_refracted_posts }, status: :ok
