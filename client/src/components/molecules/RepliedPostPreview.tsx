@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   content?: string
   image?: string
-  icon: string
+  icon?: string
   userId?: string
   userName?: string
 }

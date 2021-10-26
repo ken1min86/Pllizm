@@ -34,7 +34,7 @@ type Props = {
   repliesCount: number
   repliedPostId: string
   repliedPostContent?: string
-  repliedUserIcon: string
+  repliedUserIcon?: string
   repliedPostImage?: string
   repliedUserId?: string
   repliedUserName?: string

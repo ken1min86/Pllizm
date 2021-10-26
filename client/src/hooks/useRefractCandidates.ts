@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { formatPostsOfRefractCandidate } from 'util/functions/common';
 import { ErrorStatus } from 'util/types/common';
 import { RefractCandidate, ResponstOfRefractCandidates } from 'util/types/hooks/posts';
 import { RequestHeaders } from 'util/types/hooks/users';
@@ -30,9 +29,7 @@ const useRefractCandidates = () => {
     axiosBase
       .get<ResponstOfRefractCandidates>('v1/refract_candidates', { headers: requestHeaders })
       .then((response) => {
-        const postsData = response.data.posts
-        const formattedPostsData = formatPostsOfRefractCandidate(postsData)
-        setPosts(formattedPostsData)
+        setPosts(response.data.posts)
       })
       .catch((error: ErrorStatus) => {
         const { status } = error.response
