@@ -9,6 +9,7 @@ export { default as HeaderWithTitleAndDrawer } from './common/HeaderWithTitleAnd
 export { default as HeaderWithTitleAndReturnArrow } from './common/HeaderWithTitleAndReturnArrow'
 // eslint-disable-next-line import/no-cycle
 export { default as LockPostModal } from './modal/LockPostModal'
+export { default as PerformRefractModal } from './modal/PerformRefractModal'
 export { default as RefractFuncDescriptionModal } from './modal/RefractFuncDescriptionModal'
 // eslint-disable-next-line import/no-cycle
 export { default as SignupModal } from './modal/SignupModal'
