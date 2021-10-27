@@ -218,25 +218,11 @@ export const sendMailOfPasswordReset =
       return
     }
 
-    let redirectUrl
-    switch (process.env.NODE_ENV) {
-      case 'production':
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        redirectUrl = `${process.env.REACT_APP_PROD_CLIENT_URL}/users/password_reset`
-        break
-
-      case 'development':
-      case 'test':
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        redirectUrl = `${process.env.REACT_APP_DEV_CLIENT_URL}/users/password_reset`
-        break
-
-      default:
-        break
-    }
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    const redirectUrl = `${process.env.REACT_APP_CLIENT_URL}/users/password_reset`
 
     await axiosBase
-      .post('/v1/auth/password', { email, redirect_url: redirectUrl })
+      .post('/v1/auth/password', { params: { email, redirect_url: redirectUrl } })
       .then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/sent_mail_of_password_reset'))
