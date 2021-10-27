@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
     arrow: {
       color: theme.palette.info.main,
     },
+    logo: {
+      marginRight: 8,
+      width: 26.5,
+    },
     table: {
       backgroundColor: theme.palette.secondary.main,
     },
@@ -21,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '22px',
       color: theme.palette.primary.light,
       fontWeight: 'bold',
-      marginLeft: '24px',
     },
   }),
 )
@@ -42,7 +45,7 @@ const ReturnableHeaderTable: VFC<{ title: string }> = ({ title }) => {
           </button>
         </Hidden>
         <Hidden smDown>
-          <img src={Logo} alt="ロゴ" />
+          <img className={classes.logo} src={Logo} alt="ロゴ" />
         </Hidden>
       </div>
       <div>
