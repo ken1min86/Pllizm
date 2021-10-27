@@ -24,7 +24,7 @@ const usePerformRefract = () => {
     axiosBase
       .post('v1/refracts/perform', { refract_candidate_id: refractCandidateId }, { headers: requestHeaders })
       .then(() => {
-        dispatch(push('/reflected_posts'))
+        dispatch(push('/refracted_posts'))
       })
       .catch((error: ErrorStatus) => {
         const { status } = error.response

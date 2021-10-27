@@ -24,7 +24,7 @@ const useSkipRefract = () => {
     axiosBase
       .post('v1/refracts/skip', { data: undefined }, { headers: requestHeaders })
       .then(() => {
-        dispatch(push('/reflected_posts'))
+        dispatch(push('/refracted_posts'))
       })
       .catch((error: ErrorStatus) => {
         const { status } = error.response
