@@ -18,7 +18,7 @@ const PostDetail: VFC = () => {
   const params: { id: string } = useParams()
   const paramsId = params.id
 
-  const [thread, setThread] = useState(getThreadPosts(selector))
+  const [thread, setThread] = useState<Threads>(getThreadPosts(selector))
 
   const hasAnyDisplayablePost = containDisplayablePosts(thread)
   const hasAnyDisplayableChild = containDisplayableChild(thread.children)
@@ -40,7 +40,7 @@ const PostDetail: VFC = () => {
 
   return (
     <DefaultTemplate activeNavTitle="none" Header={Header} Bottom={Bottom}>
-      {hasAnyDisplayablePost && thread.parent.status !== 'not_exist' && (
+      {hasAnyDisplayablePost && thread.parent && thread.parent.status !== 'not_exist' && (
         <PostBox
           key={thread.parent.id}
           postedBy={thread.parent.postedBy}
@@ -79,6 +79,7 @@ const PostDetail: VFC = () => {
         />
       )}
       {hasAnyDisplayablePost &&
+        thread.children &&
         thread.children.length > 0 &&
         thread.children.map(
           (child) =>

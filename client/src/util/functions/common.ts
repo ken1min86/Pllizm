@@ -72,10 +72,10 @@ export const createRequestHeader = (getState: UsersOfGetState): RequestHeadersFo
 export const containDisplayablePosts = (thread: Threads): boolean => {
   let hasAnyDisplayablePost = false
 
-  hasAnyDisplayablePost = hasAnyDisplayablePost || thread.parent.status === 'exist'
+  hasAnyDisplayablePost = hasAnyDisplayablePost || thread.parent?.status === 'exist'
   hasAnyDisplayablePost = hasAnyDisplayablePost || thread.current.status === 'exist'
 
-  if (!hasAnyDisplayablePost) {
+  if (!hasAnyDisplayablePost && thread.children) {
     for (let i = 0; i < thread.children.length; i += 1) {
       if (thread.children[i].status === 'exist') {
         hasAnyDisplayablePost = true
@@ -87,12 +87,14 @@ export const containDisplayablePosts = (thread: Threads): boolean => {
   return hasAnyDisplayablePost
 }
 
-export const containDisplayableChild = (children: Array<PostInThread>): boolean => {
+export const containDisplayableChild = (children?: Array<PostInThread>): boolean => {
   let hasAnyDisplayableChild = false
-  for (let i = 0; i < children.length; i += 1) {
-    if (children[i].status === 'exist') {
-      hasAnyDisplayableChild = true
-      break
+  if (children) {
+    for (let i = 0; i < children.length; i += 1) {
+      if (children[i].status === 'exist') {
+        hasAnyDisplayableChild = true
+        break
+      }
     }
   }
 

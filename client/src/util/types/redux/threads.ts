@@ -22,9 +22,9 @@ export type Reducer = (
 // ***************************************
 // Operatons & Selectors
 export type Threads = {
-  parent: PostInThread
+  parent?: PostInThread
   current: PostInThread
-  children: Array<PostInThread>
+  children?: Array<PostInThread>
 }
 
 export interface PostInThread extends Weaken<PostsOfMeAndFollower, 'postedBy'> {

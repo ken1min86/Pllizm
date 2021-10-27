@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
+import { push } from 'connected-react-router';
 import { SetStateAction } from 'react';
 import { getThread } from 'reducks/threads/operations';
 import { createRequestHeader } from 'util/functions/common';
@@ -46,6 +47,8 @@ export const submitNewPost: SubmitPostOperation =
       .then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(getPostsOfMeAndFollower())
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatch(push('/home'))
       })
       .catch((errors) => {
         console.log(errors)
