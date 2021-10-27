@@ -1,7 +1,6 @@
 import { push } from 'connected-react-router';
 import { VFC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Users } from 'util/types/redux/users';
+import { useDispatch } from 'react-redux';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
@@ -12,7 +11,6 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import LogoIconActive from '../../../assets/img/LogoIconActive2.png';
 import LogoIconInactive from '../../../assets/img/LogoIconInactive2.png';
-import { getUserId } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,15 +36,13 @@ const useStylesToOverrideColor = makeStyles((theme: Theme) =>
 )
 
 type Props = {
-  activeNav: 'home' | 'search' | 'notification' | 'refract' | 'profile' | 'settings' | 'none'
+  activeNav: 'home' | 'search' | 'notifications' | 'refract' | 'profile' | 'settings' | 'none'
 }
 
 const BottomNavigationBar: VFC<Props> = ({ activeNav }) => {
   const classes = useStyles()
   const classesToOverrideColor = useStylesToOverrideColor()
   const dispatch = useDispatch()
-  const selector = useSelector((state: { users: Users }) => state)
-  const userId = getUserId(selector)
 
   return (
     <BottomNavigation
@@ -67,14 +63,14 @@ const BottomNavigationBar: VFC<Props> = ({ activeNav }) => {
       {activeNav === 'refract' && (
         <BottomNavigationAction
           classes={classesToOverrideColor}
-          value={`/${userId}/reflected_posts`}
+          value="/refracted_posts"
           icon={<img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
         />
       )}
       {activeNav !== 'refract' && (
         <BottomNavigationAction
           classes={classesToOverrideColor}
-          value="/reflected_posts"
+          value="/refracted_posts"
           icon={<img src={LogoIconInactive} alt="ロゴアイコン" className={classes.logoIcon} />}
         />
       )}
