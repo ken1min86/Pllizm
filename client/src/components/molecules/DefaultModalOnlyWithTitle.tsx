@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 40,
     },
     buttonContainer: {
-      width: '100%',
+      width: '80%',
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
       gap: 8,
     },
     errorsContainer: {
