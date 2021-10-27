@@ -1208,7 +1208,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response_body[:parent]).to           eq(nil)
             expect(response_body[:current][:status]).to eq('not_exist')
             expect(response_body[:current].length).to   eq(14)
-            expect(response_body[:children]).to         eq([nil])
+            expect(response_body[:children]).to         eq(nil)
           end
         end
 
@@ -1228,7 +1228,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response_body[:parent]).to           eq(nil)
             expect(response_body[:current][:status]).to eq('deleted')
             expect(response_body[:current].length).to   eq(14)
-            expect(response_body[:children]).to         eq([nil])
+            expect(response_body[:children]).to         eq(nil)
           end
         end
 
@@ -1244,7 +1244,7 @@ RSpec.describe "V1::PostsApi", type: :request do
             expect(response_body[:parent]).to              eq(nil)
             expect(response_body[:current][:posted_by]).to eq('not_follower')
             expect(response_body[:current].length).to      eq(14)
-            expect(response_body[:children]).to            eq([nil])
+            expect(response_body[:children]).to            eq(nil)
           end
         end
 
