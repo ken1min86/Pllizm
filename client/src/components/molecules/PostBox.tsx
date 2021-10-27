@@ -129,7 +129,9 @@ const PostBox: VFC<Props> = ({
 
   return (
     <Box className={classes.container}>
-      {status === 'deleted' && <Box sx={{ textAlign: 'center', padding: 4 }}>この投稿は削除されました。</Box>}
+      {status === 'deleted' && (
+        <Box sx={{ textAlign: 'center', padding: 4, color: '#86868b' }}>この投稿は削除されました。</Box>
+      )}
       {status === 'exist' && (
         <button type="button" className={classes.buttonToShowDetail} onClick={handleClickToShowDetail}>
           <Box sx={{ display: 'flex', width: '100%' }}>
