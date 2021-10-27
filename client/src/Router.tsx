@@ -5,9 +5,9 @@ import Right from 'Right';
 
 import {
     About, AccountSetting, BeginPasswordReset, ChangeEmail, ChangePassword, ChangeUserId,
-    DeleteAccount, DeletedAccount, EditProfile, EndPasswordReset, Home, PasswordReset, PostDetail,
-    PrivacyPolicy, Profile, RefractCandidateDetail, RefractCandidates, RefractedPosts,
-    RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
+    DeleteAccount, DeletedAccount, EditProfile, EndPasswordReset, Home, Notifications,
+    PasswordReset, PostDetail, PrivacyPolicy, Profile, RefractCandidateDetail, RefractCandidates,
+    RefractedPosts, RelevantUsers, Search, SentMailOfPasswordReset, TermsOfUse, Top
 } from './components/pages';
 
 const Router: React.VFC = () => (
@@ -32,6 +32,7 @@ const Router: React.VFC = () => (
         <Route exact path="/settings/user_id" component={ChangeUserId} />
         <Refract>
           <Switch>
+            <Route exact path="/notifications" component={Notifications} />
             <Route exact path="/relevant_users" component={RelevantUsers} />
             <Route exact path="/search" component={Search} />
             <Route exact path="/users/:id" component={Profile} />
@@ -39,7 +40,7 @@ const Router: React.VFC = () => (
               <Switch>
                 <Route exact path="/home" component={Home} />
                 <Route exact path="/posts/:id" component={PostDetail} />
-                <Route exact path="/reflected_posts" component={RefractedPosts} />
+                <Route exact path="/refracted_posts" component={RefractedPosts} />
                 <Route exact path="/saturday/refracts/candidates" component={RefractCandidates} />
                 <Route exact path="/saturday/refracts/candidates/:id" component={RefractCandidateDetail} />
               </Switch>
