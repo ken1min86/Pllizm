@@ -7,8 +7,8 @@ import { Avatar, Box, Divider, Hidden, LinearProgress, Radio, Theme } from '@mui
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import useRefractCandidates from '../../hooks/useRefractCandidates';
-import { RefractFuncDescriptionModal } from '../organisms';
+import useRefractCandidates from '../../../hooks/useRefractCandidates';
+import { RefractFuncDescriptionModal } from '../../organisms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

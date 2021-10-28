@@ -8,8 +8,8 @@ import { getPosts } from 'reducks/posts/selectors';
 
 import { Box, Hidden } from '@mui/material';
 
-import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
-import { BottomNavigationBar } from '../molecules';
+import { PostsOfMeAndFollower } from '../../../util/types/redux/posts';
+import { BottomNavigationBar } from '../../molecules';
 
 const Home: VFC = () => {
   const dispatch = useDispatch()

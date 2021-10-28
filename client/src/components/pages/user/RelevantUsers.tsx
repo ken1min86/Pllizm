@@ -11,8 +11,8 @@ import { Avatar, Box, CircularProgress, Divider, Hidden, Tab, Theme } from '@mui
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import useRelevantUsers from '../../hooks/useRelevantUsers';
-import { getUserName } from '../../reducks/users/selectors';
+import useRelevantUsers from '../../../hooks/useRelevantUsers';
+import { getUserName } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

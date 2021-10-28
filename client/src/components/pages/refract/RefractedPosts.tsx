@@ -10,7 +10,7 @@ import { Box, CircularProgress, Hidden, Tab, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import Logo from '../../assets/img/HeaderLogo.png';
+import Logo from '../../../assets/img/HeaderLogo.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
