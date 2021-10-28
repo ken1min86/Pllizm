@@ -47,12 +47,12 @@ const EditProfile: VFC = () => {
   const selector = useSelector((state: { users: Users }) => state)
   const userId = getUserId(selector)
 
-  const { getUserProfile, userProfile } = useUserProfiles(userId)
+  const { getUserProfile, userProfile } = useUserProfiles()
 
   useEffect(() => {
-    getUserProfile()
+    getUserProfile(userId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [userId])
 
   useEffect(() => {
     if (userProfile) {

@@ -5,7 +5,7 @@ import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import usePostsInProfile from 'hooks/usePostsInProfile';
 import useUserProfiles from 'hooks/useUserProfiles';
-import { useEffect, useState, VFC } from 'react';
+import { useEffect, useLayoutEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { Users } from 'util/types/redux/users';
@@ -123,12 +123,11 @@ const Profile: VFC = () => {
 
   const [tabValue, setTabValue] = useState<'投稿' | 'リプライ' | 'ロック' | 'いいね'>('投稿')
 
-  const { getUserProfile, activeNavTitle, errorMessageInProfile, userProfile, initialStatus } =
-    useUserProfiles(paramsId)
+  const { getUserProfile, activeNavTitle, errorMessageInProfile, userProfile, initialStatus } = useUserProfiles()
   const { getPostsInProfile, posts, loading, errorMessageInPosts } = usePostsInProfile(tabValue)
 
-  useEffect(() => {
-    getUserProfile()
+  useLayoutEffect(() => {
+    getUserProfile(paramsId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId])
 

@@ -6,7 +6,7 @@ import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common'
 import { UserProfile } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
-const useUserProfiles = (paramsId: string) => {
+const useUserProfiles = () => {
   const selector = useSelector((state: { users: Users }) => state)
   const loginUserId = getUserId(selector)
 
@@ -17,7 +17,7 @@ const useUserProfiles = (paramsId: string) => {
     'default',
   )
 
-  const getUserProfile = () => {
+  const getUserProfile = (paramsId: string) => {
     if (paramsId === loginUserId) {
       setActiveNavTitle('profile')
     } else {

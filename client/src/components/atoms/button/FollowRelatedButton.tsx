@@ -1,10 +1,6 @@
-import { useEffect, useState, VFC } from 'react';
-import { useSelector } from 'react-redux';
-import { getUser } from 'reducks/users/selectors';
-import { axiosBase } from 'util/api';
-import { RequestHeadersForAuthentication } from 'util/types/common';
+import useChangeRelationship from 'hooks/useChangeRelationship';
+import { useEffect, VFC } from 'react';
 import { UsersRelationship } from 'util/types/hooks/users';
-import { Users } from 'util/types/redux/users';
 
 import { Box } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
@@ -41,57 +37,39 @@ type Props = {
 
 const FollowRelatedButton: VFC<Props> = ({ userId, initialStatus }) => {
   const classes = useStyles()
-  const selector = useSelector((state: { users: Users }) => state)
 
-  const [status, setStatus] = useState<UsersRelationship>(initialStatus)
-
-  const loginUser = getUser(selector)
-  const requestHeaders: RequestHeadersForAuthentication = {
-    'access-token': loginUser.accessToken,
-    client: loginUser.client,
-    uid: loginUser.uid,
-  }
+  const {
+    requestFollowing,
+    unfollow,
+    acceptFollowRequest,
+    refuseFollowRequest,
+    cancelFollowRequest,
+    status,
+    setStatus,
+  } = useChangeRelationship(initialStatus)
 
   useEffect(() => {
     setStatus(initialStatus)
-  }, [initialStatus])
+  }, [initialStatus, setStatus])
 
   const handleClickToFollow = () => {
-    void axiosBase
-      .post('v1/follow_requests/create', { request_to: `${userId}` }, { headers: requestHeaders })
-      .then(() => {
-        setStatus('requestingByMe')
-      })
+    requestFollowing(userId)
   }
 
   const handleClickToUnfollow = () => {
-    void axiosBase.delete(`v1/followers/${userId}`, { headers: requestHeaders }).then(() => {
-      setStatus('default')
-    })
+    unfollow(userId)
   }
 
   const handleClickToAcceptFollowRequest = () => {
-    void axiosBase
-      .post('v1/follow_requests/accept', { follow_to: `${userId}` }, { headers: requestHeaders })
-      .then(() => {
-        setStatus('following')
-      })
+    acceptFollowRequest(userId)
   }
 
   const handleClickToRefuseFollowRequest = () => {
-    void axiosBase
-      .delete('v1/follow_requests/refuse', { params: { requested_by: `${userId}` }, headers: requestHeaders })
-      .then(() => {
-        setStatus('default')
-      })
+    refuseFollowRequest(userId)
   }
 
   const handleClickToCancelFollowRequest = () => {
-    void axiosBase
-      .delete('v1/follow_requests/outgoing', { params: { request_to: `${userId}` }, headers: requestHeaders })
-      .then(() => {
-        setStatus('default')
-      })
+    cancelFollowRequest(userId)
   }
 
   const handleClickDummy = () => {
