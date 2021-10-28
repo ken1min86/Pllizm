@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { push } from 'connected-react-router';
 import Cookies from 'js-cookie';
+import { Action, Dispatch } from 'redux';
 import {
     createRequestHeader, createRequestHeaderUsingCookie, isValidEmailFormat
 } from 'util/functions/common';
@@ -24,7 +25,7 @@ export const signUp =
     passwordConfirmation: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     if (email === '' || password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
@@ -62,7 +63,6 @@ export const signUp =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signUpAction({
             uid,
@@ -74,7 +74,6 @@ export const signUp =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/home'))
       })
       .catch((error) => {
@@ -97,7 +96,7 @@ export const signUp =
 
 export const signIn =
   (email: string, password: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     if (email === '' || password === '') {
       setError('メールアドレスとパスワードを入力してください。')
 
@@ -124,7 +123,6 @@ export const signIn =
         Cookies.set('uid', uid)
 
         const userData = response.data.data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -136,7 +134,6 @@ export const signIn =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/home'))
       })
       .catch(() => {
@@ -146,7 +143,7 @@ export const signIn =
 
 export const signOut =
   (setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -155,10 +152,7 @@ export const signOut =
         Cookies.remove('access-token')
         Cookies.remove('client')
         Cookies.remove('uid')
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(signOutAction())
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/'))
       })
       .catch(() => {
@@ -168,7 +162,7 @@ export const signOut =
 
 export const listenAuthState =
   () =>
-  async (dispatch: any): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     const requestData = createRequestHeaderUsingCookie()
     await axiosBase
       .get('/v1/auth/validate_token', { params: requestData })
@@ -184,7 +178,6 @@ export const listenAuthState =
         const userData = response.data.data
         const { userid, username } = userData
         const icon = userData.image.url
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -198,14 +191,13 @@ export const listenAuthState =
         )
       })
       .catch(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/'))
       })
   }
 
 export const sendMailOfPasswordReset =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any): Promise<unknown> => {
+  async (dispatch: Dispatch<Action>): Promise<unknown> => {
     if (email === '') {
       setError('メールアドレスが未入力です。')
 
@@ -224,16 +216,13 @@ export const sendMailOfPasswordReset =
     await axiosBase
       .post('/v1/auth/password', { email, redirect_url: redirectUrl })
       .then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/sent_mail_of_password_reset'))
       })
       .catch(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/sent_mail_of_password_reset'))
       })
   }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const resetPassword =
   (
     password: string,
@@ -243,7 +232,7 @@ export const resetPassword =
     uid: string | null,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) =>
-  async (dispatch: any): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     if (password === '' || passwordConfirmation === '') {
       setError('必須項目が未入力です。')
 
@@ -282,7 +271,6 @@ export const resetPassword =
 
         const userData = response.data.data
         const icon = userData.image.url
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid: uidInHeader,
@@ -294,7 +282,6 @@ export const resetPassword =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/end_password_reset'))
       })
       .catch(() => {
@@ -306,10 +293,7 @@ export const resetPassword =
 
 export const disableLockDescription =
   () =>
-  async (
-    dispatch: (arg0: { type: string; payload: { needDescriptionAboutLock: false } }) => void,
-    getState: UsersOfGetState,
-  ): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -328,7 +312,7 @@ export const disableLockDescription =
 
 export const changeProfile =
   (userName: string, bio?: string, icon?: File) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestData = new FormData()
     requestData.append('username', userName)
     if (bio) requestData.append('bio', bio)
@@ -344,8 +328,6 @@ export const changeProfile =
         const { client, uid } = headers
         const userData = response.data.data
         const userIcon = userData.image.url
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -357,7 +339,6 @@ export const changeProfile =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors) => {
@@ -367,7 +348,7 @@ export const changeProfile =
 
 export const editUserId =
   (userId: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -378,8 +359,6 @@ export const editUserId =
         const { client, uid } = headers
         const userData = response.data.data
         const userIcon = userData.image.url
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -391,7 +370,6 @@ export const editUserId =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
@@ -403,7 +381,7 @@ export const editUserId =
 
 export const editEmail =
   (email: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     if (!isValidEmailFormat(email)) {
       setError('メールアドレスの形式が不正です。')
 
@@ -424,7 +402,6 @@ export const editEmail =
         Cookies.set('client', client)
         Cookies.set('uid', uid)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -436,8 +413,6 @@ export const editEmail =
             needDescriptionAboutLock: userData.need_description_about_lock,
           }),
         )
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push(`/users/${userData.userid}`))
       })
       .catch((errors: ErrorStatus) => {
@@ -453,7 +428,7 @@ export const editEmail =
 
 export const editPassword =
   (password: string, passwordConfirmation: string, setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     if (password.length < 8) {
       setError('パスワードは8文字以上で設定してください。')
 
@@ -485,7 +460,6 @@ export const editPassword =
         Cookies.set('client', client)
         Cookies.set('uid', uid)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(
           signInAction({
             uid,
@@ -498,7 +472,6 @@ export const editPassword =
           }),
         )
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push(`/users/${userData.userid}`))
       })
       .catch(() => {
@@ -510,7 +483,7 @@ export const editPassword =
 
 export const destroyAccount =
   (setError: React.Dispatch<React.SetStateAction<string>>) =>
-  async (dispatch: any, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
     await axiosBase
       .delete('/v1/auth', { headers: requestHeaders })
@@ -518,9 +491,7 @@ export const destroyAccount =
         Cookies.remove('access-token')
         Cookies.remove('client')
         Cookies.remove('uid')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/settings/deactivated'))
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(signOutAction())
       })
       .catch(() => {
@@ -532,7 +503,7 @@ export const destroyAccount =
 
 export const getStatusOfRightToUsePlizm =
   () =>
-  async (dispatch: (arg0: { type: string; payload: { hasRightToUsePlizm: boolean } }) => void): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     const requestHeaders = createRequestHeaderUsingCookie()
     await axiosBase
       .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
@@ -547,7 +518,7 @@ export const getStatusOfRightToUsePlizm =
 
 export const getPerformedRefract =
   () =>
-  async (dispatch: (arg0: { type: string; payload: { performedRefract: boolean } }) => void): Promise<void> => {
+  async (dispatch: Dispatch<Action>): Promise<void> => {
     const requestHeaders = createRequestHeaderUsingCookie()
     await axiosBase
       .get<GetPerformedRefractResponse>('v1/statuses/refracts', { headers: requestHeaders })

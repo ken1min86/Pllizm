@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
+import { Action, Dispatch } from 'redux';
 import { axiosBase } from 'util/api';
 import { createRequestHeader } from 'util/functions/common';
 import { UsersOfGetState } from 'util/types/redux/users';
@@ -8,7 +9,7 @@ import { getThreadAction } from './actions';
 
 export const getThread =
   (postId: string) =>
-  async (dispatch: (arg0: { type: string; payload: Threads }) => void, getState: UsersOfGetState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase

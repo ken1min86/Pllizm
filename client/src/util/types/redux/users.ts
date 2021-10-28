@@ -1,7 +1,4 @@
 // ***************************************
-
-import { RequestHeadersForAuthentication } from '../common';
-
 // Actions
 export type SignUpAction = (userState: {
   uid: string
@@ -160,7 +157,6 @@ export type SignUpResponse = {
     // eslint-disable-next-line camelcase
     need_description_about_lock: boolean
   }
-  headers: RequestHeadersForAuthentication
 }
 
 export type ListenAuthStateRequest = {
