@@ -222,7 +222,7 @@ export const sendMailOfPasswordReset =
     const redirectUrl = `${process.env.REACT_APP_CLIENT_URL}/users/password_reset`
 
     await axiosBase
-      .post('/v1/auth/password', { params: { email, redirect_url: redirectUrl } })
+      .post('/v1/auth/password', { email, redirect_url: redirectUrl })
       .then(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         dispatch(push('/users/sent_mail_of_password_reset'))

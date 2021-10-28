@@ -47,17 +47,15 @@ const PasswordReset: VFC = () => {
   const [error, setError] = useState('')
 
   const inputPassword = useCallback(
-    (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setPassword(event.target.value)
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setPassword(event.target.value.trim())
     },
     [setPassword],
   )
 
   const inputPasswordConfirmation = useCallback(
-    (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setPasswordConfirmation(event.target.value)
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setPasswordConfirmation(event.target.value.trim())
     },
     [setPasswordConfirmation],
   )
@@ -86,6 +84,7 @@ const PasswordReset: VFC = () => {
               type="password"
               autoComplete="password"
               variant="outlined"
+              value={password}
               onChange={inputPassword}
               focused
               color="secondary"
@@ -100,6 +99,7 @@ const PasswordReset: VFC = () => {
               type="password"
               autoComplete="password"
               variant="outlined"
+              value={passwordConfirmation}
               onChange={inputPasswordConfirmation}
               focused
               color="secondary"
