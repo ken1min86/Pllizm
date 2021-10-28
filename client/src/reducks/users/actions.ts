@@ -45,7 +45,7 @@ export const signOutAction: SignOutAction = () => ({
     userName: null,
     icon: null,
     needDescriptionAboutLock: null,
-    hasRightToUsePlizm: false,
+    hasRightToUsePlizm: true,
   },
 })
 

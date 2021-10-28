@@ -14,13 +14,13 @@ const Router: React.VFC = () => (
   <Switch>
     <Route exact path="(/)?" component={Top} />
     <Route exact path="/about" component={About} />
-    <Route exact path="/users/begin_password_reset" component={BeginPasswordReset} />
-    <Route exact path="/users/sent_mail_of_password_reset" component={SentMailOfPasswordReset} />
-    <Route exact path="/users/password_reset" component={PasswordReset} />
-    <Route exact path="/users/end_password_reset" component={EndPasswordReset} />
     <Route exact path="/help/privacy_policy" component={PrivacyPolicy} />
     <Route exact path="/help/terms_of_use" component={TermsOfUse} />
     <Route exact path="/settings/deactivated" component={DeletedAccount} />
+    <Route exact path="/users/begin_password_reset" component={BeginPasswordReset} />
+    <Route exact path="/users/end_password_reset" component={EndPasswordReset} />
+    <Route exact path="/users/password_reset" component={PasswordReset} />
+    <Route exact path="/users/sent_mail_of_password_reset" component={SentMailOfPasswordReset} />
 
     <Auth>
       <Switch>

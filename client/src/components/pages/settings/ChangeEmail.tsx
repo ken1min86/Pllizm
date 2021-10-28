@@ -15,7 +15,7 @@ const ChangeEmail: VFC = () => {
   const [error, setError] = useState('')
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.trim()
     const textLength = text.length
     setEmail(text)
     if (textLength === 0) {

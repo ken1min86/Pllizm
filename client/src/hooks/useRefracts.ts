@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/common';
+import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
 import {
-    RefractPerformedByFollower, RefractPerformedByMe, ResponstOfRefractsPerformedByFollower,
-    ResponstOfRefractsPerformedByMe
+    RefractPerformedByFollower, RefractPerformedByMe, ResponseOfRefractsPerformedByFollower,
+    ResponseOfRefractsPerformedByMe
 } from 'util/types/hooks/posts';
-import { RequestHeaders } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 const useRefracts = () => {
@@ -22,7 +21,7 @@ const useRefracts = () => {
   const [errorOfFollower, setErrorOfFollower] = useState('')
 
   const loginUser = getUser(selector)
-  const requestHeaders: RequestHeaders = {
+  const requestHeaders: RequestHeadersForAuthentication = {
     'access-token': loginUser.accessToken,
     client: loginUser.client,
     uid: loginUser.uid,
@@ -33,7 +32,7 @@ const useRefracts = () => {
     setLoadingOfMe(true)
     setErrorOfMe('')
     axiosBase
-      .get<ResponstOfRefractsPerformedByMe>('v1/refracts/by_me', { headers: requestHeaders })
+      .get<ResponseOfRefractsPerformedByMe>('v1/refracts/by_me', { headers: requestHeaders })
       .then((response) => {
         setRefractsPeformedByMe(response.data.refracts)
       })
@@ -57,7 +56,7 @@ const useRefracts = () => {
     setLoadingOfFollower(true)
     setErrorOfFollower('')
     axiosBase
-      .get<ResponstOfRefractsPerformedByFollower>('v1/refracts/by_followers', { headers: requestHeaders })
+      .get<ResponseOfRefractsPerformedByFollower>('v1/refracts/by_followers', { headers: requestHeaders })
       .then((response) => {
         setRefractsPeformedByFollower(response.data.refracts)
       })

@@ -54,7 +54,7 @@ export type SignOutAction = () => {
     userId: null
     userName: null
     icon: null
-    hasRightToUsePlizm: false
+    hasRightToUsePlizm: true
   }
 }
 
@@ -157,7 +157,6 @@ export type SignUpResponse = {
     // eslint-disable-next-line camelcase
     need_description_about_lock: boolean
   }
-  headers: RequestHeadersForAuthentication
 }
 
 export type ListenAuthStateRequest = {
@@ -170,13 +169,6 @@ export type ListenAuthStateRequest = {
 export type SignInRequest = {
   email: string
   password: string
-}
-
-export type RequestHeadersForAuthentication = {
-  // eslint-disable-next-line camelcase
-  'access-token': string
-  client: string
-  uid: string
 }
 
 export type GetStatusOfRightToUsePlizmResponse = {

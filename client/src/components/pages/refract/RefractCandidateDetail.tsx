@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 
 import { Box, LinearProgress } from '@mui/material';
 
-import useRefractCandidatesThread from '../../hooks/useRefractCandidatesThread';
+import useRefractCandidatesThread from '../../../hooks/useRefractCandidatesThread';
 
 const RefractCandidateDetail: VFC = () => {
   const params: { id: string } = useParams()

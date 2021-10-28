@@ -7,8 +7,7 @@ import thunk from 'redux-thunk';
 
 import UsersReducer from '../users/reducers';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const createStore = (history: History<unknown>) =>
+const createStore = (history: History<any>) =>
   reduxCreateStore(
     combineReducers({
       router: connectRouter(history),

@@ -159,7 +159,7 @@ module V1
         current = Post.get_current_according_to_status_of_current_post(current_v1_user, params[:id], status_of_current_post)
         thread.merge!(parent: nil)
         thread.merge!(current: current)
-        thread.merge!(children: [nil])
+        thread.merge!(children: nil)
 
       else
         raise RuntimeError

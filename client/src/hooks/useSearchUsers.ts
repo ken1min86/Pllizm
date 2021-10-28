@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import {
-    FormattedSearchedUser, ReponseOfSearchedUsers, RequestHeaders
-} from 'util/types/hooks/users';
+import { RequestHeadersForAuthentication } from 'util/types/common';
+import { FormattedSearchedUser, ReponseOfSearchedUsers } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 const useSearchUsers = (query: string) => {
@@ -22,7 +21,7 @@ const useSearchUsers = (query: string) => {
       return
     }
     const user = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': user.accessToken,
       client: user.client,
       uid: user.uid,
