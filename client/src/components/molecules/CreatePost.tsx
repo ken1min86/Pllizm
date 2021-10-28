@@ -124,7 +124,7 @@ const CreatePost: FC<Props> = ({ children, handleClose, repliedPostId }) => {
   }
 
   const handleOnchangeTextInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     setInputtedText(text)
     setTextCounter(textLength)

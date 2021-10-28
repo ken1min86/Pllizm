@@ -28,11 +28,11 @@ const ChangePassword: VFC = () => {
   const [error, setError] = useState('')
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPassword(e.target.value)
+    setPassword(e.target.value.trim())
   }
 
   const handleChangePasswordConfirmation = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPasswordConfirmation(e.target.value)
+    setPasswordConfirmation(e.target.value.trim())
   }
 
   const handleClickToChangePassword = () => {

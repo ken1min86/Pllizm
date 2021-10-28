@@ -74,7 +74,7 @@ const EditProfile: VFC = () => {
   }
 
   const handleChangeUserName = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     if (textLength === 0) {
       setUserName(text)
@@ -88,10 +88,10 @@ const EditProfile: VFC = () => {
   }
 
   const handleChangeBio = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     if (textLength <= 160) {
-      setBio(e.target.value)
+      setBio(text)
       setTextLengthOfBio(textLength)
     }
   }
