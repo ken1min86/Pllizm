@@ -47,12 +47,12 @@ const EditProfile: VFC = () => {
   const selector = useSelector((state: { users: Users }) => state)
   const userId = getUserId(selector)
 
-  const { getUserProfile, userProfile } = useUserProfiles(userId)
+  const { getUserProfile, userProfile } = useUserProfiles()
 
   useEffect(() => {
-    getUserProfile()
+    getUserProfile(userId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [userId])
 
   useEffect(() => {
     if (userProfile) {
@@ -74,7 +74,7 @@ const EditProfile: VFC = () => {
   }
 
   const handleChangeUserName = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     if (textLength === 0) {
       setUserName(text)
@@ -88,10 +88,10 @@ const EditProfile: VFC = () => {
   }
 
   const handleChangeBio = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     if (textLength <= 160) {
-      setBio(e.target.value)
+      setBio(text)
       setTextLengthOfBio(textLength)
     }
   }

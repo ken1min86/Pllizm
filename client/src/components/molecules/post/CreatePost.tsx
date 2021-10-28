@@ -14,7 +14,7 @@ import { Avatar, Box, Checkbox, Divider, IconButton, TextareaAutosize, Theme } f
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getIcon } from '../../reducks/users/selectors';
+import { getIcon } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -124,7 +124,7 @@ const CreatePost: FC<Props> = ({ children, handleClose, repliedPostId }) => {
   }
 
   const handleOnchangeTextInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.replace(/^\s+/, '')
     const textLength = text.length
     setInputtedText(text)
     setTextCounter(textLength)

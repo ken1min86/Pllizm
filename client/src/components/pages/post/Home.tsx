@@ -8,8 +8,8 @@ import { getPosts } from 'reducks/posts/selectors';
 
 import { Box, Hidden } from '@mui/material';
 
-import { PostsOfMeAndFollower } from '../../util/types/redux/posts';
-import { BottomNavigationBar } from '../molecules';
+import { PostsOfMeAndFollower } from '../../../util/types/redux/posts';
+import { BottomNavigationBar } from '../../molecules';
 
 const Home: VFC = () => {
   const dispatch = useDispatch()
@@ -35,27 +35,31 @@ const Home: VFC = () => {
   return (
     <DefaultTemplate activeNavTitle="home" Header={Header} Bottom={Bottom}>
       {posts.length > 0 &&
-        posts.map((post) => (
-          <PostBox
-            key={post.id}
-            postedBy={post.postedBy}
-            icon={post.iconUrl}
-            userId={post.userId}
-            userName={post.userName}
-            postId={post.id}
-            content={post.content}
-            repliesCount={post.repliesCount}
-            likesCount={post.likesCount}
-            likedByMe={post.likedByCurrentUser}
-            postedAt={post.createdAt}
-            locked={post.locked}
-            image={post.imageUrl}
-            status="exist"
-          />
+        posts.map((post, index) => (
+          <>
+            <PostBox
+              key={post.id}
+              postedBy={post.postedBy}
+              icon={post.iconUrl}
+              userId={post.userId}
+              userName={post.userName}
+              postId={post.id}
+              content={post.content}
+              repliesCount={post.repliesCount}
+              likesCount={post.likesCount}
+              likedByMe={post.likedByCurrentUser}
+              postedAt={post.createdAt}
+              locked={post.locked}
+              image={post.imageUrl}
+              status="exist"
+            />
+            {index === posts.length - 1 && (
+              <Box sx={{ padding: '64px 0 120px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
+                投稿は以上ですべてです。
+              </Box>
+            )}
+          </>
         ))}
-      <Box sx={{ padding: '64px 0 120px 0', textAlign: 'center', fontSize: 14, color: '#86868b' }}>
-        投稿は以上ですべてです。
-      </Box>
     </DefaultTemplate>
   )
 }

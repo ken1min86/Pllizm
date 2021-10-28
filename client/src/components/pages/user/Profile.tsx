@@ -5,7 +5,7 @@ import { DefaultTemplate } from 'components/templates';
 import { push } from 'connected-react-router';
 import usePostsInProfile from 'hooks/usePostsInProfile';
 import useUserProfiles from 'hooks/useUserProfiles';
-import { useEffect, useState, VFC } from 'react';
+import { useEffect, useLayoutEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { Users } from 'util/types/redux/users';
@@ -15,7 +15,7 @@ import { Avatar, Box, CircularProgress, Hidden, Tab, Theme } from '@mui/material
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getHasRightToUsePlizm } from '../../reducks/users/selectors';
+import { getHasRightToUsePlizm } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -123,12 +123,11 @@ const Profile: VFC = () => {
 
   const [tabValue, setTabValue] = useState<'投稿' | 'リプライ' | 'ロック' | 'いいね'>('投稿')
 
-  const { getUserProfile, activeNavTitle, errorMessageInProfile, userProfile, initialStatus } =
-    useUserProfiles(paramsId)
+  const { getUserProfile, activeNavTitle, errorMessageInProfile, userProfile, initialStatus } = useUserProfiles()
   const { getPostsInProfile, posts, loading, errorMessageInPosts } = usePostsInProfile(tabValue)
 
-  useEffect(() => {
-    getUserProfile()
+  useLayoutEffect(() => {
+    getUserProfile(paramsId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId])
 

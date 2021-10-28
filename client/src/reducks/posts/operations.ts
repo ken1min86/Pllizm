@@ -1,22 +1,20 @@
 import camelcaseKeys from 'camelcase-keys';
-import { SetStateAction } from 'react';
+import { push } from 'connected-react-router';
+import { Dispatch, SetStateAction } from 'react';
 import { getThread } from 'reducks/threads/operations';
+import { Action } from 'redux';
 import { createRequestHeader } from 'util/functions/common';
 import { UsersOfGetState } from 'util/types/redux/users';
 
 import { axiosBase } from '../../util/api';
 import {
-    PostsArrayOfMeAndFollowerResponse, PostsOfMeAndFollower, SubmitPostOperation,
-    SubmitReplyOperation
+    PostsArrayOfMeAndFollowerResponse, SubmitPostOperation, SubmitReplyOperation
 } from '../../util/types/redux/posts';
 import { getPostsOfMeAndFollowerAction } from './actions';
 
 export const getPostsOfMeAndFollower =
   () =>
-  async (
-    dispatch: (arg0: { type: string; payload: PostsOfMeAndFollower[] }) => void,
-    getState: UsersOfGetState,
-  ): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: UsersOfGetState): Promise<void> => {
     const requestHeaders = createRequestHeader(getState)
 
     await axiosBase
@@ -33,7 +31,7 @@ export const getPostsOfMeAndFollower =
   }
 
 export const submitNewPost: SubmitPostOperation =
-  (locked, content, image) => async (dispatch: any, getState: UsersOfGetState) => {
+  (locked, content, image) => async (dispatch: Dispatch<Action>, getState: UsersOfGetState) => {
     const requestHeaders = createRequestHeader(getState)
 
     const requestData = new FormData()
@@ -44,8 +42,8 @@ export const submitNewPost: SubmitPostOperation =
     await axiosBase
       .post('/v1/posts', requestData, { headers: requestHeaders })
       .then(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(getPostsOfMeAndFollower())
+        dispatch(push('/home'))
+        window.location.reload()
       })
       .catch((errors) => {
         console.log(errors)
@@ -82,8 +80,7 @@ export const deletePost =
     await axiosBase
       .delete(`/v1/posts/${postId}`, { headers: requestHeaders })
       .then(() => {
-        // eslint-disable-next-line no-restricted-globals
-        history.go(0)
+        window.location.reload()
       })
       .catch((errors) => {
         console.log(errors)

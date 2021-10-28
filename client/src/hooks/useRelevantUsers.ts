@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/common';
-import { RelevantUser, RequestHeaders, ResponseRelevantUsers } from 'util/types/hooks/users';
+import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
+import { RelevantUser, ResponseRelevantUsers } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 const useRelevantUsers = (
@@ -45,7 +45,7 @@ const useRelevantUsers = (
     setRelevantUsers(undefined)
 
     const loginUser = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': loginUser.accessToken,
       client: loginUser.client,
       uid: loginUser.uid,

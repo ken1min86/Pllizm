@@ -1,13 +1,13 @@
-import { BottomNavigationBar, NotificationOfRefract } from 'components/molecules';
+import {
+    BottomNavigationBar, NotificationOfLikeOrReply, NotificationOfRefract,
+    NotificationRelatedToFollow
+} from 'components/molecules';
 import { HeaderWithTitleAndDrawer } from 'components/organisms';
 import { DefaultTemplate } from 'components/templates';
 import useNotifications from 'hooks/useNotifications';
 import { useLayoutEffect, VFC } from 'react';
 
 import { Box, CircularProgress, Hidden } from '@mui/material';
-
-import NotificationOfLikeOrReply from '../molecules/NotificationOfLikeOrReply';
-import NotificationRelatedToFollow from '../molecules/NotificationRelatedToFollow';
 
 const Notifications: VFC = () => {
   const { getNotifications, loading, error, notifications } = useNotifications()

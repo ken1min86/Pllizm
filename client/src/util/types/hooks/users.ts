@@ -1,5 +1,3 @@
-import { RequestHeadersForAuthentication } from 'util/types/redux/users';
-
 export type User = {
   // eslint-disable-next-line camelcase
   user_id: string
@@ -62,8 +60,6 @@ export type ReponseOfUsers = {
 export type ReponseOfSearchedUsers = {
   users: Array<SearchedUser>
 }
-
-export type RequestHeaders = RequestHeadersForAuthentication
 
 export type ResponseRelevantUsers = {
   users: Array<RelevantUser>

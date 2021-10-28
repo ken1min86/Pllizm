@@ -60,22 +60,22 @@ export type RefractPerformedByFollower = {
 
 // ***************************************
 // Responses
-export type ResponstOfExistentPosts = {
+export type ResponseOfExistentPosts = {
   posts: Array<ExistentPosts>
 }
 
-export type ResponstOfRefractCandidates = {
+export type ResponseOfRefractCandidates = {
   posts: Array<RefractCandidate>
 }
 
-export type ResponstOfRefractCandidatesInThread = {
+export type ResponseOfRefractCandidatesInThread = {
   posts: Array<RefractCandidateInThread>
 }
 
-export type ResponstOfRefractsPerformedByMe = {
+export type ResponseOfRefractsPerformedByMe = {
   refracts: Array<RefractPerformedByMe>
 }
 
-export type ResponstOfRefractsPerformedByFollower = {
+export type ResponseOfRefractsPerformedByFollower = {
   refracts: Array<RefractPerformedByFollower>
 }

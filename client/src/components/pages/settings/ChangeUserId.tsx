@@ -20,7 +20,7 @@ const ChangeUserId: VFC = () => {
   const [error, setError] = useState('')
 
   const handleChangeUserId = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value
+    const text = e.target.value.trim()
     const textLength = text.length
     if (textLength < 4) {
       setDisabled(true)
