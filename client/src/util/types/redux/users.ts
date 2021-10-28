@@ -54,7 +54,7 @@ export type SignOutAction = () => {
     userId: null
     userName: null
     icon: null
-    hasRightToUsePlizm: false
+    hasRightToUsePlizm: true
   }
 }
 
