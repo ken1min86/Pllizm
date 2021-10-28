@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/common';
-import { RequestHeaders } from 'util/types/hooks/users';
+import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
 import { Users } from 'util/types/redux/users';
 
 const usePerformRefract = () => {
@@ -16,7 +15,7 @@ const usePerformRefract = () => {
 
   const performRefract = (refractCandidateId: string) => {
     const loginUser = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': loginUser.accessToken,
       client: loginUser.client,
       uid: loginUser.uid,

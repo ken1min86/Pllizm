@@ -1,4 +1,7 @@
 // ***************************************
+
+import { RequestHeadersForAuthentication } from '../common';
+
 // Actions
 export type SignUpAction = (userState: {
   uid: string
@@ -170,13 +173,6 @@ export type ListenAuthStateRequest = {
 export type SignInRequest = {
   email: string
   password: string
-}
-
-export type RequestHeadersForAuthentication = {
-  // eslint-disable-next-line camelcase
-  'access-token': string
-  client: string
-  uid: string
 }
 
 export type GetStatusOfRightToUsePlizmResponse = {

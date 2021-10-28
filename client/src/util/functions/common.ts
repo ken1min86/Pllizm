@@ -1,8 +1,7 @@
 import Cookies from 'js-cookie';
+import { RequestHeadersForAuthentication } from 'util/types/common';
 import { PostInThread, Threads } from 'util/types/redux/threads';
-import {
-    ListenAuthStateRequest, RequestHeadersForAuthentication, UsersOfGetState
-} from 'util/types/redux/users';
+import { ListenAuthStateRequest, UsersOfGetState } from 'util/types/redux/users';
 
 export const isValidEmailFormat = (email: string): boolean => {
   const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/

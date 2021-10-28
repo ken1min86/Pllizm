@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getHasRightToUsePlizm, getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
+import { RequestHeadersForAuthentication } from 'util/types/common';
 import { Notofication, ResponseOfNotifications } from 'util/types/hooks/notifications';
-import { RequestHeaders } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 const useNotifications = () => {
@@ -18,7 +18,7 @@ const useNotifications = () => {
     setLoading(true)
     setError('')
     const user = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': user.accessToken,
       client: user.client,
       uid: user.uid,

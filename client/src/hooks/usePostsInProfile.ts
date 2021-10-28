@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/common';
-import { ExistentPosts, ResponstOfExistentPosts } from 'util/types/hooks/posts';
-import { RequestHeaders } from 'util/types/hooks/users';
+import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
+import { ExistentPosts, ResponseOfExistentPosts } from 'util/types/hooks/posts';
 import { Users } from 'util/types/redux/users';
 
 const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | 'いいね') => {
@@ -18,7 +17,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
     setPosts([])
     setLoading(true)
     const loginUser = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': loginUser.accessToken,
       client: loginUser.client,
       uid: loginUser.uid,
@@ -27,7 +26,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
     switch (tabValue) {
       case '投稿':
         axiosBase
-          .get<ResponstOfExistentPosts>('v1/posts/me', { headers: requestHeaders })
+          .get<ResponseOfExistentPosts>('v1/posts/me', { headers: requestHeaders })
           .then((response) => {
             setPosts(response.data.posts)
           })
@@ -48,7 +47,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         break
       case 'リプライ':
         axiosBase
-          .get<ResponstOfExistentPosts>('v1/replies', { headers: requestHeaders })
+          .get<ResponseOfExistentPosts>('v1/replies', { headers: requestHeaders })
           .then((response) => {
             setPosts(response.data.posts)
           })
@@ -68,7 +67,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         break
       case 'ロック':
         axiosBase
-          .get<ResponstOfExistentPosts>('v1/locks', { headers: requestHeaders })
+          .get<ResponseOfExistentPosts>('v1/locks', { headers: requestHeaders })
           .then((response) => {
             setPosts(response.data.posts)
           })
@@ -88,7 +87,7 @@ const usePostsInProfile = (tabValue: '投稿' | 'リプライ' | 'ロック' | '
         break
       case 'いいね':
         axiosBase
-          .get<ResponstOfExistentPosts>('v1/likes', { headers: requestHeaders })
+          .get<ResponseOfExistentPosts>('v1/likes', { headers: requestHeaders })
           .then((response) => {
             setPosts(response.data.posts)
           })

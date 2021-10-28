@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser, getUserId } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { ErrorStatus } from 'util/types/common';
-import { RequestHeaders, UserProfile } from 'util/types/hooks/users';
+import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
+import { UserProfile } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 const useUserProfiles = (paramsId: string) => {
@@ -26,7 +26,7 @@ const useUserProfiles = (paramsId: string) => {
     setErrorMessageInProfile('')
 
     const loginUser = getUser(selector)
-    const requestHeaders: RequestHeaders = {
+    const requestHeaders: RequestHeadersForAuthentication = {
       'access-token': loginUser.accessToken,
       client: loginUser.client,
       uid: loginUser.uid,

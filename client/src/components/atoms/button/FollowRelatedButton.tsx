@@ -2,7 +2,8 @@ import { useEffect, useState, VFC } from 'react';
 import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
-import { RequestHeaders, UsersRelationship } from 'util/types/hooks/users';
+import { RequestHeadersForAuthentication } from 'util/types/common';
+import { UsersRelationship } from 'util/types/hooks/users';
 import { Users } from 'util/types/redux/users';
 
 import { Box } from '@mui/material';
@@ -45,7 +46,7 @@ const FollowRelatedButton: VFC<Props> = ({ userId, initialStatus }) => {
   const [status, setStatus] = useState<UsersRelationship>(initialStatus)
 
   const loginUser = getUser(selector)
-  const requestHeaders: RequestHeaders = {
+  const requestHeaders: RequestHeadersForAuthentication = {
     'access-token': loginUser.accessToken,
     client: loginUser.client,
     uid: loginUser.uid,

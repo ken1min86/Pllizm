@@ -9,3 +9,10 @@ export type ErrorStatus = {
     statusText: string
   }
 }
+
+export type RequestHeadersForAuthentication = {
+  // eslint-disable-next-line camelcase
+  'access-token': string
+  client: string
+  uid: string
+}
