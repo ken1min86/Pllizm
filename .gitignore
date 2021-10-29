@@ -38,11 +38,14 @@
 /server/config/environments/*.local.yml
 
 # Ignore env
-/server/.env
 /client/.env
 /client/.env.test
 /client/.env.development
 /client/.env.production
+/server/.env
+/server/.env.test
+/server/.env.development
+/server/.env.production
 
 # Ignore seeds
 /server/db/seeds.rb
