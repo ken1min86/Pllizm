@@ -1,6 +1,5 @@
-import { push } from 'connected-react-router';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
 import { ErrorStatus, RequestHeadersForAuthentication } from 'util/types/common';
@@ -8,8 +7,6 @@ import { Users } from 'util/types/redux/users';
 
 const usePerformRefract = () => {
   const selector = useSelector((state: { users: Users }) => state)
-
-  const dispatch = useDispatch()
 
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -23,7 +20,7 @@ const usePerformRefract = () => {
     axiosBase
       .post('v1/refracts/perform', { refract_candidate_id: refractCandidateId }, { headers: requestHeaders })
       .then(() => {
-        dispatch(push('/refracted_posts'))
+        window.location.href = '/refracted_posts'
       })
       .catch((error: ErrorStatus) => {
         const { status } = error.response
