@@ -144,7 +144,7 @@ const Footer: VFC = () => {
           </Link>
         </li>
         <li className={`${classes.link} ${classes.snsContainer}`}>
-          <Link className={classes.snsIcon} href="https://twitter.com/plizm_jp">
+          <Link className={classes.snsIcon} href="https://twitter.com/pllizm_jp">
             <TwitterIcon fontSize="small" />
           </Link>
         </li>
