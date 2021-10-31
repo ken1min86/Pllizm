@@ -254,7 +254,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
               <footer>
                 <Box component="ul" display="flex" flexWrap="wrap" mt={3}>
                   <li className={classes.footerText}>
-                    <a href="https://form.run/@plizmjp-1634893194">お問い合わせ</a>
+                    <a href="https://form.run/@pllizmjp">お問い合わせ</a>
                   </li>
                   <li className={classes.footerText}>
                     <Link to="/help/terms_of_use" data-testid="terms-of-use-link">
