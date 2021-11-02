@@ -80,8 +80,8 @@ def format_to_rfc3339(formatted_time)
   formatted_time.to_datetime.new_offset('+0000').rfc3339
 end
 
-def get_right_to_use_plizm(user)
+def get_right_to_use_pllizm(user)
   create_follower(user)
   create_follower(user)
-  expect(user.has_right_to_use_plizm).to eq(true)
+  expect(user.has_right_to_use_pllizm).to eq(true)
 end

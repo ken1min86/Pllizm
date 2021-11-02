@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    getPerformedRefract, getStatusOfRightToUsePlizm, listenAuthState
+    getPerformedRefract, getStatusOfRightToUsePllizm, listenAuthState
 } from 'reducks/users/operations';
 import { getIsSignedIn } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
@@ -16,7 +16,7 @@ const Auth: FC = ({ children }) => {
     if (!isSignedIn) {
       dispatch(listenAuthState())
     }
-    dispatch(getStatusOfRightToUsePlizm())
+    dispatch(getStatusOfRightToUsePllizm())
     dispatch(getPerformedRefract())
   }, [dispatch, isSignedIn])
 

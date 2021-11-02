@@ -254,9 +254,9 @@ RSpec.describe "V1::UsersApi", type: :request do
       let(:client)  { create(:user) }
       let(:headers) { client.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client.has_right_to_use_plizm).to eq(false)
+          expect(client.has_right_to_use_pllizm).to eq(false)
           put v1_disable_lock_description_path, headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -264,9 +264,9 @@ RSpec.describe "V1::UsersApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client)
+          get_right_to_use_pllizm(client)
         end
 
         it 'returns 200 and change false when need_description_about_lock is true' do
@@ -617,7 +617,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            has_right_to_use_plizm: false
+            has_right_to_use_pllizm: false
           )
         end
       end
@@ -634,7 +634,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            has_right_to_use_plizm: false
+            has_right_to_use_pllizm: false
           )
         end
       end
@@ -652,7 +652,7 @@ RSpec.describe "V1::UsersApi", type: :request do
           expect(response.message).to include('OK')
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body).to include(
-            has_right_to_use_plizm: true
+            has_right_to_use_pllizm: true
           )
         end
       end

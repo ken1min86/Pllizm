@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getHasRightToUsePlizm, getUser } from 'reducks/users/selectors';
+import { getHasRightToUsePllizm, getUser } from 'reducks/users/selectors';
 import { axiosBase } from 'util/api';
 import { RequestHeadersForAuthentication } from 'util/types/common';
 import { Notofication, ResponseOfNotifications } from 'util/types/hooks/notifications';
@@ -8,7 +8,7 @@ import { Users } from 'util/types/redux/users';
 
 const useNotifications = () => {
   const selector = useSelector((state: { users: Users }) => state)
-  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const hasRightToUsePllizm = getHasRightToUsePllizm(selector)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -27,7 +27,7 @@ const useNotifications = () => {
       .get<ResponseOfNotifications>('/v1/notifications', { headers: requestHeaders })
       .then((response) => {
         const responseOfNotifications = response.data.notifications
-        if (hasRightToUsePlizm) {
+        if (hasRightToUsePllizm) {
           setNotifications(responseOfNotifications)
         } else {
           const extractedNotifications = responseOfNotifications.filter(

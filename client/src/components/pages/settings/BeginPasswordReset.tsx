@@ -55,7 +55,7 @@ const BeginPasswordReset: VFC = () => {
             <TitleWithUnderline title="パスワードをリセットする" />
           </Box>
           <Box mb={3} className={classes.description}>
-            Plizmに登録したメールアドレスを入力して下さい。
+            Pllizmに登録したメールアドレスを入力して下さい。
             <br />
             パスワードを設定するためのURLをお送りします。
           </Box>

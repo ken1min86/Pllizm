@@ -1,19 +1,19 @@
 import { push } from 'connected-react-router';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHasRightToUsePlizm } from 'reducks/users/selectors';
+import { getHasRightToUsePllizm } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
 const Right: FC = ({ children }) => {
   const dispatch = useDispatch()
   const selector = useSelector((state: { users: Users }) => state)
-  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const hasRightToUsePllizm = getHasRightToUsePllizm(selector)
 
   useEffect(() => {
-    if (!hasRightToUsePlizm) dispatch(push('/search'))
-  }, [dispatch, hasRightToUsePlizm])
+    if (!hasRightToUsePllizm) dispatch(push('/search'))
+  }, [dispatch, hasRightToUsePllizm])
 
-  if (!hasRightToUsePlizm) return <></>
+  if (!hasRightToUsePllizm) return <></>
 
   return <>{children}</>
 }

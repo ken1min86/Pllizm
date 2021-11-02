@@ -20,9 +20,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           params = {
             content: 'Hello!',
             image: Rack::Test::UploadedFile.new(Rails.root.join("db/icons/Account-icon1.png"), "image/png"),
@@ -35,9 +35,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         it 'returns 200 and sets is_locked true when is_locked is true' do
@@ -173,9 +173,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:headers)           { client_user.create_new_auth_token }
       let!(:client_user_post) { create(:post, user_id: client_user.id) }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           delete v1_post_path(client_user_post.id), headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -183,9 +183,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         let(:not_client_user)       { create(:user) }
@@ -243,9 +243,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:post)                 { create(:post, user_id: user.id) }
       let(:headers)              { user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(user.has_right_to_use_plizm).to eq(false)
+          expect(user.has_right_to_use_pllizm).to eq(false)
           put v1_post_changeLock_path(post.id), headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -253,9 +253,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(user)
+          get_right_to_use_pllizm(user)
         end
 
         let(:another_user)         { create(:user) }
@@ -341,9 +341,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         }
       end
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           post v1_post_replies_path(replied_post.id), params: params, headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -351,9 +351,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         context "when try to reply to current_user's post with valid post in body" do
@@ -439,7 +439,7 @@ RSpec.describe "V1::PostsApi", type: :request do
 
         context "when try to reply to follower's post" do
           before do
-            get_right_to_use_plizm(follower)
+            get_right_to_use_pllizm(follower)
           end
 
           let(:follower)       { create_follower(client_user) }
@@ -472,9 +472,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         context "when try to reply to follower's post
       that has posts above parent posted by current_user, follower and not follower" do
           before do
-            get_right_to_use_plizm(client_user)
-            get_right_to_use_plizm(follower)
-            get_right_to_use_plizm(not_follower)
+            get_right_to_use_pllizm(client_user)
+            get_right_to_use_pllizm(follower)
+            get_right_to_use_pllizm(not_follower)
           end
 
           let(:follower) { create_follower(client_user) }
@@ -559,9 +559,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_liked_posts_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -569,12 +569,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower1)
-          get_right_to_use_plizm(follower2)
-          get_right_to_use_plizm(non_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower1)
+          get_right_to_use_pllizm(follower2)
+          get_right_to_use_pllizm(non_follower)
         end
 
         let(:follower1)            { create_follower(client_user) }
@@ -814,9 +814,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)          { create(:user) }
       let(:client_user_headers)  { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_me_and_followers_posts_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -824,12 +824,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower1)
-          get_right_to_use_plizm(follower2)
-          get_right_to_use_plizm(non_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower1)
+          get_right_to_use_pllizm(follower2)
+          get_right_to_use_pllizm(non_follower)
         end
 
         let(:follower1)            { create_follower(client_user) }
@@ -1060,9 +1060,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_current_user_posts_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -1070,9 +1070,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         context "when client has own posts(not replies) and reply" do
@@ -1179,9 +1179,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:follower)            { create_follower(client_user) }
       let(:not_follower)        { create_follower(follower) }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_post_threads_path(client_post), headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -1189,11 +1189,11 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower)
-          get_right_to_use_plizm(not_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower)
+          get_right_to_use_pllizm(not_follower)
         end
 
         context "when no posts related to params[:post_id]" do
@@ -1528,9 +1528,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:not_follower)         { create_follower(client_user) } # 投稿作成時はフォロワーだったが、投稿作成後にフォローを解除したユーザ
       let(:not_follower_headers) { not_follower.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_replies_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -1538,11 +1538,11 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower)
-          get_right_to_use_plizm(not_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower)
+          get_right_to_use_pllizm(not_follower)
         end
 
         context "case1, 2, 4, 6, 8" do
@@ -1742,12 +1742,12 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
 
-    context "when client has token and doesn't have right to use plizm" do
+    context "when client has token and doesn't have right to use pllizm" do
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
       it 'returns 403' do
-        expect(client_user.has_right_to_use_plizm).to eq(false)
+        expect(client_user.has_right_to_use_pllizm).to eq(false)
         get v1_post_refract_candidates_path, headers: client_user_headers
         expect(response).to have_http_status(403)
         expect(response.message).to include('Forbidden')
@@ -1755,10 +1755,10 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
 
-    context "when client has right to use plizm and token
+    context "when client has right to use pllizm and token
       and has performed CurrentUserRefract record" do
       before do
-        get_right_to_use_plizm(client_user)
+        get_right_to_use_pllizm(client_user)
         CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
       end
 
@@ -1775,18 +1775,18 @@ RSpec.describe "V1::PostsApi", type: :request do
       end
     end
 
-    context "when client has right to use plizm and token
+    context "when client has right to use pllizm and token
     and has not performed CurrentUserRefract record" do
       context 'case 1, 3, 11, 24, 25, 26, 27' do
         before do
           travel_to Time.zone.local(2021, 8, 15) do
             create(:icon)
             @client_user = create(:user)
-            get_right_to_use_plizm(@client_user)
+            get_right_to_use_pllizm(@client_user)
             @follower = create_follower(@client_user)
-            get_right_to_use_plizm(@follower)
+            get_right_to_use_pllizm(@follower)
             @not_follower = create_follower(@client_user)
-            get_right_to_use_plizm(@not_follower)
+            get_right_to_use_pllizm(@not_follower)
             @client_user_headers = @client_user.create_new_auth_token
             @follower_headers = @follower.create_new_auth_token
             @not_follower_headers = @not_follower.create_new_auth_token
@@ -1843,9 +1843,9 @@ RSpec.describe "V1::PostsApi", type: :request do
           travel_to Time.zone.local(2021, 8, 14) do
             create(:icon)
             @client_user = create(:user)
-            get_right_to_use_plizm(@client_user)
+            get_right_to_use_pllizm(@client_user)
             @follower = create_follower(@client_user)
-            get_right_to_use_plizm(@follower)
+            get_right_to_use_pllizm(@follower)
             @client_user_headers = @client_user.create_new_auth_token
           end
 
@@ -1911,8 +1911,8 @@ RSpec.describe "V1::PostsApi", type: :request do
             @follower            = create_follower(@client_user)
             @client_user_headers = @client_user.create_new_auth_token
             @follower_headers    = @follower.create_new_auth_token
-            get_right_to_use_plizm(@client_user)
-            get_right_to_use_plizm(@follower)
+            get_right_to_use_pllizm(@client_user)
+            get_right_to_use_pllizm(@follower)
           end
 
           travel_to Time.zone.local(2021, 8, 14, 3, 30, 0o0) do
@@ -2033,11 +2033,11 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         let(:client_user_post) { create(:post, user_id: client_user.id) }
 
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_thread_above_candidate_path(client_user_post.id), headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -2045,9 +2045,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         context "when client has performed CurrentUserRefract record" do
@@ -2104,8 +2104,8 @@ RSpec.describe "V1::PostsApi", type: :request do
             and 1/5 posted by follower
             and 1/5 posted by not follower" do
             before do
-              get_right_to_use_plizm(follower)
-              get_right_to_use_plizm(not_follower)
+              get_right_to_use_pllizm(follower)
+              get_right_to_use_pllizm(not_follower)
             end
 
             let(:follower)     { create_follower(client_user) }
@@ -2197,9 +2197,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           get v1_post_refracted_by_folowers_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -2207,12 +2207,12 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower_performed_refract)
-          get_right_to_use_plizm(follower_not_performed_refract)
-          get_right_to_use_plizm(not_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower_performed_refract)
+          get_right_to_use_pllizm(follower_not_performed_refract)
+          get_right_to_use_pllizm(not_follower)
         end
 
         let(:follower_performed_refract)     { create_follower(client_user) }
@@ -2517,9 +2517,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client_user)         { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           put v1_disable_lock_description_path, headers: client_user_headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -2527,11 +2527,11 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
-          get_right_to_use_plizm(follower)
-          get_right_to_use_plizm(not_follower)
+          get_right_to_use_pllizm(client_user)
+          get_right_to_use_pllizm(follower)
+          get_right_to_use_pllizm(not_follower)
         end
 
         let(:follower)     { create_follower(client_user) }
@@ -2895,9 +2895,9 @@ RSpec.describe "V1::PostsApi", type: :request do
       let(:client)  { create(:user) }
       let(:headers) { client.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         it 'returns 403' do
-          expect(client.has_right_to_use_plizm).to eq(false)
+          expect(client.has_right_to_use_pllizm).to eq(false)
           get v1_locks_path, headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -2905,9 +2905,9 @@ RSpec.describe "V1::PostsApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client)
+          get_right_to_use_pllizm(client)
         end
 
         context "when client has any posts" do
