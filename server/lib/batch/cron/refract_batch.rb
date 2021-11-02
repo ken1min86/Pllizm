@@ -11,7 +11,7 @@ class Batch::Cron::RefractBatch
       refract_candidates_of_like, refract_candidates_of_reply = Post.get_not_formatted_refract_candidates(user)
       hashed_refract_candidates = refract_candidates_of_like.concat(refract_candidates_of_reply)
 
-      if !user.has_right_to_use_plizm
+      if !user.has_right_to_use_pllizm
         refract_this_week.destroy
       elsif hashed_refract_candidates.empty?
         refract_this_week.destroy

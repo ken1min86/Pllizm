@@ -1,5 +1,5 @@
 import {
-    DisableLockDescriptionAction, GetPerformedRefractAction, GetStatusOfRightToUsePlizmAction,
+    DisableLockDescriptionAction, GetPerformedRefractAction, GetStatusOfRightToUsePllizmAction,
     SignInAction, SignOutAction, SignUpAction
 } from '../../util/types/redux/users';
 
@@ -45,7 +45,7 @@ export const signOutAction: SignOutAction = () => ({
     userName: null,
     icon: null,
     needDescriptionAboutLock: null,
-    hasRightToUsePlizm: true,
+    hasRightToUsePllizm: true,
   },
 })
 
@@ -57,11 +57,11 @@ export const disableLockDescriptionAction: DisableLockDescriptionAction = (userS
   },
 })
 
-export const GET_STATUS_OF_RIGHT_TO_USE_PLIZM = 'GET_STATUS_OF_RIGHT_TO_USE_PLIZM'
-export const getStatusOfRightToUsePlizmAction: GetStatusOfRightToUsePlizmAction = (userState) => ({
-  type: 'GET_STATUS_OF_RIGHT_TO_USE_PLIZM',
+export const GET_STATUS_OF_RIGHT_TO_USE_PLLIZM = 'GET_STATUS_OF_RIGHT_TO_USE_PLLIZM'
+export const getStatusOfRightToUsePllizmAction: GetStatusOfRightToUsePllizmAction = (userState) => ({
+  type: 'GET_STATUS_OF_RIGHT_TO_USE_PLLIZM',
   payload: {
-    hasRightToUsePlizm: userState.hasRightToUsePlizm,
+    hasRightToUsePllizm: userState.hasRightToUsePllizm,
   },
 })
 

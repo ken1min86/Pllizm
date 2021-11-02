@@ -33,7 +33,7 @@ const HeaderWithLogo: VFC = () => {
   return (
     <header className={classes.header}>
       <img className={classes.img} src={Logo} alt="ロゴ" />
-      <span className={classes.span}>Plizm</span>
+      <span className={classes.span}>Pllizm</span>
     </header>
   )
 }

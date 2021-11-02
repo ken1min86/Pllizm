@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import useSearchUsers from 'hooks/useSearchUsers';
 import { useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHasRightToUsePlizm } from 'reducks/users/selectors';
+import { getHasRightToUsePllizm } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -68,7 +68,7 @@ const Search: VFC = () => {
   const dispatch = useDispatch()
 
   const selector = useSelector((state: { users: Users }) => state)
-  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const hasRightToUsePllizm = getHasRightToUsePllizm(selector)
 
   const [query, setQuery] = useState('')
   const [tabValue, setTabValue] = useState<'アカウント'>('アカウント')
@@ -126,7 +126,7 @@ const Search: VFC = () => {
 
   return (
     <DefaultTemplate activeNavTitle="search" Header={Header} Bottom={Bottom}>
-      {!hasRightToUsePlizm && <UsingCriteriaModal />}
+      {!hasRightToUsePllizm && <UsingCriteriaModal />}
       <Box sx={{ width: '100%' }}>
         {loading && <LinearProgress color="info" />}
         <TabContext value={tabValue}>

@@ -17,7 +17,7 @@ RSpec.describe "V1::RefractsApi", type: :request do
       end
     end
 
-    context "when client has token and doesn't have right to use plizm" do
+    context "when client has token and doesn't have right to use pllizm" do
       before do
         create(:icon)
       end
@@ -27,7 +27,7 @@ RSpec.describe "V1::RefractsApi", type: :request do
       let(:client_user_post)    { create(:post, user_id: client_user.id) }
 
       it 'returns 403' do
-        expect(client_user.has_right_to_use_plizm).to eq(false)
+        expect(client_user.has_right_to_use_pllizm).to eq(false)
         post v1_refract_performed_path(refract_candidate_id: client_user_post.id), headers: client_user_headers
         expect(response).to have_http_status(403)
         expect(response.message).to include('Forbidden')
@@ -35,12 +35,12 @@ RSpec.describe "V1::RefractsApi", type: :request do
       end
     end
 
-    context 'when client has right to use plizm' do
+    context 'when client has right to use pllizm' do
       context "when client has token and has performed CurrentUserRefract record" do
         before do
           create(:icon)
           CurrentUserRefract.create(user_id: client_user.id, performed_refract: true)
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         let(:client_user)         { create(:user) }
@@ -63,7 +63,7 @@ RSpec.describe "V1::RefractsApi", type: :request do
           before do
             create(:icon)
             CurrentUserRefract.create(user_id: client_user.id, performed_refract: false)
-            get_right_to_use_plizm(client_user)
+            get_right_to_use_pllizm(client_user)
           end
 
           let(:client_user)          { create(:user) }
@@ -85,7 +85,7 @@ RSpec.describe "V1::RefractsApi", type: :request do
 
               @client_user         = create(:user)
               @client_user_headers = @client_user.create_new_auth_token
-              get_right_to_use_plizm(@client_user)
+              get_right_to_use_pllizm(@client_user)
 
               @follower = create_follower(@client_user)
               create_follower(@client_user)
@@ -140,10 +140,10 @@ RSpec.describe "V1::RefractsApi", type: :request do
 
               @client_user         = create(:user)
               @client_user_headers = @client_user.create_new_auth_token
-              get_right_to_use_plizm(@client_user)
+              get_right_to_use_pllizm(@client_user)
 
               @follower = create_follower(@client_user)
-              get_right_to_use_plizm(@follower)
+              get_right_to_use_pllizm(@follower)
               create_follower(@client_user)
 
               @post_of_client_user = create(:post, user_id: @client_user.id)
@@ -199,12 +199,12 @@ RSpec.describe "V1::RefractsApi", type: :request do
 
               @client_user         = create(:user)
               @client_user_headers = @client_user.create_new_auth_token
-              get_right_to_use_plizm(@client_user)
+              get_right_to_use_pllizm(@client_user)
 
               @follower1 = create_follower(@client_user)
-              get_right_to_use_plizm(@follower1)
+              get_right_to_use_pllizm(@follower1)
               @follower2 = create_follower(@client_user)
-              get_right_to_use_plizm(@follower2)
+              get_right_to_use_pllizm(@follower2)
 
               @post_of_client_user = create(:post, user_id: @client_user.id)
             end
@@ -276,13 +276,13 @@ RSpec.describe "V1::RefractsApi", type: :request do
 
               @client_user         = create(:user)
               @client_user_headers = @client_user.create_new_auth_token
-              get_right_to_use_plizm(@client_user)
+              get_right_to_use_pllizm(@client_user)
 
               create_follower(@client_user)
               @follower = create_follower(@client_user)
-              get_right_to_use_plizm(@follower)
+              get_right_to_use_pllizm(@follower)
               @not_follower = create_follower(@follower)
-              get_right_to_use_plizm(@not_follower)
+              get_right_to_use_pllizm(@not_follower)
 
               @post_of_client_user = create(:post, user_id: @client_user.id)
             end
@@ -353,12 +353,12 @@ RSpec.describe "V1::RefractsApi", type: :request do
       end
     end
 
-    context "when client has token and doesn't have right to use plizm" do
+    context "when client has token and doesn't have right to use pllizm" do
       let(:client_user) { create(:user) }
       let(:client_user_headers) { client_user.create_new_auth_token }
 
       it 'returns 403' do
-        expect(client_user.has_right_to_use_plizm).to eq(false)
+        expect(client_user.has_right_to_use_pllizm).to eq(false)
         post v1_skip_path, headers: client_user_headers
         expect(response).to have_http_status(403)
         expect(response.message).to include('Forbidden')
@@ -366,10 +366,10 @@ RSpec.describe "V1::RefractsApi", type: :request do
       end
     end
 
-    context 'when client has right to use plizm' do
+    context 'when client has right to use pllizm' do
       before do
         create(:icon)
-        get_right_to_use_plizm(client_user)
+        get_right_to_use_pllizm(client_user)
       end
 
       let(:client_user)         { create(:user) }
@@ -393,7 +393,7 @@ RSpec.describe "V1::RefractsApi", type: :request do
 
       context "when client has token and has not performed CurrentUserRefract record" do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         let!(:client_user_refract) { CurrentUserRefract.create(user_id: client_user.id, performed_refract: false) }

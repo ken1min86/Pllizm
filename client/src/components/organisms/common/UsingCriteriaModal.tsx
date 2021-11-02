@@ -72,7 +72,7 @@ const UsingCriteriaModal: VFC = () => {
         <Box className={classes.container}>
           <h2 className={classes.title}>2人以上フォローしましょう</h2>
           <Box component="p" mb={3}>
-            <span className={classes.description}>Plizmを利用するには2人以上フォローする必要があります。</span>
+            <span className={classes.description}>Pllizmを利用するには2人以上フォローする必要があります。</span>
             <span className={classes.description}>試しに利用したい方は、以下の2ユーザーをフォローして下さい。</span>
             <span className={classes.description}>即時にフォロー承認いたします。</span>
           </Box>
