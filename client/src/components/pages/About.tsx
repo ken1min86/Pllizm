@@ -16,8 +16,8 @@ import ColorfulInkLarge from '../../assets/img/ColorfulInkLarge.jpg';
 import ColorfulInkSmall from '../../assets/img/ColorfulInkSmall.jpg';
 import HemisphereBubbleLarge from '../../assets/img/HemisphereBubbleLarge.jpg';
 import HemisphereBubbleSmall from '../../assets/img/HemisphereBubbleSmall.jpg';
-import PlizmFeatureDiagramLarge from '../../assets/img/PlizmFeatureDiagramLarge.svg';
-import PlizmFeatureDiagramSmall from '../../assets/img/PlizmFeatureDiagramSmall.svg';
+import PllizmFeatureDiagramLarge from '../../assets/img/PllizmFeatureDiagramLarge.svg';
+import PllizmFeatureDiagramSmall from '../../assets/img/PllizmFeatureDiagramSmall.svg';
 import PostExampleMobile from '../../assets/img/PostExampleMobile.svg';
 import PostExamplePC1 from '../../assets/img/PostExamplePC1.svg';
 import PostExamplePC2 from '../../assets/img/PostExamplePC2.svg';
@@ -226,7 +226,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 20,
       },
     },
-    plizmFeatureDiagram: {
+    pllizmFeatureDiagram: {
       [theme.breakpoints.down('sm')]: {
         display: 'block',
         marginLeft: 'auto',
@@ -235,7 +235,7 @@ const useStyles = makeStyles((theme: Theme) =>
         alignSelf: 'flex-end',
       },
     },
-    beginPlizmContainer: {
+    beginPllizmContainer: {
       position: 'relative',
       background: 'center',
       backgroundSize: 'cover',
@@ -249,7 +249,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height: 687,
       },
     },
-    beginPlizmContentsContainer: {
+    beginPllizmContentsContainer: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -266,7 +266,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 290,
       },
     },
-    beginPlizmTitle: {
+    beginPllizmTitle: {
       color: theme.palette.primary.light,
       fontWeight: 'bold',
       [theme.breakpoints.down('sm')]: {
@@ -368,22 +368,22 @@ const About: VFC = () => {
           </Box>
           <Hidden smUp>
             <img
-              className={classes.plizmFeatureDiagram}
-              src={PlizmFeatureDiagramSmall}
-              alt="Plizm feature diagram Mobile"
+              className={classes.pllizmFeatureDiagram}
+              src={PllizmFeatureDiagramSmall}
+              alt="Pllizm feature diagram Mobile"
             />
           </Hidden>
           <Hidden smDown>
             <img
-              className={classes.plizmFeatureDiagram}
-              src={PlizmFeatureDiagramLarge}
-              alt="Plizm feature diagram PC"
+              className={classes.pllizmFeatureDiagram}
+              src={PllizmFeatureDiagramLarge}
+              alt="Pllizm feature diagram PC"
             />
           </Hidden>
         </Box>
-        <Box className={classes.beginPlizmContainer}>
-          <Box className={classes.beginPlizmContentsContainer}>
-            <span className={classes.beginPlizmTitle}>Pllizmを始める</span>
+        <Box className={classes.beginPllizmContainer}>
+          <Box className={classes.beginPllizmContentsContainer}>
+            <span className={classes.beginPllizmTitle}>Pllizmを始める</span>
             <Box className={classes.signup}>
               <SignupModal type="button" />
             </Box>

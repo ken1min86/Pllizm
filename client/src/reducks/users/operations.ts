@@ -10,11 +10,11 @@ import { ErrorStatus } from 'util/types/common';
 
 import { axiosBase } from '../../util/api';
 import {
-    GetPerformedRefractResponse, GetStatusOfRightToUsePlizmResponse, SignInRequest, SignUpRequest,
+    GetPerformedRefractResponse, GetStatusOfRightToUsePllizmResponse, SignInRequest, SignUpRequest,
     SignUpResponse, UsersOfGetState
 } from '../../util/types/redux/users';
 import {
-    disableLockDescriptionAction, getPerformedRefractAction, getStatusOfRightToUsePlizmAction,
+    disableLockDescriptionAction, getPerformedRefractAction, getStatusOfRightToUsePllizmAction,
     signInAction, signOutAction, signUpAction
 } from './actions';
 
@@ -501,15 +501,15 @@ export const destroyAccount =
       })
   }
 
-export const getStatusOfRightToUsePlizm =
+export const getStatusOfRightToUsePllizm =
   () =>
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const requestHeaders = createRequestHeaderUsingCookie()
     await axiosBase
-      .get<GetStatusOfRightToUsePlizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
+      .get<GetStatusOfRightToUsePllizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
-        const hasRightToUsePlizm = response.data.has_right_to_use_plizm
-        dispatch(getStatusOfRightToUsePlizmAction({ hasRightToUsePlizm }))
+        const hasRightToUsePllizm = response.data.has_right_to_use_plizm
+        dispatch(getStatusOfRightToUsePllizmAction({ hasRightToUsePllizm }))
       })
       .catch((error) => {
         console.log(error)

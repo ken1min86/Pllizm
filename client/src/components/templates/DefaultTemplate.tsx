@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-    getHasRightToUsePlizm, getPerformedRefract, getUserId, getUserName
+    getHasRightToUsePllizm, getPerformedRefract, getUserId, getUserName
 } from 'reducks/users/selectors';
 import { Users } from 'util/types/redux/users';
 
@@ -156,7 +156,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
   const userId = getUserId(selector)
   const userName = getUserName(selector)
   const userIcon = getIcon(selector)
-  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const hasRightToUsePllizm = getHasRightToUsePllizm(selector)
   const performedRefract = getPerformedRefract(selector)
 
   const isActiveOfHome = activeNavTitle === 'home'
@@ -177,7 +177,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
           <header className={classes.header}>{Header}</header>
           <main className={classes.main}>{children}</main>
           <Box className={classes.bottomNavContainer}>{Bottom}</Box>
-          {hasRightToUsePlizm && performedRefract && (
+          {hasRightToUsePllizm && performedRefract && (
             <Hidden smUp>
               <Box className={classes.createPostModalContainerOfMobile}>
                 <CreatePostModal />
@@ -191,7 +191,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
               <Box mb={1}>
                 <LogoLink width={30} onClick={handleOnClickToHome} />
               </Box>
-              {hasRightToUsePlizm && performedRefract && (
+              {hasRightToUsePllizm && performedRefract && (
                 <Box mb={1}>
                   <IconWithTextLink title="ホーム" path="/home" isActive={isActiveOfHome}>
                     <HomeRoundedIcon sx={{ fontSize: 26.25 }} />
@@ -212,7 +212,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
                   </IconWithTextLink>
                 </Box>
               )}
-              {hasRightToUsePlizm && performedRefract && (
+              {hasRightToUsePllizm && performedRefract && (
                 <Box mb={1}>
                   <IconWithTextLink title="リフラクト" path="/refracted_posts" isActive={isActiveOfRefract}>
                     {isActiveOfRefract && <img src={LogoIconActive} alt="ロゴアイコン" className={classes.logoIcon} />}
@@ -234,7 +234,7 @@ const DefaultTemplate: FC<Props> = ({ children, activeNavTitle, Header, Bottom }
                   <SettingsIcon sx={{ fontSize: 26.25 }} />
                 </IconWithTextLink>
               </Box>
-              {hasRightToUsePlizm && performedRefract && (
+              {hasRightToUsePllizm && performedRefract && (
                 <Box className={classes.createPostModalContainer}>
                   <CreatePostModal />
                 </Box>

@@ -15,7 +15,7 @@ import { Avatar, Box, CircularProgress, Hidden, Tab, Theme } from '@mui/material
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { getHasRightToUsePlizm } from '../../../reducks/users/selectors';
+import { getHasRightToUsePllizm } from '../../../reducks/users/selectors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -116,7 +116,7 @@ const Profile: VFC = () => {
   const dispatch = useDispatch()
 
   const selector = useSelector((state: { users: Users }) => state)
-  const hasRightToUsePlizm = getHasRightToUsePlizm(selector)
+  const hasRightToUsePllizm = getHasRightToUsePllizm(selector)
 
   const params: { id: string } = useParams()
   const paramsId = params.id
@@ -176,7 +176,7 @@ const Profile: VFC = () => {
 
   return (
     <DefaultTemplate activeNavTitle={activeNavTitle} Header={Header} Bottom={Bottom}>
-      {!hasRightToUsePlizm && <UsingCriteriaModal />}
+      {!hasRightToUsePllizm && <UsingCriteriaModal />}
       {errorMessageInProfile && <Box sx={{ padding: 4, textAlign: 'center' }}>{errorMessageInProfile}</Box>}
       {!errorMessageInProfile && userProfile && (
         <Box sx={{ padding: 3 }}>
@@ -228,7 +228,7 @@ const Profile: VFC = () => {
           )}
         </Box>
       )}
-      {hasRightToUsePlizm && userProfile && userProfile.is_current_user && (
+      {hasRightToUsePllizm && userProfile && userProfile.is_current_user && (
         <Box sx={{ width: '100%', typography: 'body1' }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: '#EEEEEE' }}>

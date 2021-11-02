@@ -24,7 +24,7 @@ const UsersReducer: Reducer = (state = initialState.users, action) => {
         ...state,
         ...action.payload,
       }
-    case Actions.GET_STATUS_OF_RIGHT_TO_USE_PLIZM:
+    case Actions.GET_STATUS_OF_RIGHT_TO_USE_PLLIZM:
       return {
         ...state,
         ...action.payload,

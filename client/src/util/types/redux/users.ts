@@ -54,7 +54,7 @@ export type SignOutAction = () => {
     userId: null
     userName: null
     icon: null
-    hasRightToUsePlizm: true
+    hasRightToUsePllizm: true
   }
 }
 
@@ -65,10 +65,10 @@ export type DisableLockDescriptionAction = (userState: { needDescriptionAboutLoc
   }
 }
 
-export type GetStatusOfRightToUsePlizmAction = (userState: { hasRightToUsePlizm: boolean }) => {
+export type GetStatusOfRightToUsePllizmAction = (userState: { hasRightToUsePllizm: boolean }) => {
   type: string
   payload: {
-    hasRightToUsePlizm: boolean
+    hasRightToUsePllizm: boolean
   }
 }
 
@@ -91,7 +91,7 @@ export type Reducer = (
     userName: string
     icon: string
     needDescriptionAboutLock: boolean
-    hasRightToUsePlizm: boolean
+    hasRightToUsePllizm: boolean
     performedRefract: boolean
   },
   action: {
@@ -105,7 +105,7 @@ export type Reducer = (
       userName?: string
       icon?: string
       needDescriptionAboutLock: boolean
-      hasRightToUsePlizm: boolean
+      hasRightToUsePllizm: boolean
       performedRefract: boolean
     }
   },
@@ -118,7 +118,7 @@ export type Reducer = (
   userName: string
   icon: string
   needDescriptionAboutLock: boolean
-  hasRightToUsePlizm: boolean
+  hasRightToUsePllizm: boolean
 }
 
 // ***************************************
@@ -132,7 +132,7 @@ export type Users = {
   userName: string
   icon: string
   needDescriptionAboutLock: boolean
-  hasRightToUsePlizm: boolean
+  hasRightToUsePllizm: boolean
   performedRefract: boolean
 }
 
@@ -171,7 +171,7 @@ export type SignInRequest = {
   password: string
 }
 
-export type GetStatusOfRightToUsePlizmResponse = {
+export type GetStatusOfRightToUsePllizmResponse = {
   // eslint-disable-next-line camelcase
   has_right_to_use_plizm: boolean
 }
