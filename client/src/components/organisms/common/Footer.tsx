@@ -115,7 +115,7 @@ const Footer: VFC = () => {
 
   return (
     <Box display="flex" alignItems="center" component="footer" className={classes.footer}>
-      <small className={classes.copyright}>&copy; 2021 Plizm</small>
+      <small className={classes.copyright}>&copy; 2021 Pllizm</small>
       <Box
         component="ul"
         display="flex"

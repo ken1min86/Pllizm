@@ -298,13 +298,13 @@ const About: VFC = () => {
         <Box className={classes.introContainer}>
           <Box className={classes.introWrapper}>
             <Hidden smDown>
-              <span className={classes.introMessage}>Plizmはあなたにもうひとつの</span>
+              <span className={classes.introMessage}>Pllizmはあなたにもうひとつの</span>
               <span className={classes.introMessage}>世界を提供します。</span>
               <Box component="span" sx={{ height: 2 }} />
               <span className={classes.introMessage}>この世界ではあなたは自由です。</span>
             </Hidden>
             <Hidden smUp>
-              <span className={classes.introMessage}>Plizmはあなたに</span>
+              <span className={classes.introMessage}>Pllizmはあなたに</span>
               <span className={classes.introMessage}>もうひとつの世界を</span>
               <span className={classes.introMessage}>提供します。</span>
               <Box component="span" sx={{ height: 2 }} />
@@ -335,7 +335,7 @@ const About: VFC = () => {
             <span className={classes.notTwitterDescription}>違います。</span>
             <Box component="span" sx={{ height: 2 }} />
             <span className={classes.notTwitterDescription}>
-              Plizmはあなたと、あなたの知り合いで利用するサービスです。
+              Pllizmはあなたと、あなたの知り合いで利用するサービスです。
             </span>
             <Box component="span" sx={{ height: 2 }} />
             <span className={classes.notTwitterDescription}>
@@ -383,7 +383,7 @@ const About: VFC = () => {
         </Box>
         <Box className={classes.beginPlizmContainer}>
           <Box className={classes.beginPlizmContentsContainer}>
-            <span className={classes.beginPlizmTitle}>Plizmを始める</span>
+            <span className={classes.beginPlizmTitle}>Pllizmを始める</span>
             <Box className={classes.signup}>
               <SignupModal type="button" />
             </Box>
