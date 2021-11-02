@@ -508,7 +508,7 @@ export const getStatusOfRightToUsePllizm =
     await axiosBase
       .get<GetStatusOfRightToUsePllizmResponse>('/v1/right_to_use_app', { headers: requestHeaders })
       .then((response) => {
-        const hasRightToUsePllizm = response.data.has_right_to_use_plizm
+        const hasRightToUsePllizm = response.data.has_right_to_use_pllizm
         dispatch(getStatusOfRightToUsePllizmAction({ hasRightToUsePllizm }))
       })
       .catch((error) => {

@@ -173,7 +173,7 @@ export type SignInRequest = {
 
 export type GetStatusOfRightToUsePllizmResponse = {
   // eslint-disable-next-line camelcase
-  has_right_to_use_plizm: boolean
+  has_right_to_use_pllizm: boolean
 }
 
 export type GetPerformedRefractResponse = {
