@@ -25,11 +25,11 @@ RSpec.describe "V1::LikesApi", type: :request do
       let(:client_user) { create(:user) }
       let(:headers)     { client_user.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         let(:client_post) { create(:post, user_id: client_user.id) }
 
         it 'returns 403' do
-          expect(client_user.has_right_to_use_plizm).to eq(false)
+          expect(client_user.has_right_to_use_pllizm).to eq(false)
           post v1_post_likes_path(client_post.id), headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -37,9 +37,9 @@ RSpec.describe "V1::LikesApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client_user)
+          get_right_to_use_pllizm(client_user)
         end
 
         context "when try to like client's post" do
@@ -131,11 +131,11 @@ RSpec.describe "V1::LikesApi", type: :request do
       let(:client)  { create(:user) }
       let(:headers) { client.create_new_auth_token }
 
-      context "when client doesn't have right to use plizm" do
+      context "when client doesn't have right to use pllizm" do
         let(:not_existent_like_id) { Like.order('id').last.present? ? Like.order('id').last.id + 1 : 1 }
 
         it 'returns 403' do
-          expect(client.has_right_to_use_plizm).to eq(false)
+          expect(client.has_right_to_use_pllizm).to eq(false)
           delete v1_cancel_likes_path(not_existent_like_id), headers: headers
           expect(response).to have_http_status(403)
           expect(response.message).to include('Forbidden')
@@ -143,9 +143,9 @@ RSpec.describe "V1::LikesApi", type: :request do
         end
       end
 
-      context 'when client has right to use plizm' do
+      context 'when client has right to use pllizm' do
         before do
-          get_right_to_use_plizm(client)
+          get_right_to_use_pllizm(client)
         end
 
         context "when id set in path doesn't related to client's Like" do
