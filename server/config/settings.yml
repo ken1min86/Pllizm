@@ -1,0 +1,12 @@
+constants:
+  valid_extensions:
+    - .gif
+    - .png
+    - .jpg
+  status_of_post:
+    deleted: 'deleted'
+    not_exist: 'not_exist'
+    current_user_post: 'current_user_post'
+    follower_post: 'follower_post'
+    not_follower_post: 'not_follower_post'
+    not_refracted_follower_post: 'not_refracted_follower_post'

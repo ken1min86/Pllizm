@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.0'
+ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4'
@@ -27,14 +27,57 @@ gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', platforms: %i(mri mingw x64_mingw)
+
+  # Rspec to test API
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem "factory_bot_rails", "~> 4.10.0"
+
+  # Rubocop for lint
+  gem 'rubocop-airbnb'
 end
 
 group :development do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'spring-commands-rspec'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i(mingw mswin x64_mingw jruby)
+
+# Devise for token authentification
+gem 'devise'
+gem 'devise_token_auth'
+
+# Paranoia for logical deleting
+gem 'paranoia'
+
+# Carrierwave for uploading images
+gem 'carrierwave'
+
+# Config to manage constants
+gem 'config'
+
+# Faker to create dummy data
+gem 'faker'
+
+# jsonapi-rspec to use matcher for api test
+gem 'jsonapi-rspec'
+
+# fuubar for formatting RSpec progress bar
+gem 'fuubar'
+
+# Simplecov to calculate test coverage
+gem 'simplecov', require: false, group: :test
+
+# Slack notifier to notify to slack
+gem 'slack-notifier'
+
+# Dotenv to manage environment variables
+gem 'dotenv-rails'
+
+# Whenever to implement regular batch processing
+gem 'whenever', require: false

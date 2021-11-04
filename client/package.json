@@ -1,26 +1,62 @@
 {
-  "name": "plizm",
+  "name": "pllizm",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/system": "^4.12.1",
+    "@mui/icons-material": "^5.0.0-rc.1",
+    "@mui/lab": "^5.0.0-alpha.46",
+    "@mui/material": "^5.0.0-rc.1",
+    "@mui/styles": "^5.0.0-rc.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
+    "@types/node": "^12.20.25",
+    "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.0",
+    "axios": "^0.21.4",
+    "camelcase-keys": "^7.0.1",
+    "connected-react-router": "^6.9.1",
+    "dotenv-webpack": "^7.0.3",
+    "history": "^4.10.1",
+    "js-cookie": "^3.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-modal": "^3.14.3",
+    "react-redux": "^7.2.5",
+    "react-router": "^5.2.1",
+    "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
+    "redux": "^4.1.1",
+    "redux-actions": "^2.6.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "stylelint-config-html": "^1.0.0",
+    "typescript": "^4.4.3",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4020 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fix": "npm run -s format && npm run -s lint:fix",
+    "format": "prettier --write --loglevel=warn 'src/**/*.{js,jsx,ts,tsx,gql,graphql,json}'",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:conflict": "eslint-config-prettier 'src/**/*.{js,jsx,ts,tsx}'",
+    "preinstall": "typesync || :",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run --env failOnSnapshotDiff=false",
+    "cy:run:chrome": "cypress run --browser chrome --env failOnSnapshotDiff=false",
+    "cy:snap": "cypress run",
+    "cy:snap:update": "cypress run --env updateSnapshots=true"
   },
   "eslintConfig": {
     "extends": [
@@ -38,6 +74,62 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@cypress/code-coverage": "^3.9.11",
+    "@cypress/instrument-cra": "^1.4.0",
+    "@stylelint/postcss-css-in-js": "^0.37.2",
+    "@types/cypress-image-snapshot": "^3.1.6",
+    "@types/dotenv-webpack": "^7.0.3",
+    "@types/history": "^4.7.9",
+    "@types/js-cookie": "^2.2.7",
+    "@types/prettier": "^2.3.2",
+    "@types/react-modal": "^3.12.1",
+    "@types/react-redux": "^7.1.18",
+    "@types/react-router": "^5.1.16",
+    "@types/react-router-dom": "^5.1.9",
+    "@types/redux-actions": "^2.6.2",
+    "@types/redux-logger": "^3.0.9",
+    "@types/testing-library__jest-dom": "^5.14.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "cross-env": "^7.0.3",
+    "cypress": "^8.4.1",
+    "cypress-image-snapshot": "^4.0.1",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-react": "^7.25.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "nyc": "^15.1.0",
+    "postcss-html": "^1.2.0",
+    "prettier": "^2.4.1",
+    "stylelint": "^14.0.1",
+    "stylelint-config-recess-order": "^2.5.0",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-order": "^4.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write --loglevel=warn",
+      "eslint --fix"
+    ],
+    "src/**/*.css": [
+      "stylelint --fix"
+    ],
+    "src/**/*.{gql,graphql,json}": [
+      "prettier --write --loglevel=warn"
     ]
   }
 }

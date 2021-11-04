@@ -26,6 +26,29 @@
 # Ignore master key for decrypting credentials and more.
 /server/config/master.key
 
+# Ignore uploaded files and cache.
+/server/public/uploads/
+
+# Ignore test coverage files
+/server/coverage
+
+# Ignore settings
+/server/config/settings.local.yml
+/server/config/settings/*.local.yml
+/server/config/environments/*.local.yml
+
+# Ignore env
+/client/.env
+/client/.env.test
+/client/.env.development
+/client/.env.production
+/server/.env
+/server/.env.test
+/server/.env.development
+/server/.env.production
+
+# Ignore seeds
+/server/db/seeds.rb
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 

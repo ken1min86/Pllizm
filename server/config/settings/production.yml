@@ -1,0 +1,6 @@
+server:
+  url: 'https://pllizm.jp'
+
+users_to_follow_immediately: #フォローリクエストした場合に即時フォローされるユーザ
+  - 'ken10806'
+  - 'jun_okada'
