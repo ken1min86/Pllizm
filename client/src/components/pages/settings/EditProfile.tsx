@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const EditProfile: VFC = () => {
+  document.title = 'プロフィール編集 / Pllizm'
+
   const classes = useStyles()
   const dispatch = useDispatch()
 

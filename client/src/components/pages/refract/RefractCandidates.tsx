@@ -101,6 +101,8 @@ const radioButtonUseStyles = makeStyles((theme: Theme) =>
 )
 
 const RefractCandidates: VFC = () => {
+  document.title = 'リフラクト / Pllizm'
+
   const classes = useStyles()
   const radioButtonClasses = radioButtonUseStyles()
 

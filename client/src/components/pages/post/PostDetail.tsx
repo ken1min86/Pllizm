@@ -12,6 +12,8 @@ import { Threads } from 'util/types/redux/threads';
 import { Box, Hidden } from '@mui/material';
 
 const PostDetail: VFC = () => {
+  document.title = '投稿詳細 / Pllizm'
+
   const dispatch = useDispatch()
   const selector = useSelector((state: { threads: Threads }) => state)
 

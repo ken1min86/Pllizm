@@ -10,6 +10,8 @@ import { destroyAccount } from 'reducks/users/operations';
 import { Box, Hidden } from '@mui/material';
 
 const DeleteAccount: VFC = () => {
+  document.title = 'アカウント削除 / Pllizm'
+
   const dispatch = useDispatch()
 
   const handleClickToDeleteAccount = (setError: React.Dispatch<React.SetStateAction<string>>) => {

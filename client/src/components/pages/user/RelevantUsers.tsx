@@ -88,6 +88,8 @@ type Props = {
 }
 
 const RelevantUsers: VFC<Props> = ({ location }) => {
+  document.title = '関連ユーザー / Pllizm'
+
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()

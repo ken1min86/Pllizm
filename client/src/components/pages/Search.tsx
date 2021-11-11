@@ -61,6 +61,8 @@ const useTabListStyles = makeStyles((theme: Theme) =>
 )
 
 const Search: VFC = () => {
+  document.title = '検索 / Pllizm'
+
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
