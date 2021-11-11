@@ -1,0 +1,16 @@
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.8/ext/unf_ext
+/Users/nakamurakenichi/.rbenv/versions/2.7.1/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/2.7.1/lib/ruby/site_ruby/2.7.0 -r ./siteconf20211111-72179-1n3h2pr.rb extconf.rb
+checking for -lstdc++... yes
+creating Makefile
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.8/ext/unf_ext
+make DESTDIR\= clean
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.8/ext/unf_ext
+make DESTDIR\=
+compiling unf.cc
+linking shared-object unf_ext.bundle
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/unf_ext-0.0.8/ext/unf_ext
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 unf_ext.bundle ./.gem.20211111-72179-r93ii

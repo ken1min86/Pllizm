@@ -81,3 +81,6 @@ gem 'dotenv-rails'
 
 # Whenever to implement regular batch processing
 gem 'whenever', require: false
+
+# Fog to uploade images to external storage
+gem 'fog-aws'
