@@ -1,0 +1,16 @@
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/aliyun-sdk-0.8.0/ext/crcx
+/Users/nakamurakenichi/.rbenv/versions/2.7.1/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/2.7.1/lib/ruby/site_ruby/2.7.0 -r ./siteconf20211111-72179-1r6fmh3.rb extconf.rb
+creating Makefile
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/aliyun-sdk-0.8.0/ext/crcx
+make DESTDIR\= clean
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/aliyun-sdk-0.8.0/ext/crcx
+make DESTDIR\=
+compiling crc64_ecma.c
+compiling crcx.c
+linking shared-object aliyun/crcx.bundle
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/aliyun-sdk-0.8.0/ext/crcx
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 crcx.bundle ./.gem.20211111-72179-mzs6c2/aliyun

@@ -1,0 +1,13 @@
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+/Users/nakamurakenichi/.rbenv/versions/2.7.1/bin/ruby -I /Users/nakamurakenichi/.rbenv/versions/2.7.1/lib/ruby/site_ruby/2.7.0 -r ./siteconf20211111-72179-12w8vlr.rb extconf.rb
+creating Makefile
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make DESTDIR\= clean
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make DESTDIR\=
+make: Nothing to be done for `all'.
+
+current directory: /Users/nakamurakenichi/Desktop/code/pllizm/server/vendor/bundle/ruby/2.7.0/gems/json-2.6.1/ext/json
+make DESTDIR\= install
