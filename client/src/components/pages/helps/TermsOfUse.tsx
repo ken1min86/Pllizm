@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 const TermsOfUse: VFC = () => {
+  document.title = '利用規約 / Pllizm'
   const classes = useStyles()
 
   return (

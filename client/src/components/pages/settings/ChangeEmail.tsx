@@ -8,6 +8,8 @@ import { editEmail } from 'reducks/users/operations';
 import { Box, Hidden, TextField } from '@mui/material';
 
 const ChangeEmail: VFC = () => {
+  document.title = 'メールアドレス変更 / Pllizm'
+
   const dispatch = useDispatch()
 
   const [disabled, setDisabled] = useState(true)

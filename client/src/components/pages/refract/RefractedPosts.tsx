@@ -72,6 +72,8 @@ const useTabListStyles = makeStyles((theme: Theme) =>
 )
 
 const RefractedPosts: VFC = () => {
+  document.title = 'リフラクト / Pllizm'
+
   const classes = useStyles()
   const tabClasses = useTabStyles()
   const tabListClasses = useTabListStyles()
