@@ -63,6 +63,8 @@ const useStyles = makeStyles((theme) =>
 )
 
 const PrivacyPolicy: VFC = () => {
+  document.title = 'プライバシーポリシー / Pllizm'
+
   const classes = useStyles()
 
   return (

@@ -26,6 +26,8 @@ const useStyles = makeStyles(() =>
 )
 
 const AccountSetting: VFC = () => {
+  document.title = '設定 / Pllizm'
+
   const classes = useStyles()
   const dispatch = useDispatch()
 

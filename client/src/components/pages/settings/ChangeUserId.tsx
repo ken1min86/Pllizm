@@ -10,6 +10,8 @@ import { Users } from 'util/types/redux/users';
 import { Box, Hidden, TextField } from '@mui/material';
 
 const ChangeUserId: VFC = () => {
+  document.title = 'ユーザーID変更 / Pllizm'
+
   const dispatch = useDispatch()
 
   const selector = useSelector((state: { users: Users }) => state)

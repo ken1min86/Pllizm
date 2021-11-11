@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const DeletedAccount: VFC = () => {
+  document.title = 'アカウント削除完了 / Pllizm'
+
   const classes = useStyles()
 
   const Header = <h1 className={classes.title}>アカウント削除</h1>
