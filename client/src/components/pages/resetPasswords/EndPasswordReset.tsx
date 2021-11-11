@@ -32,6 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const EndPasswordReset: VFC = () => {
+  document.title = 'パスワード再設定完了 / Pllizm'
+
   const classes = useStyles()
   const dispatch = useDispatch()
 

@@ -12,6 +12,8 @@ import { PostsOfMeAndFollower } from '../../../util/types/redux/posts';
 import { BottomNavigationBar } from '../../molecules';
 
 const Home: VFC = () => {
+  document.title = 'ホーム / Pllizm'
+
   const dispatch = useDispatch()
   const selector = useSelector((state: { posts: Array<PostsOfMeAndFollower> }) => state)
 

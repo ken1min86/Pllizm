@@ -10,6 +10,8 @@ import { useLayoutEffect, VFC } from 'react';
 import { Box, CircularProgress, Hidden } from '@mui/material';
 
 const Notifications: VFC = () => {
+  document.title = '通知 / Pllizm'
+
   const { getNotifications, loading, error, notifications } = useNotifications()
 
   useLayoutEffect(() => {

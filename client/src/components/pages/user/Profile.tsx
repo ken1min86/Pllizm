@@ -136,6 +136,10 @@ const Profile: VFC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabValue])
 
+  useEffect(() => {
+    if (userProfile) document.title = `${userProfile.user_name}(@${userProfile.user_id}) / Pllizm`
+  }, [userProfile])
+
   const handleChange = (event: React.SyntheticEvent, newValue: '投稿' | 'リプライ' | 'ロック' | 'いいね') => {
     setTabValue(newValue)
   }

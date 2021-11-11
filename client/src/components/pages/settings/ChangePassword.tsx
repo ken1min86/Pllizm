@@ -20,6 +20,8 @@ const useStylesOfTextField = makeStyles((theme: Theme) =>
 )
 
 const ChangePassword: VFC = () => {
+  document.title = 'パスワード変更 / Pllizm'
+
   const classesOfTextField = useStylesOfTextField()
   const dispatch = useDispatch()
 

@@ -8,6 +8,8 @@ import { Box, LinearProgress } from '@mui/material';
 import useRefractCandidatesThread from '../../../hooks/useRefractCandidatesThread';
 
 const RefractCandidateDetail: VFC = () => {
+  document.title = '詳細 / Pllizm'
+
   const params: { id: string } = useParams()
   const paramsId = params.id
 
