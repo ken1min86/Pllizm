@@ -15,6 +15,7 @@ CarrierWave.configure do |config|
       region: 'ap-northeast-1',
       path_style: true
     }
+    config.asset_host = 'https://static.pllizm.com'
   else
     config.asset_host = Settings.server.url
     config.storage = :file
