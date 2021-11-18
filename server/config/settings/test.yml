@@ -1,5 +1,5 @@
 server:
-  url: 'http://localhost:3020'
+  url: 'http://localhost:80'
 
 users_to_follow_immediately: #フォローリクエストした場合に即時フォローされるユーザ
   - 'ken10806'
