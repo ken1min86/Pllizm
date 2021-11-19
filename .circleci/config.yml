@@ -143,7 +143,7 @@ jobs:
   lint:
     working_directory: ~/pllizm
     docker:
-      - image: circleci/node:12.18.0
+      - image: circleci/node:14.17.0
     steps:
       - restore_cache:
           key: source-v1-{{ .Branch }}-{{ .Revision }}
