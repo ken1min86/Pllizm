@@ -45,11 +45,11 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - source-v1.0-{{ .Branch }}-{{ .Revision }}
-            - source-v1.0-{{ .Branch }}-
-            - source-v1.0-
+            - source-v1.1-{{ .Branch }}-{{ .Revision }}
+            - source-v1.1-{{ .Branch }}-
+            - source-v1.1-
       - save_cache:
-          key: source-v1.0-{{ .Branch }}-{{ .Revision }}
+          key: source-v1.1-{{ .Branch }}-{{ .Revision }}
           name: source-code
           paths:
             - ~/pllizm
@@ -59,11 +59,11 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: source-v1.0-{{ .Branch }}-{{ .Revision }}
+          key: source-v1.1-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-            - dependencies-v1.0-{{ checksum "server/Gemfile.lock" }}
-            - dependencies-v1.0-
+            - dependencies-v1.1-{{ checksum "server/Gemfile.lock" }}
+            - dependencies-v1.1-
       # - install_bundler
       - run:
           name: Bundle Install Dependencies
@@ -71,7 +71,7 @@ jobs:
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
       - save_cache:
-          key: dependencies-v1.0-{{ checksum "server/Gemfile.lock" }}
+          key: dependencies-v1.1-{{ checksum "server/Gemfile.lock" }}
           paths:
             - server/vendor/bundle
 
@@ -80,9 +80,9 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: source-v1.0-{{ .Branch }}-{{ .Revision }}
+          key: source-v1.1-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: dependencies-v1.0-{{ checksum "server/Gemfile.lock" }}
+          key: dependencies-v1.1-{{ checksum "server/Gemfile.lock" }}
       - run:
           name: Waiting stand up database
           working_directory: server
@@ -139,9 +139,9 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: source-v1.0-{{ .Branch }}-{{ .Revision }}
+          key: source-v1.1-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: dependencies-v1.0-{{ checksum "server/Gemfile.lock" }}
+          key: dependencies-v1.1-{{ checksum "server/Gemfile.lock" }}
       # - install_bundler
       - run:
           command: |
@@ -159,18 +159,18 @@ jobs:
       - image: circleci/node:14.17.0
     steps:
       - restore_cache:
-          key: source-v1.0-{{ .Branch }}-{{ .Revision }}
+          key: source-v1.1-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-          - client-dependencies-v1.0-{{ checksum "client/yarn.lock" }}
-          - client-dependencies-v1.0-
+          - client-dependencies-v1.1-{{ checksum "client/yarn.lock" }}
+          - client-dependencies-v1.1-
       - run:
           command: yarn install
           working_directory: client
       - save_cache:
           paths:
             - node_modules
-          key: client-dependencies-v1.0-{{ checksum "client/yarn.lock" }}
+          key: client-dependencies-v1.1-{{ checksum "client/yarn.lock" }}
       - run:
           command: yarn lint
           working_directory: client
