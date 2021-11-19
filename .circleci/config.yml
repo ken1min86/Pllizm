@@ -99,16 +99,20 @@ jobs:
             bundle install
           working_directory: server
       - run:
-          name: Testing DB migration and seed
+          name: Create database
           command: |
-            bundle exec rails db:create db:migrate
+            bundle exec rails db:create
+          working_directory: server
+      - run:
+          name: Implement migration
+          command: |
+            bundle exec rails db:migrate
           working_directory: server
       - run:
           name: Run rspec
           command: |
             mkdir /tmp/test-results
             mkdir -p ~/rspec
-            bundle exec rails db:create db:migrate
             TEST_FILES="$(circleci tests glob \"spec/**/*_spec.rb\" | circleci tests split --split-by=timings)"
             bundle exec rspec --require rails_helper \
                               --color \
