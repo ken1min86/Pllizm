@@ -99,14 +99,10 @@ jobs:
             bundle install
           working_directory: server
       - run:
-          name: Create database
+          name: Setup database
           command: |
-            bundle exec rails db:create
-          working_directory: server
-      - run:
-          name: Implement migration
-          command: |
-            bundle exec rails db:migrate
+            bundle exec rake db:create
+            bundle exec rake db:migrate
           working_directory: server
       - run:
           name: Run rspec
