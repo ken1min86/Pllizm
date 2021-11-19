@@ -90,7 +90,9 @@ jobs:
             dockerize -wait \
             tcp://127.0.0.1:3306 -timeout 120s
       # Database setup
-      - run: mv ./server/config/database.yml.ci ./server/config/database.yml
+      - run:
+          name: Create database.yml for circleci
+          command: mv ./server/config/database.yml.ci ./server/config/database.yml
       # - install_bundler
       - run:
           command: |
