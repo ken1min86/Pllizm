@@ -98,6 +98,13 @@ jobs:
           command: |
             bundle install
           working_directory: server
+      # ↓最後に削除
+      - run:
+          name: Reinstall mysql2
+          command: |
+            gem uninstall mysql2
+            gem install mysql2 -v 0.5.3
+      # ↑最後に削除
       - run:
           name: Setup database
           command: |
