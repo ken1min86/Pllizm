@@ -69,7 +69,7 @@ jobs:
           name: Bundle Install Dependencies
           working_directory: server
           command: |
-            bundle install
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
       - save_cache:
           key: dependencies-v1.0-{{ checksum "server/Gemfile.lock" }}
           paths:
@@ -96,14 +96,18 @@ jobs:
       # - install_bundler
       - run:
           command: |
-            bundle install
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
           working_directory: server
+      # ↓最後に削除
+      # ↓最後に削除
       # ↓最後に削除
       - run:
           name: Reinstall mysql2
           command: |
             gem uninstall mysql2
             gem install mysql2 -v 0.5.3
+      # ↑最後に削除
+      # ↑最後に削除
       # ↑最後に削除
       - run:
           name: Setup database
@@ -141,7 +145,7 @@ jobs:
       # - install_bundler
       - run:
           command: |
-            bundle install
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
           working_directory: server
       - run:
           name: Execute rubocop
