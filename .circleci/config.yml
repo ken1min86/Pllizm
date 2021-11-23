@@ -68,7 +68,7 @@ jobs:
           name: default mysql client install
           command: |
             sudo apt update
-            sudo apt-get install libmysqlclient-dev
+            sudo apt-get install default-libmysqlclient-dev
       - run:
           name: Bundle Install Dependencies
           working_directory: server
