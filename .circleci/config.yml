@@ -88,6 +88,7 @@ jobs:
             whereis libcrypto.so.1
             whereis libcrypto.so.1.1
             whereis libcrypto.so.10
+            export LD_LIBRARY_PATH="/usr/local/lib"
             sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /lib/x86_64-linux-gnu/libssl.so.10
             sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/libssl.so.10
             sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /lib/x86_64-linux-gnu/libcrypto.so.10
