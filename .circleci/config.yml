@@ -79,10 +79,10 @@ jobs:
       - run:
           command: |
             sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get install libssl1.0 libssl-dev
+            sudo apt-get install libssl1.0.2 libssl-dev
             cd /lib/x86_64-linux-gnu
-            sudo ln -s libssl.so.1.0 libssl.so.10
-            sudo ln -s libcrypto.so.1.0 libcrypto.so.10
+            sudo ln -s libssl.so.1.0.2 libssl.so.10
+            sudo ln -s libcrypto.so.1.0.2 libcrypto.so.10
       # Database setup
       - run: mv ./server/config/database.yml.ci ./server/config/database.yml
       - install_bundler
