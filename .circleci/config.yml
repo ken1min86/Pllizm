@@ -92,6 +92,13 @@ jobs:
       - run:
           name: Create database.yml for circleci
           command: mv ./server/config/database.yml.ci ./server/config/database.yml
+      # Need to delete below command
+      # Need to delete below command
+      - run:
+          name: Search location of libssl.so.10
+          command: whereis libssl.so.10
+      # Need to delete above command
+      # Need to delete above command
       - run:
           name: Install libssl
           command: |
