@@ -97,16 +97,20 @@ jobs:
       - run:
           name: Search location of libssl.so.10
           command: whereis libssl.so.10
-      # Need to delete above command
-      # Need to delete above command
       - run:
           name: Install libssl
           command: |
-            sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get install libssl1.1 libssl-dev compat-openssl10
-            cd /lib/x86_64-linux-gnu
-            sudo ln -s libssl.so.1.1 libssl.so.10
-            sudo ln -s libcrypto.so.1.1 libcrypto.so.10
+            ln -s /usr/lib/x86_64-linux-gnu/libssl.so.10 /lib/x86_64-linux-gnu/libssl.so.10
+      # Need to delete above command
+      # Need to delete above command
+      # - run:
+      #     name: Install libssl
+      #     command: |
+      #       sudo apt-get update --allow-releaseinfo-change
+      #       sudo apt-get install libssl1.1 libssl-dev compat-openssl10
+      #       cd /lib/x86_64-linux-gnu
+      #       sudo ln -s libssl.so.1.1 libssl.so.10
+      #       sudo ln -s libcrypto.so.1.1 libcrypto.so.10
       - run:
           command: |
             bundle exec gem uninstall mysql2
