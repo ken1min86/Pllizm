@@ -100,7 +100,7 @@ jobs:
       - run:
           name: Install libssl
           command: |
-            ln -s /usr/lib/x86_64-linux-gnu/libssl.so.10 /lib/x86_64-linux-gnu/libssl.so.10
+            sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.10 /lib/x86_64-linux-gnu/libssl.so.10
       # Need to delete above command
       # Need to delete above command
       # - run:
