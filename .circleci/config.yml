@@ -78,7 +78,7 @@ jobs:
             tcp://127.0.0.1:3306 -timeout 120s
       - run:
           command: |
-            sudo apt-get update
+            sudo apt-get update --allow-releaseinfo-change
             sudo apt-get install libssl1.0.0 libssl-dev
             cd /lib/x86_64-linux-gnu
             sudo ln -s libssl.so.1.0.0 libssl.so.10
