@@ -78,6 +78,7 @@ jobs:
             tcp://127.0.0.1:3306 -timeout 120s
       - run:
           command: |
+            openssl version
             sudo apt-get update --allow-releaseinfo-change
             sudo apt-get --reinstall install openssl libssl-dev libzip-dev
             cd /lib/x86_64-linux-gnu
