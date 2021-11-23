@@ -134,18 +134,18 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "front/yarn.lock" }}
+          - v1-dependencies-{{ checksum "client/yarn.lock" }}
           - v1-dependencies-
       - run:
           command: yarn install
-          working_directory: front
+          working_directory: client
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "front/yarn.lock" }}
+          key: v1-dependencies-{{ checksum "client/yarn.lock" }}
       - run:
           command: yarn lint:check
-          working_directory: front
+          working_directory: client
 
 workflows:
   build:
