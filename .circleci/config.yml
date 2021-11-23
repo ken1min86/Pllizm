@@ -65,14 +65,6 @@ jobs:
             - dependencies-v1.3-{{ checksum "server/Gemfile.lock" }}
             - dependencies-v1.3-
       - run:
-          name: Install libssl
-          command: |
-            sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get install libssl1.1 libssl-dev
-            cd /lib/x86_64-linux-gnu
-            sudo ln -s libssl.so.1.1 libssl.so.10
-            sudo ln -s libcrypto.so.1.1 libcrypto.so.10
-      - run:
           name: Bundle Install Dependencies
           working_directory: server
           command: |
@@ -100,6 +92,14 @@ jobs:
       - run:
           name: Create database.yml for circleci
           command: mv ./server/config/database.yml.ci ./server/config/database.yml
+      - run:
+          name: Install libssl
+          command: |
+            sudo apt-get update --allow-releaseinfo-change
+            sudo apt-get install libssl1.1 libssl-dev
+            cd /lib/x86_64-linux-gnu
+            sudo ln -s libssl.so.1.1 libssl.so.10
+            sudo ln -s libcrypto.so.1.1 libcrypto.so.10
       - run:
           command: |
             bundle exec gem uninstall mysql2
