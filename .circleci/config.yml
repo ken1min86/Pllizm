@@ -39,7 +39,7 @@ jobs:
     steps:
       - checkout
       - save_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
           paths:
             - ~/pllizm
 
@@ -48,9 +48,9 @@ jobs:
       name: default_container
     steps:
       - restore_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           name: Bundle Install Dependencies
@@ -58,7 +58,7 @@ jobs:
           command: |
             bundle install
       - save_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
           paths:
             - server/vendor/bundle
 
@@ -67,9 +67,9 @@ jobs:
       name: default_container
     steps:
       - restore_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - run:
           name: Watting stand up database
           working_directory: server
@@ -138,9 +138,9 @@ jobs:
       name: default_container
     steps:
       - restore_cache: # ソースコードの復元
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache: # vendor/bundleを復元
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           command: |
@@ -159,15 +159,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "client/yarn.lock" }}
-          - v1-dependencies-
+          - v1.0.1-dependencies-{{ checksum "client/yarn.lock" }}
+          - v1.0.1-dependencies-
       - run:
           command: yarn install
           working_directory: client
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "client/yarn.lock" }}
+          key: v1.0.1-dependencies-{{ checksum "client/yarn.lock" }}
       - run:
           command: yarn lint:check
           working_directory: client
