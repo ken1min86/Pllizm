@@ -79,8 +79,6 @@ jobs:
       - run:
           command: |
             openssl version
-            sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get --reinstall install openssl libssl-dev libzip-dev
             cd /lib/x86_64-linux-gnu
             ls
             whereis libssl.so.1
@@ -92,9 +90,11 @@ jobs:
             whereis libcrypto.so.10
             whereis openssl
             sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /lib/x86_64-linux-gnu/libssl.so.10
-            sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /lib/x86_64-linux-gnu/libcrypto.so.10
+            sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /lib/x86_64-linux-gnu/libcrypto.so.10
           # out
             # sudo apt-get install libssl1.1 libssl-dev
+            # sudo apt-get update --allow-releaseinfo-change
+            # sudo apt-get --reinstall install openssl libssl-dev libzip-dev
             # sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/libssl.so.10
             # sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/libcrypto.so.10
       # Database setup
