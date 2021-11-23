@@ -80,6 +80,7 @@ jobs:
           command: |
             cd /lib/x86_64-linux-gnu
             ls
+            ls /usr/lib/x86_64-linux-gnu
             whereis libssl.so.1
             whereis libssl.so.1.0.2
             whereis libssl.so.1.1
