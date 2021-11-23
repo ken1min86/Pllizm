@@ -77,6 +77,17 @@ jobs:
             dockerize -wait \
             tcp://127.0.0.1:3306 -timeout 120s
       - run:
+          name: Install openssl 1.0.2
+          command: |
+            sudo apt-get install make
+            wget https://www.openssl.org/source/openssl-1.0.2l.tar.gz
+            tar -xzvf openssl-1.0.2l.tar.gz
+            cd openssl-1.0.2l
+            sudo ./config
+            sudo make install
+            sudo ln -sf /usr/local/ssl/bin/openssl `which openssl`
+            openssl version -v
+      - run:
           command: |
             openssl version
             cd /lib/x86_64-linux-gnu
@@ -90,7 +101,7 @@ jobs:
             whereis libcrypto.so.10
             whereis openssl
             sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /lib/x86_64-linux-gnu/libssl.so.10
-            sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /lib/x86_64-linux-gnu/libcrypto.so.10
+            sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /lib/x86_64-linux-gnu/libcrypto.so.10
           # out
             # sudo apt-get install libssl1.1 libssl-dev
             # sudo apt-get update --allow-releaseinfo-change
