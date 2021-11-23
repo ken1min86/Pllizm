@@ -79,7 +79,7 @@ jobs:
       - run:
           command: |
             sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get --reinstall install openssl libssl-dev libzip
+            sudo apt-get --reinstall install openssl libssl-dev libzip-dev
             cd /lib/x86_64-linux-gnu
             ls
             whereis libssl.so.1
