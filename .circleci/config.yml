@@ -21,7 +21,7 @@ executors:
           INITIAL_USER2_EMAIL: test_user_2@test.com
           INITIAL_USER2_BIO: ジブリが好きです。
           INITIAL_USER2_PASSWORD: password
-      - image: circleci/mysql:8.0.26
+      - image: circleci/mysql:5.7
         environment:
           # MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: password
