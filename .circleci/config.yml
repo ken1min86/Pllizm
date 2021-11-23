@@ -64,11 +64,11 @@ jobs:
           keys:
             - dependencies-v1.3-{{ checksum "server/Gemfile.lock" }}
             - dependencies-v1.3-
-      # - run:
-      #     name: default mysql client install
-      #     command: |
-      #       sudo apt update
-      #       sudo apt-get install default-libmysqlclient-dev
+      - run:
+          name: Install libssl
+          command: |
+            sudo apt-get update
+            sudo apt-get install libssl1.0.0 libssl-dev
       - run:
           name: Bundle Install Dependencies
           working_directory: server
