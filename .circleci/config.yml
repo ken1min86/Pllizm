@@ -99,6 +99,9 @@ jobs:
           command: mv ./server/config/database.yml.ci ./server/config/database.yml
       - run:
           command: |
+            bundle exec gem uninstall mysql2
+      - run:
+          command: |
             bundle install
           working_directory: server
       - run:
