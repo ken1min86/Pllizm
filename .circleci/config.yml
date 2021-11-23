@@ -68,7 +68,7 @@ jobs:
           name: Install libssl
           command: |
             sudo apt-get update --allow-releaseinfo-change
-            sudo apt-get install libssl1.1 libssl-dev
+            sudo apt-get install libssl1.1 libssl-dev compat-openssl10
       - run:
           name: Bundle Install Dependencies
           working_directory: server
