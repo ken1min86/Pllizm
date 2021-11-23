@@ -83,6 +83,7 @@ jobs:
             cd /lib/x86_64-linux-gnu
             sudo ln -s libssl.so.1.1 libssl.so.10
             sudo ln -s libcrypto.so.1.1 libcrypto.so.10
+            sudo ln -s /lib/x86_64-linux-gnu/libssl.so.1.0.0 /usr/lib/libssl.so.10
             sudo ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /usr/lib/libcrypto.so.10
       # Database setup
       - run: mv ./server/config/database.yml.ci ./server/config/database.yml
