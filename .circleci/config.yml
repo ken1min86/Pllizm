@@ -100,6 +100,15 @@ jobs:
       # Database setup
       - run: mv ./server/config/database.yml.ci ./server/config/database.yml
       - install_bundler
+      # 最後に消す
+      # 最後に消す
+      - run:
+          command: |
+            bundle install
+          working_directory: server
+      # 最後に消す
+      # 最後に消す
+      # 最後に消す
       - run:
           command: |
             bundle exec gem uninstall mysql2
