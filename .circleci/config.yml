@@ -81,6 +81,10 @@ jobs:
       - install_bundler
       - run:
           command: |
+            bundle exec gem uninstall mysql2
+          working_directory: server
+      - run:
+          command: |
             bundle install
           working_directory: server
       - run:
