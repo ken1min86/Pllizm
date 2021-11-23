@@ -23,7 +23,6 @@ executors:
           INITIAL_USER2_PASSWORD: password
       - image: circleci/mysql:5.7
         environment:
-          MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: password
     working_directory: ~/pllizm
 
