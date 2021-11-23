@@ -108,19 +108,6 @@ jobs:
           command: |
             bundle install
           working_directory: server
-      # ↓最後に削除
-      # ↓最後に削除
-      # ↓最後に削除
-      - run:
-          name: Check the existence of mysql2
-          command: |
-            ls server/vendor/bundle/ruby/2.7.0/gems
-            ls server/vendor/bundle/ruby/2.7.0/gems/mysql2-0.5.3
-            ls server/vendor/bundle/ruby/2.7.0/gems/mysql2-0.5.3/lib
-            ls server/vendor/bundle/ruby/2.7.0/gems/mysql2-0.5.3/lib/mysql2/
-      # ↑最後に削除
-      # ↑最後に削除
-      # ↑最後に削除
       - run:
           name: Setup database
           command: |
