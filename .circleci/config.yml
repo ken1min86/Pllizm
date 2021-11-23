@@ -88,6 +88,9 @@ jobs:
             bundle install
           working_directory: server
       - run:
+          command: |
+            ls /home/circleci/pllizm/server/vendor/bundle/ruby/2.7.0/gems/puma-5.4.0/lib/puma
+      - run:
           name: Testing DB migration and seed
           working_directory: server
           command: |
