@@ -84,10 +84,10 @@ jobs:
       - restore_cache:
           key: dependencies-v1.2-{{ checksum "server/Gemfile.lock" }}
       - run:
-          name: Install mysql-devel
-          working_directory: server
+          name: default mysql client install
           command: |
-            sudo yum install mysql-devel
+            sudo apt update
+            sudo apt-get install default-mysql-client
       - run:
           name: Bundle Install Dependencies
           working_directory: server
