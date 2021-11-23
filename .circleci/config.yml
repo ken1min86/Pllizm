@@ -82,6 +82,9 @@ jobs:
             sudo apt-get install libssl1.1 libssl-dev
             cd /lib/x86_64-linux-gnu
             ls
+            whereis libssl.so.10
+            whereis libssl.so.1.1
+            whereis libcrypto.so.1.1
             sudo ln -s libssl.so.1.1 libssl.so.10
             sudo ln -s libcrypto.so.1.1 libcrypto.so.10
             sudo ln -s /lib/x86_64-linux-gnu/libssl.so.1.0.0 /usr/lib/libssl.so.10
