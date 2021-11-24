@@ -17,12 +17,14 @@ class Batch::Cron::RefractBatch
         refract_this_week.destroy
       end
     end
-    webhook_url = ENV['WEBHOOK_URL'].dup.force_encoding("UTF-8")
-    channel = ENV['CHANNEL'].dup.force_encoding("UTF-8")
-    notifier = Slack::Notifier.new(
-      webhook_url,
-      channel: '#' + channel
-    )
-    notifier.ping("[#{Rails.env}]リフラクトセットのバッチ処理が完了しました")
+    unless Rails.env.test?
+      webhook_url = ENV['WEBHOOK_URL'].dup.force_encoding("UTF-8")
+      channel = ENV['CHANNEL'].dup.force_encoding("UTF-8")
+      notifier = Slack::Notifier.new(
+        webhook_url,
+        channel: '#' + channel
+      )
+      notifier.ping("[#{Rails.env}]リフラクトセットのバッチ処理が完了しました")
+    end
   end
 end

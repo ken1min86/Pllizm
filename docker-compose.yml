@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+  server:
+    build: ./server
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec puma -C config/puma.rb"
+    volumes:
+      - type: bind
+        source: ./server
+        target: /myapp
+      - public-data:/myapp/public
+      - tmp-data:/myapp/tmp
+      - log-data:/myapp/log
+    ports:
+      - 3020:3020
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+  client:
+    build: ./client
+    volumes:
+      - type: bind
+        source: ./client
+        target: /usr/src/app
+    command: yarn start
+    ports:
+      - "4020:4020"
+    stdin_open: true
+    tty: true
+  web:
+    build: ./nginx
+    volumes:
+      - public-data:/myapp/public
+      - tmp-data:/myapp/tmp
+    ports:
+      - 80:80
+    depends_on:
+      - server
+
+volumes:
+  public-data:
+  log-data:
+  db-data:
+  tmp-data:
