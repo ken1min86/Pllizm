@@ -5,6 +5,8 @@ executors:
       - image: cimg/ruby:2.7.1
         environment:
           RAILS_ENV: test
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
           INITIAL_USER1_USERNAME: 中村謙一
           INITIAL_USER1_USERID: ken10806
