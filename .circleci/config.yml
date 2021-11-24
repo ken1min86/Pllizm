@@ -146,7 +146,7 @@ jobs:
             - node_modules
           key: v2-node-modules-{{ checksum "client/yarn.lock" }}
       - run:
-          command: yarn lint:check
+          command: yarn lint
           working_directory: client
 
 workflows:
