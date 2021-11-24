@@ -1,0 +1,167 @@
+version: 2.1
+executors:
+  rails_container:
+    docker:
+      - image: cimg/ruby:2.7.1
+        environment:
+          RAILS_ENV: test
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          INITIAL_USER1_USERNAME: 中村謙一
+          INITIAL_USER1_USERID: ken10806
+          INITIAL_USER1_EMAIL: test_user_1@test.com
+          INITIAL_USER1_BIO: Pllizmの開発者です。
+          INITIAL_USER1_PASSWORD: password
+          INITIAL_USER2_USERNAME: 岡田准
+          INITIAL_USER2_USERID: jun_okada
+          INITIAL_USER2_EMAIL: test_user_2@test.com
+          INITIAL_USER2_BIO: ジブリが好きです。
+          INITIAL_USER2_PASSWORD: password
+          CLIENT_PROD_URL: dummy-url
+          CLIENT_DEV_URL: dummy-url
+          WEBHOOK_URL: dummy-url
+          CHANNEL: dummy-channel
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+    working_directory: ~/pllizm
+
+commands:
+  install_bundler:
+    description: Bundler install
+    steps:
+      - run: gem install bundler -v 2.2.26
+
+jobs:
+  fetch_source_code:
+    executor:
+      name: rails_container
+    steps:
+      - checkout
+      - save_cache:
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - ~/pllizm
+
+  bundle_dependencies:
+    executor:
+      name: rails_container
+    steps:
+      - restore_cache:
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
+      - install_bundler
+      - run:
+          name: Bundle Install Dependencies
+          working_directory: server
+          command: |
+            bundle install
+      - save_cache:
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
+          paths:
+            - server/vendor/bundle
+
+  rspec:
+    executor:
+      name: rails_container
+    steps:
+      - restore_cache:
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
+      - run:
+          name: Wait for database to stand up
+          command: |
+            dockerize -wait \
+            tcp://127.0.0.1:3306 -timeout 120s
+          working_directory: server
+      - run: mv server/config/database.yml.ci server/config/database.yml
+      - install_bundler
+      - run:
+          name: Uninstall mysql2 to reinstall mysql2 with native extensions
+          command: |
+            bundle exec gem uninstall mysql2
+          working_directory: server
+      - run:
+          name: Bundle install to install mysql2 with native extensions
+          command: |
+            bundle install
+          working_directory: server
+      - run:
+          name: DB create and migrate
+          command: |
+            bundle exec rails db:create db:migrate
+          working_directory: server
+      - run:
+          name: Run rspec
+          command: |
+            mkdir tmp/test-results
+            mkdir -p rspec
+            TEST_FILES="$(circleci tests glob \"spec/**/*_spec.rb\" | circleci tests split --split-by=timings)"
+            bundle exec rspec
+          working_directory: server
+      - store_test_results:
+          path: server/rspec
+      - store_artifacts:
+          path: server/tmp/test-results
+          destination: test-results
+
+  rubocop:
+    executor:
+      name: rails_container
+    steps:
+      - restore_cache:
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
+      - install_bundler
+      - run:
+          command: |
+            bundle install
+          working_directory: server
+      - run:
+          name: Execute rubocop
+          command: |
+            bundle exec rubocop
+          working_directory: server
+
+  lint:
+    working_directory: ~/pllizm
+    docker:
+      - image: circleci/node:12.20.0
+    steps:
+      - restore_cache:
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+          - v2-node-modules-{{ checksum "client/yarn.lock" }}
+          - v2-node-modules-
+      - run:
+          command: yarn install
+          working_directory: client
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-node-modules-{{ checksum "client/yarn.lock" }}
+      - run:
+          command: yarn lint
+          working_directory: client
+
+workflows:
+  build:
+    jobs:
+      - fetch_source_code
+      - bundle_dependencies:
+          requires:
+            - fetch_source_code
+      - rubocop:
+          requires:
+            - bundle_dependencies
+      - rspec:
+          requires:
+            - bundle_dependencies
+      - lint:
+          requires:
+            - fetch_source_code
