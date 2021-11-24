@@ -1,16 +1,11 @@
 version: 2.1
 executors:
-  default_container:
+  rails_container:
     docker:
-      - image: circleci/ruby:2.7.1-node-browsers
+      - image: cimg/ruby:2.7.1
         environment:
           RAILS_ENV: test
-          BUNDLE_JOBS: 4
-          BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
-          BUNDLER_VERSION: 2.2.26
-          GUEST_USER_SIGNIN_EMAIL: guest@example.com
-          GUEST_USER_SIGNIN_PASSWORD: password
           INITIAL_USER1_USERNAME: 中村謙一
           INITIAL_USER1_USERID: ken10806
           INITIAL_USER1_EMAIL: test_user_1@test.com
@@ -21,6 +16,10 @@ executors:
           INITIAL_USER2_EMAIL: test_user_2@test.com
           INITIAL_USER2_BIO: ジブリが好きです。
           INITIAL_USER2_PASSWORD: password
+          CLIENT_PROD_URL: dummy-url
+          CLIENT_DEV_URL: dummy-url
+          WEBHOOK_URL: dummy-url
+          CHANNEL: dummy-channel
       - image: circleci/mysql:5.7
         environment:
           MYSQL_ROOT_PASSWORD: password
@@ -35,22 +34,22 @@ commands:
 jobs:
   fetch_source_code:
     executor:
-      name: default_container
+      name: rails_container
     steps:
       - checkout
       - save_cache:
-          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
           paths:
             - ~/pllizm
 
   bundle_dependencies:
     executor:
-      name: default_container
+      name: rails_container
     steps:
       - restore_cache:
-          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           name: Bundle Install Dependencies
@@ -58,98 +57,63 @@ jobs:
           command: |
             bundle install
       - save_cache:
-          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
           paths:
             - server/vendor/bundle
 
   rspec:
     executor:
-      name: default_container
+      name: rails_container
     steps:
       - restore_cache:
-          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - run:
-          name: Watting stand up database
-          working_directory: server
+          name: Wait for database to stand up
           command: |
             dockerize -wait \
             tcp://127.0.0.1:3306 -timeout 120s
-      - run:
-          command: |
-            openssl version
-            cd /lib/x86_64-linux-gnu
-            ls
-            whereis libssl.so.1
-            whereis libssl.so.1.0.2
-            whereis libssl.so.1.1
-            whereis libssl.so.10
-            whereis libcrypto.so.1
-            whereis libcrypto.so.1.1
-            whereis libcrypto.so.10
-            whereis openssl
-            sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /lib/x86_64-linux-gnu/libssl.so.10
-            sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /lib/x86_64-linux-gnu/libcrypto.so.10
-          # out
-            # sudo apt-get install libssl1.1 libssl-dev
-            # sudo apt-get update --allow-releaseinfo-change
-            # sudo apt-get --reinstall install openssl libssl-dev libzip-dev
-            # sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/libssl.so.10
-            # sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/libcrypto.so.10
-      # Database setup
-      - run: mv ./server/config/database.yml.ci ./server/config/database.yml
-      - install_bundler
-      # 最後に消す
-      # 最後に消す
-      - run:
-          command: |
-            bundle install
           working_directory: server
-      # 最後に消す
-      # 最後に消す
-      # 最後に消す
+      - run: mv server/config/database.yml.ci server/config/database.yml
+      - install_bundler
       - run:
+          name: Uninstall mysql2 to reinstall mysql2 with native extensions
           command: |
             bundle exec gem uninstall mysql2
           working_directory: server
       - run:
+          name: Bundle install to install mysql2 with native extensions
           command: |
             bundle install
           working_directory: server
       - run:
-          name: Testing DB migration and seed
-          working_directory: server
+          name: DB create and migrate
           command: |
-            bundle exec rails db:create db:migrate db:seed db:drop
+            bundle exec rails db:create db:migrate
+          working_directory: server
       - run:
           name: Run rspec
           command: |
-            mkdir /tmp/test-results
-            mkdir -p ~/rspec
-            bundle exec rails db:create db:migrate
+            mkdir tmp/test-results
+            mkdir -p rspec
             TEST_FILES="$(circleci tests glob \"spec/**/*_spec.rb\" | circleci tests split --split-by=timings)"
-            bundle exec rspec --require rails_helper \
-                              --color \
-                              --format progress \
-                              --format RspecJunitFormatter \
-                              --out ~/rspec/rspec.xml
+            bundle exec rspec
           working_directory: server
-      # collect reports
       - store_test_results:
-          path: ~/server/rspec
+          path: server/rspec
       - store_artifacts:
-          path: ~/server/tmp/test-results
+          path: server/tmp/test-results
           destination: test-results
 
   rubocop:
     executor:
-      name: default_container
+      name: rails_container
     steps:
-      - restore_cache: # ソースコードの復元
-          key: v1.0.1-pllizm-{{ .Branch }}-{{ .Revision }}
-      - restore_cache: # vendor/bundleを復元
-          key: v1.0.1-dependencies-{{ checksum "server/Gemfile.lock" }}
+      - restore_cache:
+          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           command: |
@@ -157,9 +121,10 @@ jobs:
           working_directory: server
       - run:
           name: Execute rubocop
-          working_directory: server
           command: |
             bundle exec rubocop
+          working_directory: server
+
   lint:
     working_directory: ~/pllizm
     docker:
@@ -168,15 +133,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1.0.1-dependencies-{{ checksum "client/yarn.lock" }}
-          - v1.0.1-dependencies-
+          - v1-dependencies-{{ checksum "client/yarn.lock" }}
+          - v1-dependencies-
       - run:
           command: yarn install
           working_directory: client
       - save_cache:
           paths:
             - node_modules
-          key: v1.0.1-dependencies-{{ checksum "client/yarn.lock" }}
+          key: v1-dependencies-{{ checksum "client/yarn.lock" }}
       - run:
           command: yarn lint:check
           working_directory: client
