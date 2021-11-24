@@ -38,7 +38,7 @@ jobs:
     steps:
       - checkout
       - save_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
           paths:
             - ~/pllizm
 
@@ -47,9 +47,9 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           name: Bundle Install Dependencies
@@ -57,7 +57,7 @@ jobs:
           command: |
             bundle install
       - save_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
           paths:
             - server/vendor/bundle
 
@@ -66,9 +66,9 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
       - run:
           name: Wait for database to stand up
           command: |
@@ -111,9 +111,9 @@ jobs:
       name: rails_container
     steps:
       - restore_cache:
-          key: v1-pllizm-{{ .Branch }}-{{ .Revision }}
+          key: v2-pllizm-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
-          key: v1-dependencies-{{ checksum "server/Gemfile.lock" }}
+          key: v2-bundler-{{ checksum "server/Gemfile.lock" }}
       - install_bundler
       - run:
           command: |
@@ -133,15 +133,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "client/yarn.lock" }}
-          - v1-dependencies-
+          - v2-node-modules-{{ checksum "client/yarn.lock" }}
+          - v2-node-modules-
       - run:
           command: yarn install
           working_directory: client
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "client/yarn.lock" }}
+          key: v2-node-modules-{{ checksum "client/yarn.lock" }}
       - run:
           command: yarn lint:check
           working_directory: client
