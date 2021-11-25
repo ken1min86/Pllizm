@@ -1,8 +1,10 @@
-env :PATH, ENV['PATH']
-set :output, 'log/batch/cron.log'
-set :environment, :development
-job_type :rbenv_runner, %Q!eval "$(rbenv init -)" ; cd :path && :environment_variable=:environment bin/rails runner :task :output!
+require File.expand_path(File.dirname(__FILE__) + "/environment")
 
-every :saturday, at: '5:30 am' do
-  rbenv_runner "Batch::Cron::RefractBatch.weekly_set_refract"
+ENV.each { |k, v| env(k, v) }
+
+set :output, error: 'log/batch/cron_error.log', standard: 'log/batch/cron.log'
+set :environment, :development
+
+every :friday, at: '8:30 pm' do # UTCで指定している。JSTでは土曜日のAM5:30に作動する。
+  runner 'Batch::Cron::RefractBatch.weekly_set_refract', :environment => :development
 end
