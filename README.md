@@ -7,8 +7,10 @@
 
 **URL: https://www.pllizm.com**  
 (テストユーザー email: test@test.com / password: password)
-### ***ToDo:サービスの内容がひと目で分かるような画像を配置***
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/79041840/143382156-8240ea9b-80ae-48b2-89b1-b472d53f2aca.png" />
+</p>
 
 # サービス概要と背景
 ## どのようなサービスか
@@ -38,7 +40,9 @@
 2) 基本的に投稿主がフォロワーの誰かわからないように匿名化される点。  
 
 これらの特徴により、Pllizmでは日本の文化的慣習から解放された環境を提供し、自由な発信が可能になります。  
-### ***ToDo:サービスの内容がひと目で分かるような画像を配置***
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/79041840/143383325-0cb5ef84-22cb-4c00-b2da-a52ff24ef27c.png" />
+</p>
 
 ### ②: リフラクト  
 Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能です。  
