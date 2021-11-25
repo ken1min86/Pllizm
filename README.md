@@ -50,9 +50,9 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 リフラクト時には誰が誰に対してリフラクトしたのかが通知されます。  
 これらに機能により、自分が真に共感する人は誰か明らかになり、またその相手に対しても自分の存在を知ってもらうことができます(逆もまた然りです)。  
 <p align="center">
-  <img width="33%" src="https://user-images.githubusercontent.com/79041840/143394959-559e643c-e7b2-4bd2-95c8-96bf1b3081ad.png" />
-  <img width="33%" src="https://user-images.githubusercontent.com/79041840/143394995-654686a5-a1c2-4a0f-b435-d437c5d8f453.png" />
-  <img width="33%" src="https://user-images.githubusercontent.com/79041840/143395005-b4f5cfe8-2448-4e9e-b4be-518333d287b2.png" />
+  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143394959-559e643c-e7b2-4bd2-95c8-96bf1b3081ad.png" />
+  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143394995-654686a5-a1c2-4a0f-b435-d437c5d8f453.png" />
+  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143395005-b4f5cfe8-2448-4e9e-b4be-518333d287b2.png" />
 </p>  
 
 以上の方法により、「それぞれが自分の思想をありのままの形で発信できる環境で、それに共感してくれる人と共生する」世界を実現しています。
