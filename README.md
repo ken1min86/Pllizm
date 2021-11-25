@@ -1,12 +1,8 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/79041840/143247961-98a92c74-0eb0-4eee-a2bf-558ab563c356.png" />
-</p>
-
 # Pllizm(プリズム)
 **人と人との繋がりのあるべき姿を実現する、半匿名型SNSです。**  
 
 **URL: https://www.pllizm.com**  
-(テストユーザー email: test@test.com / password: password)
+(テストユーザー email: test@test.com / password: password)  
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/79041840/143382156-8240ea9b-80ae-48b2-89b1-b472d53f2aca.png" />
@@ -30,7 +26,7 @@
 前述した課題②が生じる原因は、課題①が発生していることでした。  
 つまり、課題①が生じる原因を考える必要があります。  
 課題①の原因は、日本における、物事を間接的に伝えることを美徳とする文化や、同調性が強いため出る杭を打つ文化にあると考えます。  
-この文化的要因により、自由な発言がしにくい課題が発生しています。
+この文化的要因により、自由な発言がしにくいという課題が発生しています。
 
 ## 本サービスが提供する解決策
 前述した課題①,②に対して、それぞれ以下の解決策を提供しています。  
@@ -50,9 +46,9 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 リフラクト時には誰が誰に対してリフラクトしたのかが通知されます。  
 これらに機能により、自分が真に共感する人は誰か明らかになり、またその相手に対しても自分の存在を知ってもらうことができます(逆もまた然りです)。  
 <p align="center">
-  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143394959-559e643c-e7b2-4bd2-95c8-96bf1b3081ad.png" />
-  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143394995-654686a5-a1c2-4a0f-b435-d437c5d8f453.png" />
-  <img width="30%" src="https://user-images.githubusercontent.com/79041840/143395005-b4f5cfe8-2448-4e9e-b4be-518333d287b2.png" />
+  <img width="32%" src="https://user-images.githubusercontent.com/79041840/143394959-559e643c-e7b2-4bd2-95c8-96bf1b3081ad.png" />
+  <img width="32%" src="https://user-images.githubusercontent.com/79041840/143394995-654686a5-a1c2-4a0f-b435-d437c5d8f453.png" />
+  <img width="32%" src="https://user-images.githubusercontent.com/79041840/143395005-b4f5cfe8-2448-4e9e-b4be-518333d287b2.png" />
 </p>  
 
 以上の方法により、「それぞれが自分の思想をありのままの形で発信できる環境で、それに共感してくれる人と共生する」世界を実現しています。
