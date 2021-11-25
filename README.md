@@ -3,7 +3,7 @@
 </p>
 
 # Pllizm(プリズム)
-**人と人との繋がりのあるべき姿を実現する半匿名型SNSです。**  
+**人と人との繋がりのあるべき姿を実現する、半匿名型SNSです。**  
 
 **URL: https://www.pllizm.com**  
 (テストユーザー email: test@test.com / password: password)
@@ -67,6 +67,7 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
   - RDS
   - S3
   - Cloud Front
+  - ACM
 - CircleCI
 - Docker/Docker-compose
 
@@ -75,54 +76,71 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 ![image](https://user-images.githubusercontent.com/79041840/143372739-fa599880-b9f6-42ed-b089-5a2acf9921b2.png)
 
 
-"hoge"の魅力が直感的に伝えわるデモ動画や図解を載せる
+# 実装機能一覧
+## ユーザー利用機能
+- 認証機能
+- アカウント情報変更・削除機能
+- フォロー機能
+- 投稿作成機能
+- 投稿削除機能
+- いいね機能
+- 投稿ロック機能: リフラクト(投稿の非匿名化)されないようにする機能
+- リプライ作成機能
+- 一連の投稿表示機能
+- ユーザー検索機能
+- リフラクト機能: バッチ処理, 週に1度、投稿を1つだけ非匿名化できる
+- 通知機能: 投稿がいいねされたりリフラクト(投稿の非匿名化)されたりした場合に、通知が表示される
+- Route53 による独自ドメイン + SSL化
+- レスポンシブ対応
 
-# Features
+## 非ユーザー利用機能
+- puma-socket 通信による Rails の Nginx 配信
+- Docker による開発環境の完全コンテナ化
+- CircleCI による自動 CIパイプライン構築
+  - Front-end: ESLint&prettier
+  - Back-end: RSpec, rubocop
 
-"hoge"のセールスポイントや差別化などを説明する
 
-# Requirement
+# 使用技術詳細
+## Front-end: React
+``creat-react-app`` をベースに開発。
+### 主要ライブラリ等
+- ``Redux``: Stateの一元管理するフレームワーク。Redux関連ファイルは、reducksパターン則って管理。
+- ``Material-UI``: Google が提供する UI コンポーネントライブラリ。
+- ``eslint & prettier``: javascriptに対する静的コード解析。
 
-"hoge"を動かすのに必要なライブラリなどを列挙する
+## Back-end: Rails + Nginx
+### 主要gem
+- ``devise_token_auth``： APIモードでのdevise。トークン認証を簡単に実装。
+- ``aws-fog/carrierwave``: 画像をAWS S3に保存。
+- ``rspec``： デファクトスタンダードになっているRubyテスト用フレームワーク。
+- ``rubocop-airbnb``： Rubyの静的コード解析。
+- ``paranoia``: 論理削除機能の実装に使用。
+- ``simplecov``: テストのカバレッジ測定に使用。現時点でカバレッジは99.16%。
+- ``whenever``: Railsでcronを管理するために使用。
 
-* huga 3.5.2
-* hogehuga 1.0.2
+## Infrastructure
+``Docker/docker-compose``
+開発環境をすべてDockerコンテナ内で完結。  
 
-# Installation
+``AWS``
+Front-end, Back-endのデプロイで使用。
 
-Requirementで列挙したライブラリなどのインストール方法を説明する
+### 利用サービス
+- Route53
+- Amplify
+- ALB
+- VPC
+- EC2
+- RDS
+- S3
+- Cloud Front
+- ACM
 
-```bash
-pip install huga_package
-```
+``CircleCI``
+自動CIパイプラインの構築に使用。
 
-# Usage
-
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
-
-```bash
-git clone https://github.com/hoge/~
-cd examples
-python demo.py
-```
-
-# Note
-
-注意点などがあれば書く
-
-# Author
-
-作成情報を列挙する
-
-* 作成者
-* 所属
-* E-mail
-
-# License
-ライセンスを明示する
-
-"hoge" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
-
-社内向けなら社外秘であることを明示してる
-
-"hoge" is Confidential.
+### 自動化項目
+- RSpec
+- rubocop
+- ESLint & prettier
