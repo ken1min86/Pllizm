@@ -36,6 +36,9 @@ group :development, :test do
 
   # Rubocop for lint
   gem 'rubocop-airbnb'
+
+  # rails-erd to create er diagram
+  gem 'rails-erd'
 end
 
 group :development do
