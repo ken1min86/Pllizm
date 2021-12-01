@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ErrorMessage, OutlinedRoundedCornerButton
+    BasicTextField, ContainedSquareButton, ErrorMessage, OutlinedRoundedCornerButton
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { signIn } from 'reducks/users/operations';
 
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Box, IconButton, Theme } from '@mui/material';
+import { Box, Divider, IconButton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       fontSize: '12px',
       color: theme.palette.primary.light,
+    },
+    divider: {
+      backgroundColor: theme.palette.text.disabled,
+      marginBottom: 16,
     },
     signUpText: {
       fontSize: '12px',
@@ -179,11 +183,23 @@ const SigninModal: VFC<Props> = ({ type }) => {
               <ErrorMessage error={error} />
             </Box>
             <Box mb={2}>
-              <BlueSquareButton
+              <ContainedSquareButton
                 label="ログイン"
                 size="large"
+                buttonColor="#2699fb"
                 onClick={() => {
                   dispatch(signIn(email, password, setError))
+                }}
+              />
+            </Box>
+            <Divider className={classes.divider} />
+            <Box mb={2}>
+              <ContainedSquareButton
+                label="ゲストログイン"
+                size="large"
+                buttonColor="#e0245e"
+                onClick={() => {
+                  dispatch(signIn('test@test.com', 'password', setError))
                 }}
               />
             </Box>
