@@ -1,4 +1,4 @@
-import { BlueSquareButton } from 'components/atoms';
+import { ContainedSquareButton } from 'components/atoms';
 import { HeaderWithLogo } from 'components/molecules';
 import { push } from 'connected-react-router';
 import { VFC } from 'react';
@@ -49,7 +49,12 @@ const SentMailOfPasswordReset: VFC = () => {
             メールの指示に従ってパスワードの再設定を行って下さい。
           </Box>
           <Box className={classes.buttonContainer}>
-            <BlueSquareButton size="medium" label="トップページに戻る" onClick={() => dispatch(push('/'))} />
+            <ContainedSquareButton
+              label="トップページに戻る"
+              size="medium"
+              buttonColor="#2699fb"
+              onClick={() => dispatch(push('/'))}
+            />
           </Box>
         </Box>
       </main>

@@ -1,5 +1,5 @@
 export { default as BasicTextField } from './textField/BasicTextField'
-export { default as BlueSquareButton } from './button/BlueSquareButton'
+export { default as ContainedSquareButton } from './button/ContainedSquareButton'
 export { default as ContainedRoundedCornerButton } from './button/ContainedRoundedCornerButton'
 export { default as ContainedWhiteRoundedCornerButton } from './button/ContainedWhiteRoundedCornerButton'
 export { default as DeletePostPopover } from './DeletePostPopover'
