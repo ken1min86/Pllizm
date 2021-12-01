@@ -52,7 +52,6 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 
 以上の方法により、「それぞれが自分の思想をありのままの形で発信できる環境で、それに共感してくれる人と共生する」世界を実現しています。
 
-
 # 使用技術概略(詳細後述)
 - React
 - Ruby 2.7.1
@@ -73,10 +72,11 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 - CircleCI
 - Docker/Docker-compose
 
-
 # インフラ構成図
 ![image](https://user-images.githubusercontent.com/79041840/143372739-fa599880-b9f6-42ed-b089-5a2acf9921b2.png)
 
+# ER図
+![image](https://user-images.githubusercontent.com/79041840/144173080-63295412-0664-41bd-acc6-7a0db3cd79ca.png)
 
 # 実装機能一覧
 ## ユーザー利用機能
@@ -101,7 +101,6 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 - CircleCI による自動 CIパイプライン構築
   - Front-end: ESLint&prettier
   - Back-end: RSpec, rubocop
-
 
 # 使用技術詳細
 ## Front-end: React
