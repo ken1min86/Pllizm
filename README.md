@@ -2,7 +2,6 @@
 **人と人との繋がりのあるべき姿を実現する、半匿名型SNSです。**  
 
 **URL: https://www.pllizm.com**  
-(テストユーザー email: test@test.com / password: password)  
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/79041840/143382156-8240ea9b-80ae-48b2-89b1-b472d53f2aca.png" />
