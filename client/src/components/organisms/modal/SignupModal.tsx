@@ -1,5 +1,5 @@
 import {
-    BasicTextField, BlueSquareButton, ContainedRoundedCornerButton, ErrorMessage
+    BasicTextField, ContainedRoundedCornerButton, ContainedSquareButton, ErrorMessage
 } from 'components/atoms';
 import { useCallback, useState, VFC } from 'react';
 import Modal from 'react-modal';
@@ -189,9 +189,10 @@ const SignupModal: VFC<Props> = ({ type }) => {
               <ErrorMessage error={error} />
             </Box>
             <Box mb={2}>
-              <BlueSquareButton
+              <ContainedSquareButton
                 label="アカウント作成"
                 size="large"
+                buttonColor="#2699fb"
                 onClick={() => {
                   dispatch(signUp(email, password, passwordConfirmation, setError))
                 }}
