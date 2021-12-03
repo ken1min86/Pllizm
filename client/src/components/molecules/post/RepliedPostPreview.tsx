@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       width: '100%',
       marginBottom: 32,
-      whiteSpace: 'pre',
     },
     imageContainer: {
       width: '100%',
@@ -52,7 +51,7 @@ const RepliedPostPreview: VFC<Props> = ({ content, image, icon, userId, userName
         <Avatar alt="Replied user icon" src={icon} sx={{ width: 48, height: 48 }} />
         <div className={classes.divider} />
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', wordBreak: 'break-all' }}>
         <Box>
           {userName && <span className={classes.userName}>{userName}</span>}
           {userId && <span className={classes.userId}>@{userId}</span>}
