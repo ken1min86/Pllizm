@@ -26,6 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.light,
       fontWeight: 'bold',
     },
+    button: {
+      display: 'flex',
+      alignItems: 'center',
+      marginRight: 8,
+    },
   }),
 )
 
@@ -38,20 +43,16 @@ const ReturnableHeaderTable: VFC<{ title: string }> = ({ title }) => {
 
   return (
     <Box className={classes.table} display="flex" alignItems="center" height="49px" paddingLeft="21px">
-      <div>
-        <Hidden smUp>
-          <button type="button" onClick={back}>
-            <ArrowBackIcon className={classes.arrow} />
-          </button>
-        </Hidden>
-        <Hidden smDown>
-          <img className={classes.logo} src={Logo} alt="ロゴ" />
-        </Hidden>
-      </div>
-      <div>
-        <div data-testid="header-title" className={classes.title}>
-          {title}
-        </div>
+      <Hidden smUp>
+        <button type="button" onClick={back} className={classes.button}>
+          <ArrowBackIcon className={classes.arrow} />
+        </button>
+      </Hidden>
+      <Hidden smDown>
+        <img className={classes.logo} src={Logo} alt="ロゴ" />
+      </Hidden>
+      <div data-testid="header-title" className={classes.title}>
+        {title}
       </div>
     </Box>
   )
