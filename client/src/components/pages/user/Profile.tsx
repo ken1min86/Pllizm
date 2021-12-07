@@ -272,6 +272,9 @@ const Profile: VFC = () => {
                 <span>該当する投稿は存在しませんでした。</span>
               </Box>
             )}
+            <Hidden smUp>
+              <Box mb={7} />
+            </Hidden>
           </TabContext>
         </Box>
       )}
