@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: '4px',
       right: '4px',
+      color: 'rgba(123, 123, 123, 0.4)',
     },
     popupTitle: {
       color: theme.palette.primary.light,
