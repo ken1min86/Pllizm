@@ -200,12 +200,14 @@ const RelevantUsers: VFC<Props> = ({ location }) => {
                 <Divider />
               </>
             ))}
-
           {!loading && !errorMessage && relevantUsers && relevantUsers.length === 0 && (
             <Box p={4} sx={{ textAlign: 'center', color: '#86868b' }}>
               該当するユーザーはいません。
             </Box>
           )}
+          <Hidden smUp>
+            <Box mb={7} />
+          </Hidden>
         </TabContext>
       </Box>
     </DefaultTemplate>

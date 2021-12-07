@@ -135,11 +135,10 @@ const PostBox: VFC<Props> = ({
       {status === 'exist' && (
         <button type="button" className={classes.buttonToShowDetail} onClick={handleClickToShowDetail}>
           <Box sx={{ display: 'flex', width: '100%' }}>
-            <Box
-              onClick={handleClickToStopPropagation}
-              sx={{ display: 'flex', flexDirection: 'column', marginRight: 2, alignItems: 'center', gap: 0.5 }}
-            >
-              <UsersIcon userId={userId} icon={icon} disableAllOnClick={disableAllOnClick} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', marginRight: 2, alignItems: 'center', gap: 0.5 }}>
+              <Box onClick={handleClickToStopPropagation}>
+                <UsersIcon userId={userId} icon={icon} disableAllOnClick={disableAllOnClick} />
+              </Box>
               {needDividerOnDisplay && <div className={classes.divider} />}
             </Box>
             <Box sx={{ width: '100%' }}>
