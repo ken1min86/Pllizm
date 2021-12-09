@@ -53,6 +53,7 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
 以上の方法により、「それぞれが自分の思想をありのままの形で発信できる環境で、それに共感してくれる人と共生する」世界を実現しています。
 
 # 使用技術概略(詳細後述)
+- TypeScript
 - React
 - Ruby 2.7.1
 - Ruby on Rails 6.1.4
@@ -103,7 +104,7 @@ Pllizmでは週に1度、投稿を1つだけ非匿名化することが可能で
   - Back-end: RSpec, rubocop
 
 # 使用技術詳細
-## Front-end: React
+## Front-end: React + TypeScript
 ``creat-react-app`` をベースに開発。
 ### 主要ライブラリ等
 - ``Redux``: Stateの一元管理するフレームワーク。Redux関連ファイルは、reducksパターン則って管理。
