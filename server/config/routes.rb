@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   namespace 'v1' do
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       registrations: 'v1/auth/registrations',
+      passwords: 'v1/auth/passwords',
     }
 
     post   '/follow_requests/create',   to: 'follow_requests#create',                        as: :follow_requests
