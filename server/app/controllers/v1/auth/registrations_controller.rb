@@ -8,6 +8,7 @@ module V1
       before_action :add_userid_to_params,                  only: :create
       before_action :add_username_to_params,                only: :create
       before_action :check_userid_is_at_least_4_characters, only: :update
+      before_action :prohibit_chages_to_guest_user,         only: %i(update destroy)
 
       private
 
@@ -53,6 +54,10 @@ module V1
 
       def account_update_params
         params.permit(:email, :userid, :username, :userid, :bio, :image)
+      end
+
+      def prohibit_chages_to_guest_user
+        render_json_forbitten_with_custom_errors("変更できません。", "ゲストユーザーの情報は変更できません。") if current_v1_user.userid == "test"
       end
     end
   end
