@@ -148,7 +148,6 @@ Front-end, Back-endのデプロイで使用。
 - ESLint & prettier
 
 # 各種ドキュメント
-(清書できておりませんが、エンティティやAPIなどの全体像の確認等にご利用下さい)
 - エンティティ一覧: https://crystal-tank-263.notion.site/d5f149299b754566a8e74d004ed8a342?v=819f6cb073b24530b4b2d0bbc5139b42
 - 画面一覧: https://crystal-tank-263.notion.site/287f31bf7f064989be8cdae6466d79c5
 - API機能一覧: https://crystal-tank-263.notion.site/API-91d6991b3939434ebbc7a6b947bc60ab
